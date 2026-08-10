@@ -53,8 +53,8 @@ pnpm --filter @wordstreak/shared-types build
 
 ## 📚 Tài liệu chi tiết (Documentation)
 
-* 🏗️ [Sơ đồ Kiến trúc Hệ thống](file:///Users/vutuanhau/Documents/PROJECT/WordStreak/docs/architecture/system-overview.md)
-* 📂 [Cấu trúc Mã nguồn & Quy chuẩn đặt tên](file:///Users/vutuanhau/Documents/PROJECT/WordStreak/docs/architecture/code-structure.md)
-* 🗄️ [Thiết kế Cơ sở dữ liệu (Database ERD)](file:///Users/vutuanhau/Documents/PROJECT/WordStreak/docs/architecture/database-schema.md)
-* 🧮 [Giải thích Thuật toán SuperMemo 2 (SM-2)](file:///Users/vutuanhau/Documents/PROJECT/WordStreak/docs/algorithms/supermemo-2.md)
-* 🚀 [Lộ trình phát triển (Product Roadmap)](file:///Users/vutuanhau/Documents/PROJECT/WordStreak/docs/roadmap.md)
+* 🏗️ [Sơ đồ Kiến trúc Hệ thống](./docs/architecture/system-overview.md)
+* 📂 [Cấu trúc Mã nguồn & Quy chuẩn đặt tên](./docs/architecture/code-structure.md)
+* 🗄️ [Thiết kế Cơ sở dữ liệu (Database ERD)](./docs/architecture/database-schema.md)
+* 🧮 [Giải thích Thuật toán SuperMemo 2 (SM-2)](./docs/algorithms/supermemo-2.md)
+* 🚀 [Lộ trình phát triển (Product Roadmap)](./docs/roadmap.md)
