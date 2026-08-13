@@ -1,6 +1,9 @@
 ---
 name: "speckit-converge"
-description: "Assess the current codebase against the feature's spec, plan, and tasks, then append any remaining unbuilt work as new tasks to tasks.md so implement can complete it."
+description: >
+  Use to check implementation progress against spec/plan/tasks and find remaining unbuilt work.
+  Appends missing tasks to tasks.md so speckit-implement can complete them. Invoke when
+  implementation seems done but you need to verify completeness. Part of the WordStreak Speckit pipeline.
 compatibility: "Requires spec-kit project structure with .specify/ directory"
 metadata:
   author: "github-spec-kit"

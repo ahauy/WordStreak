@@ -1,6 +1,9 @@
 ---
 name: "speckit-checklist"
-description: "Generate a custom checklist for the current feature based on user requirements."
+description: >
+  Use to generate a quality checklist (UX, security, testing, etc.) for the current feature.
+  Invoke after speckit-specify to create validation criteria before implementation.
+  Part of the WordStreak Speckit planning pipeline.
 compatibility: "Requires spec-kit project structure with .specify/ directory"
 metadata:
   author: "github-spec-kit"

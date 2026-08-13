@@ -1,6 +1,9 @@
 ---
 name: "speckit-clarify"
-description: "Identify underspecified areas in the current feature spec by asking up to 5 highly targeted clarification questions and encoding answers back into the spec."
+description: >
+  Use when the feature spec has ambiguous or underspecified areas. Asks up to 5 targeted
+  clarification questions and encodes answers back into spec.md. Invoke after speckit-specify
+  if requirements are unclear. Part of the WordStreak Speckit planning pipeline.
 compatibility: "Requires spec-kit project structure with .specify/ directory"
 metadata:
   author: "github-spec-kit"

@@ -1,6 +1,10 @@
 ---
 name: e2e-testing
-description: Playwright E2E testing patterns, Page Object Model, configuration, CI/CD integration, artifact management, and flaky test strategies.
+description: >
+  MANDATORY when writing, modifying, or debugging any E2E test, Playwright test, or
+  browser automation test. Covers Page Object Model, test configuration, CI/CD integration,
+  artifact management, and flaky test strategies. MUST be read before creating or modifying
+  any *.spec.ts, *.e2e.ts, or Playwright test file.
 metadata:
   origin: ECC
 ---

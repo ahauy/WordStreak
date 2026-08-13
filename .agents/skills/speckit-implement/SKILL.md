@@ -1,6 +1,10 @@
 ---
 name: "speckit-implement"
-description: "Execute the implementation plan by processing and executing all tasks defined in tasks.md"
+description: >
+  Use to execute the implementation plan by processing all tasks in tasks.md. Follows TDD,
+  phase-by-phase execution, and dependency ordering. Invoke after speckit-tasks when ready
+  to build. Combine with subagent-driven-development for parallel execution.
+  Part of the WordStreak Speckit pipeline (Phase 5: Implement).
 compatibility: "Requires spec-kit project structure with .specify/ directory"
 metadata:
   author: "github-spec-kit"

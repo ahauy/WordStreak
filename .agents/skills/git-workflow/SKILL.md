@@ -1,6 +1,10 @@
 ---
 name: git-workflow
-description: Git workflow patterns including branching strategies, commit conventions, merge vs rebase, conflict resolution, and collaborative development best practices for teams of all sizes.
+description: >
+  MANDATORY when performing any git operation — branching, committing, merging, rebasing,
+  or resolving conflicts. Covers branching strategies, commit message conventions,
+  merge vs rebase decisions, conflict resolution, and collaborative development workflows.
+  MUST be read before creating branches, writing commit messages, or merging code.
 metadata:
   origin: ECC
 ---

@@ -1,6 +1,9 @@
 ---
 name: "speckit-specify"
-description: "Create or update the feature specification from a natural language feature description."
+description: >
+  Use to create or update a formal feature specification from a natural language description.
+  Generates spec.md in .specify/features/. Invoke after brainstorming approval
+  (Phase 2 of WordStreak pipeline). Input: approved design from superpowers:brainstorming.
 compatibility: "Requires spec-kit project structure with .specify/ directory"
 metadata:
   author: "github-spec-kit"

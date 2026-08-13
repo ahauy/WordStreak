@@ -1,6 +1,10 @@
 ---
 name: docker-patterns
-description: Docker and Docker Compose patterns for local development, hardened CLI installer harnesses, container security, networking, volumes, and multi-service orchestration. Use when creating or reviewing Dockerfiles and Compose services, testing installers across Linux distributions, or planning accurate native macOS and Windows validation.
+description: >
+  MANDATORY when creating, modifying, or reviewing any Dockerfile, docker-compose.yml,
+  .dockerignore, or container configuration. Covers Docker Compose for local development,
+  multi-stage builds, container security, networking, volumes, and multi-service orchestration.
+  MUST be read before writing any Docker-related file.
 ---
 
 # Docker Patterns

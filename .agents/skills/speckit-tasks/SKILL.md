@@ -1,6 +1,9 @@
 ---
 name: "speckit-tasks"
-description: "Generate an actionable, dependency-ordered tasks.md for the feature based on available design artifacts."
+description: >
+  Use to generate dependency-ordered tasks.md from plan.md and other design artifacts.
+  Creates actionable task breakdown with phases, parallel markers, and file paths.
+  Invoke after speckit-plan (Phase 4 of WordStreak pipeline).
 compatibility: "Requires spec-kit project structure with .specify/ directory"
 metadata:
   author: "github-spec-kit"

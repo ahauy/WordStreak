@@ -1,6 +1,10 @@
 ---
 name: nestjs-patterns
-description: NestJS architecture patterns for modules, controllers, providers, DTO validation, guards, interceptors, config, and production-grade TypeScript backends.
+description: >
+  MANDATORY when writing any NestJS code — controllers, services, modules, DTOs, guards,
+  interceptors, exception filters, or pipes. Covers module structure, validation with
+  class-validator, auth patterns, error handling, config management, persistence, and testing.
+  MUST be read before creating or modifying any NestJS file.
 metadata:
   origin: ECC
 ---

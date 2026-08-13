@@ -1,6 +1,9 @@
 ---
 name: "speckit-plan"
-description: "Execute the implementation planning workflow using the plan template to generate design artifacts."
+description: >
+  Use to generate the implementation plan from a feature spec. Creates plan.md, data-model.md,
+  contracts/, and quickstart.md. Invoke after speckit-specify (Phase 3 of WordStreak pipeline).
+  DO NOT use writing-plans from Superpowers — this skill handles all planning.
 compatibility: "Requires spec-kit project structure with .specify/ directory"
 metadata:
   author: "github-spec-kit"

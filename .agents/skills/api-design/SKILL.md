@@ -1,6 +1,10 @@
 ---
 name: api-design
-description: REST API design patterns including resource naming, status codes, pagination, filtering, error responses, versioning, and rate limiting for production APIs.
+description: >
+  MANDATORY when designing, creating, or modifying any REST API endpoint, route, or controller.
+  Covers resource naming, HTTP status codes, pagination, filtering, error response format,
+  versioning, and rate limiting. MUST be read before writing any API route handler,
+  NestJS controller method, or Express route.
 metadata:
   origin: ECC
 ---

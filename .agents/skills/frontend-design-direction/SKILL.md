@@ -1,6 +1,10 @@
 ---
 name: frontend-design-direction
-description: Set an ECC-specific frontend design direction for production UI work. Use when building or improving websites, dashboards, applications, components, landing pages, visual tools, or any web UI that needs stronger product-specific design judgment.
+description: >
+  MANDATORY when making UI design decisions — choosing layouts, color schemes, typography,
+  spacing, or visual hierarchy. Use when building or improving pages, dashboards, components,
+  landing pages, or any web UI that needs design direction. MUST be read before making
+  visual design choices for WordStreak frontend.
 metadata:
   origin: community
 ---

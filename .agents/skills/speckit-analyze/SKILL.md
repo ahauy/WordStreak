@@ -1,6 +1,9 @@
 ---
 name: "speckit-analyze"
-description: "Perform a non-destructive cross-artifact consistency and quality analysis across spec.md, plan.md, and tasks.md after task generation."
+description: >
+  Use after speckit-tasks to verify consistency across spec.md, plan.md, and tasks.md.
+  Performs non-destructive cross-artifact quality analysis. MUST be used before implementation
+  to catch spec/plan/task mismatches. Part of the WordStreak Speckit planning pipeline.
 compatibility: "Requires spec-kit project structure with .specify/ directory"
 metadata:
   author: "github-spec-kit"

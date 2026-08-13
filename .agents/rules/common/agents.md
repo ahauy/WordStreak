@@ -1,34 +1,55 @@
 # Agent Orchestration
 
-## Available Agents
+## Skill-Based Workflow
 
-Located in `~/.claude/agents/`:
+This project uses skills from `.agents/skills/` for all development workflows.
+See `.agents/AGENTS.md` for the unified pipeline and mandatory tech skill enforcement.
 
-| Agent | Purpose | When to Use |
+### Planning Skills (Speckit)
+
+| Skill | Purpose | When to Use |
 |-------|---------|-------------|
-| planner | Implementation planning | Complex features, refactoring |
-| architect | System design | Architectural decisions |
-| tdd-guide | Test-driven development | New features, bug fixes |
-| code-reviewer | Code review | After writing code |
-| security-reviewer | Security analysis | Before commits |
-| build-error-resolver | Fix build errors | When build fails |
-| e2e-runner | E2E testing | Critical user flows |
-| refactor-cleaner | Dead code cleanup | Code maintenance |
-| doc-updater | Documentation | Updating docs |
-| rust-reviewer | Rust code review | Rust projects |
-| harmonyos-app-resolver | HarmonyOS app development | HarmonyOS/ArkTS projects |
+| speckit-specify | Create feature specifications | New feature descriptions |
+| speckit-plan | Generate implementation plans | After spec is approved |
+| speckit-tasks | Break plan into ordered tasks | After plan is complete |
+| speckit-implement | Execute task list | Ready to build |
+| speckit-analyze | Cross-artifact consistency check | Before implementation |
+| speckit-clarify | Resolve spec ambiguities | When requirements are unclear |
+| speckit-checklist | Quality validation criteria | After spec, before implementation |
+| speckit-converge | Find remaining unbuilt work | When implementation seems done |
+| speckit-constitution | Project-wide governance rules | Project setup |
+| speckit-taskstoissues | Convert tasks to GitHub Issues | For issue tracking |
 
-## Immediate Agent Usage
+### Execution Skills (Superpowers)
 
-No user prompt needed:
-1. Complex feature requests - Use **planner** agent
-2. Code just written/modified - Use **code-reviewer** agent
-3. Bug fix or new feature - Use **tdd-guide** agent
-4. Architectural decision - Use **architect** agent
+| Skill | Purpose | When to Use |
+|-------|---------|-------------|
+| brainstorming | Design exploration with user | Starting any new feature |
+| subagent-driven-development | Parallel task execution | Independent tasks from plan |
+| executing-plans | Sequential task execution | Dependent tasks |
+| requesting-code-review | Code quality review | After implementation |
+| verification-before-completion | Final verification | Before claiming done |
+| systematic-debugging | Bug investigation | When encountering bugs |
+
+### Tech Skills (Mandatory when coding)
+
+| Skill | Trigger |
+|-------|---------|
+| frontend-patterns | Any .tsx/.jsx file |
+| frontend-a11y | Interactive UI components |
+| frontend-design-direction | Visual/design decisions |
+| nestjs-patterns | NestJS files |
+| backend-patterns | Any backend service code |
+| api-design | REST API endpoints |
+| prisma-patterns | Prisma schema/queries |
+| postgres-patterns | Raw SQL/schema design |
+| docker-patterns | Dockerfiles/Compose |
+| e2e-testing | E2E/Playwright tests |
+| git-workflow | Git operations |
 
 ## Parallel Task Execution
 
-ALWAYS use parallel Task execution for independent operations:
+ALWAYS use parallel task execution for independent operations:
 
 ```markdown
 # GOOD: Parallel execution
@@ -45,11 +66,9 @@ First agent 1, then agent 2, then agent 3
 
 Applies to every agent at every depth (parent, child, grandchild):
 
-1. **Your final message IS the deliverable.** Never end your turn with "waiting for background agents" — a spawned task is not a completed task. Ending your turn while children are running orphans their results (completed children cannot notify a parent whose turn has ended).
-2. **If you delegate, you own collection.** Wait for results, integrate them, then return. Fire-and-forget delegation is forbidden.
-3. **Decompose only when the work cannot fit in one context.** Do not re-delegate a task already sized for a single agent — depth is an outcome, not a plan.
-
-> Rationale: observed failure mode — research agents followed "Parallel Task Execution" above, spawned children, and returned "waiting" as their final answer. All children completed successfully but their results were orphaned. The parallel rule without a completion contract produces zombie tasks.
+1. **Your final message IS the deliverable.** Never end your turn with "waiting for background agents" — a spawned task is not a completed task.
+2. **If you delegate, you own collection.** Wait for results, integrate them, then return.
+3. **Decompose only when the work cannot fit in one context.** Do not re-delegate a task already sized for a single agent.
 
 ## Multi-Perspective Analysis
 

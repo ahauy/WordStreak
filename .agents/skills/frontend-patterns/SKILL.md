@@ -1,6 +1,11 @@
 ---
 name: frontend-patterns
-description: Frontend development patterns for React, Next.js, state management, performance optimization, and UI best practices.
+description: >
+  MANDATORY when writing any React component, custom hook, or frontend TypeScript code.
+  Covers component composition, compound components, render props, custom hooks,
+  state management (Context/Reducer/Zustand), performance optimization (memo/useCallback/virtualization),
+  form handling, error boundaries, and Framer Motion animations.
+  MUST be read before creating or modifying any .tsx, .jsx, or React hook file.
 metadata:
   origin: ECC
 ---

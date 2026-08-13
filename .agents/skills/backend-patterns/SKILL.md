@@ -1,6 +1,10 @@
 ---
 name: backend-patterns
-description: Backend architecture patterns, API design, database optimization, and server-side best practices for Node.js, Express, and Next.js API routes.
+description: >
+  MANDATORY when writing any backend/server-side code — services, middleware, authentication,
+  database queries, caching, or background jobs. Covers architecture patterns, API design,
+  database optimization, error handling, and server-side best practices for Node.js, NestJS,
+  and Express. MUST be read before creating or modifying any backend service file.
 metadata:
   origin: ECC
 ---

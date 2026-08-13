@@ -1,6 +1,9 @@
 ---
 name: "speckit-constitution"
-description: "Create or update the project constitution from interactive or provided principle inputs."
+description: >
+  Use to create or update the project constitution — governance rules, coding standards,
+  and architectural principles that all features must respect. Invoke when setting up
+  a new project or updating project-wide constraints. Part of the WordStreak Speckit pipeline.
 compatibility: "Requires spec-kit project structure with .specify/ directory"
 metadata:
   author: "github-spec-kit"

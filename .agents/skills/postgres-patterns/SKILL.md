@@ -1,6 +1,10 @@
 ---
 name: postgres-patterns
-description: PostgreSQL database patterns for query optimization, schema design, indexing, and security. Based on Supabase best practices.
+description: >
+  MANDATORY when writing raw SQL queries, designing database schemas, creating indexes,
+  or configuring Row Level Security (RLS) policies for PostgreSQL. Covers query optimization,
+  schema design, indexing strategies, and security patterns. MUST be read before writing
+  any SQL migration, raw query, or database schema change.
 metadata:
   origin: ECC
 ---
