@@ -39,4 +39,11 @@ export class AuthController {
     const data = await this.authService.getProfile(req.user.id);
     return { success: true, data };
   }
+
+  @Post('logout')
+  @HttpCode(HttpStatus.OK)
+  async logout(@Request() req: { user: { id: string } }): Promise<{ success: true; message: string }> {
+    await this.authService.logout(req.user.id);
+    return { success: true, message: 'Logged out successfully' };
+  }
 }

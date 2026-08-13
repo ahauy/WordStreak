@@ -90,6 +90,12 @@ export class AuthService {
     return this.generateAuthResponse(storedToken.user.id, storedToken.user.username, storedToken.user.createdAt);
   }
 
+  async logout(userId: string): Promise<void> {
+    await this.prisma.refreshToken.deleteMany({
+      where: { userId },
+    });
+  }
+
   private async generateAuthResponse(userId: string, username: string, createdAt: Date): Promise<AuthResponseDto> {
     const payload = { sub: userId, username };
     const accessToken = this.jwtService.sign(payload);

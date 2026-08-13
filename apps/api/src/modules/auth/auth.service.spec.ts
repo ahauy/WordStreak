@@ -18,6 +18,7 @@ describe('AuthService', () => {
       findUnique: jest.fn(),
       create: jest.fn(),
       delete: jest.fn(),
+      deleteMany: jest.fn(),
     },
   };
 
@@ -154,6 +155,18 @@ describe('AuthService', () => {
       mockPrisma.refreshToken.delete.mockResolvedValue({});
 
       await expect(service.refreshToken({ refreshToken: rawToken })).rejects.toThrow(UnauthorizedException);
+    });
+  });
+
+  describe('logout', () => {
+    it('should revoke all refresh tokens for the user on logout', async () => {
+      mockPrisma.refreshToken.deleteMany.mockResolvedValue({ count: 2 });
+
+      await service.logout('user-uuid-1');
+
+      expect(mockPrisma.refreshToken.deleteMany).toHaveBeenCalledWith({
+        where: { userId: 'user-uuid-1' },
+      });
     });
   });
 });
