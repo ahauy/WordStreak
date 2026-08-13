@@ -15,7 +15,9 @@ describe('AuthService', () => {
       create: jest.fn(),
     },
     refreshToken: {
+      findUnique: jest.fn(),
       create: jest.fn(),
+      delete: jest.fn(),
     },
   };
 
@@ -110,6 +112,48 @@ describe('AuthService', () => {
         username: 'streaker_99',
         createdAt: createdAt.toISOString(),
       });
+    });
+  });
+
+  describe('refreshToken', () => {
+    it('should refresh token successfully and delete consumed token', async () => {
+      const rawToken = '7d9e8f7a-6b5c-4d3e-2f1a-0b9c8d7e6f5a';
+      const tokenHash = require('crypto').createHash('sha256').update(rawToken).digest('hex');
+
+      mockPrisma.refreshToken.findUnique.mockResolvedValue({
+        id: 'token-db-id',
+        userId: 'user-uuid-1',
+        tokenHash,
+        expiresAt: new Date(Date.now() + 100000),
+        user: {
+          id: 'user-uuid-1',
+          username: 'streaker_99',
+          createdAt: new Date('2026-08-13T12:00:00.000Z'),
+        },
+      });
+      mockPrisma.refreshToken.delete.mockResolvedValue({});
+      mockPrisma.refreshToken.create.mockResolvedValue({});
+
+      const result = await service.refreshToken({ refreshToken: rawToken });
+
+      expect(result.tokens.accessToken).toBe('mock-access-token');
+      expect(mockPrisma.refreshToken.delete).toHaveBeenCalledWith({ where: { id: 'token-db-id' } });
+    });
+
+    it('should throw UnauthorizedException if refresh token is expired', async () => {
+      const rawToken = 'expired-token';
+      const tokenHash = require('crypto').createHash('sha256').update(rawToken).digest('hex');
+
+      mockPrisma.refreshToken.findUnique.mockResolvedValue({
+        id: 'token-db-id',
+        userId: 'user-uuid-1',
+        tokenHash,
+        expiresAt: new Date(Date.now() - 10000),
+        user: { id: 'user-uuid-1', username: 'streaker_99', createdAt: new Date() },
+      });
+      mockPrisma.refreshToken.delete.mockResolvedValue({});
+
+      await expect(service.refreshToken({ refreshToken: rawToken })).rejects.toThrow(UnauthorizedException);
     });
   });
 });

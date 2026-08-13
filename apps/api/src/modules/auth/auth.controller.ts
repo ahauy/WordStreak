@@ -3,6 +3,7 @@ import { AuthService } from './auth.service';
 import { Public } from './decorators/public.decorator';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
+import { RefreshTokenDto } from './dto/refresh.dto';
 import type { AuthResponseDto, UserProfileDto } from '@wordstreak/shared-types';
 
 @Controller('api/v1/auth')
@@ -22,6 +23,14 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   async login(@Body() dto: LoginDto): Promise<{ success: true; data: AuthResponseDto }> {
     const data = await this.authService.login(dto);
+    return { success: true, data };
+  }
+
+  @Public()
+  @Post('refresh')
+  @HttpCode(HttpStatus.OK)
+  async refreshToken(@Body() dto: RefreshTokenDto): Promise<{ success: true; data: AuthResponseDto }> {
+    const data = await this.authService.refreshToken(dto);
     return { success: true, data };
   }
 

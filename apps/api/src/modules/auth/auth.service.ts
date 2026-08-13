@@ -67,6 +67,29 @@ export class AuthService {
     };
   }
 
+  async refreshToken(dto: RefreshTokenDto): Promise<AuthResponseDto> {
+    const tokenHash = crypto.createHash('sha256').update(dto.refreshToken).digest('hex');
+
+    const storedToken = await this.prisma.refreshToken.findUnique({
+      where: { tokenHash },
+      include: { user: true },
+    });
+
+    if (!storedToken) {
+      throw new UnauthorizedException('Invalid refresh token');
+    }
+
+    await this.prisma.refreshToken.delete({
+      where: { id: storedToken.id },
+    });
+
+    if (storedToken.expiresAt < new Date()) {
+      throw new UnauthorizedException('Refresh token expired');
+    }
+
+    return this.generateAuthResponse(storedToken.user.id, storedToken.user.username, storedToken.user.createdAt);
+  }
+
   private async generateAuthResponse(userId: string, username: string, createdAt: Date): Promise<AuthResponseDto> {
     const payload = { sub: userId, username };
     const accessToken = this.jwtService.sign(payload);
