@@ -29,7 +29,7 @@ pnpm-debug.log*
 node_modules
 
 # Specify
-.specify/
+# .specify/
 
 # code-review-graph
 .code-review-graph/
