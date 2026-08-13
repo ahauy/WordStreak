@@ -34,3 +34,7 @@ node_modules
 # code-review-graph
 .code-review-graph/
 
+# Git Worktrees
+.worktrees/
+
+
