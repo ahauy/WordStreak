@@ -8,14 +8,15 @@ import { PrismaService } from '../src/prisma/prisma.service';
 
 describe('Auth Token Refresh (e2e)', () => {
   let app: INestApplication<App>;
-  let prismaMock: { refreshToken: { findUnique: jest.Mock; delete: jest.Mock; create: jest.Mock } };
+  let prismaMock: { refreshToken: { findUnique: jest.Mock; update: jest.Mock; create: jest.Mock; deleteMany: jest.Mock } };
 
   beforeEach(async () => {
     prismaMock = {
       refreshToken: {
         findUnique: jest.fn(),
-        delete: jest.fn(),
+        update: jest.fn(),
         create: jest.fn(),
+        deleteMany: jest.fn(),
       },
     };
 
@@ -43,6 +44,7 @@ describe('Auth Token Refresh (e2e)', () => {
       id: 'token-db-id-1',
       userId: 'e2e-user-id-1',
       tokenHash,
+      isRevoked: false,
       expiresAt: new Date(Date.now() + 100000),
       user: {
         id: 'e2e-user-id-1',
@@ -50,7 +52,7 @@ describe('Auth Token Refresh (e2e)', () => {
         createdAt: new Date('2026-08-13T12:00:00.000Z'),
       },
     });
-    prismaMock.refreshToken.delete.mockResolvedValue({});
+    prismaMock.refreshToken.update.mockResolvedValue({});
     prismaMock.refreshToken.create.mockResolvedValue({});
 
     const response = await request(app.getHttpServer())
@@ -60,6 +62,34 @@ describe('Auth Token Refresh (e2e)', () => {
 
     expect(response.body.success).toBe(true);
     expect(response.body.data.tokens.accessToken).toBeDefined();
+    expect(prismaMock.refreshToken.update).toHaveBeenCalledWith({
+      where: { id: 'token-db-id-1' },
+      data: { isRevoked: true },
+    });
+  });
+
+  it('POST /api/v1/auth/refresh - should return 401 and revoke all sessions on reused refresh token', async () => {
+    const rawToken = 'stolen-reused-token';
+    const tokenHash = crypto.createHash('sha256').update(rawToken).digest('hex');
+
+    prismaMock.refreshToken.findUnique.mockResolvedValue({
+      id: 'token-db-id-consumed',
+      userId: 'e2e-user-id-1',
+      tokenHash,
+      isRevoked: true,
+      expiresAt: new Date(Date.now() + 100000),
+      user: { id: 'e2e-user-id-1', username: 'streaker_e2e_1' },
+    });
+    prismaMock.refreshToken.deleteMany.mockResolvedValue({ count: 3 });
+
+    await request(app.getHttpServer())
+      .post('/api/v1/auth/refresh')
+      .send({ refreshToken: rawToken })
+      .expect(401);
+
+    expect(prismaMock.refreshToken.deleteMany).toHaveBeenCalledWith({
+      where: { userId: 'e2e-user-id-1' },
+    });
   });
 
   it('POST /api/v1/auth/refresh - should return 401 Unauthorized on non-existent refresh token', async () => {

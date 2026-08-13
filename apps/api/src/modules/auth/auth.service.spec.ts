@@ -17,6 +17,7 @@ describe('AuthService', () => {
     refreshToken: {
       findUnique: jest.fn(),
       create: jest.fn(),
+      update: jest.fn(),
       delete: jest.fn(),
       deleteMany: jest.fn(),
     },
@@ -132,13 +133,16 @@ describe('AuthService', () => {
           createdAt: new Date('2026-08-13T12:00:00.000Z'),
         },
       });
-      mockPrisma.refreshToken.delete.mockResolvedValue({});
+      mockPrisma.refreshToken.update.mockResolvedValue({});
       mockPrisma.refreshToken.create.mockResolvedValue({});
 
       const result = await service.refreshToken({ refreshToken: rawToken });
 
       expect(result.tokens.accessToken).toBe('mock-access-token');
-      expect(mockPrisma.refreshToken.delete).toHaveBeenCalledWith({ where: { id: 'token-db-id' } });
+      expect(mockPrisma.refreshToken.update).toHaveBeenCalledWith({
+        where: { id: 'token-db-id' },
+        data: { isRevoked: true },
+      });
     });
 
     it('should throw UnauthorizedException if refresh token is expired', async () => {
@@ -149,12 +153,32 @@ describe('AuthService', () => {
         id: 'token-db-id',
         userId: 'user-uuid-1',
         tokenHash,
+        isRevoked: false,
         expiresAt: new Date(Date.now() - 10000),
         user: { id: 'user-uuid-1', username: 'streaker_99', createdAt: new Date() },
       });
-      mockPrisma.refreshToken.delete.mockResolvedValue({});
 
       await expect(service.refreshToken({ refreshToken: rawToken })).rejects.toThrow(UnauthorizedException);
+    });
+
+    it('should detect token reuse, revoke all user tokens, and throw UnauthorizedException', async () => {
+      const rawToken = 'reused-token';
+      const tokenHash = require('crypto').createHash('sha256').update(rawToken).digest('hex');
+
+      mockPrisma.refreshToken.findUnique.mockResolvedValue({
+        id: 'token-db-id-consumed',
+        userId: 'user-uuid-1',
+        tokenHash,
+        isRevoked: true,
+        expiresAt: new Date(Date.now() + 100000),
+        user: { id: 'user-uuid-1', username: 'streaker_99', createdAt: new Date() },
+      });
+      mockPrisma.refreshToken.deleteMany.mockResolvedValue({ count: 5 });
+
+      await expect(service.refreshToken({ refreshToken: rawToken })).rejects.toThrow(UnauthorizedException);
+      expect(mockPrisma.refreshToken.deleteMany).toHaveBeenCalledWith({
+        where: { userId: 'user-uuid-1' },
+      });
     });
   });
 

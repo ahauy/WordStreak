@@ -79,13 +79,21 @@ export class AuthService {
       throw new UnauthorizedException('Invalid refresh token');
     }
 
-    await this.prisma.refreshToken.delete({
-      where: { id: storedToken.id },
-    });
+    if (storedToken.isRevoked) {
+      await this.prisma.refreshToken.deleteMany({
+        where: { userId: storedToken.userId },
+      });
+      throw new UnauthorizedException('Refresh token reuse detected. All active sessions have been revoked.');
+    }
 
     if (storedToken.expiresAt < new Date()) {
       throw new UnauthorizedException('Refresh token expired');
     }
+
+    await this.prisma.refreshToken.update({
+      where: { id: storedToken.id },
+      data: { isRevoked: true },
+    });
 
     return this.generateAuthResponse(storedToken.user.id, storedToken.user.username, storedToken.user.createdAt);
   }
