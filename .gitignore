@@ -27,3 +27,10 @@ pnpm-debug.log*
 # TypeScript
 *.tsbuildinfo
 node_modules
+
+# Specify
+.specify/
+
+# code-review-graph
+.code-review-graph/
+

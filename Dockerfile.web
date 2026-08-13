@@ -1,0 +1,29 @@
+# Stage 1: Build static assets
+FROM node:22-alpine AS builder
+
+WORKDIR /app
+
+RUN corepack enable && corepack prepare pnpm@11.21.0 --activate
+
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+COPY packages/shared-types/package.json ./packages/shared-types/
+COPY apps/web/package.json ./apps/web/
+
+RUN pnpm install --frozen-lockfile
+
+COPY packages/shared-types ./packages/shared-types
+COPY apps/web ./apps/web
+COPY tsconfig.base.json ./
+
+RUN pnpm --filter @wordstreak/shared-types build
+RUN pnpm --filter web build
+
+# Stage 2: Serve với Nginx
+FROM nginx:alpine AS runner
+
+# Copy file tĩnh đã build từ Vite sang Nginx web root
+COPY --from=builder /app/apps/web/dist /usr/share/nginx/html
+
+EXPOSE 80
+
+CMD ["nginx", "-g", "daemon off;"]

@@ -1,0 +1,53 @@
+version: '3.8'
+
+services:
+  # 1. Dịch vụ Database PostgreSQL
+  db:
+    image: postgres:16-alpine
+    container_name: wordstreak-db
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 23012005
+      POSTGRES_DB: wordstreak_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d wordstreak_db"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  # 2. Dịch vụ Backend NestJS API
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    container_name: wordstreak-api
+    ports:
+      - "3000:3000"
+    environment:
+      - PORT=3000
+      - NODE_ENV=production
+      - DATABASE_URL=postgresql://postgres:23012005@db:5432/wordstreak_db?schema=public
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: always
+
+  # 3. Dịch vụ Frontend React Web
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.web
+    container_name: wordstreak-web
+    ports:
+      - "80:80"
+    depends_on:
+      - api
+    restart: always
+
+volumes:
+  postgres_data:
