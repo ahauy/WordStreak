@@ -33,6 +33,40 @@ export class AuthService {
     return this.generateAuthResponse(user.id, user.username, user.createdAt);
   }
 
+  async login(dto: LoginDto): Promise<AuthResponseDto> {
+    const user = await this.prisma.user.findUnique({
+      where: { username: dto.username },
+    });
+
+    if (!user) {
+      throw new UnauthorizedException('Invalid username or password');
+    }
+
+    const isPasswordValid = await bcrypt.compare(dto.password, user.passwordHash);
+    if (!isPasswordValid) {
+      throw new UnauthorizedException('Invalid username or password');
+    }
+
+    return this.generateAuthResponse(user.id, user.username, user.createdAt);
+  }
+
+  async getProfile(userId: string) {
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+      select: { id: true, username: true, createdAt: true },
+    });
+
+    if (!user) {
+      throw new UnauthorizedException('User not found');
+    }
+
+    return {
+      id: user.id,
+      username: user.username,
+      createdAt: user.createdAt.toISOString(),
+    };
+  }
+
   private async generateAuthResponse(userId: string, username: string, createdAt: Date): Promise<AuthResponseDto> {
     const payload = { sub: userId, username };
     const accessToken = this.jwtService.sign(payload);

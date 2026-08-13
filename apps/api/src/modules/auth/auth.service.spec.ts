@@ -1,10 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { ConflictException } from '@nestjs/common';
+import { ConflictException, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import * as bcrypt from 'bcrypt';
 import { AuthService } from './auth.service';
 import { PrismaService } from '../../prisma/prisma.service';
 
-describe('AuthService - Register', () => {
+describe('AuthService', () => {
   let service: AuthService;
   let prisma: PrismaService;
 
@@ -36,28 +37,79 @@ describe('AuthService - Register', () => {
     jest.clearAllMocks();
   });
 
-  it('should register a new user successfully and return tokens', async () => {
-    mockPrisma.user.findUnique.mockResolvedValue(null);
-    mockPrisma.user.create.mockResolvedValue({
-      id: 'user-uuid-1',
-      username: 'new_user',
-      createdAt: new Date('2026-08-13T12:00:00.000Z'),
+  describe('register', () => {
+    it('should register a new user successfully and return tokens', async () => {
+      mockPrisma.user.findUnique.mockResolvedValue(null);
+      mockPrisma.user.create.mockResolvedValue({
+        id: 'user-uuid-1',
+        username: 'new_user',
+        createdAt: new Date('2026-08-13T12:00:00.000Z'),
+      });
+      mockPrisma.refreshToken.create.mockResolvedValue({});
+
+      const result = await service.register({ username: 'new_user', password: 'Password123' });
+
+      expect(result.user.username).toBe('new_user');
+      expect(result.tokens.accessToken).toBe('mock-access-token');
+      expect(result.tokens.tokenType).toBe('Bearer');
+      expect(result.tokens.expiresIn).toBe(900);
     });
-    mockPrisma.refreshToken.create.mockResolvedValue({});
 
-    const result = await service.register({ username: 'new_user', password: 'Password123' });
+    it('should throw ConflictException if username is already taken', async () => {
+      mockPrisma.user.findUnique.mockResolvedValue({ id: 'existing-id', username: 'new_user' });
 
-    expect(result.user.username).toBe('new_user');
-    expect(result.tokens.accessToken).toBe('mock-access-token');
-    expect(result.tokens.tokenType).toBe('Bearer');
-    expect(result.tokens.expiresIn).toBe(900);
+      await expect(
+        service.register({ username: 'new_user', password: 'Password123' }),
+      ).rejects.toThrow(ConflictException);
+    });
   });
 
-  it('should throw ConflictException if username is already taken', async () => {
-    mockPrisma.user.findUnique.mockResolvedValue({ id: 'existing-id', username: 'new_user' });
+  describe('login', () => {
+    it('should log in a user with correct credentials', async () => {
+      const passwordHash = await bcrypt.hash('Password123', 10);
+      mockPrisma.user.findUnique.mockResolvedValue({
+        id: 'user-uuid-1',
+        username: 'streaker_99',
+        passwordHash,
+        createdAt: new Date('2026-08-13T12:00:00.000Z'),
+      });
+      mockPrisma.refreshToken.create.mockResolvedValue({});
 
-    await expect(
-      service.register({ username: 'new_user', password: 'Password123' }),
-    ).rejects.toThrow(ConflictException);
+      const result = await service.login({ username: 'streaker_99', password: 'Password123' });
+
+      expect(result.user.username).toBe('streaker_99');
+      expect(result.tokens.accessToken).toBe('mock-access-token');
+    });
+
+    it('should throw UnauthorizedException on invalid password', async () => {
+      const passwordHash = await bcrypt.hash('CorrectPassword', 10);
+      mockPrisma.user.findUnique.mockResolvedValue({
+        id: 'user-uuid-1',
+        username: 'streaker_99',
+        passwordHash,
+      });
+
+      await expect(
+        service.login({ username: 'streaker_99', password: 'WrongPassword' }),
+      ).rejects.toThrow(UnauthorizedException);
+    });
+  });
+
+  describe('getProfile', () => {
+    it('should return user profile by id', async () => {
+      const createdAt = new Date('2026-08-13T12:00:00.000Z');
+      mockPrisma.user.findUnique.mockResolvedValue({
+        id: 'user-uuid-1',
+        username: 'streaker_99',
+        createdAt,
+      });
+
+      const result = await service.getProfile('user-uuid-1');
+      expect(result).toEqual({
+        id: 'user-uuid-1',
+        username: 'streaker_99',
+        createdAt: createdAt.toISOString(),
+      });
+    });
   });
 });
