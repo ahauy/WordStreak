@@ -11,17 +11,32 @@ generator client {
 
 model User {
   id           String             @id @default(uuid())
-  email        String             @unique
+  username     String             @unique
+  email        String?            @unique
   passwordHash String
-  username     String
   dailyGoal    Int                @default(10)
   createdAt    DateTime           @default(now())
   updatedAt    DateTime           @updatedAt
-  decks        Deck[]
-  progress     UserCardProgress[]
-  streaks      UserStreak[]
+  
+  refreshTokens RefreshToken[]
+  decks         Deck[]
+  progress      UserCardProgress[]
+  streaks       UserStreak[]
 
   @@map("users")
+}
+
+model RefreshToken {
+  id        String   @id @default(uuid())
+  userId    String
+  tokenHash String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("refresh_tokens")
 }
 
 model Deck {
