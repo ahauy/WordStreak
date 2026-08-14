@@ -1,0 +1,172 @@
+{
+  "session-context-init": {
+    "PreInvocation": [
+      {
+        "type": "command",
+        "command": "node scripts/hooks/session-context-init.js",
+        "timeout": 15
+      }
+    ]
+  },
+  "block-no-verify": {
+    "PreToolUse": [
+      {
+        "matcher": "run_command",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node scripts/hooks/block-no-verify.js",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  },
+  "package-install-guardian": {
+    "PreToolUse": [
+      {
+        "matcher": "run_command",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node scripts/hooks/package-install-guardian.js",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  },
+  "enforce-commit-convention": {
+    "PreToolUse": [
+      {
+        "matcher": "run_command",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node scripts/hooks/enforce-commit-convention.js",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  },
+  "prevent-direct-main-commit": {
+    "PreToolUse": [
+      {
+        "matcher": "run_command",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node scripts/hooks/prevent-direct-main-commit.js",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  },
+  "pre-push-test": {
+    "PreToolUse": [
+      {
+        "matcher": "run_command",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node scripts/hooks/pre-push-test.js",
+            "timeout": 120
+          }
+        ]
+      }
+    ]
+  },
+  "prisma-safety-guard": {
+    "PreToolUse": [
+      {
+        "matcher": "run_command",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node scripts/hooks/prisma-safety-guard.js",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "write_to_file|replace_file_content|multi_replace_file_content",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node scripts/hooks/prisma-safety-guard.js",
+            "timeout": 30
+          }
+        ]
+      }
+    ]
+  },
+  "config-protection": {
+    "PreToolUse": [
+      {
+        "matcher": "write_to_file|replace_file_content|multi_replace_file_content",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node scripts/hooks/config-protection.js",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  },
+  "secret-leak-blocker": {
+    "PreToolUse": [
+      {
+        "matcher": "write_to_file|replace_file_content|multi_replace_file_content",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node scripts/hooks/secret-leak-blocker.js",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  },
+  "auto-format-on-edit": {
+    "PostToolUse": [
+      {
+        "matcher": "write_to_file|replace_file_content|multi_replace_file_content",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node scripts/hooks/auto-format-on-edit.js",
+            "timeout": 15
+          }
+        ]
+      }
+    ]
+  },
+  "post-edit-quality-check": {
+    "PostToolUse": [
+      {
+        "matcher": "write_to_file|replace_file_content|multi_replace_file_content",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node scripts/hooks/post-edit-quality-check.js",
+            "timeout": 15
+          }
+        ]
+      }
+    ]
+  },
+  "check-console-log": {
+    "PostInvocation": [
+      {
+        "type": "command",
+        "command": "node scripts/hooks/check-console-log.js",
+        "timeout": 15
+      }
+    ]
+  }
+}
