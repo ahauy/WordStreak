@@ -15,8 +15,11 @@ describe('AppController', () => {
   });
 
   describe('root', () => {
-    it('should return "Hello World!"', () => {
-      expect(appController.getHello()).toBe('Hello World!');
+    it('should return API greeting with success response', () => {
+      expect(appController.getHello()).toEqual({
+        success: true,
+        data: 'Hello World from WordStreak API!',
+      });
     });
   });
 });
