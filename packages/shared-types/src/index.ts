@@ -1,10 +1,14 @@
 // Shared types and interfaces between apps/api and apps/web
 
+export * from "./auth.js";
+
 export interface User {
   id: string;
   username: string;
   email: string;
-  createdAt: Date;
+  dailyGoal: number;
+  createdAt: Date | string;
+  updatedAt?: Date | string;
 }
 
 export interface GameStreak {
@@ -14,8 +18,9 @@ export interface GameStreak {
   lastPlayedAt: Date;
 }
 
-export interface ApiResponse<T> {
+export interface ApiResponse<T = unknown> {
   success: boolean;
   data?: T;
   error?: string;
+  message?: string;
 }

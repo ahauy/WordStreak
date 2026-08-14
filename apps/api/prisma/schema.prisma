@@ -2,7 +2,6 @@
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
 }
 
 generator client {
@@ -13,15 +12,33 @@ model User {
   id           String             @id @default(uuid())
   email        String             @unique
   passwordHash String
-  username     String
+  username     String             @unique
   dailyGoal    Int                @default(10)
   createdAt    DateTime           @default(now())
   updatedAt    DateTime           @updatedAt
+  sessions     Session[]
   decks        Deck[]
   progress     UserCardProgress[]
   streaks      UserStreak[]
 
   @@map("users")
+}
+
+model Session {
+  id                 String    @id @default(uuid())
+  userId             String
+  hashedRefreshToken String
+  userAgent          String?
+  ipAddress          String?
+  expiresAt          DateTime
+  revokedAt          DateTime?
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+  user               User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([expiresAt])
+  @@map("sessions")
 }
 
 model Deck {

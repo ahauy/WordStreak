@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { ApiResponse, User } from '@wordstreak/shared-types';
+import { ApiResponse } from '@wordstreak/shared-types';
 
 @Injectable()
 export class AppService {
