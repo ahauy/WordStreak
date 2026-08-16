@@ -1,6 +1,6 @@
-# WordStreak BA Skill Pack
+# WordStreak BA & Implementation Skill Pack
 
-Eight skills implementing an end-to-end business-analysis-to-handover pipeline
+Nine skills implementing an end-to-end business-analysis-to-implementation pipeline
 for the WordStreak product. They combine BABOK v3, IREB CPRE, and
 ISO/IEC/IEEE 29148 practices into a gated pipeline: **no code, no
 specification, and no stage begins until the stage before it has been
@@ -23,6 +23,10 @@ PHASE 2 — Specification
 
 PHASE 3 — Handover
   8. handover                   → baseline sign-off, version, dev handoff
+
+PHASE 4 — Implementation & Review
+  9. implementation-orchestrator → vertical slice delegation, isolated subagents,
+                                   adversarial fresh-context review
 ```
 
 Routing by protocol (decided by `intake-classifier`):

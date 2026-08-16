@@ -65,7 +65,9 @@ Phase 6: Quality Verification, Review & Delivery (Zero Critical Bugs + Rollback 
 
 #### Phase 5: Implement
 
-- Use `subagent-driven-development` or `executing-plans` to execute tasks from speckit
+- Use `implementation-orchestrator` (Stage 9) or `subagent-driven-development` to execute tasks from speckit
+- Decompose implementation into vertical slices (Data → Logic → API → UI) and delegate each slice to a scoped subagent
+- Enforce independent adversarial review in a fresh context with no visibility into the implementer's reasoning
 - Follow TDD (Red → Green → Refactor):
   1. **Write `test-plan.md` first** — create `.specify/features/<slug>/test-plan.md` from the template at `.specify/templates/test-plan.md`. Map every `US-<SLUG>-###` scenario to a `TC-###` test case.
   2. **Write failing tests** (Red) — implement test files based on `test-plan.md`
@@ -100,6 +102,7 @@ Phase 6: Quality Verification, Review & Delivery (Zero Critical Bugs + Rollback 
 | **Spec documents (BRD, PRD, SRS, user stories)**   | `spec-writer`                          |
 | **IEEE 29148 quality gate & traceability matrix**  | `spec-validator`                       |
 | **Baseline sign-off & dev handover**               | `handover`                             |
+| **Feature execution, slice delegation & review**   | `implementation-orchestrator`          |
 | Any `.tsx`, `.jsx` file, React component           | `frontend-patterns` + `frontend-a11y`  |
 | UI design, layout, visual direction                | `frontend-design-direction`            |
 | Any NestJS file (controller, service, module, DTO) | `nestjs-patterns` + `backend-patterns` |
