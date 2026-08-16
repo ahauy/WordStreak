@@ -113,6 +113,7 @@ adversarial: assume something is wrong and look for it, the same posture
 - No silent deviation from spec that wasn't flagged in the slice result
 - Basic code quality (naming, error handling) — secondary to spec
   conformance, not the primary check
+- **UI-layer slices**: invoke `ui-design-review` to audit rendered visual hierarchy, UX states (empty/loading/error), a11y, i18n resilience, and anti-slop rules, recording into `implementation/ui-review-report.md` (a FAIL here blocks overall slice approval).
 
 Record in `implementation/review-report.md`:
 
