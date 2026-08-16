@@ -4,21 +4,21 @@
 
 The Feature Implementation Workflow describes the development pipeline: research, planning, TDD, code review, and then committing to git.
 
-## Feature Implementation Workflow
+0. **Deep Business Analysis & Domain Elicitation** _(mandatory before any technical specification)_
+   - Probe the **6-Pillar Domain Framework** (`wordstreak-workflow`):
+     1. Goal & Personas (Mục tiêu & Phân quyền RBAC)
+     2. Business Rules & Logic (Validation, thuật toán SM-2/Streak, state machines)
+     3. Workflows & Edge Cases (Happy path, negative cases, concurrency, error recovery)
+     4. Entities & Data Model (Trường dữ liệu, quan hệ Prisma models, lifecycle)
+     5. UX/UI Behaviors (Empty/Loading/Error states, feedbacks, toasts/modals)
+     6. Impact & Non-Functional (Tương thích ngược, bảo mật, hiệu năng)
+   - **Interactive Interview**: Ask structured questions with recommended options and trade-offs. Never make silent business assumptions.
+   - **Research & Reuse**: GitHub search (`gh search repos/code`), library docs, and package registries for battle-tested solutions before writing net-new code.
 
-0. **Research & Reuse** _(mandatory before any new implementation)_
-   - **GitHub code search first:** Run `gh search repos` and `gh search code` to find existing implementations, templates, and patterns before writing anything new.
-   - **Library docs second:** Use Context7 or primary vendor docs to confirm API behavior, package usage, and version-specific details before implementing.
-   - **Exa only when the first two are insufficient:** Use Exa for broader web research or discovery after GitHub search and primary docs.
-   - **Check package registries:** Search npm, PyPI, crates.io, and other registries before writing utility code. Prefer battle-tested libraries over hand-rolled solutions.
-   - **Search for adaptable implementations:** Look for open-source projects that solve 80%+ of the problem and can be forked, ported, or wrapped.
-   - Prefer adopting or porting a proven approach over writing net-new code when it meets the requirement.
-
-1. **Plan First**
-   - Use **planner** agent to create implementation plan
-   - Generate planning docs before coding: PRD, architecture, system_design, tech_doc, task_list
-   - Identify dependencies and risks
-   - Break down into phases
+1. **Plan First (Speckit Pipeline)**
+   - Use `speckit-specify` → `spec.md` with verified domain decisions.
+   - Use `speckit-plan` → `plan.md`, `data-model.md`, `contracts/`.
+   - Use `speckit-tasks` → `tasks.md` with dependency-ordered phases.
 
 2. **TDD Approach**
    - Use **tdd-guide** agent
