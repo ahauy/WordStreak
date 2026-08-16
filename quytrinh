@@ -1,0 +1,433 @@
+CÔNG TY CỔ PHẦN
+
+CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM
+
+GLOBAL AI
+
+Độc lập - Tự do - Hạnh phúc
+
+Số: 01 /TB_GA
+
+Hà Nội, ngày 10 tháng 02 năm 2026
+
+QUY TRÌNH PHÁT TRIỂN PHẦN MỀM NĂM 2026
+
+(Áp dụng cho toàn bộ dự án nội bộ và khách hàng – Mô hình AI- hỗ trợ và phát triển
+phần mềm)
+
+I. MỤC TIÊU
+
+1.  Chuẩn  hóa  quy  trình  phát  triển  phần  mềm  theo  hướng  chuyên  nghiệp,  kiểm  soát  chất
+
+lượng – tiến độ – chi phí.
+
+2.  Ứng  dụng  AI  xuyên  suốt  vòng  đời  phát  triển  phần  mềm  (AI-Augmented  Software
+
+Development Life Cycle).
+
+3.  Gia tăng năng suất tối thiểu 2–3 lần thông qua AI hỗ trợ phân tích, thiết kế, lập trình,
+
+kiểm thử và vận hành.
+
+4.  Đảm bảo sản phẩm đáp ứng yêu cầu nghiệp vụ, tiêu chuẩn bảo mật và khả năng mở rộng
+
+dài hạn.
+
+5.  Xây dựng hệ thống dữ liệu – tài liệu minh bạch, truy vết được và sẵn sàng kiểm toán.
+
+II. NGUYÊN TẮC CHUNG
+
+1.  Phát triển theo mô hình Agile – Sprint 2 tuần.
+2.  Mọi yêu cầu phải được tài liệu hóa và xác nhận trước khi triển khai.
+3.  AI là công cụ hỗ trợ bắt buộc trong các khâu phân tích, thiết kế, coding, testing và vận
+
+hành.
+
+4.  Con người chịu trách nhiệm cuối cùng đối với mọi kết quả có sự hỗ trợ của AI.
+5.  Code phải quản lý phiên bản qua Git, có Pull Request và Code Review bắt buộc.
+6.  Không sử dụng dữ liệu thật trong môi trường DEV nếu chưa ẩn danh.
+7.  Mọi thay đổi phạm vi (Scope Change) phải được cập nhật tài liệu và phê duyệt chính
+
+thức.
+
+III. QUY TRÌNH PHÁT TRIỂN THEO MÔ HÌNH AI - Agent hỗ trợ
+
+1. Giai đoạn 1: Tiếp nhận & Phân tích yêu cầu (AI-Supported Analysis)
+
+Mục tiêu:
+
+●  Hiểu rõ bài toán nghiệp vụ và xác định phạm vi dự án.
+
+Nhiệm vụ:
+
+●  Thu thập yêu cầu từ Stakeholder.
+●  Phân tích quy trình AS-IS.
+●  Đề xuất mô hình TO-BE.
+●  Xây dựng BRD/SRS.
+●  Sử dụng AI để:
+
+○  Tổng hợp nội dung họp.
+○  Chuẩn hóa yêu cầu.
+○  Phát hiện mâu thuẫn logic.
+○  Đề xuất rủi ro tiềm ẩn.
+
+Yêu cầu bắt buộc:
+
+●  BRD phải có sơ đồ quy trình.
+●  Có Acceptance Criteria rõ ràng.
+●  Có phân tích rủi ro ban đầu bằng AI hỗ trợ.
+●  Lưu trữ phiên bản tài liệu có log thay đổi.
+
+2. Giai đoạn 2: Thiết kế hệ thống (AI-Assisted Design)
+
+Mục tiêu:
+
+●  Thiết kế kiến trúc đảm bảo mở rộng, bảo mật và tối ưu hiệu suất.
+
+Nhiệm vụ:
+
+●  Thiết kế kiến trúc tổng thể.
+●  Thiết kế Database.
+●  Thiết kế API.
+●  Thiết kế UI/UX.
+●  Đánh giá bảo mật.
+●  Sử dụng AI để:
+
+○  Đề xuất kiến trúc tối ưu.
+○  Phân tích điểm nghẽn hiệu suất.
+○  Rà soát bảo mật cơ bản.
+
+Yêu cầu bắt buộc:
+
+●  Có sơ đồ kiến trúc hệ thống.
+●  Có tài liệu mô tả tích hợp AI (nếu dự án có AI module).
+●  Review thiết kế bởi Tech Lead trước khi coding.
+
+3. Giai đoạn 3: Phát triển (AI-Augmented Development)
+
+Mục tiêu:
+
+●  Xây dựng tính năng đúng thiết kế, đảm bảo chất lượng kỹ thuật.
+
+Nhiệm vụ:
+
+●  Coding theo tiêu chuẩn Clean Code.
+
+●  Sử dụng AI để:
+
+○  Gợi ý code.
+○  Refactor.
+○  Phát hiện lỗi logic.
+○  Sinh Unit Test.
+●  Thực hiện Code Review chéo.
+●  Viết tài liệu kỹ thuật song song.
+
+Yêu cầu bắt buộc:
+
+●  Không commit trực tiếp vào Production.
+●  Bắt buộc Pull Request.
+●  Không hard-code mật khẩu/API key.
+●  Commit message rõ ràng, truy vết được.
+
+4. Giai đoạn 4: Kiểm thử (AI-Assisted Testing)
+
+Mục tiêu:
+
+●  Đảm bảo hệ thống hoạt động chính xác và ổn định.
+
+Nhiệm vụ:
+
+●  Tạo Test Case (AI hỗ trợ sinh kịch bản kiểm thử).
+●  Functional Testing.
+●  Regression Testing.
+●  Performance Testing (nếu cần).
+●  Phân tích log bằng AI để phát hiện lỗi tiềm ẩn.
+
+Yêu cầu bắt buộc:
+
+●  100% tính năng có test case.
+●  Bug phân loại mức độ (Critical/High/Medium/Low).
+●  Không triển khai khi còn bug Critical.
+
+5. Giai đoạn 5: Triển khai (AI-Monitored Deployment)
+
+Mục tiêu:
+
+●  Triển khai hệ thống an toàn, có kiểm soát rủi ro.
+
+Nhiệm vụ:
+
+●  Deploy theo CI/CD.
+●  Backup dữ liệu trước khi cập nhật.
+●  Sử dụng AI phân tích log sau deploy.
+●  Kiểm tra hiệu suất và bảo mật cơ bản.
+
+Yêu cầu bắt buộc:
+
+●  Có Deployment Checklist.
+●  Có kế hoạch Rollback.
+●  Ghi nhận log triển khai.
+
+6. Giai đoạn 6: Vận hành – Bảo trì – Cải tiến (AI-Driven Optimization)
+
+Mục tiêu:
+
+●  Duy trì ổn định và tối ưu liên tục.
+
+Nhiệm vụ:
+
+●  Theo dõi hiệu suất hệ thống.
+●  Phân tích log và hành vi người dùng bằng AI.
+●  Thu thập phản hồi.
+●  Đánh giá Technical Debt.
+●  Lập kế hoạch cải tiến Sprint tiếp theo.
+
+Yêu cầu bắt buộc:
+
+●  Báo cáo hiệu suất định kỳ.
+●  Đánh giá Technical Debt hàng quý.
+●  Đề xuất cải tiến dựa trên dữ liệu.
+
+IV. TIÊU CHUẨN TÀI LIỆU BẮT BUỘC
+
+1.  BRD/SRS (có version).
+2.  Tài liệu thiết kế hệ thống.
+3.  API Documentation.
+4.  Test Plan & Test Report.
+5.  Deployment Checklist.
+6.  Change Log xuyên suốt dự án.
+7.  User Guide (nếu có).
+
+Tất cả tài liệu phải lưu trữ tập trung trên hệ thống quản lý nội bộ.
+
+V. TRÁCH NHIỆM
+
+●  BA: Rõ ràng yêu cầu, xác nhận phạm vi.
+●  PM: Quản lý tiến độ, rủi ro và kiểm soát phạm vi.
+●  Tech Lead: Kiểm soát kiến trúc và chất lượng kỹ thuật.
+●  Developer: Đảm bảo chất lượng code và ứng dụng AI đúng chuẩn.
+●  Tester: Đảm bảo chất lượng chức năng và độ ổn định.
+●  IT/Ops: Đảm bảo hạ tầng, bảo mật và giám sát hệ thống.
+
+VI. CHỈ SỐ ĐÁNH GIÁ (KPI)
+
+1.  Tỷ lệ hoàn thành Sprint đúng hạn.
+
+2.  Tỷ lệ Bug sau triển khai.
+3.  Thời gian xử lý sự cố.
+4.  Mức độ ứng dụng AI trong từng giai đoạn.
+5.  Mức độ hài lòng của khách hàng/người dùng.
+
+VII. YÊU CẦU BẮT BUỘC
+
+1.  Mọi dự án phải tích hợp AI ở tối thiểu 03 khâu trong phát triển phần mềm .
+2.  Không triển khai ngoài quy trình.
+3.  Không coding khi chưa có tài liệu được duyệt.
+4.  Mọi thay đổi phải được cập nhật Change Log.
+5.  Không tuân thủ quy trình bị xem xét trách nhiệm theo quy định nội bộ.
+
+Tài liệu này là quy chuẩn bắt buộc áp dụng trong toàn Công ty và là nền tảng cho mô hình AI-
+Driven Organization.
+
+VIII. XỬ LÝ VI PHẠM
+
+1.  Không tuân thủ: Nhắc nhở → Cảnh cáo → Đánh giá lại năng lực.
+2.  Ứng dụng AI sai quy định gây rủi ro dữ liệu hoặc thiệt hại hệ thống: Xử lý kỷ luật theo
+
+Quy chế Công ty.
+
+IX. ĐỊNH HƯỚNG CHIẾN LƯỢC
+
+Công ty chính thức chuyển đổi từ mô hình vận hành công ty phần mềm truyền thống
+sang: Công ty phát triển phần mềm bằng AI-Driven Organization – Dữ liệu là nền tảng, AI là
+công cụ hỗ trợ, Con người là chủ thể ra quyết định. Toàn thể nhân sự có trách nhiệm nghiêm
+túc thực hiện.
+
+Thông báo này có hiệu lực kể từ ngày ký.
+
+Nơi nhận:
+
+●  Toàn thể nhân sự;
+●  Lưu: Hành chính – Nhân sự.
+
+ĐẠI DIỆN BAN GIÁM ĐỐC
+(Ký, ghi rõ họ tên, đóng dấu)
+
+CHECKLIST TRIỂN KHAI ĐI KÈM THÔNG BÁO
+
+Chuẩn hóa quản trị & phát triển phần mềm
+
+Tài liệu này là danh sách các hạng mục bắt buộc thực hiện song song với Thông báo chuẩn hóa
+quy trình phát triển phần mềm và chuyển đổi AI-Driven Organization.
+
+1. CHUẨN HÓA BỘ TÀI LIỆU TRIỂN KHAI PHẦN MỀM
+
+1.1 Bộ tài liệu bắt buộc bao gồm:
+
+☐ Use Case
+☐ User Story
+☐ Kế hoạch Sprint
+☐ Tech Stack
+☐ API Stack
+☐ Database Design
+☐ Implementation Plan
+☐ Change Log (xuyên suốt dự án)
+☐ Phân công trách nhiệm rõ ràng: BA / PM / Kỹ thuật
+
+Yêu cầu:
+
+●  Lưu trữ tập trung trên hệ thống nội bộ.
+●  Có version và ngày cập nhật.
+●  Không triển khai khi chưa đủ tài liệu nền tảng.
+
+2. HỆ THỐNG HÓA BIÊN BẢN LÀM VIỆC VỚI KHÁCH HÀNG
+
+☐ Tổng hợp nội dung đã chốt qua hình ảnh, tin nhắn, email
+☐ Chuẩn hóa thành Biên bản xác nhận tính năng
+☐ Lưu trữ tập trung theo từng dự án
+☐ Làm căn cứ nghiệm thu & hạn chế phát sinh tranh chấp
+
+Yêu cầu:
+
+●  Mọi thay đổi tính năng phải có xác nhận bằng văn bản.
+●  Không phát triển theo trao đổi miệng.
+
+3. CHUẨN HÓA TÀI LIỆU SRS (Software Requirement Specification)
+
+3.1 SRS bắt buộc bao gồm:
+
+☐ Thiết kế giao diện (UI Mockup)
+☐ Mục đích sử dụng
+☐ Mô tả chức năng chi tiết
+☐ Phân quyền
+☐ Ý kiến khách hàng
+☐ Version
+☐ Ngày/giờ cập nhật
+☐ Người cập nhật
+☐ Hình ảnh minh họa
+
+Yêu cầu bắt buộc:
+
+●  Xuất PDF gửi khách hàng ký xác nhận.
+●  Mẫu tham chiếu: SRS Thịnh Cường.xlsx
+●  Không coding khi chưa có SRS được duyệt.
+
+4. CHUẨN HÓA USER STORY
+
+User Story phải bổ sung các trường:
+
+☐ Đối tượng sử dụng
+☐ Ngày xác nhận
+☐ Ngày triển khai
+☐ Ngày bắt đầu Sprint
+☐ Ngày kết thúc Sprint
+
+Yêu cầu:
+
+●  Mỗi User Story phải gắn với Sprint cụ thể.
+●  Không đưa vào Sprint nếu chưa xác nhận.
+
+Ví dụ Hệ thống lại các module của HRM:
+
+☐ Chấm công
+☐ Hợp đồng
+☐ Bảng công
+☐ Bảng lương
+☐ KPI
+
+Yêu cầu:
+
+●  Chuẩn hóa danh sách chức năng từng module.
+●  Rà soát trùng lặp hoặc thiếu logic nghiệp vụ.
+
+6. CHUẨN HÓA QUY TRÌNH DEV
+
+☐ Dev viết lại quy trình Customize
+☐ Dev viết lại quy trình Deploy
+☐ Trình anh Kiên review
+☐ Ban hành chính thức thành quy chuẩn nội bộ
+
+Yêu cầu:
+
+●  Có checklist kỹ thuật đi kèm.
+●  Có quy định rollback khi lỗi.
+
+7. RÀ SOÁT VÀ TÁCH RIÊNG API
+
+☐ Rà toàn bộ API HRM
+☐ Bóc tách thành danh sách quản lý độc lập
+☐ Chuẩn hóa version
+☐ Tài liệu hóa đầy đủ (Endpoint – Method – Request – Response – Auth)
+
+Yêu cầu:
+
+●  API phải có tài liệu công khai nội bộ.
+●  Không triển khai API không có version.
+
+8. QUY ĐỊNH QUẢN LÝ DỮ LIỆU & QUYỀN TRUY CẬP
+
+☐ Không backup data công ty ra ngoài
+☐ Chỉ truy cập tại công ty hoặc có phê duyệt
+☐ Tổng hợp danh sách quyền truy cập
+☐ Đưa source code về tài khoản công ty
+☐ Bắt buộc commit log khi đẩy production
+
+Yêu cầu:
+
+●  Phân quyền theo vai trò.
+●  Thu hồi quyền khi nhân sự nghỉ việc.
+
+9. CÔNG CỤ QUẢN LÝ TÀI LIỆU & DỰ ÁN
+
+☐ Lựa chọn công cụ: Jira / Asana / Hệ thống nội bộ
+☐ Quản lý Task
+☐ Quản lý Sprint
+☐ Lưu trữ tài liệu
+☐ Theo dõi lịch sử thay đổi
+
+Mục tiêu:
+
+●  Minh bạch tiến độ.
+
+●  Truy vết thay đổi dễ dàng.
+
+10. RÀ SOÁT TÀI KHOẢN APP STORE & GOOGLE PLAY
+
+☐ Xác định chủ sở hữu tài khoản Android
+☐ Kiểm tra quyền quản trị App Store
+☐ Lập phương án lấy lại quyền quản lý (nếu cần)
+☐ Đảm bảo tài khoản thuộc quyền kiểm soát công ty
+
+11. AI NHẬN DIỆN KHUÔN MẶT (FACEID) CHẤM CÔNG
+
+Hiện trạng:
+☐ Chưa xử lý được video qua App
+
+Kế hoạch:
+☐ Nghiên cứu phương án AI Face Recognition
+☐ Đề xuất giải pháp kỹ thuật
+☐ Đưa vào roadmap AI giai đoạn tiếp theo
+
+Tài liệu này là checklist bắt buộc triển khai.
+Trưởng bộ phận chịu trách nhiệm giám sát và báo cáo tiến độ thực hiện.
+
+XÁC NHẬN TUÂN THỦ
+
+Tôi xác nhận đã đọc đầy đủ nội dung Thông báo về việc triển khai quy trình phát triển
+
+phần mềm năm 2026 trong toàn Công ty.
+
+Tôi hiểu rõ trách nhiệm của mình và cam kết tuân thủ nghiêm túc các quy định, nguyên
+
+tắc và lộ trình áp dụng nêu trên.
+
+Mọi hành vi không tuân thủ, chậm triển khai hoặc cố tình không ứng dụng AI trong quy
+trình phát triển phần mềm theo quy định, tôi hoàn toàn chịu trách nhiệm theo quy chế nội bộ
+của Công ty.
+
+Họ và tên: .................................................................
+Chức danh: .................................................................
+Bộ phận: .................................................................
+Ngày ký xác nhận: ........../........../............
+
+

@@ -2,14 +2,22 @@
 name: wordstreak-workflow
 description: >
   MANDATORY when starting any new feature, user story, or significant code change in WordStreak.
-  Orchestrates the unified pipeline: Deep Business Analysis & Brainstorming for domain exploration,
-  then Speckit for specify → plan → tasks, then Superpowers for implementation execution.
-  Use this skill BEFORE starting any feature work to ensure correct pipeline ordering and thorough business elicitation.
+  Orchestrates the unified pipeline: domain-analysis for structured business & domain exploration,
+  then Speckit for specify → plan → tasks, then Superpowers for TDD implementation execution,
+  and comprehensive quality verification. Use this skill BEFORE starting any feature work.
 ---
 
 # WordStreak Unified Workflow
 
-This skill orchestrates the end-to-end development pipeline for WordStreak, placing strong emphasis on **rigorous business analysis and domain requirement elicitation** before writing specifications or code.
+This skill orchestrates the end-to-end development pipeline for WordStreak, placing strong emphasis on **rigorous business analysis and domain requirement elicitation** before writing specifications or code, adhering to company-wide AI-Augmented SDLC governance.
+
+---
+
+## Unified Pipeline: BA Skill Pack (Analysis) + Speckit (Planning) + Superpowers (Execution)
+
+**Core Principle:** BA Skill Pack gates all work with a signed-off domain baseline. Speckit handles technical planning. Superpowers executes code.
+
+---
 
 ## When to Use
 
@@ -18,90 +26,72 @@ This skill orchestrates the end-to-end development pipeline for WordStreak, plac
 - Clarifying complex business requirements, domain rules, or user flows
 - Unsure which planning/implementation tools to use
 
+---
+
 ## Pipeline Overview
 
 ```
-Phase 1: Deep Business Analysis & Brainstorming (Domain Elicitation)
-  ↓ (User-approved domain decisions)
-Phase 2: Specify (Speckit - Formal spec.md)
+Phase 1: Business Analysis & Domain Elicitation (wordstreak-ba-skills — 8-stage pipeline)
+  1. intake-classifier         → classify complexity & select protocol
+  2. elicitation-interview     → batched 6-pillar structured interview
+  3. gap-analysis              → AS-IS / TO-BE / GAP (Full Feature only)
+  4. domain-modeling           → RBAC matrix, state diagrams, BR- IDs, ERD
+  5. risk-contradiction-scanner → contradiction scan, risk register, MoSCoW
+  6. spec-writer               → BRD / PRD / SRS (REQ-) / User Stories (US-)
+  7. spec-validator            → IEEE 29148 quality gate + traceability matrix
+  8. handover                  → baseline SIGNED-OFF v1.0, handover brief
+  ↓ (signed-off baseline.md + spec/ documents)
+Phase 2: Specify (speckit-specify → spec.md)
   ↓
-Phase 3: Plan (Speckit - Architecture, Data Models, Contracts)
+Phase 3: Plan (speckit-plan → plan.md, data-model.md, contracts/)
   ↓
-Phase 4: Tasks (Speckit - Dependency-ordered tasks.md)
+Phase 4: Tasks (speckit-tasks → dependency-ordered tasks.md)
   ↓
 Phase 5: Implement (Superpowers - TDD + Mandatory Tech Skills)
   ↓
-Phase 6: Review & Quality Verification (Speckit + Superpowers)
+Phase 6: Quality Verification, Review & Delivery (Zero Critical Bugs + Rollback Plan)
 ```
 
 ---
 
-## Phase 1: Deep Business Analysis & Brainstorming (Domain Elicitation)
+## Phase 1: Business Analysis & Domain Elicitation (8-Stage BA Pipeline)
 
-**Core Mandate:** Never rush into technical solutions or make silent business assumptions. Act as a proactive Business Analyst / Domain Expert to interview the requester and explore the problem space thoroughly.
+**Entry Point:** Always start with `intake-classifier`. Never skip straight to elicitation, spec, or code.
 
-### Step 1.1: Request Classification
+### Protocol Routing (decided by `intake-classifier`)
 
-Classify the task out loud:
+| Protocol                | Stages                                                                | When                                                   |
+| ----------------------- | --------------------------------------------------------------------- | ------------------------------------------------------ |
+| **Spike**               | Stage 1 only. No folder, no spec.                                     | Research / "is this even possible?"                    |
+| **Bounded Task**        | 1 → 2 (short) → 4 (light) → 5 (light) → 6 (user-stories only) → 7 → 8 | Small, well-scoped change to existing flow             |
+| **Full Feature / Epic** | All 8 stages, full depth                                              | New flow, new entity, cross-cutting, gamification core |
 
-- **Spike:** Feasibility/exploratory question (throwaway code, quick recommendation).
-- **Bounded:** Small, well-scoped change to existing flow. Ask targeted business questions in chat, present short design, get approval.
-- **Architectural / New Feature:** New feature, new user flow, or cross-cutting change. Requires the full 6-Pillar Domain Interview below.
+### Stage Descriptions
 
-### Step 1.2: The 6-Pillar Domain Framework (Khung 6 Trục Phân Tích Nghiệp Vụ)
+1. **`intake-classifier`** — Classifies complexity using measurable signals (entity count, DB schema change, screens touched, roles affected, cross-cutting concern). Creates `.specify/features/<slug>/` folder with `00-intake.md`, `baseline.md`, `CHANGELOG.md`.
 
-For any new feature or substantial change, the AI **MUST** probe the following 6 pillars:
+2. **`elicitation-interview`** — Reads `00-intake.md` for protocol depth. Batched 2–3 questions per turn in structured format (Context + Options + Recommendation). Covers 6 pillars: RBAC, State Machine, Business Rules, Workflows/Edge Cases, Data/Privacy, UX/NFRs. Records every decision and assumption (`ASM-<SLUG>-###`) to `01-elicitation.md`.
 
-1. **Mục tiêu & Đối tượng (Goal & Personas)**:
-   - What core user problem or learning pain point does this solve?
-   - Target personas: Guest, Authenticated User, Premium Subscriber, Admin?
-   - Permission / RBAC matrix: Who can view, create, edit, delete, or share?
+3. **`gap-analysis`** _(Full Feature only)_ — Self-inspects existing code/schema (does not just ask user). Documents AS-IS, TO-BE, and 4 gap categories: Functional, Data, User Impact, **Transition Requirements** (migration scripts, dual-run, rollback, feature flags).
 
-2. **Quy tắc Nghiệp vụ & Ràng buộc Logic (Business Rules & Domain Logic)**:
-   - What are the input validation rules (lengths, allowed characters, uniqueness, limits per day/user)?
-   - Domain-specific algorithms & formulas (e.g. Spaced Repetition SM-2 intervals, Streak counting, XP/Points calculation)?
-   - Entity Lifecycle & State Machine (e.g. `NEW` → `LEARNING` → `REVIEWING` → `MASTERED`; `DRAFT` → `PUBLISHED` → `ARCHIVED`). What triggers each state transition?
+4. **`domain-modeling`** — Produces RBAC matrix, Mermaid `stateDiagram-v2` state machines, `BR-<SLUG>-###` business rules (mandatory **anti-abuse pass** for any rule affecting streaks/XP/rewards), Mermaid `erDiagram`, deletion policy, i18n, WCAG accessibility target, observability/alerting plan.
 
-3. **Luồng Nghiệp vụ & Tình huống Biên (Workflows & Edge Cases)**:
-   - **Happy Path:** Step-by-step end-to-end standard user flow.
-   - **Negative / Edge Cases:** What happens when:
-     - User cancels or navigates away mid-session?
-     - Network drops or offline mode occurs?
-     - Duplicate submissions / double clicks occur?
-     - Concurrent operations / race conditions happen (e.g., 2 devices)?
-     - Session / JWT token expires during the action?
+5. **`risk-contradiction-scanner`** — Pure analytical pass (no new user questions unless rule was under-specified). Scans for logic contradictions, state deadlocks, backward-compatibility breaks. Produces `RISK-<SLUG>-###` register with probability/impact/mitigation. Consolidates all `ASM-` entries. Locks scope with MoSCoW table (Won't-Have list is mandatory).
 
-4. **Dữ liệu & Thực thể (Entities & Data Model)**:
-   - What new fields or models are required? Which are required vs. optional? Defaults?
-   - Relationships with existing Prisma schema (`User`, `Word`, `StudySession`, `Deck`, `Streak`, etc.)?
-   - Deletion & retention policy: Hard delete vs Soft delete? Cascade rules?
+6. **`spec-writer`** — Compiles the right document set for the protocol/audience: `BRD.md` (business), `PRD.md` (product), `SRS.md` (`REQ-<SLUG>-###` each with **Derived from** pointing to `BR-`/`ASM-`/gap items), `user-stories.md` (`US-<SLUG>-###` each with Given-When-Then happy + edge-case scenarios).
 
-5. **Trải nghiệm Giao diện & Tương tác (UX/UI Behaviors)**:
-   - What does the **Empty State** look like (when no data exists yet)?
-   - What does the **Loading State** look like (skeleton, spinner, optimistic UI)?
-   - What does the **Error State** look like (inline form validation, toast alert, modal)?
-   - Confirmation & Recovery: Does the action require a modal confirmation or an Undo toast?
+7. **`spec-validator`** — Adversarial check of every `REQ-` and `US-` against 8 IEEE 29148 criteria (Necessary, Unambiguous, Complete, Singular, Feasible, Verifiable, Consistent, Traceable). Builds traceability matrix (Business Goal → REQ → US → AC). **Loops back to `spec-writer`** on failure; never silently accepts a failing spec.
 
-6. **Tác động Hệ thống & Phi chức năng (Impact & Non-Functional Requirements)**:
-   - Impact on existing APIs, database tables, or frontend components (backward compatibility)?
-   - Security & privacy (sensitive data, authorization checks, rate limiting)?
-   - Performance targets (response latency < 200ms, query optimization, caching)?
+8. **`handover`** — Verifies all 7 upstream exit gates. Marks `baseline.md` as `SIGNED-OFF v1.0`. Produces dev-facing Handover Brief (what's in scope, what's out, accepted risks). Authorizes proceeding to `speckit-specify`.
 
-### Step 1.3: Interactive Domain Interview Protocol
+**Core Principles:**
 
-- **Grouped Questions:** Do not ask 20 disconnected questions at once. Group them into 2-3 prioritized logical batches (e.g., Pillar 1 & 2 first, then Pillar 3 & 4, then Pillar 5 & 6).
-- **Format for Each Question:**
-  ```markdown
-  **Câu hỏi [Số]: [Chủ đề]**
+1. **AI as Elicitation Partner, Human as Decision Maker**: AI proactively uncovers blind spots; user makes business decisions.
+2. **No Silent Assumptions**: Every assumption confirmed by the user gets an `ASM-` ID. If it isn't in `01-elicitation.md`, it's unconfirmed.
+3. **Zero Code Before SIGNED-OFF Baseline**: Nothing in this pipeline authorizes writing implementation code. That authorization is granted by `handover` after all exit gates are green.
+4. **Change Management After Sign-off**: Any scope change after `SIGNED-OFF` gets a new version in `CHANGELOG.md` and is routed back through the owning stage. Never edit a signed-off section in place.
 
-  - **Lý do cần làm rõ:** [Giải thích tại sao quyết định này quan trọng với hệ thống]
-  - **Các phương án đề xuất:**
-    - Option A: [Mô tả] - [Ưu/Nhược điểm]
-    - Option B: [Mô tả] - [Ưu/Nhược điểm]
-  - **Khuyến nghị (Recommended):** [Option được khuyên dùng và lý do]
-  ```
-- **NO Silent Assumptions:** If a business rule is unspecified, AI MUST NOT silently assume a default. Present the recommendation and ask for confirmation.
-- **Exit Gate:** Proceed to Phase 2 ONLY when all critical domain questions across the 6 pillars have been answered and approved by the user.
+**Exit Gate:** `handover` confirms all boxes checked before advancing to Phase 2.
 
 ---
 
@@ -109,7 +99,7 @@ For any new feature or substantial change, the AI **MUST** probe the following 6
 
 Invoke `speckit-specify` to:
 
-1. Create a formal feature specification in `.specify/features/<feature-name>/spec.md`
+1. Create a formal feature specification in `.specify/features/<feature-name>/spec.md`.
 2. Encode the approved domain decisions, business rules, scenarios, and edge cases from Phase 1.
 3. Validate against the Spec Quality Checklist.
 
@@ -121,9 +111,11 @@ Invoke `speckit-specify` to:
 
 Invoke `speckit-plan` to:
 
-1. Generate technical architecture and implementation plan (`plan.md`)
-2. Generate data model documentation (`data-model.md`)
-3. Generate API contracts (`contracts/`)
+1. Generate technical architecture and implementation plan (`plan.md`).
+2. Generate data model documentation (`data-model.md`).
+3. Generate API contracts (`contracts/`):
+   - Enforce **API Versioning** (e.g., `/api/v1/...`).
+   - Document Endpoint, Method, Request DTO, Response DTO, and Auth Guards.
 
 > **DO NOT** use `writing-plans` from Superpowers. `speckit-plan` handles all planning.
 
@@ -135,8 +127,9 @@ Invoke `speckit-plan` to:
 
 Invoke `speckit-tasks` to:
 
-1. Break down the plan into dependency-ordered, testable tasks
-2. Generate `tasks.md` with phases and parallel markers
+1. Break down the plan into dependency-ordered, testable tasks.
+2. Generate `tasks.md` with phases, file paths, and parallel execution markers.
+3. Map every task back to its parent User Story.
 
 **Output:** `tasks.md`
 
@@ -146,8 +139,15 @@ Invoke `speckit-tasks` to:
 
 Use `subagent-driven-development` or `executing-plans` to:
 
-1. Execute tasks from `tasks.md` following TDD (Red → Green → Refactor).
-2. **MANDATORY**: Read and comply with Tech Skills in `.agents/skills/` BEFORE writing code:
+1. **Write `test-plan.md` FIRST** — before any implementation code:
+   - Create `.specify/features/<slug>/test-plan.md` using the template at `.specify/templates/test-plan.md`
+   - Map every `US-<SLUG>-###` scenario (happy + edge cases) to a numbered `TC-###` test case
+   - Confirm coverage: every edge case in `spec/user-stories.md` has a corresponding TC
+2. Execute tasks from `tasks.md` following **TDD (Red → Green → Refactor)**:
+   - **Red**: Write failing test files based on `test-plan.md` (Vitest / Jest / Playwright)
+   - **Green**: Write minimum code to make tests pass
+   - **Refactor**: Clean up without breaking tests
+3. **MANDATORY**: Read and comply with Tech Skills in `.agents/skills/` BEFORE writing code:
    - React/TSX → `frontend-patterns` + `frontend-a11y`
    - UI design & visual direction → `frontend-design-direction`
    - NestJS backend → `nestjs-patterns` + `backend-patterns`
@@ -157,33 +157,65 @@ Use `subagent-driven-development` or `executing-plans` to:
    - Docker → `docker-patterns`
    - E2E tests → `e2e-testing`
    - Git operations → `git-workflow`
+4. Adhere to **Clean Code & Security Standards**:
+   - No hard-coded secrets or API keys.
+   - Never commit directly to main/production branches; use pull requests.
+   - Ensure all input boundaries are validated via DTOs and class-validator.
 
 ---
 
-## Phase 6: Review & Quality Verification
+## Phase 6: Quality Verification, Review & Delivery
 
-1. Run `speckit-analyze` to verify consistency between `spec.md`, `plan.md`, and `tasks.md`.
-2. Run `requesting-code-review` for code quality, architectural compliance, and security.
-3. Run `verification-before-completion` with test evidence before reporting completion.
+1. **Spec Consistency Check**: Run `speckit-analyze` to verify consistency between `spec.md`, `plan.md`, and `tasks.md`.
+2. **Code Review & Quality Gate**: Run `requesting-code-review` to inspect security, architecture, and code cleanliness.
+3. **Bug Severity Classification Gate**:
+   - `Critical`: System crash, data loss, security vulnerability, broken core study flow → **BLOCKS MERGE / RELEASE**.
+   - `High`: Major feature malfunctioning without workaround → Must fix before completion.
+   - `Medium`: Minor edge case glitch with viable workaround.
+   - `Low`: Cosmetic / UI polish items.
+   - **RULE**: Zero `Critical` bugs permitted prior to task completion.
+4. **Verification Evidence**: Run `verification-before-completion` with passing test reports (Vitest, Jest, Playwright).
+5. **Deployment & Rollback Readiness**:
+   - Verify database migrations (`prisma migrate`).
+   - Define rollback plan for schema or service regressions.
+   - Update `.specify/features/<slug>/CHANGELOG.md` with completed deliverables.
+6. **Docs Update (MANDATORY — run before closing task)**:
+   - Create `docs/features/<feature-slug>/README.md` using the template at the bottom of [`docs/features/README.md`](../../../docs/features/README.md)
+   - Add a row to the index table in `docs/features/README.md`
+   - If feature adds/changes an entity, endpoint, or architecture pattern → update the relevant file in `docs/architecture/`
+   - Cross-reference `test-plan.md` in the feature README for test traceability
 
 ---
 
 ## Bounded Tasks (Simplified Path)
 
-For bounded changes (well-scoped edits to existing code):
+For small, well-scoped edits to existing code (`intake-classifier` will classify these as **Bounded Task**):
 
-1. **Targeted Domain Questions:** Ask 2-3 focused business questions on scope & edge cases.
-2. **Short In-Chat Design:** Present approach, touched files, test strategy.
-3. **Approval Gate:** Wait for user approval before touching code.
-4. **Implement directly:** Enforce mandatory tech skills and TDD.
-5. **Review:** Request code review & verify tests.
+1. **`intake-classifier`** classifies as Bounded Task and creates the feature folder.
+2. **`elicitation-interview`** runs a short targeted pass (2–3 questions, only on relevant pillars).
+3. Skip `gap-analysis` (Stage 3 not required for Bounded Tasks).
+4. **`domain-modeling`** runs at light depth (only sections relevant to the change).
+5. **`risk-contradiction-scanner`** runs at light depth.
+6. **`spec-writer`** produces `user-stories.md` only.
+7. **`spec-validator`** validates the user stories.
+8. **`handover`** signs off and hands to implementation.
+9. **Implement directly**: Enforce mandatory tech skills and TDD.
+10. **Review**: Verify tests, check for zero regressions, and update `CHANGELOG.md`.
 
 ---
 
 ## Done When
 
-- [ ] All 6 pillars of business analysis explored and approved in Phase 1
-- [ ] No silent business assumptions made
+- [ ] `intake-classifier` ran, protocol selected, feature folder created
+- [ ] All required BA stages (per protocol) completed with green exit checklists
+- [ ] `baseline.md` marked `SIGNED-OFF v1.0` by `handover`
+- [ ] No silent business assumptions — all assumptions have `ASM-` IDs
 - [ ] Spec, Plan, and Tasks generated through Speckit pipeline
-- [ ] Tech skills enforced during implementation
-- [ ] Verification and code review completed before reporting done
+- [ ] `test-plan.md` written in `.specify/features/<slug>/` before any code was written
+- [ ] All `TC-###` test cases implemented as actual test files
+- [ ] Mandatory tech skills enforced during implementation
+- [ ] All automated tests pass (Unit, Integration, E2E)
+- [ ] Zero `Critical` bugs remaining
+- [ ] Verification, rollback strategy, and `CHANGELOG.md` updated
+- [ ] `docs/features/<slug>/README.md` created and index table updated
+- [ ] `docs/architecture/` updated if feature changed entities, APIs, or architecture
