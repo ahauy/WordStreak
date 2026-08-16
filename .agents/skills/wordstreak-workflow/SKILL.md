@@ -135,19 +135,21 @@ Invoke `speckit-tasks` to:
 
 ---
 
-## Phase 5: Implement (Superpowers)
+## Phase 5: Implement (Superpowers & Implementation Orchestrator)
 
-Use `subagent-driven-development` or `executing-plans` to:
+Use `implementation-orchestrator` (Stage 9) or `subagent-driven-development` to:
 
-1. **Write `test-plan.md` FIRST** — before any implementation code:
+1. **Decompose into Vertical Slices**: Break work down by dependency layers (Data → Domain Logic → API → UI) and assign scoped excerpts to fresh subagents.
+2. **Write `test-plan.md` FIRST** — before any implementation code:
    - Create `.specify/features/<slug>/test-plan.md` using the template at `.specify/templates/test-plan.md`
    - Map every `US-<SLUG>-###` scenario (happy + edge cases) to a numbered `TC-###` test case
    - Confirm coverage: every edge case in `spec/user-stories.md` has a corresponding TC
-2. Execute tasks from `tasks.md` following **TDD (Red → Green → Refactor)**:
+3. **Execute tasks following TDD (Red → Green → Refactor)**:
    - **Red**: Write failing test files based on `test-plan.md` (Vitest / Jest / Playwright)
    - **Green**: Write minimum code to make tests pass
    - **Refactor**: Clean up without breaking tests
-3. **MANDATORY**: Read and comply with Tech Skills in `.agents/skills/` BEFORE writing code:
+4. **Adversarial Code Review**: Route review to a fresh-context subagent with no visibility into the implementer's reasoning.
+5. **MANDATORY**: Read and comply with Tech Skills in `.agents/skills/` BEFORE writing code:
    - React/TSX → `frontend-patterns` + `frontend-a11y`
    - UI design & visual direction → `frontend-design-direction`
    - NestJS backend → `nestjs-patterns` + `backend-patterns`
@@ -157,7 +159,7 @@ Use `subagent-driven-development` or `executing-plans` to:
    - Docker → `docker-patterns`
    - E2E tests → `e2e-testing`
    - Git operations → `git-workflow`
-4. Adhere to **Clean Code & Security Standards**:
+6. **Adhere to Clean Code & Security Standards**:
    - No hard-coded secrets or API keys.
    - Never commit directly to main/production branches; use pull requests.
    - Ensure all input boundaries are validated via DTOs and class-validator.
