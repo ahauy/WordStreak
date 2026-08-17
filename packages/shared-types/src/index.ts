@@ -7,6 +7,7 @@ export interface User {
   username: string;
   email: string;
   dailyGoal: number;
+  avatarUrl?: string | null;
   createdAt: Date | string;
   updatedAt?: Date | string;
 }

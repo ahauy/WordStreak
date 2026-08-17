@@ -17,6 +17,7 @@ interface AuthState {
   logout: () => Promise<void>;
   initializeAuth: () => Promise<void>;
   setAccessToken: (token: string) => void;
+  updateUser: (user: Partial<AuthUser>) => void;
   clearAuth: () => void;
   clearError: () => void;
 }
@@ -62,6 +63,12 @@ export const useAuthStore = create<AuthState>((set, get) => {
     setAccessToken: (token: string) => {
       setAccessTokenHeader(token);
       set({ accessToken: token, isAuthenticated: true });
+    },
+
+    updateUser: (updatedFields: Partial<AuthUser>) => {
+      set((state) => ({
+        user: state.user ? { ...state.user, ...updatedFields } : null,
+      }));
     },
 
     clearAuth: () => {

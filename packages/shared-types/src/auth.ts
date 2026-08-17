@@ -23,7 +23,9 @@ export interface AuthUser {
   email: string;
   username: string;
   dailyGoal: number;
+  avatarUrl?: string | null;
   createdAt: string | Date;
+  updatedAt?: string | Date;
 }
 
 export interface AuthResponse {
@@ -37,4 +39,14 @@ export interface TokenRefreshResponse {
 
 export interface UserProfileResponse {
   user: AuthUser;
+}
+
+export interface UpdateProfileDto {
+  dailyGoal?: number;
+  avatarUrl?: string;
+}
+
+export interface ChangePasswordDto {
+  currentPassword: string;
+  newPassword: string;
 }
