@@ -4,28 +4,32 @@
 
 @layer base {
   :root {
-    --font-display:
-      -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text",
-      "Inter", system-ui, sans-serif;
+    /* Typography: Optimized for Language Learners */
+    --font-display: "Outfit", -apple-system, BlinkMacSystemFont, sans-serif;
     --font-body:
-      -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display",
-      "Inter", system-ui, sans-serif;
+      "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, sans-serif;
 
-    /* Apple Design Tokens */
-    --color-primary: #0066cc;
-    --color-primary-focus: #0071e3;
-    --color-primary-on-dark: #2997ff;
+    /* WordStreak Night-Sky Cosmos Palette */
+    --color-background: #060e1a;
+    --color-background-deep: #030810;
+    --color-foreground: #ffffff;
+    --color-muted-foreground: #94a3b8;
+    --color-primary: #f5a623;
+    --color-primary-hover: #ffb940;
+    --color-primary-on-dark: #f5a623;
     --color-ink: #1d1d1f;
     --color-body-muted: #86868b;
     --color-canvas-parchment: #f5f5f7;
     --color-canvas: #ffffff;
     --color-surface-pearl: #fafafc;
-    --color-surface-tile-1: #272729;
-    --color-surface-tile-2: #2a2a2c;
-    --color-surface-tile-3: #252527;
+    --color-surface-tile-1: #0b1526;
+    --color-surface-tile-2: #0f1d35;
+    --color-surface-tile-3: #07101e;
     --color-surface-black: #000000;
-    --color-hairline: #e0e0e0;
+    --color-hairline: rgba(255, 255, 255, 0.08);
     --color-hairline-dark: rgba(255, 255, 255, 0.12);
+    --color-glass-bg: rgba(255, 255, 255, 0.03);
+    --color-glass-border: rgba(255, 255, 255, 0.08);
   }
 
   * {
@@ -52,8 +56,8 @@
   html.dark,
   html.dark body,
   html.dark #root {
-    background-color: #161617;
-    color: #f5f5f7;
+    background-color: var(--color-background);
+    color: var(--color-foreground);
   }
 
   html.light,
@@ -70,12 +74,87 @@
   h5,
   h6 {
     font-family: var(--font-display);
-    font-weight: 600;
-    letter-spacing: -0.025em;
+    font-weight: 400;
+    letter-spacing: -0.02em;
   }
 }
 
-/* Apple Canvas Surface */
+/* ─── Liquid Glass ─── */
+.liquid-glass {
+  background: var(--color-glass-bg);
+  background-blend-mode: luminosity;
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  border: 1px solid var(--color-glass-border);
+  position: relative;
+  overflow: hidden;
+}
+
+.liquid-glass::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1.4px;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.35) 0%,
+    rgba(255, 255, 255, 0.12) 20%,
+    rgba(255, 255, 255, 0) 40%,
+    rgba(255, 255, 255, 0) 60%,
+    rgba(255, 255, 255, 0.12) 80%,
+    rgba(255, 255, 255, 0.35) 100%
+  );
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+/* ─── Animations ─── */
+@keyframes fade-rise {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.animate-fade-rise {
+  animation: fade-rise 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.animate-fade-rise-delay {
+  animation: fade-rise 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.15s both;
+}
+
+.animate-fade-rise-delay-2 {
+  animation: fade-rise 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.3s both;
+}
+
+.animate-fade-rise-delay-3 {
+  animation: fade-rise 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.45s both;
+}
+
+.animate-fade-in {
+  animation: fade-in 0.6s ease both;
+}
+
+/* ─── Apple Canvas Surface (legacy, used by auth/dashboard) ─── */
 .apple-canvas {
   background-color: #f5f5f7;
 }
@@ -84,7 +163,7 @@ html.dark .apple-canvas {
   background-color: #161617;
 }
 
-/* Apple Utility Card (Clean, hairline border, no decorative shadows) */
+/* Apple Utility Card */
 .apple-card {
   background-color: #ffffff;
   border: 1px solid rgba(0, 0, 0, 0.08);
@@ -131,7 +210,13 @@ html.dark .shadow-apple-product {
 
 @media (prefers-reduced-motion: reduce) {
   .apple-tap-active,
-  .interactive-flashcard {
+  .interactive-flashcard,
+  .animate-fade-rise,
+  .animate-fade-rise-delay,
+  .animate-fade-rise-delay-2,
+  .animate-fade-rise-delay-3,
+  .animate-fade-in {
+    animation: none !important;
     transition: none !important;
     transform: none !important;
   }

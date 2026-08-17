@@ -109,22 +109,28 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
   };
 
   return (
-    <div className="w-full max-w-md apple-card p-6 sm:p-8 relative">
+    <div className="w-full max-w-md liquid-glass rounded-3xl p-7 sm:p-9 relative border border-white/10 bg-white/[0.03] shadow-2xl backdrop-blur-2xl">
       {/* Mobile Brand Header */}
       <div className="lg:hidden flex items-center justify-center gap-2 mb-4">
-        <div className="w-8 h-8 rounded-lg bg-[#1d1d1f] dark:bg-white flex items-center justify-center text-white dark:text-[#1d1d1f]">
+        <div className="w-8 h-8 rounded-lg bg-[#F5A623]/15 border border-[#F5A623]/30 flex items-center justify-center text-[#F5A623]">
           <Sparkles className="w-4 h-4" />
         </div>
-        <span className="text-lg font-semibold text-[#1d1d1f] dark:text-white tracking-tight">
+        <span
+          className="text-2xl font-normal text-white tracking-tight"
+          style={{ fontFamily: "var(--font-display)" }}
+        >
           WordStreak
         </span>
       </div>
 
       <div className="text-center mb-5">
-        <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight text-[#1d1d1f] dark:text-white mb-1.5">
+        <h2
+          className="text-3xl sm:text-4xl font-extrabold text-white mb-2 tracking-tight"
+          style={{ fontFamily: "var(--font-display)" }}
+        >
           Create Account
         </h2>
-        <p className="text-sm text-[#86868b]">
+        <p className="text-sm text-[var(--color-muted-foreground)]">
           Start building your vocabulary with spaced repetition
         </p>
       </div>
@@ -132,7 +138,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
       {error && (
         <div
           role="alert"
-          className="mb-5 p-3 rounded-[12px] bg-[#fff2f2] border border-[#e03e3e]/25 dark:bg-[#321c1c] dark:border-[#e03e3e]/40 flex items-start gap-2.5 text-[#e03e3e] dark:text-[#ff8a8a] text-xs transition-all"
+          className="mb-5 p-3 rounded-xl bg-[#321c1c]/80 border border-[#e03e3e]/40 flex items-start gap-2.5 text-[#ff8a8a] text-xs transition-all"
         >
           <AlertCircle className="w-4 h-4 flex-shrink-0 mt-0.5" />
           <span className="font-normal">{error}</span>
@@ -180,7 +186,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
             <button
               type="button"
               onClick={() => setShowPassword((prev) => !prev)}
-              className="text-[#86868b] hover:text-[#1d1d1f] dark:hover:text-white transition-colors focus:outline-none cursor-pointer p-1"
+              className="text-[var(--color-muted-foreground)] hover:text-white transition-colors focus:outline-none cursor-pointer p-1"
               aria-label={showPassword ? "Hide password" : "Show password"}
             >
               {showPassword ? (
@@ -196,21 +202,21 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
 
         {/* Real-time Password Strength Criteria Checklist */}
         {passwordValue && (
-          <div className="p-2.5 bg-[#f5f5f7] dark:bg-[#1d1d1f] rounded-[12px] border border-[#e0e0e0]/70 dark:border-white/10 space-y-1 text-xs">
-            <p className="font-semibold text-[#1d1d1f] dark:text-[#f5f5f7] mb-0.5">
+          <div className="p-3 bg-white/[0.03] rounded-xl border border-white/5 space-y-1 text-xs">
+            <p className="font-semibold text-white/80 mb-1">
               Password requirements:
             </p>
             <div className="flex items-center gap-2">
               <CheckCircle2
                 className={`w-3.5 h-3.5 flex-shrink-0 ${
-                  hasMinLength ? "text-[#30d158]" : "text-[#86868b]"
+                  hasMinLength ? "text-[#30d158]" : "text-white/30"
                 }`}
               />
               <span
                 className={
                   hasMinLength
-                    ? "text-[#1d1d1f] dark:text-white font-medium"
-                    : "text-[#86868b]"
+                    ? "text-white font-medium"
+                    : "text-[var(--color-muted-foreground)]"
                 }
               >
                 At least 8 characters
@@ -219,14 +225,14 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
             <div className="flex items-center gap-2">
               <CheckCircle2
                 className={`w-3.5 h-3.5 flex-shrink-0 ${
-                  hasUppercase ? "text-[#30d158]" : "text-[#86868b]"
+                  hasUppercase ? "text-[#30d158]" : "text-white/30"
                 }`}
               />
               <span
                 className={
                   hasUppercase
-                    ? "text-[#1d1d1f] dark:text-white font-medium"
-                    : "text-[#86868b]"
+                    ? "text-white font-medium"
+                    : "text-[var(--color-muted-foreground)]"
                 }
               >
                 1 uppercase letter (A-Z)
@@ -235,14 +241,14 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
             <div className="flex items-center gap-2">
               <CheckCircle2
                 className={`w-3.5 h-3.5 flex-shrink-0 ${
-                  hasNumber ? "text-[#30d158]" : "text-[#86868b]"
+                  hasNumber ? "text-[#30d158]" : "text-white/30"
                 }`}
               />
               <span
                 className={
                   hasNumber
-                    ? "text-[#1d1d1f] dark:text-white font-medium"
-                    : "text-[#86868b]"
+                    ? "text-white font-medium"
+                    : "text-[var(--color-muted-foreground)]"
                 }
               >
                 1 number (0-9)
@@ -263,7 +269,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
             <button
               type="button"
               onClick={() => setShowConfirmPassword((prev) => !prev)}
-              className="text-[#86868b] hover:text-[#1d1d1f] dark:hover:text-white transition-colors focus:outline-none cursor-pointer p-1"
+              className="text-[var(--color-muted-foreground)] hover:text-white transition-colors focus:outline-none cursor-pointer p-1"
               aria-label={
                 showConfirmPassword ? "Hide password" : "Show password"
               }
@@ -286,7 +292,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
           type="submit"
           variant="primary"
           size="lg"
-          className="w-full mt-3"
+          className="w-full mt-4"
           isLoading={isLoading}
           leftIcon={<UserPlus className="w-4 h-4" />}
         >
@@ -295,13 +301,13 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
       </form>
 
       {onNavigateToLogin && (
-        <div className="text-center mt-5 pt-5 border-t border-[#f0f0f0] dark:border-white/10">
-          <p className="text-xs text-[#86868b]">
+        <div className="text-center mt-6 pt-5 border-t border-white/10">
+          <p className="text-xs text-[var(--color-muted-foreground)]">
             Already have an account?{" "}
             <button
               type="button"
               onClick={onNavigateToLogin}
-              className="font-semibold text-[#0066cc] dark:text-[#2997ff] hover:underline transition-colors focus:outline-none cursor-pointer"
+              className="font-medium text-[#F5A623] hover:text-[#FFB940] hover:underline transition-colors focus:outline-none cursor-pointer"
             >
               Sign in
             </button>
