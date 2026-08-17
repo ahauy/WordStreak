@@ -4,13 +4,13 @@ description: >
   Use as the independent visual/design review step whenever a WordStreak UI
   slice has been implemented — whether inside implementation-orchestrator's
   Stage 4 review or run on its own — and needs a fresh, adversarial look
-  before it ships. Owns exactly the surfaces design-taste-frontend explicitly
-  excludes: dashboards, multi-step study/review flows, streak and XP
-  displays, deck management — WordStreak's actual product UI. For landing,
-  marketing, or portfolio surfaces, defers to design-taste-frontend's own
-  rubric instead of duplicating it. Trigger this whenever the user asks to
-  "review this screen", "check if this UI is good", "does this look right",
-  or once implementation-orchestrator reaches its review stage for a
+  before it ships. Reads fresh from whichever generation-time skill owns the
+  surface — design-taste-frontend for landing/marketing/portfolio,
+  design-taste-product for dashboards, study/review flows, streak/XP
+  displays, deck management, and other WordStreak product UI — rather than
+  keeping its own copy of either rubric. Trigger this whenever the user asks
+  to "review this screen", "check if this UI is good", "does this look
+  right", or once implementation-orchestrator reaches its review stage for a
   UI-layer slice. This skill never edits code — it only produces a review
   report; fixes route back through the implementing slice.
 ---
@@ -25,8 +25,8 @@ blind spots, the same reasoning `spec-validator` and Stage 4 already apply
 to specs and code.
 
 See `/README.md` for the shared file conventions this skill reuses, and
-`skills/design-taste-frontend/SKILL.md` for the sibling skill this one
-defers to for non-product surfaces.
+`skills/design-taste-frontend/SKILL.md` / `skills/design-taste-product/SKILL.md`
+for the two generation-time skills this one reviews against.
 
 ## 1. Determine which surface this is
 
@@ -36,70 +36,50 @@ of UI this is:
 | Surface | Rubric to use |
 |---|---|
 | Landing page, marketing site, portfolio, public redesign | `design-taste-frontend`'s own rubric |
-| App screens: dashboards, study/review flow, deck management, settings — anything multi-step or data-bearing | This skill's product-UI rubric (§3) — `design-taste-frontend` explicitly excludes these surfaces |
+| App screens: dashboards, study/review flow, deck management, settings — anything multi-step or data-bearing | `design-taste-product`'s own rubric — `design-taste-frontend` explicitly excludes these surfaces |
 | Mixed (e.g. a marketing site plus in-app screens in the same feature) | Split the review; apply each rubric to its own screens, don't blend them |
 
-## 2. For landing/marketing/portfolio surfaces — defer, don't duplicate
+## 2. Read the owning skill fresh, don't duplicate
 
-If the surface matches `design-taste-frontend`'s scope, read that skill's
-Section 9 (AI Tells) and Section 14 (Final Pre-Flight Check) **fresh, each
-time** — don't copy its checklist into this file or into memory, since a
-copy will drift out of sync with the source the next time that skill is
-edited. Run the checklist adversarially: this review's entire value is
-fresh eyes, not re-confirming the generating agent's own self-report of the
-same checklist.
+Whichever surface this is, read the matching skill's own checklist **fresh,
+each time** — don't copy either checklist into this file or into memory,
+since a copy will drift out of sync with the source the next time that skill
+is edited. Run it adversarially: this review's entire value is fresh eyes,
+not re-confirming the generating agent's own self-report of the same
+checklist.
 
-## 3. For product UI — the rubric design-taste-frontend doesn't cover
+- **Landing/marketing/portfolio surfaces** — read `design-taste-frontend`
+  Section 9 (AI Tells) and Section 14 (Final Pre-Flight Check).
+- **Product UI surfaces** — read `design-taste-product` Section 10 (AI Tells
+  Specific to Product UI — plus the universal tells it points back to in
+  `design-taste-frontend` Section 9) and Section 11 (Pre-flight Check).
 
-This is WordStreak's actual surface area most of the time. Check:
+Neither rubric lives in this file. If a future change to either generation
+skill isn't reflected here, that's expected — this skill has no rubric of
+its own to fall out of sync.
 
-**Design system consistency**
-- One component library/design system is actually used across the surface,
-  not a different ad-hoc pattern per screen — `design-taste-frontend`
-  Section 2.A's logic for choosing an official system applies here, not
-  marketing-page freehand CSS.
-- Spacing scale, corner radius, and type scale match the rest of the app,
-  not reinvented for this feature.
+## 3. What this review adds beyond the generation-time checklist
 
-**UX states, grounded in the spec**
-- Every state from `03-domain-model.md` §6 (empty, loading, error,
-  feedback/recovery) is actually implemented and visually distinct — not
-  just the happy path with a generic spinner substituted for the rest.
-- Every acceptance criterion in `spec/user-stories.md` that has a UI
-  component is checkable by looking at the screen, not just inferred from
-  reading the code.
+The generation-time skills already cover design-system consistency, states,
+hierarchy, accessibility, i18n, and gamification ethics in detail — re-read
+their checklists rather than re-deriving these from scratch. What this
+review step adds on top, because it's only checkable with fresh eyes on the
+finished artifact rather than during generation:
 
-**Information hierarchy for the task at hand**
-- A study/review screen (flashcard, spaced-repetition session) stays
-  low-distraction and single-focus — no dashboard-style clutter competing
-  with the thing the learner is supposed to be doing right now.
-- A dashboard (streak, XP, progress) is glanceable — the primary number is
-  unambiguous at a glance, not buried among secondary stats.
-
-**Accessibility, checked in context, not just in code**
-- Keyboard-only pass: can the flow (e.g. completing a flashcard review) be
-  finished without a mouse?
-- Screen-reader labels exist for icon+number indicators — a streak flame
-  icon paired with just "12" needs an accessible name, not only a visual
-  pairing.
-- Contrast and focus states hold up against the *actual* rendered
-  background, not just the design token in isolation.
-
-**i18n resilience**
-- If `03-domain-model.md` §6 named target languages, test with a long
-  string (German, Vietnamese, and similar tend to run longer than English)
-  that labels, buttons, and streak/XP counters don't truncate or break
-  layout.
-
-**Gamification ethics (WordStreak-specific)**
-- Streak/XP/reward UI nudges toward genuine engagement rather than anxiety
-  or guilt — e.g. loss-framed copy like "you'll lose everything" versus
-  informative framing. This connects to the anti-abuse pass already
-  required in `domain-modeling` §3: if a `BR-` rule has an anti-abuse note,
-  the UI shouldn't undermine it with dark-pattern urgency.
-- Reward/streak-increment animations are motivated — feedback for a
-  completed action — and respect `prefers-reduced-motion`, not decoration
-  for its own sake.
+- **Cross-check against the spec, not just the checklist.** Every
+  acceptance criterion in `spec/user-stories.md` that has a UI component
+  should be checkable by looking at the screen, not just inferred from
+  reading the code or trusting the implementer's self-report.
+- **Cross-check against sibling screens.** For product UI, confirm this
+  screen actually matches the design system, spacing scale, and radius the
+  rest of the app already uses — not just that it followed the rubric in
+  isolation. A screen can pass every item on `design-taste-product`'s
+  checklist and still look like a different app if nobody compared it side
+  by side with an existing screen.
+- **Adversarial re-check of anything the implementer flagged as
+  ambiguous or skipped.** If the implementation notes mention a state,
+  a11y pass, or i18n check that was deferred or assumed, verify it directly
+  rather than accepting the note as sufficient.
 
 ## 4. Look at it, don't just read the code
 
@@ -117,7 +97,7 @@ silently skipping the visual pass.
 # UI Review Report: <Feature Title>
 
 **Surface(s) reviewed**: <landing | product UI | mixed>
-**Rubric(s) applied**: <design-taste-frontend §9/§14 | this skill's §3 | both>
+**Rubric(s) applied**: <design-taste-frontend §9/§14 | design-taste-product §10/§11 | both>
 **Screenshot pass**: <done | skipped — no browser tool available>
 **Result**: PASS | FAIL
 
@@ -142,16 +122,14 @@ fails the overall slice review and routes through the same scoped fix loop
 
 ## Exit checklist
 
-- [ ] Surface type determined and the correct rubric selected — landing/
-      marketing deferred to `design-taste-frontend`, product UI checked
-      against this skill's own rubric, never both applied where only one
-      fits
-- [ ] For landing/marketing surfaces: `design-taste-frontend`'s Section 9
-      and Section 14 read fresh, not from memory or a stale copy
-- [ ] For product UI: design-system consistency, every spec'd UX state,
-      accessibility in context, and i18n resilience all checked
-- [ ] Gamification/reward UI checked against the relevant `BR-` anti-abuse
-      notes, not judged on aesthetics alone
+- [ ] Surface type determined and the correct owning skill identified —
+      landing/marketing to `design-taste-frontend`, product UI to
+      `design-taste-product`, never both applied where only one fits
+- [ ] The owning skill's checklist read fresh this run, not from memory or a
+      stale copy
+- [ ] Findings cross-checked against the actual spec (`spec/user-stories.md`)
+      and, for product UI, against sibling screens already shipped — not
+      just re-confirmed from the checklist in isolation
 - [ ] A real screenshot pass attempted where a browser tool exists; its
       absence is stated explicitly, never silently skipped
 - [ ] This skill made no code edits — findings routed back to the owning

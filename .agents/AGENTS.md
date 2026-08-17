@@ -108,7 +108,6 @@ Phase 6: Quality Verification, Review & Delivery (Zero Critical Bugs + Rollback 
 | **IEEE 29148 quality gate & traceability matrix**  | `spec-validator`                                      |
 | **Baseline sign-off & dev handover**               | `handover`                                            |
 | **Feature execution, slice delegation & review**   | `implementation-orchestrator`                         |
-| **Technical docs, READMEs, architecture & AGENTS** | `technical-documentation`                             |
 | Any `.tsx`, `.jsx` file, React component           | `frontend-patterns` + `frontend-a11y`                 |
 | UI design, layout, visual direction                | `frontend-design-direction` + `design-taste-frontend` |
 | UI visual review & component QA                    | `ui-design-review`                                    |
