@@ -1,4 +1,4 @@
----
+ ---
 name: design-taste-product
 description: >
   Anti-slop design skill for product UI — dashboards, in-app screens, data

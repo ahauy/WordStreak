@@ -1,7 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "../../../store/useAuthStore";
 import { Button } from "../../../common/components/Button";
+import { UserAvatar } from "../../user-profile/components/UserAvatar";
+import { SettingsModal } from "../../user-profile/components/SettingsModal";
 import {
   LogOut,
   Flame,
@@ -14,15 +16,27 @@ import {
   PlusCircle,
   Clock,
   TrendingUp,
+  Settings as SettingsIcon,
+  Sliders,
 } from "lucide-react";
 
 export const DashboardPage: React.FC = () => {
   const { user, logout } = useAuthStore();
   const navigate = useNavigate();
 
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [settingsTab, setSettingsTab] = useState<
+    "profile" | "avatar" | "security"
+  >("profile");
+
   const handleLogout = async () => {
     await logout();
     navigate("/login", { replace: true });
+  };
+
+  const openSettings = (tab: "profile" | "avatar" | "security" = "profile") => {
+    setSettingsTab(tab);
+    setIsSettingsOpen(true);
   };
 
   return (
@@ -44,19 +58,42 @@ export const DashboardPage: React.FC = () => {
             </div>
           </div>
 
-          <div className="flex items-center gap-4 sm:gap-6">
-            <div className="text-right hidden sm:block">
-              <p className="text-sm font-bold text-white">
+          <div className="flex items-center gap-3 sm:gap-5">
+            <button
+              onClick={() => openSettings("profile")}
+              className="text-right hidden sm:block group cursor-pointer focus:outline-none"
+              title="Cài đặt tài khoản"
+            >
+              <p className="text-sm font-bold text-white group-hover:text-[#F5A623] transition-colors">
                 {user?.username || "Learner"}
               </p>
               <p className="text-xs text-slate-400 font-medium">
                 {user?.email}
               </p>
-            </div>
+            </button>
 
-            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white font-bold text-sm shadow-md border border-white/20">
-              {(user?.username?.[0] || "U").toUpperCase()}
-            </div>
+            <button
+              onClick={() => openSettings("avatar")}
+              className="cursor-pointer group relative focus:outline-none"
+              title="Đổi Avatar"
+            >
+              <UserAvatar
+                avatarUrl={user?.avatarUrl}
+                username={user?.username}
+                size="md"
+                className="group-hover:scale-105 transition-transform"
+              />
+            </button>
+
+            <Button
+              variant="secondary"
+              size="sm"
+              onClick={() => openSettings("profile")}
+              leftIcon={<SettingsIcon className="w-4 h-4" />}
+              className="hidden sm:inline-flex"
+            >
+              Cài đặt
+            </Button>
 
             <Button
               variant="secondary"
@@ -116,7 +153,7 @@ export const DashboardPage: React.FC = () => {
 
         {/* Stats Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {/* Stat 1 */}
+          {/* Stat 1: Current Streak */}
           <div className="glass-panel rounded-2xl p-6 border border-white/10 hover:border-indigo-500/50 transition-all duration-300 group">
             <div className="flex items-center justify-between mb-4">
               <span className="text-xs font-bold uppercase tracking-wider text-slate-400">
@@ -135,11 +172,16 @@ export const DashboardPage: React.FC = () => {
             </p>
           </div>
 
-          {/* Stat 2 */}
-          <div className="glass-panel rounded-2xl p-6 border border-white/10 hover:border-indigo-500/50 transition-all duration-300 group">
+          {/* Stat 2: Daily Goal (Interactive) */}
+          <div
+            onClick={() => openSettings("profile")}
+            className="glass-panel rounded-2xl p-6 border border-white/10 hover:border-[#F5A623]/60 transition-all duration-300 group cursor-pointer relative overflow-hidden"
+            title="Nhấn để tùy chỉnh mục tiêu hàng ngày"
+          >
             <div className="flex items-center justify-between mb-4">
-              <span className="text-xs font-bold uppercase tracking-wider text-slate-400">
+              <span className="text-xs font-bold uppercase tracking-wider text-slate-400 group-hover:text-[#F5A623] transition-colors flex items-center gap-1.5">
                 Daily Goal
+                <Sliders className="w-3 h-3 opacity-60 group-hover:opacity-100" />
               </span>
               <div className="w-10 h-10 rounded-xl bg-indigo-500/20 text-indigo-400 flex items-center justify-center group-hover:scale-110 transition-transform">
                 <Target className="w-5 h-5" />
@@ -150,12 +192,14 @@ export const DashboardPage: React.FC = () => {
               <span className="text-sm font-medium text-slate-400">Cards</span>
             </p>
             <p className="text-xs text-slate-400 mt-2 flex items-center gap-1">
-              <TrendingUp className="w-3.5 h-3.5 text-indigo-400" /> Target for
-              consistent memory
+              <TrendingUp className="w-3.5 h-3.5 text-[#F5A623]" />
+              <span className="group-hover:underline">
+                Nhấn để thay đổi mục tiêu
+              </span>
             </p>
           </div>
 
-          {/* Stat 3 */}
+          {/* Stat 3: Due Today */}
           <div className="glass-panel rounded-2xl p-6 border border-white/10 hover:border-indigo-500/50 transition-all duration-300 group">
             <div className="flex items-center justify-between mb-4">
               <span className="text-xs font-bold uppercase tracking-wider text-slate-400">
@@ -174,7 +218,7 @@ export const DashboardPage: React.FC = () => {
             </p>
           </div>
 
-          {/* Stat 4 */}
+          {/* Stat 4: Decks */}
           <div className="glass-panel rounded-2xl p-6 border border-white/10 hover:border-indigo-500/50 transition-all duration-300 group">
             <div className="flex items-center justify-between mb-4">
               <span className="text-xs font-bold uppercase tracking-wider text-slate-400">
@@ -194,6 +238,13 @@ export const DashboardPage: React.FC = () => {
           </div>
         </div>
       </main>
+
+      {/* Settings Modal */}
+      <SettingsModal
+        isOpen={isSettingsOpen}
+        onClose={() => setIsSettingsOpen(false)}
+        initialTab={settingsTab}
+      />
     </div>
   );
 };
