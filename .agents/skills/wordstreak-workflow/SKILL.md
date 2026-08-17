@@ -49,7 +49,7 @@ Phase 4: Tasks (speckit-tasks → dependency-ordered tasks.md)
   ↓
 Phase 5: Implement (Superpowers - TDD + Mandatory Tech Skills)
   ↓
-Phase 6: Quality Verification, Review & Delivery (Zero Critical Bugs + Rollback Plan)
+Phase 6: Quality Verification, Review, Tech Docs (tech-doc-writer) & Delivery (Zero Critical Bugs + Rollback Plan)
 ```
 
 ---
@@ -178,7 +178,7 @@ Use `implementation-orchestrator` (Stage 9) or `subagent-driven-development` to:
    - `Medium`: Minor edge case glitch with viable workaround.
    - `Low`: Cosmetic / UI polish items.
    - **RULE**: Zero `Critical` bugs permitted prior to task completion.
-4. **Technical Documentation (MANDATORY immediately after review — run `technical-documentation`)**:
+4. **Technical Documentation (MANDATORY immediately after review — delegate to `tech-doc-writer` subagent using `technical-documentation`)**:
    - Create `docs/features/<feature-slug>/README.md` using the template in [`docs/features/README.md`](../../../docs/features/README.md).
    - Add a row to the index table in `docs/features/README.md`.
    - If feature adds/changes an entity, endpoint, or architecture pattern → update the relevant file in `docs/architecture/`.

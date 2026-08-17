@@ -25,7 +25,7 @@ Phase 4: Tasks (speckit-tasks → tasks.md)
   ↓
 Phase 5: Implement (Superpowers - TDD + Mandatory Tech Skills)
   ↓
-Phase 6: Quality Verification, Review & Delivery (Zero Critical Bugs + Rollback Plan)
+Phase 6: Quality Verification, Review, Tech Docs (tech-doc-writer) & Delivery
 ```
 
 #### Phase 1: Business Analysis & Domain Elicitation (8-Stage BA Pipeline)
@@ -75,17 +75,18 @@ Phase 6: Quality Verification, Review & Delivery (Zero Critical Bugs + Rollback 
   4. **Refactor** — clean up without breaking tests
 - **MANDATORY**: Read and comply with Mandatory Tech Skills (below)
 
-#### Phase 6: Quality Verification, Review & Delivery
+#### Phase 6: Quality Verification, Review, Tech Docs & Delivery
 
 - **Step 1: Quality Gates & Adversarial Code Review**:
   - Run `speckit-analyze` to check spec/plan/task alignment.
   - Run `requesting-code-review` and `ui-design-review` (for UI slices).
   - Enforce **Bug Severity Gates**: `Critical` bugs strictly block completion / release. Zero `Critical` bugs permitted.
-- **Step 2: Technical Documentation (MANDATORY immediately after review — use `technical-documentation`)**:
+- **Step 2: Technical Documentation (MANDATORY immediately after review — delegate to `tech-doc-writer` subagent using `technical-documentation` skill)**:
   - Create `docs/features/<feature-slug>/README.md` using the template in [docs/features/README.md](../docs/features/README.md)
   - Update `docs/features/README.md` index table with the new feature entry.
   - If the feature changes architecture (new entity, new service, new API contract) — update the relevant file in `docs/architecture/`.
   - If algorithms or formulas change (e.g. SuperMemo-2, Streak, XP) — update `docs/algorithms/`.
+  - Maintain Diataxis quadrants (Tutorial, How-To, Reference, Explanation) and apply Matt Palmer / OpenAI Cookbook standards.
   - Keep `AGENTS.md` / `CONTRIBUTING.md` / governance files synchronized.
 - **Step 3: Verification Evidence & Delivery**:
   - Run `verification-before-completion` with passing test evidence (Vitest, Jest, Playwright).
@@ -97,27 +98,28 @@ Phase 6: Quality Verification, Review & Delivery (Zero Critical Bugs + Rollback 
 
 **CRITICAL: Before writing ANY code or documentation, AI MUST read the corresponding skill BEFORE execution.**
 
-| Context / File type                                | MANDATORY Skill                                       |
-| -------------------------------------------------- | ----------------------------------------------------- |
-| **New feature intake / complexity classification** | `intake-classifier`                                   |
-| **Business value & 6-pillar domain elicitation**   | `elicitation-interview`                               |
-| **AS-IS / TO-BE / gap analysis (Full Feature)**    | `gap-analysis`                                        |
-| **RBAC, state machines, business rules, ERD**      | `domain-modeling`                                     |
-| **Risk register, contradiction scan, MoSCoW**      | `risk-contradiction-scanner`                          |
-| **Spec documents (BRD, PRD, SRS, user stories)**   | `spec-writer`                                         |
-| **IEEE 29148 quality gate & traceability matrix**  | `spec-validator`                                      |
-| **Baseline sign-off & dev handover**               | `handover`                                            |
-| **Feature execution, slice delegation & review**   | `implementation-orchestrator`                         |
-| Any `.tsx`, `.jsx` file, React component           | `frontend-patterns` + `frontend-a11y`                 |
-| UI design, layout, visual direction                | `frontend-design-direction` + `design-taste-frontend` |
-| UI visual review & component QA                    | `ui-design-review`                                    |
-| Any NestJS file (controller, service, module, DTO) | `nestjs-patterns` + `backend-patterns`                |
-| API endpoint, REST resource                        | `api-design` + `backend-patterns`                     |
-| Prisma schema, query, migration                    | `prisma-patterns`                                     |
-| PostgreSQL query, index, RLS policy                | `postgres-patterns`                                   |
-| Dockerfile, docker-compose.yml                     | `docker-patterns`                                     |
-| E2E test, Playwright test                          | `e2e-testing`                                         |
-| Git branch, commit, merge                          | `git-workflow`                                        |
+| Context / File type                                               | MANDATORY Skill                                       |
+| ----------------------------------------------------------------- | ----------------------------------------------------- |
+| **New feature intake / complexity classification**                | `intake-classifier`                                   |
+| **Business value & 6-pillar domain elicitation**                  | `elicitation-interview`                               |
+| **AS-IS / TO-BE / gap analysis (Full Feature)**                   | `gap-analysis`                                        |
+| **RBAC, state machines, business rules, ERD**                     | `domain-modeling`                                     |
+| **Risk register, contradiction scan, MoSCoW**                     | `risk-contradiction-scanner`                          |
+| **Spec documents (BRD, PRD, SRS, user stories)**                  | `spec-writer`                                         |
+| **IEEE 29148 quality gate & traceability matrix**                 | `spec-validator`                                      |
+| **Baseline sign-off & dev handover**                              | `handover`                                            |
+| **Feature execution, slice delegation & review**                  | `implementation-orchestrator`                         |
+| **Technical documentation, feature README, architecture, AGENTS** | `technical-documentation` (Agent: `tech-doc-writer`)  |
+| Any `.tsx`, `.jsx` file, React component                          | `frontend-patterns` + `frontend-a11y`                 |
+| UI design, layout, visual direction                               | `frontend-design-direction` + `design-taste-frontend` |
+| UI visual review & component QA                                   | `ui-design-review`                                    |
+| Any NestJS file (controller, service, module, DTO)                | `nestjs-patterns` + `backend-patterns`                |
+| API endpoint, REST resource                                       | `api-design` + `backend-patterns`                     |
+| Prisma schema, query, migration                                   | `prisma-patterns`                                     |
+| PostgreSQL query, index, RLS policy                               | `postgres-patterns`                                   |
+| Dockerfile, docker-compose.yml                                    | `docker-patterns`                                     |
+| E2E test, Playwright test                                         | `e2e-testing`                                         |
+| Git branch, commit, merge                                         | `git-workflow`                                        |
 
 ---
 
@@ -139,6 +141,7 @@ Phase 6: Quality Verification, Review & Delivery (Zero Critical Bugs + Rollback 
 
 - **Zero Code Before Approved Spec**: Never write code or create mockups without an approved domain baseline and specification.
 - **Bug Severity Gate**: No feature branch can be merged or marked complete with unresolved `Critical` bugs.
+- **Post-Review Documentation Gate**: Every delivered feature must have technical documentation updated/created by `tech-doc-writer` (`technical-documentation` skill) before closing the task.
 - **Immutable Data Patterns**: Create new copies, do not mutate state directly.
 - **KISS, DRY, YAGNI**: Avoid over-engineering and speculative features.
 - **Code Limits**: File < 800 lines, function < 50 lines.
