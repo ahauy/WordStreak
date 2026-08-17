@@ -149,9 +149,11 @@ Use `implementation-orchestrator` (Stage 9) or `subagent-driven-development` to:
    - **Green**: Write minimum code to make tests pass
    - **Refactor**: Clean up without breaking tests
 4. **Adversarial Code Review**: Route review to a fresh-context subagent with no visibility into the implementer's reasoning.
-5. **MANDATORY**: Read and comply with Tech Skills in `.agents/skills/` BEFORE writing code:
+5. **MANDATORY**: Read and comply with Tech Skills in `.agents/skills/` BEFORE writing code or documentation:
+   - Technical docs, architecture & AGENTS → `technical-documentation`
    - React/TSX → `frontend-patterns` + `frontend-a11y`
-   - UI design & visual direction → `frontend-design-direction`
+   - UI design & visual direction → `frontend-design-direction` + `design-taste-frontend`
+   - UI visual review & component QA → `ui-design-review`
    - NestJS backend → `nestjs-patterns` + `backend-patterns`
    - REST API → `api-design` + `backend-patterns`
    - Prisma ORM → `prisma-patterns`
@@ -169,23 +171,25 @@ Use `implementation-orchestrator` (Stage 9) or `subagent-driven-development` to:
 ## Phase 6: Quality Verification, Review & Delivery
 
 1. **Spec Consistency Check**: Run `speckit-analyze` to verify consistency between `spec.md`, `plan.md`, and `tasks.md`.
-2. **Code Review & Quality Gate**: Run `requesting-code-review` to inspect security, architecture, and code cleanliness.
+2. **Code & UI Review Gate**: Run `requesting-code-review` to inspect security, architecture, and code cleanliness, plus `ui-design-review` for visual/UX quality.
 3. **Bug Severity Classification Gate**:
    - `Critical`: System crash, data loss, security vulnerability, broken core study flow → **BLOCKS MERGE / RELEASE**.
    - `High`: Major feature malfunctioning without workaround → Must fix before completion.
    - `Medium`: Minor edge case glitch with viable workaround.
    - `Low`: Cosmetic / UI polish items.
    - **RULE**: Zero `Critical` bugs permitted prior to task completion.
-4. **Verification Evidence**: Run `verification-before-completion` with passing test reports (Vitest, Jest, Playwright).
-5. **Deployment & Rollback Readiness**:
+4. **Technical Documentation (MANDATORY immediately after review — run `technical-documentation`)**:
+   - Create `docs/features/<feature-slug>/README.md` using the template in [`docs/features/README.md`](../../../docs/features/README.md).
+   - Add a row to the index table in `docs/features/README.md`.
+   - If feature adds/changes an entity, endpoint, or architecture pattern → update the relevant file in `docs/architecture/`.
+   - If feature changes algorithms or mechanics (SuperMemo-2, Streak, XP) → update `docs/algorithms/`.
+   - Cross-reference `test-plan.md` in the feature README for test traceability.
+   - Keep `AGENTS.md` / `CONTRIBUTING.md` / instruction files synchronized.
+5. **Verification Evidence**: Run `verification-before-completion` with passing test reports (Vitest, Jest, Playwright).
+6. **Deployment & Rollback Readiness**:
    - Verify database migrations (`prisma migrate`).
    - Define rollback plan for schema or service regressions.
    - Update `.specify/features/<slug>/CHANGELOG.md` with completed deliverables.
-6. **Docs Update (MANDATORY — run before closing task)**:
-   - Create `docs/features/<feature-slug>/README.md` using the template at the bottom of [`docs/features/README.md`](../../../docs/features/README.md)
-   - Add a row to the index table in `docs/features/README.md`
-   - If feature adds/changes an entity, endpoint, or architecture pattern → update the relevant file in `docs/architecture/`
-   - Cross-reference `test-plan.md` in the feature README for test traceability
 
 ---
 
@@ -202,7 +206,7 @@ For small, well-scoped edits to existing code (`intake-classifier` will classify
 7. **`spec-validator`** validates the user stories.
 8. **`handover`** signs off and hands to implementation.
 9. **Implement directly**: Enforce mandatory tech skills and TDD.
-10. **Review**: Verify tests, check for zero regressions, and update `CHANGELOG.md`.
+10. **Review & Documentation**: Verify tests, complete code review, update documentation with `technical-documentation`, check for zero regressions, and update `CHANGELOG.md`.
 
 ---
 
@@ -216,8 +220,7 @@ For small, well-scoped edits to existing code (`intake-classifier` will classify
 - [ ] `test-plan.md` written in `.specify/features/<slug>/` before any code was written
 - [ ] All `TC-###` test cases implemented as actual test files
 - [ ] Mandatory tech skills enforced during implementation
+- [ ] Code & UI review passed with zero `Critical` bugs remaining
+- [ ] `technical-documentation` executed: `docs/features/<slug>/README.md` created, index table updated, architecture/algorithms docs synced
 - [ ] All automated tests pass (Unit, Integration, E2E)
-- [ ] Zero `Critical` bugs remaining
 - [ ] Verification, rollback strategy, and `CHANGELOG.md` updated
-- [ ] `docs/features/<slug>/README.md` created and index table updated
-- [ ] `docs/architecture/` updated if feature changed entities, APIs, or architecture
