@@ -1,24 +1,66 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @layer base {
   :root {
-    --font-sans: "Plus Jakarta Sans", system-ui, -apple-system, sans-serif;
-    --font-display: "Outfit", system-ui, -apple-system, sans-serif;
+    --font-display:
+      -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text",
+      "Inter", system-ui, sans-serif;
+    --font-body:
+      -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display",
+      "Inter", system-ui, sans-serif;
+
+    /* Apple Design Tokens */
+    --color-primary: #0066cc;
+    --color-primary-focus: #0071e3;
+    --color-primary-on-dark: #2997ff;
+    --color-ink: #1d1d1f;
+    --color-body-muted: #86868b;
+    --color-canvas-parchment: #f5f5f7;
+    --color-canvas: #ffffff;
+    --color-surface-pearl: #fafafc;
+    --color-surface-tile-1: #272729;
+    --color-surface-tile-2: #2a2a2c;
+    --color-surface-tile-3: #252527;
+    --color-surface-black: #000000;
+    --color-hairline: #e0e0e0;
+    --color-hairline-dark: rgba(255, 255, 255, 0.12);
   }
 
   * {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
   html,
   body,
   #root {
     min-height: 100vh;
-    font-family: var(--font-sans);
-    background-color: #030712;
-    color: #f3f4f6;
+    font-family: var(--font-body);
+    font-size: 17px;
+    line-height: 1.47;
+    letter-spacing: -0.022em;
+    transition:
+      background-color 0.25s ease,
+      color 0.25s ease;
+  }
+
+  html.dark,
+  html.dark body,
+  html.dark #root {
+    background-color: #161617;
+    color: #f5f5f7;
+  }
+
+  html.light,
+  html.light body,
+  html.light #root {
+    background-color: #f5f5f7;
+    color: #1d1d1f;
   }
 
   h1,
@@ -28,50 +70,69 @@
   h5,
   h6 {
     font-family: var(--font-display);
+    font-weight: 600;
+    letter-spacing: -0.025em;
   }
 }
 
-/* Custom background glow effects */
-.bg-mesh-glow {
-  background:
-    radial-gradient(
-      circle at 15% 20%,
-      rgba(99, 102, 241, 0.15) 0%,
-      transparent 40%
-    ),
-    radial-gradient(
-      circle at 85% 30%,
-      rgba(168, 85, 247, 0.15) 0%,
-      transparent 45%
-    ),
-    radial-gradient(
-      circle at 50% 80%,
-      rgba(236, 72, 153, 0.12) 0%,
-      transparent 50%
-    ),
-    #030712;
+/* Apple Canvas Surface */
+.apple-canvas {
+  background-color: #f5f5f7;
 }
 
-/* Glass card styling */
-.glass-panel {
-  background: rgba(17, 24, 39, 0.75);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+html.dark .apple-canvas {
+  background-color: #161617;
+}
+
+/* Apple Utility Card (Clean, hairline border, no decorative shadows) */
+.apple-card {
+  background-color: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 18px;
+}
+
+html.dark .apple-card {
+  background-color: #272729;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+/* The ONE signature Apple Drop-Shadow (reserved for physical product render/flashcard) */
+.shadow-apple-product {
   box-shadow:
-    0 25px 50px -12px rgba(0, 0, 0, 0.5),
-    0 0 0 1px rgba(255, 255, 255, 0.05);
+    0 20px 40px -10px rgba(0, 0, 0, 0.22),
+    0 1px 3px 0 rgba(0, 0, 0, 0.06);
 }
 
-.glass-input {
-  background: rgba(15, 23, 42, 0.6);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: #ffffff;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+html.dark .shadow-apple-product {
+  box-shadow:
+    0 25px 50px -12px rgba(0, 0, 0, 0.55),
+    0 0 0 1px rgba(255, 255, 255, 0.1);
 }
 
-.glass-input:focus {
-  background: rgba(15, 23, 42, 0.9);
-  border-color: #6366f1;
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25);
+/* Apple Button Active Micro-interaction */
+.apple-tap-active {
+  transition: transform 0.15s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.apple-tap-active:active:not(:disabled) {
+  transform: scale(0.95);
+}
+
+/* Interactive vocabulary card hover subtlety */
+.interactive-flashcard {
+  transition:
+    transform 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.3s ease;
+}
+
+.interactive-flashcard:hover {
+  transform: translateY(-2px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .apple-tap-active,
+  .interactive-flashcard {
+    transition: none !important;
+    transform: none !important;
+  }
 }
