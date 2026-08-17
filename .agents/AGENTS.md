@@ -75,45 +75,49 @@ Phase 6: Quality Verification, Review & Delivery (Zero Critical Bugs + Rollback 
   4. **Refactor** — clean up without breaking tests
 - **MANDATORY**: Read and comply with Mandatory Tech Skills (below)
 
-#### Phase 6: Quality Verification & Delivery
+#### Phase 6: Quality Verification, Review & Delivery
 
-- Use `speckit-analyze` + `requesting-code-review`
-- Enforce **Bug Severity Gates**: `Critical` bugs strictly block completion / release
-- Use `verification-before-completion` with test evidence before marking as done
-- Validate migration safety, rollback strategy, and update Change Log
-- **Docs update (MANDATORY before closing task)**:
-  1. Create `docs/features/<feature-slug>/README.md` using the template in [docs/features/README.md](../docs/features/README.md)
-  2. Update `docs/features/README.md` index table with the new feature entry
-  3. If the feature changes architecture (new entity, new service, new API contract) — update the relevant file in `docs/architecture/`
+- **Step 1: Quality Gates & Adversarial Code Review**:
+  - Run `speckit-analyze` to check spec/plan/task alignment.
+  - Run `requesting-code-review` and `ui-design-review` (for UI slices).
+  - Enforce **Bug Severity Gates**: `Critical` bugs strictly block completion / release. Zero `Critical` bugs permitted.
+- **Step 2: Technical Documentation (MANDATORY immediately after review — use `technical-documentation`)**:
+  - Create `docs/features/<feature-slug>/README.md` using the template in [docs/features/README.md](../docs/features/README.md)
+  - Update `docs/features/README.md` index table with the new feature entry.
+  - If the feature changes architecture (new entity, new service, new API contract) — update the relevant file in `docs/architecture/`.
+  - If algorithms or formulas change (e.g. SuperMemo-2, Streak, XP) — update `docs/algorithms/`.
+  - Keep `AGENTS.md` / `CONTRIBUTING.md` / governance files synchronized.
+- **Step 3: Verification Evidence & Delivery**:
+  - Run `verification-before-completion` with passing test evidence (Vitest, Jest, Playwright).
+  - Validate database migrations (`prisma migrate`), rollback strategy, and update `.specify/features/<slug>/CHANGELOG.md`.
 
 ---
 
 ## Mandatory Tech Skills
 
-**CRITICAL: Before writing ANY code, AI MUST read the corresponding skill BEFORE coding.**
+**CRITICAL: Before writing ANY code or documentation, AI MUST read the corresponding skill BEFORE execution.**
 
-| Context / File type                                | MANDATORY Skill                        |
-| -------------------------------------------------- | -------------------------------------- |
-| **New feature intake / complexity classification** | `intake-classifier`                    |
-| **Business value & 6-pillar domain elicitation**   | `elicitation-interview`                |
-| **AS-IS / TO-BE / gap analysis (Full Feature)**    | `gap-analysis`                         |
-| **RBAC, state machines, business rules, ERD**      | `domain-modeling`                      |
-| **Risk register, contradiction scan, MoSCoW**      | `risk-contradiction-scanner`           |
-| **Spec documents (BRD, PRD, SRS, user stories)**   | `spec-writer`                          |
-| **IEEE 29148 quality gate & traceability matrix**  | `spec-validator`                       |
-| **Baseline sign-off & dev handover**               | `handover`                             |
-| **Feature execution, slice delegation & review**   | `implementation-orchestrator`          |
-| Any `.tsx`, `.jsx` file, React component           | `frontend-patterns` + `frontend-a11y`  |
-| UI design — landing pages, marketing, portfolio    | `design-taste-frontend`                |
-| UI design — dashboards, in-app screens, product UI | `design-taste-product`                 |
-| UI visual review & component QA                    | `ui-design-review`                     |
-| Any NestJS file (controller, service, module, DTO) | `nestjs-patterns` + `backend-patterns` |
-| API endpoint, REST resource                        | `api-design` + `backend-patterns`      |
-| Prisma schema, query, migration                    | `prisma-patterns`                      |
-| PostgreSQL query, index, RLS policy                | `postgres-patterns`                    |
-| Dockerfile, docker-compose.yml                     | `docker-patterns`                      |
-| E2E test, Playwright test                          | `e2e-testing`                          |
-| Git branch, commit, merge                          | `git-workflow`                         |
+| Context / File type                                | MANDATORY Skill                                       |
+| -------------------------------------------------- | ----------------------------------------------------- |
+| **New feature intake / complexity classification** | `intake-classifier`                                   |
+| **Business value & 6-pillar domain elicitation**   | `elicitation-interview`                               |
+| **AS-IS / TO-BE / gap analysis (Full Feature)**    | `gap-analysis`                                        |
+| **RBAC, state machines, business rules, ERD**      | `domain-modeling`                                     |
+| **Risk register, contradiction scan, MoSCoW**      | `risk-contradiction-scanner`                          |
+| **Spec documents (BRD, PRD, SRS, user stories)**   | `spec-writer`                                         |
+| **IEEE 29148 quality gate & traceability matrix**  | `spec-validator`                                      |
+| **Baseline sign-off & dev handover**               | `handover`                                            |
+| **Feature execution, slice delegation & review**   | `implementation-orchestrator`                         |
+| Any `.tsx`, `.jsx` file, React component           | `frontend-patterns` + `frontend-a11y`                 |
+| UI design, layout, visual direction                | `frontend-design-direction` + `design-taste-frontend` |
+| UI visual review & component QA                    | `ui-design-review`                                    |
+| Any NestJS file (controller, service, module, DTO) | `nestjs-patterns` + `backend-patterns`                |
+| API endpoint, REST resource                        | `api-design` + `backend-patterns`                     |
+| Prisma schema, query, migration                    | `prisma-patterns`                                     |
+| PostgreSQL query, index, RLS policy                | `postgres-patterns`                                   |
+| Dockerfile, docker-compose.yml                     | `docker-patterns`                                     |
+| E2E test, Playwright test                          | `e2e-testing`                                         |
+| Git branch, commit, merge                          | `git-workflow`                                        |
 
 ---
 
