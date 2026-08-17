@@ -62,30 +62,36 @@ export const LoginForm: React.FC<LoginFormProps> = ({
   };
 
   return (
-    <div className="w-full max-w-md apple-card p-6 sm:p-8 relative">
+    <div className="w-full max-w-md liquid-glass rounded-3xl p-7 sm:p-9 relative border border-white/10 bg-white/[0.03] shadow-2xl backdrop-blur-2xl">
       {/* Mobile Brand Header */}
       <div className="lg:hidden flex items-center justify-center gap-2 mb-4">
-        <div className="w-8 h-8 rounded-lg bg-[#1d1d1f] dark:bg-white flex items-center justify-center text-white dark:text-[#1d1d1f]">
+        <div className="w-8 h-8 rounded-lg bg-[#F5A623]/15 border border-[#F5A623]/30 flex items-center justify-center text-[#F5A623]">
           <Sparkles className="w-4 h-4" />
         </div>
-        <span className="text-lg font-semibold text-[#1d1d1f] dark:text-white tracking-tight">
+        <span
+          className="text-2xl font-normal text-white tracking-tight"
+          style={{ fontFamily: "var(--font-display)" }}
+        >
           WordStreak
         </span>
       </div>
 
       <div className="text-center mb-6">
-        <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight text-[#1d1d1f] dark:text-white mb-1.5">
-          Sign In
+        <h2
+          className="text-3xl sm:text-4xl font-extrabold text-white mb-2 tracking-tight"
+          style={{ fontFamily: "var(--font-display)" }}
+        >
+          Welcome Back
         </h2>
-        <p className="text-sm text-[#86868b]">
-          Sign in to keep your vocabulary streak alive
+        <p className="text-sm text-[var(--color-muted-foreground)]">
+          Sign in to keep your daily streak alive
         </p>
       </div>
 
       {error && (
         <div
           role="alert"
-          className="mb-5 p-3 rounded-[12px] bg-[#fff2f2] border border-[#e03e3e]/25 dark:bg-[#321c1c] dark:border-[#e03e3e]/40 flex items-start gap-2.5 text-[#e03e3e] dark:text-[#ff8a8a] text-xs transition-all"
+          className="mb-5 p-3 rounded-xl bg-[#321c1c]/80 border border-[#e03e3e]/40 flex items-start gap-2.5 text-[#ff8a8a] text-xs transition-all"
         >
           <AlertCircle className="w-4 h-4 flex-shrink-0 mt-0.5" />
           <span className="font-normal">{error}</span>
@@ -118,7 +124,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
               <button
                 type="button"
                 onClick={() => setShowPassword((prev) => !prev)}
-                className="text-[#86868b] hover:text-[#1d1d1f] dark:hover:text-white transition-colors focus:outline-none cursor-pointer p-1"
+                className="text-[var(--color-muted-foreground)] hover:text-white transition-colors focus:outline-none cursor-pointer p-1"
                 aria-label={showPassword ? "Hide password" : "Show password"}
               >
                 {showPassword ? (
@@ -133,12 +139,12 @@ export const LoginForm: React.FC<LoginFormProps> = ({
           />
 
           <div className="flex items-center justify-between pt-1">
-            <label className="flex items-center gap-2 text-xs text-[#86868b] cursor-pointer select-none">
+            <label className="flex items-center gap-2 text-xs text-[var(--color-muted-foreground)] cursor-pointer select-none">
               <input
                 type="checkbox"
                 checked={rememberMe}
                 onChange={(e) => setRememberMe(e.target.checked)}
-                className="w-4 h-4 rounded-[4px] border-[#d2d2d7] text-[#0066cc] focus:ring-[#0066cc] cursor-pointer accent-[#0066cc]"
+                className="w-4 h-4 rounded border-white/20 bg-white/5 text-[#F5A623] focus:ring-[#F5A623] cursor-pointer accent-[#F5A623]"
               />
               <span>Remember me</span>
             </label>
@@ -148,7 +154,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
               onClick={() =>
                 alert("Password reset instructions will be sent to your email.")
               }
-              className="text-xs font-normal text-[#0066cc] dark:text-[#2997ff] hover:underline transition-colors focus:outline-none cursor-pointer"
+              className="text-xs font-normal text-[#F5A623] hover:text-[#FFB940] hover:underline transition-colors focus:outline-none cursor-pointer"
             >
               Forgot password?
             </button>
@@ -159,7 +165,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
           type="submit"
           variant="primary"
           size="lg"
-          className="w-full mt-3"
+          className="w-full mt-4"
           isLoading={isLoading}
           leftIcon={<LogIn className="w-4 h-4" />}
         >
@@ -168,13 +174,13 @@ export const LoginForm: React.FC<LoginFormProps> = ({
       </form>
 
       {onNavigateToRegister && (
-        <div className="text-center mt-5 pt-5 border-t border-[#f0f0f0] dark:border-white/10">
-          <p className="text-xs text-[#86868b]">
+        <div className="text-center mt-6 pt-5 border-t border-white/10">
+          <p className="text-xs text-[var(--color-muted-foreground)]">
             Don't have an account?{" "}
             <button
               type="button"
               onClick={onNavigateToRegister}
-              className="font-semibold text-[#0066cc] dark:text-[#2997ff] hover:underline transition-colors focus:outline-none cursor-pointer"
+              className="font-medium text-[#F5A623] hover:text-[#FFB940] hover:underline transition-colors focus:outline-none cursor-pointer"
             >
               Create an account
             </button>
