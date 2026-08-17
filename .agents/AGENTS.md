@@ -143,7 +143,7 @@ Phase 6: Quality Verification, Review & Delivery (Zero Critical Bugs + Rollback 
 | Dockerfile, docker-compose.yml                     | `docker-patterns`                      |
 | E2E test, Playwright test                          | `e2e-testing`                          |
 | Git branch, commit, merge                          | `git-workflow`                         |
->>>>>>> 97c10d0 (feat(workflow): integrate technical-documentation skill and tech-doc-writer agent)
+
 
 ---
 
