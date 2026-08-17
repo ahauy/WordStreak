@@ -97,6 +97,7 @@ Phase 6: Quality Verification, Review & Delivery (Zero Critical Bugs + Rollback 
 
 **CRITICAL: Before writing ANY code or documentation, AI MUST read the corresponding skill BEFORE execution.**
 
+<<<<<<< HEAD
 | Context / File type                                | MANDATORY Skill                                       |
 | -------------------------------------------------- | ----------------------------------------------------- |
 | **New feature intake / complexity classification** | `intake-classifier`                                   |
@@ -118,6 +119,31 @@ Phase 6: Quality Verification, Review & Delivery (Zero Critical Bugs + Rollback 
 | Dockerfile, docker-compose.yml                     | `docker-patterns`                                     |
 | E2E test, Playwright test                          | `e2e-testing`                                         |
 | Git branch, commit, merge                          | `git-workflow`                                        |
+=======
+| Context / File type                                | MANDATORY Skill                        |
+| -------------------------------------------------- | -------------------------------------- |
+| **New feature intake / complexity classification** | `intake-classifier`                    |
+| **Business value & 6-pillar domain elicitation**   | `elicitation-interview`                |
+| **AS-IS / TO-BE / gap analysis (Full Feature)**    | `gap-analysis`                         |
+| **RBAC, state machines, business rules, ERD**      | `domain-modeling`                      |
+| **Risk register, contradiction scan, MoSCoW**      | `risk-contradiction-scanner`           |
+| **Spec documents (BRD, PRD, SRS, user stories)**   | `spec-writer`                          |
+| **IEEE 29148 quality gate & traceability matrix**  | `spec-validator`                       |
+| **Baseline sign-off & dev handover**               | `handover`                             |
+| **Feature execution, slice delegation & review**   | `implementation-orchestrator`          |
+| **Technical docs, READMEs, architecture & AGENTS** | `technical-documentation`              |
+| Any `.tsx`, `.jsx` file, React component           | `frontend-patterns` + `frontend-a11y`  |
+| UI design — landing pages, marketing, portfolio    | `design-taste-frontend`                |
+| UI design — dashboards, in-app screens, product UI | `design-taste-product`                 |
+| UI visual review & component QA                    | `ui-design-review`                     |
+| Any NestJS file (controller, service, module, DTO) | `nestjs-patterns` + `backend-patterns` |
+| API endpoint, REST resource                        | `api-design` + `backend-patterns`      |
+| Prisma schema, query, migration                    | `prisma-patterns`                      |
+| PostgreSQL query, index, RLS policy                | `postgres-patterns`                    |
+| Dockerfile, docker-compose.yml                     | `docker-patterns`                      |
+| E2E test, Playwright test                          | `e2e-testing`                          |
+| Git branch, commit, merge                          | `git-workflow`                         |
+>>>>>>> 97c10d0 (feat(workflow): integrate technical-documentation skill and tech-doc-writer agent)
 
 ---
 

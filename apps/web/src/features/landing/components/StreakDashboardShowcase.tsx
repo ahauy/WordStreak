@@ -49,9 +49,8 @@ export const StreakDashboardShowcase: React.FC = () => {
   const totalDays = totalWeeks * daysPerWeek; // 168 days
 
   // Generate deterministic heatmap data
-  const { flatCells, heatmapData } = useMemo(() => {
+  const { heatmapData } = useMemo(() => {
     const weeks: HeatmapCell[][] = [];
-    const flat: HeatmapCell[] = [];
     let globalIdx = 0;
 
     for (let w = 0; w < totalWeeks; w++) {
@@ -79,11 +78,10 @@ export const StreakDashboardShowcase: React.FC = () => {
         };
 
         week.push(cell);
-        flat.push(cell);
       }
       weeks.push(week);
     }
-    return { flatCells: flat, heatmapData: weeks };
+    return { heatmapData: weeks };
   }, [totalWeeks, daysPerWeek]);
 
   // IntersectionObserver to start gradual completion when user scrolls in
