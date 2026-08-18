@@ -1,13 +1,12 @@
 ---
 name: liquid-glass-design
 description: >
-  MANDATORY when implementing any iOS 26 Liquid Glass UI — glassmorphism, blur effects,
-  dynamic reflections, or interactive morphing. Covers SwiftUI, UIKit, and WidgetKit
-  glass material patterns. MUST be read before using any glass/blur/frosted UI effect
-  in iOS development.
+  iOS ONLY (SwiftUI, UIKit, WidgetKit). MANDATORY when implementing native iOS 26 Liquid Glass UI —
+  glass materials, dynamic reflections, or interactive morphing in iOS apps.
+  DO NOT use for Web or React development.
 ---
 
-# Liquid Glass Design System (iOS 26)
+# Liquid Glass Design System (iOS 26 — Native iOS Only)
 
 Patterns for implementing Apple's Liquid Glass — a dynamic material that blurs content behind it, reflects color and light from surrounding content, and reacts to touch and pointer interactions. Covers SwiftUI, UIKit, and WidgetKit integration.
 
@@ -42,6 +41,7 @@ Text("Hello, World!")
 ```
 
 Key customization options:
+
 - `.regular` — standard glass effect
 - `.tint(Color)` — add color tint for prominence
 - `.interactive()` — react to touch and pointer interactions
@@ -246,14 +246,14 @@ VStack { /* content */ }
 
 ## Key Design Decisions
 
-| Decision | Rationale |
-|----------|-----------|
-| GlassEffectContainer wrapping | Performance optimization, enables morphing between glass elements |
-| `spacing` parameter | Controls merge distance — fine-tune how close elements must be to blend |
-| `@Namespace` + `glassEffectID` | Enables smooth morphing transitions on view hierarchy changes |
-| `interactive()` modifier | Explicit opt-in for touch/pointer reactions — not all glass should respond |
-| UIGlassContainerEffect in UIKit | Same container pattern as SwiftUI for consistency |
-| Accented rendering mode in widgets | System applies tinted glass when user selects tinted Home Screen |
+| Decision                           | Rationale                                                                  |
+| ---------------------------------- | -------------------------------------------------------------------------- |
+| GlassEffectContainer wrapping      | Performance optimization, enables morphing between glass elements          |
+| `spacing` parameter                | Controls merge distance — fine-tune how close elements must be to blend    |
+| `@Namespace` + `glassEffectID`     | Enables smooth morphing transitions on view hierarchy changes              |
+| `interactive()` modifier           | Explicit opt-in for touch/pointer reactions — not all glass should respond |
+| UIGlassContainerEffect in UIKit    | Same container pattern as SwiftUI for consistency                          |
+| Accented rendering mode in widgets | System applies tinted glass when user selects tinted Home Screen           |
 
 ## Best Practices
 
