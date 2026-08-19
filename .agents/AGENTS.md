@@ -153,3 +153,7 @@ Phase 6: Quality Verification, Review, Tech Docs (tech-doc-writer) & Delivery
 - **Error Handling**: Handle errors explicitly, never swallow silently.
 - **Data Privacy**: Strictly anonymize test data; never use real production credentials in dev.
 - **Traceability**: All scope changes must be documented in the feature's Change Log.
+- **Git Commit Governance**:
+  - **Zero Auto-Commit**: Never commit without user review and explicit request.
+  - **Modular Commits**: Break down commits into granular, logical parts (Spec/Docs -> Shared Types -> Backend API -> Frontend UI -> Feature Docs).
+  - **Single-Line English Commits**: Strictly single-line Conventional Commits in English (e.g. `feat(scope): concise description`).

@@ -357,7 +357,14 @@ export class DecksService {
     let parsedTags: string[] | null = null;
     if (deck.tags) {
       try {
-        parsedTags = JSON.parse(deck.tags);
+        const parsed = JSON.parse(deck.tags) as unknown;
+        if (Array.isArray(parsed)) {
+          parsedTags = parsed.filter(
+            (item): item is string => typeof item === 'string',
+          );
+        } else {
+          parsedTags = deck.tags.split(',').map((t) => t.trim());
+        }
       } catch {
         parsedTags = deck.tags.split(',').map((t) => t.trim());
       }

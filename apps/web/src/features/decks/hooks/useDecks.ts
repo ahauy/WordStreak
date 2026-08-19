@@ -43,8 +43,39 @@ export function useDecks(initialStatus: "active" | "archived" = "active") {
   }, [statusTab, searchQuery, sortBy]);
 
   useEffect(() => {
-    fetchDecks();
-  }, [fetchDecks]);
+    let ignore = false;
+    const query: QueryDecksDto = {
+      status: statusTab,
+      search: searchQuery.trim() || undefined,
+      sortBy,
+      sortOrder: sortBy === "title" ? "asc" : "desc",
+    };
+    decksService
+      .getDecks(query)
+      .then((data) => {
+        if (!ignore) {
+          setDecks(data);
+          setError(null);
+        }
+      })
+      .catch((err: unknown) => {
+        if (!ignore) {
+          const message =
+            err instanceof Error
+              ? err.message
+              : "Không thể tải danh sách bộ từ vựng";
+          setError(message);
+        }
+      })
+      .finally(() => {
+        if (!ignore) {
+          setIsLoading(false);
+        }
+      });
+    return () => {
+      ignore = true;
+    };
+  }, [statusTab, searchQuery, sortBy]);
 
   const createDeck = async (dto: CreateDeckDto): Promise<DeckResponse> => {
     const newDeck = await decksService.createDeck(dto);

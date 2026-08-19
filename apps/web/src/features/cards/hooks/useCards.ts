@@ -31,8 +31,35 @@ export function useCards(deckId: string) {
   }, [deckId]);
 
   useEffect(() => {
-    fetchCards();
-  }, [fetchCards]);
+    let ignore = false;
+    if (deckId) {
+      cardsService
+        .getDeckCards(deckId)
+        .then((data) => {
+          if (!ignore) {
+            setCards(data);
+            setError(null);
+          }
+        })
+        .catch((err: unknown) => {
+          if (!ignore) {
+            const message =
+              err instanceof Error
+                ? err.message
+                : "Không thể tải danh sách thẻ từ vựng";
+            setError(message);
+          }
+        })
+        .finally(() => {
+          if (!ignore) {
+            setIsLoading(false);
+          }
+        });
+    }
+    return () => {
+      ignore = true;
+    };
+  }, [deckId]);
 
   const createCard = async (dto: CreateCardDto): Promise<CardResponse> => {
     const newCard = await cardsService.createCard(deckId, dto);
