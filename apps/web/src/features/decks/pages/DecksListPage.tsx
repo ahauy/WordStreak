@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Layers,
@@ -18,6 +19,7 @@ import { DashboardNavbar } from "../../dashboard/components/DashboardNavbar";
 import type { DeckResponse } from "@wordstreak/shared-types";
 
 export const DecksListPage: React.FC = () => {
+  const navigate = useNavigate();
   const {
     decks,
     isLoading,
@@ -40,8 +42,7 @@ export const DecksListPage: React.FC = () => {
   const [deletingDeck, setDeletingDeck] = useState<DeckResponse | null>(null);
 
   const handleSelectDeck = (deck: DeckResponse) => {
-    // Navigate or trigger practice
-    console.log("Selected deck:", deck);
+    navigate(`/decks/${deck.id}`);
   };
 
   return (

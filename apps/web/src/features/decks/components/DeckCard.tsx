@@ -298,7 +298,8 @@ export const DeckCard: React.FC<DeckCardProps> = ({
 
             {/* Title & Description */}
             <h3
-              className="text-base sm:text-lg font-bold text-black group-hover:text-[#9333ea] transition-colors leading-snug line-clamp-1"
+              onClick={() => onSelect && onSelect(deck)}
+              className="text-base sm:text-lg font-bold text-black group-hover:text-[#9333ea] transition-colors leading-snug line-clamp-1 cursor-pointer"
               style={{ fontFamily: "var(--font-display)" }}
             >
               {deck.title}
