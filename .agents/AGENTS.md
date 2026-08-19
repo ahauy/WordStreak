@@ -163,4 +163,7 @@ Phase 6: Quality Verification, Review, Tech Docs (tech-doc-writer) & Delivery
   - **Modular Commits**: Break down commits into granular, logical parts (Spec/Docs -> Shared Types -> Backend API -> Frontend UI -> Feature Docs).
   - **Single-Line English Commits**: Strictly single-line Conventional Commits in English (e.g. `feat(scope): concise description`).
   - **Branch Reuse Priority**: Always prioritize existing active branches for related work, fixes, or refinements; avoid creating new branches unless strictly necessary for completely independent scope separation.
+  - **Auto-Sync & Drift Refresh**: Before coding, auto-fetch `origin/main` and rebase active branch; auto-refresh `pnpm install` and Prisma client on schema/dependency updates.
+  - **Smart Conflict Resolution**: Auto-merge conflict markers semantically, verify with passing tests, and abort safely if business logic is ambiguous.
+  - **Multi-Scope Isolation**: Auto-detect cross-domain changes, notify user, and isolate files into their respective dedicated branches.
   - **English PR Brief**: Always provide a ready-to-copy English PR title and description upon remote push.

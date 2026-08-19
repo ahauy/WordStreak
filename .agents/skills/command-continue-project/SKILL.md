@@ -22,6 +22,20 @@ This command skill automatically inspects project progress in [PRODUCT_BACKLOG_R
 
 ## Execution Workflow
 
+### Step 0: Pre-flight Git Sync & Environment Refresh
+
+Before starting analysis or code, ensure the working environment is synced with the latest codebase:
+
+1. **Check Branch & Sync with Remote**:
+   - Fetch remote main: `git fetch origin main`.
+   - If on `main`: Prompt/switch to the designated feature/chore branch (`git checkout -b feat/<slug> origin/main`).
+   - If on an active feature branch: Safely rebase onto latest `origin/main` (`git rebase origin/main`).
+   - _Working tree protection_: If uncommitted changes exist, run `git stash push -m "pre-sync-stash"`, execute rebase, and restore with `git stash pop`.
+
+2. **Monorepo Ecosystem Drift Check**:
+   - If `pnpm-lock.yaml` or `package.json` was updated during sync: Run `pnpm install`.
+   - If `prisma/schema.prisma` or `prisma/migrations/` was updated during sync: Run `pnpm --filter api prisma generate`.
+
 ### Step 1: Scan Backlog & Roadmap
 
 1. Read `docs/PRODUCT_BACKLOG_ROADMAP.md`.
