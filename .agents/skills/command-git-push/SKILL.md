@@ -24,11 +24,28 @@ This command skill automates git staging, validates quality and user guide gates
 
 ## Execution Workflow
 
-### Step 1: Check Git Status & Current Branch
+### Step 1: Check Git Status & Multi-Scope Detection
 
-1. Run `git status` and `git branch --show-current`.
+1. Run `git status` and `CURRENT_BRANCH=$(git branch --show-current)`.
 2. If the working tree is clean with no changes, notify the user and exit.
-3. Categorize all modified, added, or deleted files.
+3. **Automated Scope & Domain Analysis**:
+   - Categorize every changed file by its domain/scope (e.g., `auth`, `decks`, `cards`, `study`, `agents`, `docs`, `config`).
+   - Compare detected scopes against `CURRENT_BRANCH`.
+4. **Multi-Scope Routing**:
+   - **Single Scope**: If all files align with `CURRENT_BRANCH`, proceed normally to Step 2.
+   - **Multiple Scopes (Cross-Domain Changes)**:
+     - Alert the user:
+       > 📢 **Multi-Scope Changes Detected:** Modified files belong to multiple distinct domains. Auto-splitting changes across respective branches.
+     - Group files by target branch (e.g., `Group 1 -> CURRENT_BRANCH`, `Group 2 -> feat/deck-crud-management`, `Group 3 -> feat/auth-ui-redesign`).
+     - Execute **Automated Multi-Branch Processing**:
+       1. Stage and commit Group 1 on `CURRENT_BRANCH`, then push.
+       2. For each subsequent Group:
+          - Stash remaining unstaged files (`git stash push -m "multi-scope-stash"`).
+          - Checkout/create the target branch (`git checkout <target-branch>`).
+          - Restore corresponding files (`git checkout stash@{0} -- <files_for_this_scope>`).
+          - Execute Modular Commits (Step 3) and Smart Push (Step 4).
+       3. Switch back to the original `CURRENT_BRANCH`.
+       4. Report summary for all processed branches in Step 5.
 
 ### Step 2: Pre-Commit User Guide Gate (UI Changes Only)
 
@@ -73,12 +90,26 @@ Never combine unrelated layers into a single monolithic commit. Group files and 
 > - Conventional Commits standard: `<type>(<scope>): <subject>` (under 72 chars, imperative mood, no trailing period).
 > - Do not include newlines `\n` or markdown backticks inside `-m "..."`.
 
-### Step 4: Push to Remote
+### Step 4: Smart Push & Auto Conflict Resolution
 
 1. Retrieve current branch name: `CURRENT_BRANCH=$(git branch --show-current)`.
-2. Execute push:
-   - `git push origin <CURRENT_BRANCH>`
-   - (If upstream is not set: `git push -u origin <CURRENT_BRANCH>`).
+2. **Main Branch Protection**:
+   - Direct push to `main` is restricted. If currently on `main`, checkout a feature branch (`feat/<slug>`, `chore/<slug>`) before committing/pushing.
+3. **Execute Push & Handle Non-Fast-Forward**:
+   - Attempt push: `git push origin <CURRENT_BRANCH>` (or `git push -u origin <CURRENT_BRANCH>`).
+   - If rejected due to remote updates (`[rejected - non-fast-forward]`):
+     1. Run `git fetch origin <CURRENT_BRANCH>`.
+     2. Rebase onto remote branch: `git rebase origin/<CURRENT_BRANCH>`.
+4. **Automatic Semantic Conflict Resolution**:
+   - If a merge/rebase conflict occurs (`<<<<<<<`, `=======`, `>>>>>>>`):
+     1. Identify conflicted files: `git diff --name-only --diff-filter=U`.
+     2. **Semantic Resolution**: Intelligently merge both sets of changes, preserving domain logic, typing contracts, and updated code.
+     3. Remove all conflict markers.
+     4. **Verification Gate**: Run test suite (`pnpm test`) and typecheck to verify resolution integrity.
+     5. Stage resolved files: `git add <resolved-files>`.
+     6. Complete rebase: `git rebase --continue`.
+     7. Retry `git push origin <CURRENT_BRANCH>`.
+   - _Safety Fallback_: If conflict logic has irreconcilable domain ambiguity, run `git rebase --abort` and present the exact conflicting sections for user decision.
 
 ### Step 5: Report Results & Generate English PR Brief
 

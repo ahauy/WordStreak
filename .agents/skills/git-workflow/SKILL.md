@@ -51,6 +51,25 @@ Best practices for Git version control, branching strategies, and collaborative 
    - Whenever pushing changes to a remote branch (or completing a commit/push cycle), **ALWAYS** provide a ready-to-copy **Pull Request Title and Description in English** following the PR template (`## What & Why`, `## Key Changes`, `## Verification`, `## Screenshots / Artifacts`).
    - This ensures immediate traceability, clean review handoff, and frictionless PR creation on GitHub.
 
+7. **Pre-Flight Auto-Sync with `origin/main` & Monorepo Drift Refresh**:
+   - Before starting new work or resuming a roadmap story on any branch, **ALWAYS** fetch `origin/main` and rebase to keep local history up-to-date.
+   - If `pnpm-lock.yaml` changed during rebase: run `pnpm install`.
+   - If `prisma/schema.prisma` or migrations changed during rebase: run `pnpm --filter api prisma generate`.
+
+8. **Intelligent Semantic Conflict Resolution with Verification Gate**:
+   - When a rebase/merge conflict occurs (`<<<<<<<`, `=======`, `>>>>>>>`):
+     1. Automatically parse both sides of the conflict.
+     2. Semantically merge the changes, preserving business logic and type safety.
+     3. Remove all conflict markers.
+     4. **MANDATORY Gate**: Run unit/component tests (`pnpm test`) and typecheck before running `git rebase --continue`.
+     5. If business rules are inherently ambiguous or conflicting, abort cleanly with `git rebase --abort` and ask the user.
+
+9. **Multi-Scope Detection & Automatic Branch Isolation**:
+   - When unstaged or modified changes span across multiple unrelated domains (e.g. `auth` vs `decks` vs `agents`):
+     - **NEVER** lump them all into the current branch.
+     - **ALWAYS** notify the user with a scope breakdown table.
+     - **Auto-split & isolate**: Commit the files matching the current branch first, then automatically checkout/switch to the relevant target branches to commit and push the remaining files into their respective isolated branches.
+
 ## When to Activate
 
 - Setting up Git workflow for a new project
