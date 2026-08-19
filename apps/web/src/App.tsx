@@ -1,5 +1,12 @@
 import { useEffect } from "react";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  Navigate,
+  useLocation,
+} from "react-router-dom";
+import { AnimatePresence } from "framer-motion";
 import { LoginPage } from "./features/auth/pages/LoginPage";
 import { RegisterPage } from "./features/auth/pages/RegisterPage";
 import { DashboardPage } from "./features/dashboard/pages/DashboardPage";
@@ -8,18 +15,12 @@ import { ProtectedRoute } from "./features/auth/components/ProtectedRoute";
 import { useAuthStore } from "./store/useAuthStore";
 import { useThemeStore } from "./store/useThemeStore";
 
-function App() {
-  const { initializeAuth } = useAuthStore();
-  const { initializeTheme } = useThemeStore();
-
-  useEffect(() => {
-    initializeAuth();
-    initializeTheme();
-  }, [initializeAuth, initializeTheme]);
+function AnimatedRoutes() {
+  const location = useLocation();
 
   return (
-    <BrowserRouter>
-      <Routes>
+    <AnimatePresence mode="wait" initial={false}>
+      <Routes location={location} key={location.pathname}>
         {/* Landing Page (public) */}
         <Route path="/" element={<LandingPage />} />
 
@@ -40,6 +41,22 @@ function App() {
         {/* Catch-all */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
+    </AnimatePresence>
+  );
+}
+
+function App() {
+  const { initializeAuth } = useAuthStore();
+  const { initializeTheme } = useThemeStore();
+
+  useEffect(() => {
+    initializeAuth();
+    initializeTheme();
+  }, [initializeAuth, initializeTheme]);
+
+  return (
+    <BrowserRouter>
+      <AnimatedRoutes />
     </BrowserRouter>
   );
 }

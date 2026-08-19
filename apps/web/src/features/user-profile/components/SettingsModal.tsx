@@ -45,7 +45,9 @@ const SettingsModalContent: React.FC<SettingsModalProps> = ({
 
   // Profile / Goal Tab State
   const [dailyGoal, setDailyGoal] = useState<number>(user?.dailyGoal || 10);
-  const [isGoalCustom, setIsGoalCustom] = useState<boolean>(false);
+  const [isGoalCustom, setIsGoalCustom] = useState<boolean>(
+    !GOAL_PRESETS.some((preset) => preset.value === (user?.dailyGoal || 10)),
+  );
   const [customGoalInput, setCustomGoalInput] = useState<string>(
     String(user?.dailyGoal || 10),
   );
