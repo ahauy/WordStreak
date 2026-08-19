@@ -152,8 +152,9 @@ Use `implementation-orchestrator` (Stage 9) or `subagent-driven-development` to:
 5. **MANDATORY**: Read and comply with Tech Skills in `.agents/skills/` BEFORE writing code or documentation:
    - Technical docs, architecture & AGENTS → `technical-documentation`
    - React/TSX → `frontend-patterns` + `frontend-a11y`
-   - UI design: Landing, Marketing, Public surfaces → `design-taste-frontend` + `ui-taste-pro`
-   - UI design: In-App, Dashboard, Study/Flashcards, Decks → `design-taste-product` + `ui-taste-pro`
+   - UI design: Landing, Marketing, Public surfaces → `frontend-design` + `design-taste-frontend` + `ui-taste-pro`
+   - UI design: In-App, Dashboard, Study/Flashcards, Decks → `frontend-design` + `design-taste-product` + `ui-taste-pro`
+   - UI animation & micro-interactions → `motion-design`
    - UI visual review & component QA → `ui-design-review`
    - NestJS backend → `nestjs-patterns` + `backend-patterns`
    - REST API → `api-design` + `backend-patterns`
