@@ -1,144 +1,238 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Flame, Sparkles, Volume2, ArrowRight } from "lucide-react";
+import { ArrowRight, Volume2, Sparkles, Check } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { PurpleStreakFlame } from "./PurpleStreakFlame";
+
+const sampleWordsData: {
+  [key: string]: { ipa: string; pos: string; def: string; example: string };
+} = {
+  serendipity: {
+    ipa: "/ˌser.ənˈdɪp.ə.ti/",
+    pos: "noun",
+    def: "Discovering valuable or pleasant things by chance in a happy way.",
+    example:
+      "Discovering WordStreak was pure serendipity for my IELTS vocabulary.",
+  },
+  ubiquitous: {
+    ipa: "/juːˈbɪk.wɪ.təs/",
+    pos: "adj",
+    def: "Present, appearing, or found everywhere simultaneously.",
+    example:
+      "Smartphones have made instant English dictionary lookups ubiquitous.",
+  },
+  resilience: {
+    ipa: "/rɪˈzɪl.jəns/",
+    pos: "noun",
+    def: "The capacity to recover quickly from difficulties; toughness.",
+    example: "Daily 5-minute study streaks build remarkable memory resilience.",
+  },
+  ephemeral: {
+    ipa: "/ɪˈfem.ər.əl/",
+    pos: "adj",
+    def: "Lasting for a very short time; transitory; fleeting.",
+    example:
+      "Cramming before an exam creates ephemeral memory that vanishes quickly.",
+  },
+};
 
 export function HeroSection() {
-  const [isPlaying, setIsPlaying] = useState(false);
+  const [selectedWord, setSelectedWord] = useState("serendipity");
+  const [isPlayingAudio, setIsPlayingAudio] = useState(false);
 
-  const handlePlaySound = () => {
-    setIsPlaying(true);
+  const wordData = sampleWordsData[selectedWord] || sampleWordsData.serendipity;
+
+  const handlePlayAudio = (wordToSpeak: string) => {
+    setIsPlayingAudio(true);
     if ("speechSynthesis" in window) {
-      const utterance = new SpeechSynthesisUtterance("serendipity");
-      utterance.rate = 0.9;
-      utterance.onend = () => setIsPlaying(false);
-      utterance.onerror = () => setIsPlaying(false);
+      const utterance = new SpeechSynthesisUtterance(wordToSpeak);
+      utterance.rate = 0.88;
+      utterance.lang = "en-US";
+      utterance.onend = () => setIsPlayingAudio(false);
+      utterance.onerror = () => setIsPlayingAudio(false);
       window.speechSynthesis.speak(utterance);
     } else {
-      setTimeout(() => setIsPlaying(false), 900);
+      setTimeout(() => setIsPlayingAudio(false), 900);
     }
   };
 
   return (
-    <section className="relative flex min-h-[92vh] flex-col items-center justify-center overflow-hidden pt-28 pb-20 sm:pt-36 sm:pb-28">
-      {/* Optional Video Background */}
-      {import.meta.env.VITE_HERO_VIDEO_URL && (
-        <div className="hero-video-container">
-          <video autoPlay loop muted playsInline poster="" aria-hidden="true">
-            <source
-              src={import.meta.env.VITE_HERO_VIDEO_URL}
-              type="video/mp4"
-            />
-          </video>
-        </div>
-      )}
-
-      {/* Hero Content Container */}
-      <div className="relative z-10 mx-auto max-w-5xl px-6 text-center sm:px-8">
-        {/* Habit Badge */}
-        <div className="animate-fade-rise inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/[0.06] px-4 py-1.5 backdrop-blur-md mb-8">
-          <Sparkles className="w-4 h-4 text-[#f5a623]" />
-          <span className="text-xs font-semibold uppercase tracking-wider text-white">
-            Daily Spaced Repetition for Learners
-          </span>
-        </div>
-
-        {/* Learner-Friendly Modern Display Headline */}
-        <h1
-          className="animate-fade-rise mx-auto max-w-4xl text-5xl font-extrabold leading-[1.08] tracking-tight text-white sm:text-6xl md:text-7xl lg:text-8xl"
-          style={{
-            fontFamily: "var(--font-display)",
-            textShadow: "0 4px 28px rgba(0, 0, 0, 0.75)",
-          }}
+    <section className="pt-24 pb-14 sm:pt-32 sm:pb-16 text-center overflow-hidden">
+      <div className="mx-auto max-w-3xl px-4 sm:px-6 flex flex-col items-center">
+        {/* Burning Purple Streak Flame */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+          className="mb-4"
         >
-          Master vocabulary.{" "}
-          <span className="block mt-2 bg-gradient-to-r from-white via-[#fde68a] to-[#f5a623] bg-clip-text text-transparent">
-            Never forget a word.
-          </span>
-        </h1>
+          <PurpleStreakFlame size="lg" />
+        </motion.div>
 
-        <p
-          className="animate-fade-rise-delay mx-auto mt-6 max-w-2xl text-base font-normal leading-relaxed text-[#cbd5e1] sm:text-lg md:text-xl"
-          style={{
-            fontFamily: "var(--font-body)",
-            textShadow: "0 2px 14px rgba(0, 0, 0, 0.8)",
-          }}
+        {/* Streak Flame Pill Badge */}
+        <motion.div
+          initial={{ opacity: 0, y: -8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, delay: 0.1 }}
+          className="mb-4 inline-flex items-center gap-1.5 rounded-full border border-[#e5e5e5] bg-[#fafafa] px-3.5 py-1 text-xs font-mono text-black shadow-xs"
         >
-          Scientifically scheduled reviews, active recall quizzes, and daily
-          streaks designed to turn new English words into permanent memory.
-        </p>
+          <span className="h-2 w-2 rounded-full bg-[#9333ea] animate-ping" />
+          <span>Keep your daily English streak burning · 100% Free</span>
+        </motion.div>
+
+        {/* Concise Display XL Headline */}
+        <motion.h1
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.15 }}
+          className="display-xl max-w-xl mx-auto tracking-tight"
+        >
+          Master English vocabulary.
+          <span className="block text-[#000000]">Never forget a word.</span>
+        </motion.h1>
+
+        {/* Punchy Subtitle */}
+        <motion.p
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+          className="body-md mt-3 max-w-lg mx-auto"
+        >
+          SM-2 spaced repetition, native audio IPA flashcards, and daily streak
+          protection — built for learners who want permanent memory.
+        </motion.p>
+
+        {/* Compact Interactive Word Lookup Pill */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.96 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.5, delay: 0.25 }}
+          className="mt-6 w-full max-w-md"
+        >
+          <div className="rounded-xl border border-[#e5e5e5] bg-[#fafafa] p-3.5 text-left shadow-xs transition-colors hover:border-[#d4d4d4]">
+            <div className="flex items-center justify-between border-b border-[#e5e5e5] pb-2 mb-2.5">
+              <span className="text-[11px] font-mono text-[#737373] uppercase tracking-wider">
+                Instant Word Lookup
+              </span>
+              <div className="flex gap-1">
+                {Object.keys(sampleWordsData).map((w) => (
+                  <button
+                    key={w}
+                    type="button"
+                    onClick={() => setSelectedWord(w)}
+                    className={`cursor-pointer rounded-full px-2 py-0.5 text-[11px] font-mono transition-all ${
+                      selectedWord === w
+                        ? "bg-black text-white"
+                        : "bg-white text-[#737373] border border-[#e5e5e5] hover:text-black"
+                    }`}
+                  >
+                    {w}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={selectedWord}
+                initial={{ opacity: 0, y: 4 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -4 }}
+                transition={{ duration: 0.15 }}
+                className="space-y-1.5"
+              >
+                <div className="flex items-center justify-between">
+                  <div className="flex items-baseline gap-2">
+                    <span
+                      className="text-lg font-bold tracking-tight text-black"
+                      style={{ fontFamily: "var(--font-display)" }}
+                    >
+                      {selectedWord}
+                    </span>
+                    <span className="text-xs text-[#737373] font-mono">
+                      {wordData.ipa} ·{" "}
+                      <span className="italic">{wordData.pos}</span>
+                    </span>
+                  </div>
+
+                  <motion.button
+                    whileTap={{ scale: 0.92 }}
+                    type="button"
+                    onClick={() => handlePlayAudio(selectedWord)}
+                    className="flex h-7 w-7 items-center justify-center rounded-full border border-[#e5e5e5] bg-white text-black hover:border-black transition-colors cursor-pointer"
+                    title="Play pronunciation"
+                  >
+                    {isPlayingAudio ? (
+                      <div className="flex items-center gap-0.5 h-2.5">
+                        <span className="w-0.5 h-2.5 bg-black rounded-full audio-bar-1" />
+                        <span className="w-0.5 h-2.5 bg-black rounded-full audio-bar-2" />
+                        <span className="w-0.5 h-2.5 bg-black rounded-full audio-bar-3" />
+                      </div>
+                    ) : (
+                      <Volume2 className="h-3.5 w-3.5" />
+                    )}
+                  </motion.button>
+                </div>
+
+                <p className="text-xs text-[#525252] leading-relaxed">
+                  {wordData.def}
+                </p>
+
+                <div className="rounded-md border border-[#e5e5e5] bg-white p-2 text-[11px] text-[#737373] italic">
+                  &ldquo;{wordData.example}&rdquo;
+                </div>
+              </motion.div>
+            </AnimatePresence>
+          </div>
+        </motion.div>
 
         {/* CTA Button Group */}
-        <div className="animate-fade-rise-delay-2 mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
-          <Link
-            to="/register"
-            className="group relative inline-flex items-center justify-center gap-2.5 rounded-full bg-[#f5a623] px-9 py-4 text-base font-bold text-[#060e1a] shadow-lg shadow-[#f5a623]/25 transition-all duration-200 hover:scale-[1.04] hover:bg-[#ffb940] active:scale-95"
-          >
-            <span>Start Learning for Free</span>
-            <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
-          </Link>
-          <button
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.3 }}
+          className="mt-6 flex flex-wrap items-center justify-center gap-3"
+        >
+          <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
+            <Link to="/register" className="btn-primary">
+              <Sparkles className="mr-1.5 h-3.5 w-3.5" />
+              <span>Start Learning Free</span>
+              <ArrowRight className="ml-1.5 h-3.5 w-3.5" />
+            </Link>
+          </motion.div>
+          <motion.button
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
             onClick={() =>
               document
-                .getElementById("features")
+                .getElementById("interactive-demo")
                 ?.scrollIntoView({ behavior: "smooth" })
             }
-            className="cursor-pointer rounded-full border border-white/15 bg-white/[0.04] px-8 py-4 text-base font-medium text-white backdrop-blur-md transition-all duration-200 hover:border-white/30 hover:bg-white/[0.1] active:scale-95"
+            className="btn-secondary"
           >
-            See How It Works ↓
-          </button>
-        </div>
+            Try Interactive Sandbox ↓
+          </motion.button>
+        </motion.div>
 
-        {/* Floating Interactive Live Vocab Preview Card */}
-        <div className="animate-fade-rise-delay-3 mt-14 flex justify-center">
-          <div className="animate-float w-full max-w-md rounded-2xl border border-white/15 bg-[#0b1526]/80 p-5 shadow-2xl backdrop-blur-xl transition-all duration-300 hover:border-[#f5a623]/40">
-            <div className="flex items-center justify-between border-b border-white/10 pb-3">
-              <div className="flex items-center gap-2">
-                <span className="flex h-2.5 w-2.5 rounded-full bg-[#30d158] animate-ping" />
-                <span className="text-xs font-semibold text-white/80">
-                  Daily Review · Today's Word
-                </span>
-              </div>
-              <span className="inline-flex items-center gap-1 rounded-full border border-[#f5a623]/30 bg-[#f5a623]/10 px-2.5 py-0.5 text-xs font-semibold text-[#f5a623]">
-                <Flame className="h-3.5 w-3.5 fill-[#f5a623]" /> 12 Streak
-              </span>
-            </div>
-
-            <div className="mt-3.5 flex items-center justify-between text-left">
-              <div>
-                <h3
-                  className="text-2xl font-bold text-white tracking-tight"
-                  style={{ fontFamily: "var(--font-display)" }}
-                >
-                  serendipity
-                </h3>
-                <p className="text-xs text-[#94a3b8]">
-                  <span className="font-mono">/ˌser.ənˈdɪp.ə.ti/</span> ·{" "}
-                  <span className="italic">noun</span>
-                </p>
-              </div>
-              <button
-                type="button"
-                onClick={handlePlaySound}
-                className={`flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border transition-all duration-200 focus:outline-none ${
-                  isPlaying
-                    ? "border-[#f5a623] bg-[#f5a623] text-[#060e1a] shadow-lg shadow-[#f5a623]/40"
-                    : "border-white/10 bg-white/5 text-white hover:border-[#f5a623]/50 hover:text-[#f5a623]"
-                }`}
-                title="Listen to pronunciation"
-                aria-label="Listen to pronunciation"
-              >
-                <Volume2
-                  className={`h-4 w-4 ${isPlaying ? "animate-pulse" : ""}`}
-                />
-              </button>
-            </div>
-
-            <p className="mt-2.5 rounded-xl border border-white/5 bg-white/[0.02] p-2.5 text-left text-xs leading-relaxed text-slate-300">
-              &ldquo;Finding this tool was pure serendipity — my vocabulary
-              retention doubled in two weeks.&rdquo;
-            </p>
-          </div>
-        </div>
+        {/* Free Forever & Open Trust Row */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5, delay: 0.35 }}
+          className="mt-4 flex flex-wrap items-center justify-center gap-3 text-xs text-[#a3a3a3]"
+        >
+          <span className="flex items-center gap-1">
+            <Check className="h-3 w-3 text-black" /> 100% Free Forever
+          </span>
+          <span>·</span>
+          <span className="flex items-center gap-1">
+            <Check className="h-3 w-3 text-black" /> No Ads / Paywall
+          </span>
+          <span>·</span>
+          <span className="flex items-center gap-1">
+            <Check className="h-3 w-3 text-black" /> Anki (.apkg) & CSV Export
+          </span>
+        </motion.div>
       </div>
     </section>
   );
