@@ -1,15 +1,17 @@
 import React from "react";
 import {
-  Flame,
   Target,
   BookOpen,
   Layers,
   Clock,
   TrendingUp,
   Sliders,
-  Sparkles,
   Shield,
+  Plus,
 } from "lucide-react";
+import { motion } from "framer-motion";
+import { StreakFlame } from "./StreakFlame";
+import { getFlameTier } from "../config/flameTiers";
 
 interface DashboardStatsGridProps {
   currentStreak?: number;
@@ -18,6 +20,7 @@ interface DashboardStatsGridProps {
   cardsDueToday?: number;
   totalDecks?: number;
   onOpenGoalSettings?: () => void;
+  onOpenFlameNurture?: () => void;
   onCreateDeck?: () => void;
 }
 
@@ -28,140 +31,176 @@ export const DashboardStatsGrid: React.FC<DashboardStatsGridProps> = ({
   cardsDueToday = 0,
   totalDecks = 0,
   onOpenGoalSettings,
+  onOpenFlameNurture,
   onCreateDeck,
 }) => {
+  const tierInfo = getFlameTier(currentStreak);
+
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-6">
-      {/* ─── Card 1: Current Streak ─── */}
-      <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-[#0b1526]/80 p-6 backdrop-blur-xl transition-all duration-300 hover:border-[#f5a623]/40 hover:-translate-y-1 hover:shadow-xl hover:shadow-[#f5a623]/10 group">
-        <div className="flex items-center justify-between mb-4">
-          <span className="text-xs font-bold uppercase tracking-wider text-[#94a3b8]">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
+      {/* ─── Card 1: Current Streak (Interactive Nuôi Lửa) ─── */}
+      <motion.div
+        whileHover={{ y: -2 }}
+        transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
+        onClick={onOpenFlameNurture}
+        className="relative overflow-hidden rounded-2xl border border-[#e5e5e5] bg-white p-5 sm:p-6 shadow-xs group cursor-pointer hover:border-black transition-colors"
+        title="Nhấn để mở Khu Vườn Nuôi Lửa & Tiến Hóa"
+      >
+        <div className="flex items-center justify-between mb-3">
+          <span className="text-xs font-semibold uppercase tracking-wider text-[#737373] group-hover:text-black transition-colors">
             Current Streak
           </span>
-          <div className="w-10 h-10 rounded-xl bg-[#f5a623]/15 text-[#f5a623] flex items-center justify-center group-hover:scale-110 transition-transform shadow-inner shadow-[#f5a623]/20">
-            <Flame className="w-5 h-5 fill-current animate-pulse" />
+          <div
+            className={`w-9 h-9 rounded-xl flex items-center justify-center border ${tierInfo.pillBg} ${tierInfo.pillBorder}`}
+          >
+            <StreakFlame
+              streakDays={currentStreak}
+              size="xs"
+              showEmbers={false}
+            />
           </div>
         </div>
 
         <div className="flex items-baseline gap-2">
           <span
-            className="text-4xl font-extrabold text-white tracking-tight"
+            className="text-3xl sm:text-4xl font-extrabold text-black tracking-tight"
             style={{ fontFamily: "var(--font-display)" }}
           >
             {currentStreak}
           </span>
-          <span className="text-sm font-medium text-[#94a3b8]">Days</span>
+          <span className="text-xs font-medium text-[#737373]">Days</span>
+          <span
+            className={`text-[10px] font-semibold px-2 py-0.5 rounded-full border ${tierInfo.pillBg} ${tierInfo.pillText} ${tierInfo.pillBorder}`}
+          >
+            {tierInfo.titleVi}
+          </span>
         </div>
 
-        <div className="mt-3 pt-3 border-t border-white/5 flex items-center justify-between text-xs text-[#94a3b8]">
+        <div className="mt-3 pt-3 border-t border-[#f0f0f0] flex items-center justify-between text-xs text-[#737373]">
           <span className="flex items-center gap-1">
-            <Clock className="w-3.5 h-3.5 text-[#f5a623]" /> Best:{" "}
+            <Clock className="w-3.5 h-3.5 text-[#9333ea]" /> Best:{" "}
             {longestStreak}d
           </span>
-          <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-[#30d158] bg-[#30d158]/10 px-2 py-0.5 rounded-full border border-[#30d158]/20">
+          <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-[#16a34a] bg-[#f0fdf4] px-2 py-0.5 rounded-full border border-[#bbf7d0]">
             <Shield className="w-2.5 h-2.5" /> Freeze: 1
           </span>
         </div>
-      </div>
+      </motion.div>
 
       {/* ─── Card 2: Daily Goal (Interactive) ─── */}
-      <div
+      <motion.div
+        whileHover={{ y: -2 }}
+        transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
         onClick={onOpenGoalSettings}
-        className="relative overflow-hidden rounded-2xl border border-white/10 bg-[#0b1526]/80 p-6 backdrop-blur-xl transition-all duration-300 hover:border-[#f5a623]/60 hover:-translate-y-1 hover:shadow-xl hover:shadow-[#f5a623]/15 group cursor-pointer"
+        className="relative overflow-hidden rounded-2xl border border-[#e5e5e5] bg-white p-5 sm:p-6 shadow-xs group cursor-pointer hover:border-black transition-colors"
         title="Nhấn để tùy chỉnh mục tiêu hàng ngày"
       >
-        <div className="flex items-center justify-between mb-4">
-          <span className="text-xs font-bold uppercase tracking-wider text-[#94a3b8] group-hover:text-[#f5a623] transition-colors flex items-center gap-1.5">
+        <div className="flex items-center justify-between mb-3">
+          <span className="text-xs font-semibold uppercase tracking-wider text-[#737373] group-hover:text-black transition-colors flex items-center gap-1.5">
             Daily Goal
-            <Sliders className="w-3.5 h-3.5 opacity-60 group-hover:opacity-100 group-hover:rotate-45 transition-all" />
+            <Sliders className="w-3.5 h-3.5 text-[#a3a3a3] group-hover:text-black transition-colors" />
           </span>
-          <div className="w-10 h-10 rounded-xl bg-indigo-500/15 text-indigo-400 flex items-center justify-center group-hover:scale-110 transition-transform">
-            <Target className="w-5 h-5" />
+          <div className="w-9 h-9 rounded-xl bg-[#fafafa] border border-[#e5e5e5] text-black flex items-center justify-center">
+            <Target className="w-4 h-4" />
           </div>
         </div>
 
         <div className="flex items-baseline gap-2">
           <span
-            className="text-4xl font-extrabold text-white tracking-tight"
+            className="text-3xl sm:text-4xl font-extrabold text-black tracking-tight"
             style={{ fontFamily: "var(--font-display)" }}
           >
             {dailyGoal}
           </span>
-          <span className="text-sm font-medium text-[#94a3b8]">Cards/day</span>
+          <span className="text-xs font-medium text-[#737373]">Cards/day</span>
         </div>
 
-        <div className="mt-3 pt-3 border-t border-white/5 flex items-center justify-between text-xs">
-          <span className="text-[#94a3b8] group-hover:text-[#f5a623] transition-colors flex items-center gap-1">
-            <TrendingUp className="w-3.5 h-3.5 text-[#f5a623]" />
-            <span className="group-hover:underline">Đổi mục tiêu</span>
+        <div className="mt-3 pt-3 border-t border-[#f0f0f0] flex items-center justify-between text-xs">
+          <span className="text-[#737373] group-hover:text-black transition-colors flex items-center gap-1">
+            <TrendingUp className="w-3.5 h-3.5 text-[#9333ea]" />
+            <span className="group-hover:underline font-medium">
+              Đổi mục tiêu
+            </span>
           </span>
-          <span className="text-[11px] text-[#94a3b8]">0 / {dailyGoal}</span>
+          <span className="text-[11px] font-mono text-[#737373]">
+            0 / {dailyGoal}
+          </span>
         </div>
-      </div>
+      </motion.div>
 
       {/* ─── Card 3: Due Today (SM-2 Spaced Repetition) ─── */}
-      <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-[#0b1526]/80 p-6 backdrop-blur-xl transition-all duration-300 hover:border-[#30d158]/40 hover:-translate-y-1 hover:shadow-xl hover:shadow-[#30d158]/10 group">
-        <div className="flex items-center justify-between mb-4">
-          <span className="text-xs font-bold uppercase tracking-wider text-[#94a3b8]">
+      <motion.div
+        whileHover={{ y: -2 }}
+        transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
+        className="relative overflow-hidden rounded-2xl border border-[#e5e5e5] bg-white p-5 sm:p-6 shadow-xs group"
+      >
+        <div className="flex items-center justify-between mb-3">
+          <span className="text-xs font-semibold uppercase tracking-wider text-[#737373]">
             Due Today
           </span>
-          <div className="w-10 h-10 rounded-xl bg-[#30d158]/15 text-[#30d158] flex items-center justify-center group-hover:scale-110 transition-transform">
-            <BookOpen className="w-5 h-5" />
+          <div className="w-9 h-9 rounded-xl bg-[#f0fdf4] text-[#16a34a] border border-[#bbf7d0] flex items-center justify-center">
+            <BookOpen className="w-4 h-4" />
           </div>
         </div>
 
         <div className="flex items-baseline gap-2">
           <span
-            className="text-4xl font-extrabold text-white tracking-tight"
+            className="text-3xl sm:text-4xl font-extrabold text-black tracking-tight"
             style={{ fontFamily: "var(--font-display)" }}
           >
             {cardsDueToday}
           </span>
-          <span className="text-sm font-medium text-[#94a3b8]">Cards</span>
+          <span className="text-xs font-medium text-[#737373]">Cards</span>
         </div>
 
-        <div className="mt-3 pt-3 border-t border-white/5 flex items-center justify-between text-xs text-[#30d158]">
+        <div className="mt-3 pt-3 border-t border-[#f0f0f0] flex items-center justify-between text-xs text-[#16a34a]">
           <span className="flex items-center gap-1 font-medium">
             ✓{" "}
             {cardsDueToday === 0 ? "All reviews complete!" : "Ready to review"}
           </span>
-          <span className="text-[11px] text-[#94a3b8]">SM-2 Active</span>
+          <span className="text-[10px] font-mono text-[#737373]">
+            SM-2 Active
+          </span>
         </div>
-      </div>
+      </motion.div>
 
       {/* ─── Card 4: Vocabulary Decks ─── */}
-      <div
+      <motion.div
+        whileHover={{ y: -2 }}
+        transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
         onClick={onCreateDeck}
-        className="relative overflow-hidden rounded-2xl border border-white/10 bg-[#0b1526]/80 p-6 backdrop-blur-xl transition-all duration-300 hover:border-purple-500/40 hover:-translate-y-1 hover:shadow-xl hover:shadow-purple-500/10 group cursor-pointer"
+        className="relative overflow-hidden rounded-2xl border border-[#e5e5e5] bg-white p-5 sm:p-6 shadow-xs group cursor-pointer hover:border-black transition-colors"
         title="Tạo bộ thẻ mới"
       >
-        <div className="flex items-center justify-between mb-4">
-          <span className="text-xs font-bold uppercase tracking-wider text-[#94a3b8]">
+        <div className="flex items-center justify-between mb-3">
+          <span className="text-xs font-semibold uppercase tracking-wider text-[#737373] group-hover:text-black transition-colors">
             Vocabulary Decks
           </span>
-          <div className="w-10 h-10 rounded-xl bg-purple-500/15 text-purple-400 flex items-center justify-center group-hover:scale-110 transition-transform">
-            <Layers className="w-5 h-5" />
+          <div className="w-9 h-9 rounded-xl bg-[#f3e8ff] text-[#7e22ce] border border-[#e9d5ff] flex items-center justify-center">
+            <Layers className="w-4 h-4" />
           </div>
         </div>
 
         <div className="flex items-baseline gap-2">
           <span
-            className="text-4xl font-extrabold text-white tracking-tight"
+            className="text-3xl sm:text-4xl font-extrabold text-black tracking-tight"
             style={{ fontFamily: "var(--font-display)" }}
           >
             {totalDecks}
           </span>
-          <span className="text-sm font-medium text-[#94a3b8]">Decks</span>
+          <span className="text-xs font-medium text-[#737373]">Decks</span>
         </div>
 
-        <div className="mt-3 pt-3 border-t border-white/5 flex items-center justify-between text-xs text-[#94a3b8]">
-          <span className="group-hover:text-purple-300 transition-colors flex items-center gap-1">
-            <Sparkles className="w-3.5 h-3.5 text-purple-400" />
+        <div className="mt-3 pt-3 border-t border-[#f0f0f0] flex items-center justify-between text-xs text-[#737373]">
+          <span className="group-hover:text-black transition-colors flex items-center gap-1 font-medium">
+            <Plus className="w-3.5 h-3.5 text-[#9333ea]" />
             <span>Thêm bộ từ mới</span>
           </span>
-          <span className="text-[11px] text-purple-400 font-bold">+ New</span>
+          <span className="text-[10px] font-mono text-[#7e22ce] font-bold bg-[#f3e8ff] px-2 py-0.5 rounded-full border border-[#e9d5ff]">
+            + New
+          </span>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 };

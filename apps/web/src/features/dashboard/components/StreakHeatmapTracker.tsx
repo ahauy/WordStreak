@@ -1,5 +1,7 @@
 import React, { useState, useMemo } from "react";
-import { Flame, TrendingUp, Award } from "lucide-react";
+import { TrendingUp, Award } from "lucide-react";
+import { motion } from "framer-motion";
+import { PurpleStreakFlame } from "../../landing/components/PurpleStreakFlame";
 
 interface HeatmapCell {
   week: number;
@@ -82,58 +84,67 @@ export const StreakHeatmapTracker: React.FC<StreakHeatmapTrackerProps> = ({
 
   const getCellColor = (level: number, isHovered: boolean) => {
     if (isHovered) {
-      return "bg-[#ffb940] ring-2 ring-[#f5a623] shadow-md shadow-[#f5a623]/80 scale-125 z-20";
+      return "bg-[#7e22ce] ring-2 ring-[#9333ea] shadow-md shadow-[#9333ea]/30 scale-125 z-20";
     }
 
     switch (level) {
       case 0:
-        return "bg-white/[0.04] border border-white/5";
+        return "bg-[#fafafa] border border-[#e5e5e5]";
       case 1:
-        return "bg-[#78350f]/80 border border-[#92400e]/40";
+        return "bg-[#f3e8ff] border border-[#e9d5ff]";
       case 2:
-        return "bg-[#b45309] border border-[#d97706]/50";
+        return "bg-[#d8b4fe] border border-[#c084fc]";
       case 3:
-        return "bg-[#d97706] border border-[#f59e0b]";
+        return "bg-[#a855f7] border border-[#9333ea]";
       case 4:
-        return "bg-[#f5a623] border border-[#fbbf24] shadow-sm shadow-[#f5a623]/40";
+        return "bg-[#7e22ce] border border-[#6b21a8] shadow-xs";
       default:
-        return "bg-white/[0.04]";
+        return "bg-[#fafafa]";
     }
   };
 
   return (
-    <div className="rounded-3xl border border-white/10 bg-[#0b1526]/75 p-6 sm:p-8 backdrop-blur-2xl shadow-xl space-y-6">
+    <motion.div
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+      className="rounded-3xl border border-[#e5e5e5] bg-white p-6 sm:p-8 shadow-xs space-y-6"
+    >
       {/* Tracker Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-white/10 pb-5">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#f0f0f0] pb-5">
         <div>
-          <div className="inline-flex items-center gap-2 rounded-full border border-[#f5a623]/30 bg-[#f5a623]/10 px-3 py-1 mb-2">
-            <Flame className="w-3.5 h-3.5 text-[#f5a623] fill-[#f5a623]" />
-            <span className="text-[11px] font-bold uppercase tracking-wider text-[#f5a623]">
+          <div className="inline-flex items-center gap-1.5 rounded-full border border-[#e9d5ff] bg-[#f3e8ff] px-3 py-1 mb-2 text-[#7e22ce]">
+            <PurpleStreakFlame
+              size="sm"
+              showEmbers={false}
+              className="w-3.5 h-3.5"
+            />
+            <span className="text-[11px] font-bold uppercase tracking-wider">
               Streak & Habit Tracker
             </span>
           </div>
           <h2
-            className="text-xl sm:text-2xl font-bold text-white tracking-tight"
+            className="text-xl sm:text-2xl font-bold text-black tracking-tight"
             style={{ fontFamily: "var(--font-display)" }}
           >
             Nhật ký duy trì Streak & Ôn tập
           </h2>
-          <p className="text-xs sm:text-sm text-[#94a3b8] mt-0.5">
+          <p className="text-xs sm:text-sm text-[#737373] mt-0.5">
             Theo dõi mật độ học và chuỗi ngày rèn luyện trí nhớ không ngắt
             quãng.
           </p>
         </div>
 
         {/* Quick Milestone Badge */}
-        <div className="flex items-center gap-3 bg-white/[0.03] border border-white/10 rounded-2xl px-4 py-2.5 shrink-0">
-          <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-[#f5a623] to-[#ffb940] flex items-center justify-center text-[#060e1a] font-bold shadow-md shadow-[#f5a623]/25">
+        <div className="flex items-center gap-3 bg-[#fafafa] border border-[#e5e5e5] rounded-2xl px-4 py-2.5 shrink-0">
+          <div className="w-9 h-9 rounded-xl bg-[#f3e8ff] text-[#7e22ce] border border-[#e9d5ff] flex items-center justify-center font-bold">
             <Award className="w-5 h-5" />
           </div>
           <div>
-            <div className="text-[11px] text-[#94a3b8]">Mục tiêu tiếp theo</div>
-            <div className="text-xs font-bold text-white flex items-center gap-1">
+            <div className="text-[11px] text-[#737373]">Mục tiêu tiếp theo</div>
+            <div className="text-xs font-bold text-black flex items-center gap-1">
               <span>Huy hiệu 7 ngày</span>
-              <span className="text-[#f5a623] font-mono">
+              <span className="text-[#7e22ce] font-mono">
                 ({currentStreak}/7d)
               </span>
             </div>
@@ -156,7 +167,7 @@ export const StreakHeatmapTracker: React.FC<StreakHeatmapTrackerProps> = ({
                     key={`${cell.week}-${cell.day}`}
                     onMouseEnter={() => setActiveCell(cell)}
                     onMouseLeave={() => setActiveCell(null)}
-                    className={`h-4 w-full rounded-xs transition-all duration-200 cursor-pointer ${getCellColor(
+                    className={`h-4 w-full rounded-xs transition-all duration-150 cursor-pointer ${getCellColor(
                       cell.level,
                       isHovered,
                     )}`}
@@ -170,22 +181,22 @@ export const StreakHeatmapTracker: React.FC<StreakHeatmapTrackerProps> = ({
       </div>
 
       {/* Heatmap Footer / Metrics / Legend */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pt-2 border-t border-white/5 text-xs text-[#94a3b8]">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pt-2 border-t border-[#f0f0f0] text-xs text-[#737373]">
         {/* Dynamic Tooltip Summary */}
         <div className="flex items-center gap-2">
-          <TrendingUp className="w-4 h-4 text-[#30d158]" />
+          <TrendingUp className="w-4 h-4 text-[#16a34a]" />
           {activeCell ? (
-            <span className="text-white font-medium">
+            <span className="text-black font-medium">
               {activeCell.dateStr}:{" "}
-              <strong className="text-[#f5a623]">
+              <strong className="text-[#7e22ce]">
                 {activeCell.reviews} thẻ ôn tập
               </strong>
             </span>
           ) : (
-            <span className="text-white font-medium">
+            <span className="text-black font-medium">
               Đã hoàn thành{" "}
-              <strong className="text-[#f5a623]">{totalReviews} thẻ</strong> qua{" "}
-              <strong className="text-white">{activeDaysCount} ngày</strong> ôn
+              <strong className="text-[#7e22ce]">{totalReviews} thẻ</strong> qua{" "}
+              <strong className="text-black">{activeDaysCount} ngày</strong> ôn
               tập
             </span>
           )}
@@ -194,14 +205,14 @@ export const StreakHeatmapTracker: React.FC<StreakHeatmapTrackerProps> = ({
         {/* Legend */}
         <div className="flex items-center gap-2 text-[11px]">
           <span>Ít hơn</span>
-          <div className="w-3.5 h-3.5 rounded-xs bg-white/[0.04] border border-white/5" />
-          <div className="w-3.5 h-3.5 rounded-xs bg-[#78350f]/80" />
-          <div className="w-3.5 h-3.5 rounded-xs bg-[#b45309]" />
-          <div className="w-3.5 h-3.5 rounded-xs bg-[#d97706]" />
-          <div className="w-3.5 h-3.5 rounded-xs bg-[#f5a623] shadow-xs shadow-[#f5a623]/50" />
+          <div className="w-3.5 h-3.5 rounded-xs bg-[#fafafa] border border-[#e5e5e5]" />
+          <div className="w-3.5 h-3.5 rounded-xs bg-[#f3e8ff] border border-[#e9d5ff]" />
+          <div className="w-3.5 h-3.5 rounded-xs bg-[#d8b4fe]" />
+          <div className="w-3.5 h-3.5 rounded-xs bg-[#a855f7]" />
+          <div className="w-3.5 h-3.5 rounded-xs bg-[#7e22ce]" />
           <span>Nhiều hơn</span>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };

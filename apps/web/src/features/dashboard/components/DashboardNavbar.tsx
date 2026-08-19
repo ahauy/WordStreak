@@ -1,102 +1,180 @@
-import React from "react";
-import { Link } from "react-router-dom";
-import {
-  Sparkles,
-  Flame,
-  Settings as SettingsIcon,
-  LogOut,
-} from "lucide-react";
+import React, { useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { LogOut, Layers, Home } from "lucide-react";
 import { UserAvatar } from "../../user-profile/components/UserAvatar";
+import { SettingsModal } from "../../user-profile/components/SettingsModal";
+import { StreakFlame } from "./StreakFlame";
+import { getFlameTier } from "../config/flameTiers";
+import { useAuthStore } from "../../../store/useAuthStore";
 import type { AuthUser } from "@wordstreak/shared-types";
 
 interface DashboardNavbarProps {
-  user: AuthUser | null;
-  onOpenSettings: (tab?: "profile" | "avatar" | "security") => void;
-  onLogout: () => void;
+  user?: AuthUser | null;
+  currentStreak?: number;
+  onOpenSettings?: (tab?: "profile" | "avatar" | "security") => void;
+  onOpenFlameNurture?: () => void;
+  onLogout?: () => void;
 }
 
 export const DashboardNavbar: React.FC<DashboardNavbarProps> = ({
-  user,
-  onOpenSettings,
-  onLogout,
+  user: propUser,
+  currentStreak = 0,
+  onOpenSettings: propOpenSettings,
+  onOpenFlameNurture,
+  onLogout: propLogout,
 }) => {
+  const { user: storeUser, logout: storeLogout } = useAuthStore();
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const [isInternalSettingsOpen, setIsInternalSettingsOpen] = useState(false);
+  const [internalSettingsTab, setInternalSettingsTab] = useState<
+    "profile" | "avatar" | "security"
+  >("profile");
+
+  const user = propUser !== undefined ? propUser : storeUser;
+  const tierInfo = getFlameTier(currentStreak);
+
+  const handleOpenSettings = (
+    tab: "profile" | "avatar" | "security" = "profile",
+  ) => {
+    if (propOpenSettings) {
+      propOpenSettings(tab);
+    } else {
+      setInternalSettingsTab(tab);
+      setIsInternalSettingsOpen(true);
+    }
+  };
+
+  const handleLogout = async () => {
+    if (propLogout) {
+      propLogout();
+    } else {
+      await storeLogout();
+      navigate("/login", { replace: true });
+    }
+  };
+
+  const isDashboardActive = location.pathname === "/dashboard";
+  const isDecksActive = location.pathname.startsWith("/decks");
+
   return (
-    <header className="sticky top-0 z-30 w-full border-b border-white/8 bg-[#060e1a]/85 backdrop-blur-2xl transition-colors">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
-        {/* Brand Logo */}
-        <Link
-          to="/dashboard"
-          className="flex items-center gap-3 group focus:outline-none"
-        >
-          <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-[#f5a623] to-[#ffb940] flex items-center justify-center text-[#060e1a] shadow-lg shadow-[#f5a623]/25 group-hover:scale-105 transition-transform">
-            <Sparkles className="w-5 h-5 fill-current" />
-          </div>
-          <div>
-            <span
-              className="text-2xl font-extrabold tracking-tight text-white block"
-              style={{ fontFamily: "var(--font-display)" }}
+    <>
+      <header className="sticky top-0 z-30 w-full border-b border-[#e5e5e5] bg-white/95 backdrop-blur-md transition-colors">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+          {/* Brand Logo & Nav links */}
+          <div className="flex items-center gap-6 sm:gap-8">
+            <Link
+              to="/dashboard"
+              className="flex items-center gap-2.5 group focus:outline-none"
             >
-              WordStreak
-            </span>
-            <span className="text-[10px] uppercase font-bold tracking-widest text-[#f5a623]">
-              Spaced Repetition
-            </span>
-          </div>
-        </Link>
+              <StreakFlame
+                streakDays={currentStreak}
+                size="sm"
+                showEmbers={false}
+              />
+              <div>
+                <span
+                  className="text-lg font-extrabold tracking-tight text-black block leading-none"
+                  style={{ fontFamily: "var(--font-display)" }}
+                >
+                  WordStreak
+                </span>
+                <span className="hidden sm:inline-block text-[10px] uppercase font-mono font-bold tracking-wider text-[#7e22ce] mt-0.5">
+                  100% Free Spaced Repetition
+                </span>
+              </div>
+            </Link>
 
-        {/* Right Nav & User Actions */}
-        <div className="flex items-center gap-3 sm:gap-4">
-          {/* Quick Streak Flame Pill */}
-          <div className="hidden sm:inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#f5a623]/10 border border-[#f5a623]/30 text-[#f5a623] text-xs font-bold shadow-sm shadow-[#f5a623]/15">
-            <Flame className="w-4 h-4 fill-[#f5a623] animate-pulse" />
-            <span>0 Days Streak</span>
+            {/* Navigation links */}
+            <nav className="hidden sm:flex items-center gap-1">
+              <Link
+                to="/dashboard"
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition-all ${
+                  isDashboardActive
+                    ? "bg-black text-white"
+                    : "text-[#737373] hover:text-black hover:bg-[#fafafa]"
+                }`}
+              >
+                <Home className="w-3.5 h-3.5" />
+                <span>Tổng quan</span>
+              </Link>
+
+              <Link
+                to="/decks"
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition-all ${
+                  isDecksActive
+                    ? "bg-black text-white"
+                    : "text-[#737373] hover:text-black hover:bg-[#fafafa]"
+                }`}
+              >
+                <Layers className="w-3.5 h-3.5" />
+                <span>Bộ từ vựng</span>
+              </Link>
+            </nav>
           </div>
 
-          {/* User Profile Pill Trigger */}
-          <button
-            type="button"
-            onClick={() => onOpenSettings("profile")}
-            className="flex items-center gap-3 px-2 py-1 sm:px-3 sm:py-1.5 rounded-2xl border border-white/10 bg-white/[0.04] hover:bg-white/[0.08] hover:border-white/20 transition-all cursor-pointer text-left focus:outline-none"
-            title="Cài đặt tài khoản"
-          >
-            <UserAvatar
-              avatarUrl={user?.avatarUrl}
-              username={user?.username}
-              size="sm"
-              className="ring-2 ring-[#f5a623]/40"
-            />
-            <div className="hidden md:block">
-              <p className="text-xs font-bold text-white leading-tight">
+          {/* Right Nav & User Actions */}
+          <div className="flex items-center gap-2 sm:gap-3">
+            {/* Dynamic Multi-Tier Streak Flame Pill (Interactive Nuôi Lửa trigger) */}
+            <button
+              type="button"
+              onClick={onOpenFlameNurture}
+              className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-xs font-semibold shadow-xs cursor-pointer hover:scale-[1.02] active:scale-[0.98] transition-all ${tierInfo.pillBg} ${tierInfo.pillText} ${tierInfo.pillBorder}`}
+              title="Nhấn để mở Khu Vườn Nuôi Lửa & Tiến Hóa"
+            >
+              <StreakFlame
+                streakDays={currentStreak}
+                size="xs"
+                showEmbers={false}
+                showGlow={false}
+              />
+              <span className="font-mono">{currentStreak} Ngày Streak</span>
+              <span className="hidden md:inline-block text-[10px] opacity-75 font-normal">
+                • {tierInfo.titleVi}
+              </span>
+            </button>
+
+            {/* User Profile & Settings Pill Trigger */}
+            <button
+              type="button"
+              onClick={() => handleOpenSettings("profile")}
+              className="flex items-center gap-2 px-1.5 py-1 sm:px-2.5 sm:py-1 rounded-full border border-[#e5e5e5] bg-white hover:bg-[#fafafa] hover:border-[#d4d4d4] transition-all cursor-pointer text-left focus:outline-none apple-tap-active"
+              title="Cài đặt tài khoản & Mục tiêu học"
+            >
+              <UserAvatar
+                avatarUrl={user?.avatarUrl}
+                username={user?.username}
+                size="sm"
+                className="ring-1 ring-[#e5e5e5]"
+              />
+              <span className="hidden md:inline-block text-xs font-bold text-black pr-1 truncate max-w-[100px]">
                 {user?.username || "Learner"}
-              </p>
-              <p className="text-[11px] text-[#94a3b8] font-medium leading-tight truncate max-w-[120px]">
-                {user?.email}
-              </p>
-            </div>
-          </button>
+              </span>
+            </button>
 
-          {/* Settings Button */}
-          <button
-            type="button"
-            onClick={() => onOpenSettings("profile")}
-            className="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-medium text-[#cbd5e1] border border-white/10 bg-white/[0.04] hover:bg-white/[0.08] hover:text-white transition-all cursor-pointer focus:outline-none"
-          >
-            <SettingsIcon className="w-4 h-4" />
-            <span>Cài đặt</span>
-          </button>
-
-          {/* Sign Out Button */}
-          <button
-            type="button"
-            onClick={onLogout}
-            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-medium text-[#f87171] border border-[#ef4444]/20 bg-[#ef4444]/10 hover:bg-[#ef4444]/20 hover:border-[#ef4444]/30 transition-all cursor-pointer focus:outline-none"
-            title="Sign Out"
-          >
-            <LogOut className="w-4 h-4" />
-            <span className="hidden sm:inline">Sign Out</span>
-          </button>
+            {/* Icon-Only Sign Out Button */}
+            <button
+              type="button"
+              onClick={handleLogout}
+              className="w-9 h-9 rounded-full flex items-center justify-center text-[#dc2626] border border-[#ff5f56]/30 bg-[#fff5f5] hover:bg-[#ffebeb] hover:border-[#ff5f56]/50 transition-all cursor-pointer focus:outline-none apple-tap-active"
+              aria-label="Đăng xuất"
+              title="Đăng xuất khỏi tài khoản"
+            >
+              <LogOut className="w-4 h-4" />
+            </button>
+          </div>
         </div>
-      </div>
-    </header>
+      </header>
+
+      {/* Fallback Internal Settings Modal when not controlled externally */}
+      {!propOpenSettings && (
+        <SettingsModal
+          isOpen={isInternalSettingsOpen}
+          initialTab={internalSettingsTab}
+          onClose={() => setIsInternalSettingsOpen(false)}
+        />
+      )}
+    </>
   );
 };
