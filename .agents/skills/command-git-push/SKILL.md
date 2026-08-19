@@ -80,6 +80,24 @@ Never combine unrelated layers into a single monolithic commit. Group files and 
    - `git push origin <CURRENT_BRANCH>`
    - (If upstream is not set: `git push -u origin <CURRENT_BRANCH>`).
 
-### Step 5: Report Results
+### Step 5: Report Results & Generate English PR Brief
 
-Display a summary table of created commits and remote push status.
+1. Display a summary table of created commits and remote push status.
+2. Provide a ready-to-copy **Pull Request Title & Description in English** inside a markdown code block so the user can immediately paste it into GitHub:
+   - **PR Title**: `<type>(<scope>): <concise description>`
+   - **PR Body Format**:
+     ```markdown
+     ## What & Why
+
+     [Brief description of motivation and what this PR accomplishes]
+
+     ## Key Changes
+
+     - **[Layer/Scope]**: [Bullet points of specific changes]
+
+     ## Verification
+
+     - [ ] Automated tests passed (unit/integration/e2e)
+     - [ ] Manual verification completed
+     - [ ] User Guide verified/updated (if UI changes)
+     ```

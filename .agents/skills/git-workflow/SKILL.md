@@ -47,6 +47,10 @@ Best practices for Git version control, branching strategies, and collaborative 
    - Only proceed with the commit after the user confirms the guide has been created or updated.
    - Changes that do NOT touch any user-facing screen (backend-only, config, tests, scripts) are exempt from this gate.
 
+6. **Mandatory English Pull Request Description**:
+   - Whenever pushing changes to a remote branch (or completing a commit/push cycle), **ALWAYS** provide a ready-to-copy **Pull Request Title and Description in English** following the PR template (`## What & Why`, `## Key Changes`, `## Verification`, `## Screenshots / Artifacts`).
+   - This ensures immediate traceability, clean review handoff, and frictionless PR creation on GitHub.
+
 ## When to Activate
 
 - Setting up Git workflow for a new project
