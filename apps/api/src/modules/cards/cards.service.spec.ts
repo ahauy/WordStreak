@@ -106,16 +106,17 @@ describe('CardsService', () => {
         lastReviewedAt: null,
       };
 
-      prisma.$transaction.mockImplementation(async (callback) => {
-        return callback({
-          card: {
-            create: jest.fn().mockResolvedValue(createdCard),
-          },
-          userCardProgress: {
-            create: jest.fn().mockResolvedValue(initialProgress),
-          },
-        });
-      });
+      prisma.$transaction.mockImplementation(
+        (callback: (tx: any) => Promise<any>) =>
+          callback({
+            card: {
+              create: jest.fn().mockResolvedValue(createdCard),
+            },
+            userCardProgress: {
+              create: jest.fn().mockResolvedValue(initialProgress),
+            },
+          }),
+      );
 
       const result = await service.create(mockUserId, mockDeckId, createDto);
 
