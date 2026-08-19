@@ -4,32 +4,38 @@
 
 @layer base {
   :root {
-    /* Typography: Optimized for Language Learners */
-    --font-display: "Outfit", -apple-system, BlinkMacSystemFont, sans-serif;
+    /* Typography: DESIGN.md System */
+    --font-display:
+      "Nunito", "SF Pro Rounded", -apple-system, BlinkMacSystemFont, sans-serif;
     --font-body:
-      "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, sans-serif;
+      "Inter", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+      sans-serif;
+    --font-mono:
+      "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+      monospace;
 
-    /* WordStreak Night-Sky Cosmos Palette */
-    --color-background: #060e1a;
-    --color-background-deep: #030810;
-    --color-foreground: #ffffff;
-    --color-muted-foreground: #94a3b8;
-    --color-primary: #f5a623;
-    --color-primary-hover: #ffb940;
-    --color-primary-on-dark: #f5a623;
-    --color-ink: #1d1d1f;
-    --color-body-muted: #86868b;
-    --color-canvas-parchment: #f5f5f7;
+    /* DESIGN.md Palette Tokens */
+    --color-primary: #000000;
+    --color-on-primary: #ffffff;
+    --color-ink: #000000;
+    --color-ink-deep: #090909;
+    --color-charcoal: #525252;
+    --color-body: #737373;
+    --color-mute: #a3a3a3;
     --color-canvas: #ffffff;
-    --color-surface-pearl: #fafafc;
-    --color-surface-tile-1: #0b1526;
-    --color-surface-tile-2: #0f1d35;
-    --color-surface-tile-3: #07101e;
-    --color-surface-black: #000000;
-    --color-hairline: rgba(255, 255, 255, 0.08);
-    --color-hairline-dark: rgba(255, 255, 255, 0.12);
-    --color-glass-bg: rgba(255, 255, 255, 0.03);
-    --color-glass-border: rgba(255, 255, 255, 0.08);
+    --color-surface-soft: #fafafa;
+    --color-surface-card: #ffffff;
+    --color-hairline: #e5e5e5;
+    --color-hairline-strong: #d4d4d4;
+    --color-on-dark: #ffffff;
+    --color-on-dark-mute: rgba(255, 255, 255, 0.7);
+    --color-surface-dark: #171717;
+    --color-focus-ring: rgba(59, 130, 246, 0.5);
+    --color-link: #000000;
+    --color-link-mute: #737373;
+    --color-terminal-red: #ff5f56;
+    --color-terminal-yellow: #ffbd2e;
+    --color-terminal-green: #27c93f;
   }
 
   * {

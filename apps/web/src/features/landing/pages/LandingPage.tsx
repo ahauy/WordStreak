@@ -1,36 +1,32 @@
 import { Navbar } from "../components/Navbar";
 import { HeroSection } from "../components/HeroSection";
+import { TerminalPreviewSection } from "../components/TerminalPreviewSection";
 import { FeaturesSection } from "../components/FeaturesSection";
 import { HowItWorksSection } from "../components/HowItWorksSection";
-import { StatsSection } from "../components/StatsSection";
+import { PricingSection } from "../components/PricingSection";
+import { DataPrivacySection } from "../components/DataPrivacySection";
+import { FAQSection } from "../components/FAQSection";
 import { CTASection } from "../components/CTASection";
 import { Footer } from "../components/Footer";
-import { StarrySky } from "../components/StarrySky";
 import { PageTransition } from "../../../common/components/layout/PageTransition";
 import "../landing.css";
 
 export function LandingPage() {
   return (
     <PageTransition>
-      <div
-        className="relative min-h-screen selection:bg-[#f5a623] selection:text-[#060e1a] text-white"
-        style={{ backgroundColor: "#060e1a" }}
-      >
-        {/* Dynamic Starry Sky & Celestial Cosmos Background */}
-        <StarrySky />
-
-        {/* Main Content Layer */}
-        <div className="relative z-10">
-          <Navbar />
-          <main>
-            <HeroSection />
-            <FeaturesSection />
-            <HowItWorksSection />
-            <StatsSection />
-            <CTASection />
-          </main>
-          <Footer />
-        </div>
+      <div className="landing-canvas min-h-screen bg-white text-black selection:bg-black selection:text-white">
+        <Navbar />
+        <main>
+          <HeroSection />
+          <TerminalPreviewSection />
+          <FeaturesSection />
+          <HowItWorksSection />
+          <PricingSection />
+          <DataPrivacySection />
+          <FAQSection />
+          <CTASection />
+        </main>
+        <Footer />
       </div>
     </PageTransition>
   );
