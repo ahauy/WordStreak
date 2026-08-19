@@ -1,0 +1,94 @@
+{
+  "endpoints": [
+    {
+      "name": "createCard",
+      "method": "POST",
+      "path": "/api/v1/decks/:deckId/cards",
+      "description": "Create a new contextual card in a deck and initialize UserCardProgress",
+      "auth": "Bearer JWT",
+      "params": {
+        "deckId": "string (UUID)"
+      },
+      "body": {
+        "word": "string (required, 1-100 chars)",
+        "meaning": "string (required, 1-500 chars)",
+        "phonetic": "string (optional, max 100 chars)",
+        "audioUrl": "string (optional, max 500 chars)",
+        "exampleSentence": "string (optional, max 1000 chars)",
+        "collocations": "string (optional, max 500 chars)",
+        "mnemonic": "string (optional, max 1000 chars)",
+        "imageUrl": "string (optional, max 500 chars)"
+      },
+      "responses": {
+        "201": {
+          "description": "Card created successfully with initial progress",
+          "body": "CardDto"
+        },
+        "400": { "description": "Validation failed" },
+        "401": { "description": "Unauthorized" },
+        "404": { "description": "Deck not found or not owned by user" }
+      }
+    },
+    {
+      "name": "getDeckCards",
+      "method": "GET",
+      "path": "/api/v1/decks/:deckId/cards",
+      "description": "List all cards in a deck",
+      "auth": "Bearer JWT",
+      "params": {
+        "deckId": "string (UUID)"
+      },
+      "responses": {
+        "200": {
+          "description": "Array of cards",
+          "body": "CardDto[]"
+        }
+      }
+    },
+    {
+      "name": "getCardById",
+      "method": "GET",
+      "path": "/api/v1/cards/:id",
+      "description": "Get card details",
+      "auth": "Bearer JWT",
+      "params": {
+        "id": "string (UUID)"
+      },
+      "responses": {
+        "200": { "body": "CardDto" },
+        "404": { "description": "Card not found" }
+      }
+    },
+    {
+      "name": "updateCard",
+      "method": "PATCH",
+      "path": "/api/v1/cards/:id",
+      "description": "Update card metadata",
+      "auth": "Bearer JWT",
+      "params": {
+        "id": "string (UUID)"
+      },
+      "body": "UpdateCardDto",
+      "responses": {
+        "200": { "body": "CardDto" },
+        "404": { "description": "Card not found or not owned" }
+      }
+    },
+    {
+      "name": "deleteCard",
+      "method": "DELETE",
+      "path": "/api/v1/cards/:id",
+      "description": "Delete card and cascade remove progress",
+      "auth": "Bearer JWT",
+      "params": {
+        "id": "string (UUID)"
+      },
+      "responses": {
+        "200": {
+          "body": { "success": true, "message": "Card deleted successfully" }
+        },
+        "404": { "description": "Card not found" }
+      }
+    }
+  ]
+}
