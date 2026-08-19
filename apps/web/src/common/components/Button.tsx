@@ -26,27 +26,27 @@ export const Button: React.FC<ButtonProps> = ({
   ...props
 }) => {
   const baseStyles =
-    "inline-flex items-center justify-center font-normal transition-all duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#F5A623] focus-visible:ring-offset-2 focus-visible:ring-offset-[hsl(201,100%,13%)] disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer select-none apple-tap-active";
+    "inline-flex items-center justify-center font-medium transition-all duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#9333ea] focus-visible:ring-offset-2 focus-visible:ring-offset-white disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer select-none apple-tap-active";
 
   const sizeStyles = {
     sm: "px-3.5 py-1.5 text-xs gap-1.5",
     md: "px-5 py-2.5 text-sm gap-2",
-    lg: "px-6 py-3 text-[17px] gap-2.5",
+    lg: "px-6 py-3 text-base gap-2.5",
   }[size];
 
   const variantStyles = {
     primary:
-      "bg-[#F5A623] hover:bg-[#FFB940] text-[#071220] font-semibold rounded-full active:scale-[0.98] shadow-md shadow-[#F5A623]/15",
+      "bg-black hover:bg-[#1a1a1a] active:bg-[#090909] text-white font-medium rounded-full shadow-xs active:scale-[0.98]",
     secondary:
-      "bg-white/[0.06] hover:bg-white/[0.1] text-white border border-white/10 rounded-full font-normal shadow-none",
+      "bg-white hover:bg-[#fafafa] text-black border border-[#d4d4d4] hover:border-black rounded-full font-medium active:scale-[0.98] shadow-none",
     "secondary-pill":
-      "bg-transparent hover:bg-[#F5A623]/10 text-[#F5A623] border border-[#F5A623]/60 hover:border-[#F5A623] rounded-full font-normal shadow-none",
+      "bg-transparent hover:bg-[#f3e8ff] text-[#7e22ce] border border-[#d8b4fe] hover:border-[#9333ea] rounded-full font-medium shadow-none",
     "dark-utility":
-      "bg-white/[0.08] hover:bg-white/[0.14] text-white rounded-lg text-xs font-normal shadow-none border border-white/10",
+      "bg-[#171717] hover:bg-[#262626] text-white rounded-full text-xs font-medium shadow-none border border-[#333333]",
     ghost:
-      "bg-transparent hover:bg-white/10 text-[var(--color-muted-foreground)] hover:text-white rounded-full font-normal shadow-none",
+      "bg-transparent hover:bg-[#f5f5f5] text-[#737373] hover:text-black rounded-full font-normal shadow-none",
     danger:
-      "bg-[#e03e3e] hover:bg-[#c93030] text-white rounded-full font-normal shadow-none",
+      "bg-[#ff5f56] hover:bg-[#dc2626] text-white rounded-full font-medium shadow-none",
   }[variant];
 
   return (

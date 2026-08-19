@@ -11,6 +11,7 @@ Danh sách tất cả các tính năng đã được deliver (code hoàn chỉnh
 | Feature                                                                              | Slug                    | Version | Trạng thái               | Ngày ship  |
 | :----------------------------------------------------------------------------------- | :---------------------- | :------ | :----------------------- | :--------- |
 | [User Profile & Daily Goal Settings (US-AUTH-04)](./user-profile-settings/README.md) | `user-profile-settings` | 1.0     | Hoàn thành (`Delivered`) | 2026-08-17 |
+| [Deck CRUD & Vocabulary Management (US-DECK-01)](./deck-crud/README.md)              | `deck-crud`             | 1.0     | Hoàn thành (`Delivered`) | 2026-08-19 |
 
 ---
 

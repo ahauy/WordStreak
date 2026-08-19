@@ -35,18 +35,18 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
       <div className="w-full text-left">
         <label
           htmlFor={inputId}
-          className="block text-xs font-semibold text-white/90 uppercase tracking-wider mb-1.5"
+          className="block text-xs font-semibold text-[#171717] tracking-wider uppercase mb-1.5"
         >
           {label}{" "}
           {required && (
-            <span className="text-[#F5A623] font-normal" aria-hidden="true">
+            <span className="text-[#9333ea] font-normal" aria-hidden="true">
               *
             </span>
           )}
         </label>
         <div className="relative rounded-xl">
           {leftIcon && (
-            <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-[var(--color-muted-foreground)]">
+            <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-[#a3a3a3]">
               {leftIcon}
             </div>
           )}
@@ -57,12 +57,12 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             aria-invalid={Boolean(error)}
             aria-describedby={describedBy}
             required={required}
-            className={`w-full rounded-[12px] px-3.5 py-2.5 text-[15px] transition-all duration-150 focus:outline-none disabled:opacity-40 disabled:cursor-not-allowed ${
+            className={`w-full rounded-xl px-3.5 py-2.5 text-[15px] font-normal transition-all duration-150 focus:outline-none disabled:opacity-40 disabled:cursor-not-allowed ${
               leftIcon ? "pl-10" : "pl-3.5"
             } ${rightIcon ? "pr-10" : "pr-3.5"} ${
               error
-                ? "border border-[#e03e3e] bg-[#321c1c]/60 text-white placeholder:text-white/30 focus:border-[#e03e3e] focus:ring-2 focus:ring-[#e03e3e]/20"
-                : "bg-white/[0.04] text-white placeholder:text-white/30 border border-white/10 hover:border-white/20 focus:border-[#F5A623] focus:ring-2 focus:ring-[#F5A623]/20"
+                ? "border border-[#ff5f56] bg-[#fff5f5] text-black placeholder:text-[#a3a3a3] focus:border-[#ff5f56] focus:ring-3 focus:ring-[#ff5f56]/15"
+                : "bg-[#fafafa] text-black placeholder:text-[#a3a3a3] border border-[#e5e5e5] hover:border-[#d4d4d4] focus:bg-white focus:border-[#9333ea] focus:ring-3 focus:ring-[#9333ea]/15"
             } ${className}`}
             {...props}
           />
@@ -76,13 +76,13 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           <p
             id={errorId}
             role="alert"
-            className="mt-1 text-xs text-[#e03e3e] flex items-center gap-1.5 font-normal"
+            className="mt-1.5 text-xs text-[#dc2626] flex items-center gap-1.5 font-normal"
           >
             <AlertCircle className="w-3.5 h-3.5 flex-shrink-0" />
             <span>{error}</span>
           </p>
         ) : helperText ? (
-          <p id={helperId} className="mt-1 text-xs text-[#86868b]">
+          <p id={helperId} className="mt-1 text-xs text-[#737373]">
             {helperText}
           </p>
         ) : null}

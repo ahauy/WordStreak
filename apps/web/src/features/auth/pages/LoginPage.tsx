@@ -2,9 +2,9 @@ import React from "react";
 import { useNavigate, useLocation, Link } from "react-router-dom";
 import { LoginForm } from "../components/LoginForm";
 import { AuthShowcase } from "../components/AuthShowcase";
-import { StarrySky } from "../../landing/components/StarrySky";
 import { PageTransition } from "../../../common/components/layout/PageTransition";
-import { ArrowLeft, Sparkles } from "lucide-react";
+import { ArrowLeft, Globe } from "lucide-react";
+import { PurpleStreakFlame } from "../../landing/components/PurpleStreakFlame";
 
 export const LoginPage: React.FC = () => {
   const navigate = useNavigate();
@@ -16,31 +16,26 @@ export const LoginPage: React.FC = () => {
 
   return (
     <PageTransition>
-      <div
-        className="relative min-h-screen text-white flex flex-col justify-between px-4 sm:px-6 selection:bg-[#f5a623] selection:text-[#060e1a]"
-        style={{ backgroundColor: "#060e1a" }}
-      >
-        {/* Living Starry Night Cosmos Background */}
-        <StarrySky />
-
+      <div className="relative min-h-screen bg-white text-black flex flex-col justify-between selection:bg-[#f3e8ff] selection:text-[#7e22ce]">
         {/* Main Content Layer */}
-        <div className="relative z-10 flex min-h-screen flex-col justify-between">
+        <div className="flex min-h-screen flex-col justify-between">
           {/* Top Header Bar */}
-          <header className="w-full max-w-6xl mx-auto flex items-center justify-between py-6 shrink-0">
+          <header className="w-full max-w-6xl mx-auto flex items-center justify-between py-6 px-4 sm:px-6 shrink-0">
             <Link
               to="/"
-              className="flex items-center gap-2.5 text-2xl font-bold tracking-tight text-white hover:opacity-90 transition-opacity"
+              className="flex items-center gap-2.5 text-xl font-bold tracking-tight text-black hover:opacity-80 transition-opacity"
               style={{ fontFamily: "var(--font-display)" }}
             >
-              <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-[#f5a623] text-[#060e1a] shadow-md shadow-[#f5a623]/30">
-                <Sparkles className="h-4 w-4" />
-              </div>
-              <span>WordStreak</span>
+              <PurpleStreakFlame size="sm" showEmbers={false} />
+              <span className="font-extrabold tracking-tight">WordStreak</span>
+              <span className="hidden sm:inline-flex items-center rounded-full bg-[#f3e8ff] px-2 py-0.5 text-[10px] font-mono font-semibold text-[#7e22ce] border border-[#e9d5ff]">
+                100% Free
+              </span>
             </Link>
 
             <Link
               to="/"
-              className="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-xs font-medium text-[#cbd5e1] backdrop-blur-md transition-all hover:border-white/20 hover:bg-white/[0.08] hover:text-white"
+              className="inline-flex items-center gap-1.5 rounded-full border border-[#e5e5e5] bg-[#fafafa] hover:bg-[#f0f0f0] hover:border-[#d4d4d4] px-4 py-2 text-xs font-medium text-black transition-all cursor-pointer apple-tap-active"
             >
               <ArrowLeft className="w-3.5 h-3.5" />
               <span>Back to Home</span>
@@ -48,7 +43,7 @@ export const LoginPage: React.FC = () => {
           </header>
 
           {/* Main Split Layout Container */}
-          <main className="flex-1 flex items-center justify-center w-full max-w-6xl mx-auto py-6">
+          <main className="flex-1 flex items-center justify-center w-full max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-10">
             <div className="w-full grid grid-cols-1 lg:grid-cols-2 items-center justify-items-center gap-8 lg:gap-14">
               {/* Left Column: Product Value Showcase (Hidden on Mobile) */}
               <AuthShowcase />
@@ -63,34 +58,38 @@ export const LoginPage: React.FC = () => {
             </div>
           </main>
 
-          {/* Cosmos Minimalist Footer */}
-          <footer className="w-full max-w-6xl mx-auto text-center text-xs text-[#94a3b8] py-6 border-t border-white/5 flex flex-col sm:flex-row items-center justify-between gap-3 shrink-0">
+          {/* Minimalist Footer */}
+          <footer className="w-full max-w-6xl mx-auto text-xs text-[#a3a3a3] py-6 px-4 sm:px-6 border-t border-[#e5e5e5] flex flex-col sm:flex-row items-center justify-between gap-3 shrink-0">
             <p>
-              Copyright © {new Date().getFullYear()} WordStreak. All rights
-              reserved.
+              © {new Date().getFullYear()} WordStreak. 100% Free & Open-Source.
             </p>
             <div className="flex items-center gap-5">
               <a
                 href="#"
                 onClick={(e) => e.preventDefault()}
-                className="hover:text-white transition-colors"
+                className="hover:text-black transition-colors"
               >
                 Privacy Policy
               </a>
               <a
                 href="#"
                 onClick={(e) => e.preventDefault()}
-                className="hover:text-white transition-colors"
+                className="hover:text-black transition-colors"
               >
                 Terms of Service
               </a>
               <a
-                href="#"
-                onClick={(e) => e.preventDefault()}
-                className="hover:text-white transition-colors"
+                href="https://github.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-black transition-colors"
               >
-                Support
+                GitHub
               </a>
+              <span className="flex items-center gap-1 text-[#737373]">
+                <Globe className="w-3.5 h-3.5" />
+                <span>EN (US)</span>
+              </span>
             </div>
           </footer>
         </div>

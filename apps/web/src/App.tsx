@@ -10,6 +10,7 @@ import { AnimatePresence } from "framer-motion";
 import { LoginPage } from "./features/auth/pages/LoginPage";
 import { RegisterPage } from "./features/auth/pages/RegisterPage";
 import { DashboardPage } from "./features/dashboard/pages/DashboardPage";
+import { DecksListPage } from "./features/decks/pages/DecksListPage";
 import { LandingPage } from "./features/landing/pages/LandingPage";
 import { ProtectedRoute } from "./features/auth/components/ProtectedRoute";
 import { useAuthStore } from "./store/useAuthStore";
@@ -34,6 +35,15 @@ function AnimatedRoutes() {
           element={
             <ProtectedRoute>
               <DashboardPage />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/decks"
+          element={
+            <ProtectedRoute>
+              <DecksListPage />
             </ProtectedRoute>
           }
         />

@@ -80,7 +80,7 @@ export const UserAvatar: React.FC<UserAvatarProps> = ({
 }) => {
   const [imageError, setImageError] = useState(false);
   const sizeConfig = sizeMap[size];
-  const borderStyle = showBorder ? "border border-white/20 shadow-md" : "";
+  const borderStyle = showBorder ? "border border-black/10 shadow-xs" : "";
 
   // 1. Preset Avatar
   if (avatarUrl?.startsWith("preset:")) {

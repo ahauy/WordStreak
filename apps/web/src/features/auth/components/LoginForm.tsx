@@ -9,11 +9,13 @@ import {
   EyeOff,
   LogIn,
   AlertCircle,
-  Sparkles,
+  ArrowRight,
 } from "lucide-react";
+import { motion } from "framer-motion";
 import { Input } from "../../../common/components/Input";
 import { Button } from "../../../common/components/Button";
 import { useAuthStore } from "../../../store/useAuthStore";
+import { PurpleStreakFlame } from "../../landing/components/PurpleStreakFlame";
 
 const loginSchema = z.object({
   identifier: z.string().min(1, "Email or username is required"),
@@ -62,14 +64,17 @@ export const LoginForm: React.FC<LoginFormProps> = ({
   };
 
   return (
-    <div className="w-full max-w-md liquid-glass rounded-3xl p-7 sm:p-9 relative border border-white/10 bg-white/[0.03] shadow-2xl backdrop-blur-2xl">
+    <motion.div
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+      className="w-full max-w-md bg-white border border-[#e5e5e5] rounded-2xl p-7 sm:p-9 shadow-xs relative"
+    >
       {/* Mobile Brand Header */}
-      <div className="lg:hidden flex items-center justify-center gap-2 mb-4">
-        <div className="w-8 h-8 rounded-lg bg-[#F5A623]/15 border border-[#F5A623]/30 flex items-center justify-center text-[#F5A623]">
-          <Sparkles className="w-4 h-4" />
-        </div>
+      <div className="lg:hidden flex items-center justify-center gap-2 mb-5">
+        <PurpleStreakFlame size="sm" showEmbers={false} />
         <span
-          className="text-2xl font-normal text-white tracking-tight"
+          className="text-xl font-extrabold text-black tracking-tight"
           style={{ fontFamily: "var(--font-display)" }}
         >
           WordStreak
@@ -78,24 +83,26 @@ export const LoginForm: React.FC<LoginFormProps> = ({
 
       <div className="text-center mb-6">
         <h2
-          className="text-3xl sm:text-4xl font-extrabold text-white mb-2 tracking-tight"
+          className="text-3xl sm:text-[32px] font-bold text-black mb-1.5 tracking-tight"
           style={{ fontFamily: "var(--font-display)" }}
         >
           Welcome Back
         </h2>
-        <p className="text-sm text-[var(--color-muted-foreground)]">
-          Sign in to keep your daily streak alive
+        <p className="text-sm text-[#737373]">
+          Sign in to keep your daily streak burning
         </p>
       </div>
 
       {error && (
-        <div
+        <motion.div
+          initial={{ opacity: 0, height: 0 }}
+          animate={{ opacity: 1, height: "auto" }}
           role="alert"
-          className="mb-5 p-3 rounded-xl bg-[#321c1c]/80 border border-[#e03e3e]/40 flex items-start gap-2.5 text-[#ff8a8a] text-xs transition-all"
+          className="mb-5 p-3 rounded-xl bg-[#fff5f5] border border-[#ff5f56]/30 flex items-start gap-2.5 text-[#dc2626] text-xs transition-all"
         >
           <AlertCircle className="w-4 h-4 flex-shrink-0 mt-0.5" />
-          <span className="font-normal">{error}</span>
-        </div>
+          <span className="font-medium">{error}</span>
+        </motion.div>
       )}
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" noValidate>
@@ -111,7 +118,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
           {...register("identifier")}
         />
 
-        <div className="space-y-1">
+        <div className="space-y-1.5">
           <Input
             id="login-password"
             label="Password"
@@ -124,7 +131,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
               <button
                 type="button"
                 onClick={() => setShowPassword((prev) => !prev)}
-                className="text-[var(--color-muted-foreground)] hover:text-white transition-colors focus:outline-none cursor-pointer p-1"
+                className="text-[#737373] hover:text-black transition-colors focus:outline-none cursor-pointer p-1"
                 aria-label={showPassword ? "Hide password" : "Show password"}
               >
                 {showPassword ? (
@@ -139,12 +146,12 @@ export const LoginForm: React.FC<LoginFormProps> = ({
           />
 
           <div className="flex items-center justify-between pt-1">
-            <label className="flex items-center gap-2 text-xs text-[var(--color-muted-foreground)] cursor-pointer select-none">
+            <label className="flex items-center gap-2 text-xs text-[#525252] cursor-pointer select-none">
               <input
                 type="checkbox"
                 checked={rememberMe}
                 onChange={(e) => setRememberMe(e.target.checked)}
-                className="w-4 h-4 rounded border-white/20 bg-white/5 text-[#F5A623] focus:ring-[#F5A623] cursor-pointer accent-[#F5A623]"
+                className="w-4 h-4 rounded border-[#d4d4d4] bg-[#fafafa] text-[#9333ea] focus:ring-[#9333ea] cursor-pointer accent-[#9333ea]"
               />
               <span>Remember me</span>
             </label>
@@ -152,9 +159,11 @@ export const LoginForm: React.FC<LoginFormProps> = ({
             <button
               type="button"
               onClick={() =>
-                alert("Password reset instructions will be sent to your email.")
+                alert(
+                  "Password reset instructions will be sent to your registered email.",
+                )
               }
-              className="text-xs font-normal text-[#F5A623] hover:text-[#FFB940] hover:underline transition-colors focus:outline-none cursor-pointer"
+              className="text-xs font-medium text-[#737373] hover:text-black hover:underline transition-colors focus:outline-none cursor-pointer"
             >
               Forgot password?
             </button>
@@ -165,28 +174,29 @@ export const LoginForm: React.FC<LoginFormProps> = ({
           type="submit"
           variant="primary"
           size="lg"
-          className="w-full mt-4"
+          className="w-full mt-2 h-11 text-sm font-medium"
           isLoading={isLoading}
           leftIcon={<LogIn className="w-4 h-4" />}
+          rightIcon={<ArrowRight className="w-4 h-4" />}
         >
           Sign In
         </Button>
       </form>
 
       {onNavigateToRegister && (
-        <div className="text-center mt-6 pt-5 border-t border-white/10">
-          <p className="text-xs text-[var(--color-muted-foreground)]">
+        <div className="text-center mt-6 pt-5 border-t border-[#e5e5e5]">
+          <p className="text-xs text-[#737373]">
             Don't have an account?{" "}
             <button
               type="button"
               onClick={onNavigateToRegister}
-              className="font-medium text-[#F5A623] hover:text-[#FFB940] hover:underline transition-colors focus:outline-none cursor-pointer"
+              className="font-semibold text-black hover:text-[#7e22ce] hover:underline transition-colors focus:outline-none cursor-pointer"
             >
-              Create an account
+              Create free account
             </button>
           </p>
         </div>
       )}
-    </div>
+    </motion.div>
   );
 };

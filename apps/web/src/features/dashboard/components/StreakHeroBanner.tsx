@@ -3,16 +3,21 @@ import {
   ShieldCheck,
   Zap,
   PlusCircle,
-  Flame,
   CheckCircle2,
   Calendar,
+  Brain,
+  Sparkles,
 } from "lucide-react";
+import { motion } from "framer-motion";
+import { StreakFlame } from "./StreakFlame";
+import { getFlameTier } from "../config/flameTiers";
 
 interface StreakHeroBannerProps {
   username?: string;
   currentStreak?: number;
   onStartReview?: () => void;
   onCreateDeck?: () => void;
+  onOpenFlameNurture?: () => void;
 }
 
 export const StreakHeroBanner: React.FC<StreakHeroBannerProps> = ({
@@ -20,58 +25,76 @@ export const StreakHeroBanner: React.FC<StreakHeroBannerProps> = ({
   currentStreak = 0,
   onStartReview,
   onCreateDeck,
+  onOpenFlameNurture,
 }) => {
+  const tierInfo = getFlameTier(currentStreak);
+
   // Days of current week representation (Mon -> Sun)
   const todayIndex = (new Date().getDay() + 6) % 7; // 0 for Monday, 6 for Sunday
   const daysOfWeek = ["M", "T", "W", "T", "F", "S", "S"];
   const dayNames = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
   return (
-    <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-[#0b1526]/90 via-[#071222]/85 to-[#040914]/95 p-6 sm:p-10 shadow-2xl backdrop-blur-2xl">
-      {/* Background celestial ambient light & nebulae glows */}
-      <div className="pointer-events-none absolute -top-24 -right-24 w-96 h-96 rounded-full bg-[#f5a623]/15 blur-3xl" />
-      <div className="pointer-events-none absolute -bottom-24 -left-24 w-96 h-96 rounded-full bg-[#38bdf8]/10 blur-3xl" />
-
+    <motion.div
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+      className="relative overflow-hidden rounded-3xl border border-[#e5e5e5] bg-white p-6 sm:p-9 shadow-xs"
+    >
       <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-8">
         {/* Left Column: Greeting & Mission */}
         <div className="space-y-4 max-w-2xl">
           {/* Status Badges */}
-          <div className="flex flex-wrap items-center gap-2.5">
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-[#30d158]/12 text-[#30d158] border border-[#30d158]/25 shadow-sm">
-              <ShieldCheck className="w-3.5 h-3.5" /> Multi-Session Active &
-              Secured
+          <div className="flex flex-wrap items-center gap-2">
+            <button
+              type="button"
+              onClick={onOpenFlameNurture}
+              className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold border cursor-pointer hover:scale-105 active:scale-95 transition-all ${tierInfo.pillBg} ${tierInfo.pillText} ${tierInfo.pillBorder}`}
+              title="Mở Khu Vườn Nuôi Lửa & Tiến Hóa"
+            >
+              <StreakFlame
+                streakDays={currentStreak}
+                size="xs"
+                showEmbers={false}
+                showGlow={false}
+              />
+              <span>{tierInfo.titleVi}</span>
+              <Sparkles className="w-3 h-3 ml-0.5 opacity-75" />
+            </button>
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-[#f3e8ff] text-[#7e22ce] border border-[#e9d5ff]">
+              <Brain className="w-3.5 h-3.5 text-[#9333ea]" />
+              <span>SM-2 Spaced Repetition</span>
             </span>
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-[#f5a623]/12 text-[#f5a623] border border-[#f5a623]/25 shadow-sm">
-              <Flame className="w-3.5 h-3.5 fill-[#f5a623]" /> Spaced Repetition
-              (SM-2)
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-[#f0fdf4] text-[#16a34a] border border-[#bbf7d0]">
+              <ShieldCheck className="w-3.5 h-3.5" />
+              <span>Multi-Session Active</span>
             </span>
           </div>
 
           {/* Heading */}
           <h1
-            className="text-3xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight leading-tight"
+            className="text-3xl sm:text-4xl lg:text-[38px] font-bold text-black tracking-tight leading-tight"
             style={{ fontFamily: "var(--font-display)" }}
           >
             Ready for today's streak,{" "}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-[#fde68a] to-[#f5a623]">
-              {username}
-            </span>
-            ? 🚀
+            <span className="text-[#9333ea]">{username}</span>?
           </h1>
 
           {/* Subtext */}
-          <p className="text-[#94a3b8] text-sm sm:text-base leading-relaxed">
+          <p className="text-[#737373] text-sm sm:text-[15px] leading-relaxed">
             Your spaced repetition review session is ready. Practice now to
             reinforce short-term memory into permanent recall and keep your{" "}
-            <strong className="text-white">{currentStreak}-day streak</strong>{" "}
+            <strong className="text-black font-semibold">
+              {currentStreak}-day streak ({tierInfo.titleVi})
+            </strong>{" "}
             burning!
           </p>
 
           {/* 7-Day Weekly Streak Tracker */}
           <div className="pt-2 flex flex-col sm:flex-row sm:items-center gap-3">
-            <span className="text-xs font-bold uppercase tracking-wider text-[#cbd5e1] flex items-center gap-1.5">
-              <Calendar className="w-3.5 h-3.5 text-[#f5a623]" /> This Week's
-              Streak:
+            <span className="text-xs font-semibold uppercase tracking-wider text-[#525252] flex items-center gap-1.5">
+              <Calendar className="w-3.5 h-3.5 text-[#9333ea]" />
+              <span>This Week:</span>
             </span>
             <div className="flex items-center gap-2">
               {daysOfWeek.map((day, idx) => {
@@ -85,21 +108,21 @@ export const StreakHeroBanner: React.FC<StreakHeroBannerProps> = ({
                     title={`${dayNames[idx]}${isToday ? " (Today)" : ""}`}
                   >
                     <div
-                      className={`w-7 h-7 sm:w-8 sm:h-8 rounded-xl flex items-center justify-center text-xs font-bold transition-all duration-300 ${
+                      className={`w-7 h-7 sm:w-8 sm:h-8 rounded-xl flex items-center justify-center text-xs font-bold transition-all duration-200 ${
                         isCompleted
-                          ? "bg-[#f5a623] text-[#060e1a] shadow-md shadow-[#f5a623]/40"
+                          ? "bg-[#9333ea] text-white shadow-xs"
                           : isToday
-                            ? "bg-[#f5a623]/20 border-2 border-[#f5a623] text-[#f5a623] shadow-lg shadow-[#f5a623]/30 scale-105 animate-pulse"
-                            : "bg-white/[0.04] border border-white/10 text-[#64748b]"
+                            ? "bg-[#f3e8ff] border-2 border-[#9333ea] text-[#7e22ce] shadow-xs scale-105 animate-pulse"
+                            : "bg-[#fafafa] border border-[#e5e5e5] text-[#a3a3a3]"
                       }`}
                     >
                       {isCompleted ? (
-                        <CheckCircle2 className="w-4 h-4 stroke-[3]" />
+                        <CheckCircle2 className="w-4 h-4 stroke-[2.5]" />
                       ) : (
                         day
                       )}
                     </div>
-                    <span className="text-[10px] text-[#64748b] font-medium">
+                    <span className="text-[10px] text-[#737373] font-medium">
                       {dayNames[idx]}
                     </span>
                   </div>
@@ -110,27 +133,27 @@ export const StreakHeroBanner: React.FC<StreakHeroBannerProps> = ({
         </div>
 
         {/* Right Column: High-Impact CTAs */}
-        <div className="flex flex-col sm:flex-row lg:flex-col gap-3.5 shrink-0 sm:w-auto w-full">
+        <div className="flex flex-col sm:flex-row lg:flex-col gap-3 shrink-0 sm:w-auto w-full">
           <button
             type="button"
             onClick={onStartReview}
-            className="inline-flex items-center justify-center gap-2 px-7 py-4 rounded-full bg-gradient-to-r from-[#f5a623] to-[#ffb940] hover:from-[#ffb940] hover:to-[#f5a623] text-[#060e1a] font-bold text-base shadow-xl shadow-[#f5a623]/30 hover:shadow-[#f5a623]/50 hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer"
-            style={{ fontFamily: "var(--font-display)" }}
+            className="btn-primary h-12 px-7 text-sm font-medium gap-2 shadow-xs cursor-pointer"
+            style={{ fontFamily: "var(--font-body)" }}
           >
-            <Zap className="w-5 h-5 fill-current" />
+            <Zap className="w-4 h-4 fill-current" />
             <span>Start Daily Review</span>
           </button>
 
           <button
             type="button"
             onClick={onCreateDeck}
-            className="inline-flex items-center justify-center gap-2 px-7 py-4 rounded-full border border-white/12 bg-white/[0.05] hover:bg-white/[0.1] hover:border-white/25 text-white font-semibold text-base backdrop-blur-md hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer"
+            className="btn-secondary h-12 px-7 text-sm font-medium gap-2 cursor-pointer"
           >
-            <PlusCircle className="w-5 h-5" />
+            <PlusCircle className="w-4 h-4 text-[#525252]" />
             <span>Create Deck</span>
           </button>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };

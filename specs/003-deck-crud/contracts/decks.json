@@ -1,0 +1,151 @@
+{
+  "name": "Decks API",
+  "version": "1.0.0",
+  "basePath": "/api/v1/decks",
+  "endpoints": [
+    {
+      "path": "/",
+      "method": "GET",
+      "summary": "List decks for authenticated user with stats, search, filtering and sorting",
+      "auth": "Bearer JWT",
+      "queryParams": {
+        "status": {
+          "type": "string",
+          "enum": ["active", "archived", "all"],
+          "default": "active"
+        },
+        "search": { "type": "string", "required": false },
+        "sortBy": {
+          "type": "string",
+          "enum": ["createdAt", "title", "cardCount"],
+          "default": "createdAt"
+        },
+        "sortOrder": {
+          "type": "string",
+          "enum": ["asc", "desc"],
+          "default": "desc"
+        }
+      },
+      "responses": {
+        "200": { "description": "Array of DeckResponse with stats" },
+        "401": { "description": "Unauthorized" }
+      }
+    },
+    {
+      "path": "/",
+      "method": "POST",
+      "summary": "Create a new deck",
+      "auth": "Bearer JWT",
+      "body": {
+        "title": {
+          "type": "string",
+          "required": true,
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "description": {
+          "type": "string",
+          "required": false,
+          "maxLength": 500
+        },
+        "color": { "type": "string", "required": false, "default": "#6366F1" },
+        "icon": { "type": "string", "required": false, "default": "Book" },
+        "coverImageUrl": { "type": "string", "required": false },
+        "tags": {
+          "type": "array",
+          "items": { "type": "string" },
+          "required": false
+        },
+        "isPublic": { "type": "boolean", "required": false, "default": false }
+      },
+      "responses": {
+        "201": { "description": "DeckResponse" },
+        "400": { "description": "Bad Request - Validation Error" },
+        "401": { "description": "Unauthorized" }
+      }
+    },
+    {
+      "path": "/:id",
+      "method": "GET",
+      "summary": "Get deck details by ID with stats",
+      "auth": "Bearer JWT",
+      "responses": {
+        "200": { "description": "DeckResponse" },
+        "401": { "description": "Unauthorized" },
+        "404": { "description": "Deck not found" }
+      }
+    },
+    {
+      "path": "/:id",
+      "method": "PATCH",
+      "summary": "Update deck metadata",
+      "auth": "Bearer JWT",
+      "body": {
+        "title": {
+          "type": "string",
+          "required": false,
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "description": {
+          "type": "string",
+          "required": false,
+          "maxLength": 500
+        },
+        "color": { "type": "string", "required": false },
+        "icon": { "type": "string", "required": false },
+        "coverImageUrl": { "type": "string", "required": false },
+        "tags": {
+          "type": "array",
+          "items": { "type": "string" },
+          "required": false
+        },
+        "isPublic": { "type": "boolean", "required": false }
+      },
+      "responses": {
+        "200": { "description": "Updated DeckResponse" },
+        "401": { "description": "Unauthorized" },
+        "403": { "description": "Forbidden - Not Deck Owner" },
+        "404": { "description": "Deck not found" }
+      }
+    },
+    {
+      "path": "/:id/archive",
+      "method": "PATCH",
+      "summary": "Archive a deck",
+      "auth": "Bearer JWT",
+      "responses": {
+        "200": { "description": "Archived DeckResponse" },
+        "401": { "description": "Unauthorized" },
+        "403": { "description": "Forbidden" },
+        "404": { "description": "Deck not found" }
+      }
+    },
+    {
+      "path": "/:id/restore",
+      "method": "PATCH",
+      "summary": "Restore an archived deck",
+      "auth": "Bearer JWT",
+      "responses": {
+        "200": { "description": "Restored DeckResponse" },
+        "401": { "description": "Unauthorized" },
+        "403": { "description": "Forbidden" },
+        "404": { "description": "Deck not found" }
+      }
+    },
+    {
+      "path": "/:id",
+      "method": "DELETE",
+      "summary": "Permanently cascade delete deck, cards, and card progress",
+      "auth": "Bearer JWT",
+      "responses": {
+        "200": {
+          "description": "{ message: 'Deck deleted successfully', deletedCardsCount: number }"
+        },
+        "401": { "description": "Unauthorized" },
+        "403": { "description": "Forbidden" },
+        "404": { "description": "Deck not found" }
+      }
+    }
+  ]
+}
