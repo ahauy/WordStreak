@@ -98,32 +98,35 @@ Phase 6: Quality Verification, Review, Tech Docs (tech-doc-writer) & Delivery
 
 **CRITICAL: Before writing ANY code or documentation, AI MUST read the corresponding skill BEFORE execution.**
 
-| Context / File type                                           | MANDATORY Skill                                              |
-| ------------------------------------------------------------- | ------------------------------------------------------------ |
-| **New feature intake / complexity classification**            | `intake-classifier`                                          |
-| **Business value & 6-pillar domain elicitation**              | `elicitation-interview`                                      |
-| **AS-IS / TO-BE / gap analysis (Full Feature)**               | `gap-analysis`                                               |
-| **RBAC, state machines, business rules, ERD**                 | `domain-modeling`                                            |
-| **Risk register, contradiction scan, MoSCoW**                 | `risk-contradiction-scanner`                                 |
-| **Spec documents (BRD, PRD, SRS, user stories)**              | `spec-writer`                                                |
-| **IEEE 29148 quality gate & traceability matrix**             | `spec-validator`                                             |
-| **Baseline sign-off & dev handover**                          | `handover`                                                   |
-| **Feature execution, slice delegation & review**              | `implementation-orchestrator`                                |
-| Technical documentation, feature README, architecture, AGENTS | `technical-documentation` (Agent: `tech-doc-writer`)         |
-| Any `.tsx`, `.jsx` file, React component                      | `frontend-patterns` + `frontend-a11y`                        |
-| **UI Design: Landing, Marketing, Public surfaces**            | `frontend-design` + `design-taste-frontend` + `ui-taste-pro` |
-| **UI Design: In-App, Dashboard, Study/Flashcards, Decks**     | `frontend-design` + `design-taste-product` + `ui-taste-pro`  |
-| **UI Animation, Motion, Micro-interactions**                  | `motion-design`                                              |
-| **UI visual review & component QA**                           | `ui-design-review`                                           |
-| **User guide / end-user docs with screenshots**               | `user-guide-with-screenshots`                                |
-| iOS Native UI / Widgets (SwiftUI/UIKit only)                  | `liquid-glass-design` (iOS ONLY)                             |
-| Any NestJS file (controller, service, module, DTO)            | `nestjs-patterns` + `backend-patterns`                       |
-| API endpoint, REST resource                                   | `api-design` + `backend-patterns`                            |
-| Prisma schema, query, migration                               | `prisma-patterns`                                            |
-| PostgreSQL query, index, RLS policy                           | `postgres-patterns`                                          |
-| Dockerfile, docker-compose.yml                                | `docker-patterns`                                            |
-| E2E test, Playwright test                                     | `e2e-testing`                                                |
-| Git branch, commit, merge                                     | `git-workflow`                                               |
+| Context / File type                                           | MANDATORY Skill                                                |
+| ------------------------------------------------------------- | -------------------------------------------------------------- |
+| **New feature intake / complexity classification**            | `intake-classifier`                                            |
+| **Business value & 6-pillar domain elicitation**              | `elicitation-interview`                                        |
+| **AS-IS / TO-BE / gap analysis (Full Feature)**               | `gap-analysis`                                                 |
+| **RBAC, state machines, business rules, ERD**                 | `domain-modeling`                                              |
+| **Risk register, contradiction scan, MoSCoW**                 | `risk-contradiction-scanner`                                   |
+| **Spec documents (BRD, PRD, SRS, user stories)**              | `spec-writer`                                                  |
+| **IEEE 29148 quality gate & traceability matrix**             | `spec-validator`                                               |
+| **Baseline sign-off & dev handover**                          | `handover`                                                     |
+| **Feature execution, slice delegation & review**              | `implementation-orchestrator`                                  |
+| Technical documentation, feature README, architecture, AGENTS | `technical-documentation` (Agent: `tech-doc-writer`)           |
+| Any `.tsx`, `.jsx` file, React component                      | `frontend-patterns` + `frontend-a11y`                          |
+| **UI Design: Landing, Marketing, Public surfaces**            | `frontend-design` + `design-taste-frontend` + `ui-taste-pro`   |
+| **UI Design: In-App, Dashboard, Study/Flashcards, Decks**     | `frontend-design` + `design-taste-product` + `ui-taste-pro`    |
+| **UI Animation, Motion, Micro-interactions**                  | `motion-design`                                                |
+| **UI visual review & component QA**                           | `ui-design-review`                                             |
+| **User guide / end-user docs with screenshots**               | `user-guide-with-screenshots`                                  |
+| iOS Native UI / Widgets (SwiftUI/UIKit only)                  | `liquid-glass-design` (iOS ONLY)                               |
+| Any NestJS file (controller, service, module, DTO)            | `nestjs-patterns` + `backend-patterns`                         |
+| API endpoint, REST resource                                   | `api-design` + `backend-patterns`                              |
+| Prisma schema, query, migration                               | `prisma-patterns`                                              |
+| PostgreSQL query, index, RLS policy                           | `postgres-patterns`                                            |
+| Dockerfile, docker-compose.yml                                | `docker-patterns`                                              |
+| E2E test, Playwright test                                     | `e2e-testing`                                                  |
+| Git branch, commit, merge                                     | `git-workflow`                                                 |
+| **Command: Resume project development from roadmap**          | `/command-continue-project` (`command-continue-project` skill) |
+| **Command: Automated modular commit & push**                  | `/command-git-push` (`command-git-push` skill)                 |
+| **Command: Generate end-user guide with real screenshots**    | `/command-user-guide` (`command-user-guide` skill)             |
 
 ---
 
