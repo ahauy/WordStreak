@@ -1,3 +1,4 @@
+import React from "react";
 import {
   Book,
   Sparkles,
@@ -135,4 +136,13 @@ export const getColorTheme = (hex?: string | null): PresetColor => {
     borderLight: "#E5E5E5",
     textLight: hex,
   };
+};
+
+export const DeckIcon: React.FC<{
+  iconName?: string | null;
+  className?: string;
+  style?: React.CSSProperties;
+}> = ({ iconName, className, style }) => {
+  const Icon = getIconComponent(iconName);
+  return React.createElement(Icon, { className, style });
 };

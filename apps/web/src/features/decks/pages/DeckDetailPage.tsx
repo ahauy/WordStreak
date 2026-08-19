@@ -20,7 +20,7 @@ import { EditCardModal } from "../../cards/components/EditCardModal";
 import { DeleteCardConfirmModal } from "../../cards/components/DeleteCardConfirmModal";
 import { EditDeckModal } from "../components/EditDeckModal";
 import { DashboardNavbar } from "../../dashboard/components/DashboardNavbar";
-import { getIconComponent, getColorTheme } from "../constants/deckThemes";
+import { DeckIcon, getColorTheme } from "../constants/deckThemes";
 import type {
   DeckResponse,
   CardResponse,
@@ -73,8 +73,30 @@ export const DeckDetailPage: React.FC = () => {
   }, [deckId]);
 
   useEffect(() => {
-    fetchDeckDetails();
-  }, [fetchDeckDetails]);
+    let ignore = false;
+    if (deckId) {
+      decksService
+        .getDeck(deckId)
+        .then((data) => {
+          if (!ignore) setDeck(data);
+        })
+        .catch((err: unknown) => {
+          if (!ignore) {
+            const message =
+              err instanceof Error
+                ? err.message
+                : "Không thể tải thông tin bộ từ";
+            setDeckError(message);
+          }
+        })
+        .finally(() => {
+          if (!ignore) setIsDeckLoading(false);
+        });
+    }
+    return () => {
+      ignore = true;
+    };
+  }, [deckId]);
 
   const handleCreateCard = async (dto: CreateCardDto) => {
     const created = await createCard(dto);
@@ -149,7 +171,6 @@ export const DeckDetailPage: React.FC = () => {
     );
   }
 
-  const IconComp = getIconComponent(deck.icon);
   const theme = getColorTheme(deck.color);
   const stats = deck.stats || {
     totalCards: cards.length,
@@ -192,7 +213,10 @@ export const DeckDetailPage: React.FC = () => {
                   color: theme.hex,
                 }}
               >
-                <IconComp className="w-7 h-7 sm:w-8 sm:h-8" />
+                <DeckIcon
+                  iconName={deck.icon}
+                  className="w-7 h-7 sm:w-8 sm:h-8"
+                />
               </div>
 
               <div>

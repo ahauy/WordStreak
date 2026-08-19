@@ -19,22 +19,21 @@ export const DeleteDeckConfirmModal: React.FC<DeleteDeckConfirmModalProps> = ({
   const [isDeleting, setIsDeleting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (isOpen) {
-      setIsDeleting(false);
-      setError(null);
-    }
-  }, [isOpen]);
+  const handleClose = React.useCallback(() => {
+    setIsDeleting(false);
+    setError(null);
+    onClose();
+  }, [onClose]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape" && isOpen) {
-        onClose();
+        handleClose();
       }
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [isOpen, onClose]);
+  }, [isOpen, handleClose]);
 
   if (!isOpen || !deck) return null;
 

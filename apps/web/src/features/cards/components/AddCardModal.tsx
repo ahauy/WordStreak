@@ -52,8 +52,6 @@ export const AddCardModal: React.FC<AddCardModalProps> = ({
       setTimeout(() => {
         wordInputRef.current?.focus();
       }, 100);
-      setErrors({});
-      setSubmitSuccess(null);
     }
   }, [isOpen]);
 

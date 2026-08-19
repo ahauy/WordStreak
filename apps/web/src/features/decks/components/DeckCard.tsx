@@ -12,7 +12,7 @@ import {
   Lock,
 } from "lucide-react";
 import type { DeckResponse } from "@wordstreak/shared-types";
-import { getIconComponent, getColorTheme } from "../constants/deckThemes";
+import { DeckIcon, getColorTheme } from "../constants/deckThemes";
 
 interface DeckCardProps {
   deck: DeckResponse;
@@ -35,7 +35,6 @@ export const DeckCard: React.FC<DeckCardProps> = ({
   const [imageError, setImageError] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
-  const IconComp = getIconComponent(deck.icon);
   const theme = getColorTheme(deck.color);
 
   // Close menu when clicking outside
@@ -87,7 +86,11 @@ export const DeckCard: React.FC<DeckCardProps> = ({
             <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
             <div className="absolute top-3 left-3">
               <span className="w-9 h-9 rounded-xl flex items-center justify-center shadow-sm backdrop-blur-md bg-white/90 text-black border border-white/40">
-                <IconComp className="w-4 h-4" style={{ color: theme.hex }} />
+                <DeckIcon
+                  iconName={deck.icon}
+                  className="w-4 h-4"
+                  style={{ color: theme.hex }}
+                />
               </span>
             </div>
             <div className="absolute top-3 right-3 flex items-center gap-1.5">
@@ -125,7 +128,8 @@ export const DeckCard: React.FC<DeckCardProps> = ({
                       border: `1px solid ${theme.borderLight}`,
                     }}
                   >
-                    <IconComp
+                    <DeckIcon
+                      iconName={deck.icon}
                       className="w-5 h-5"
                       style={{ color: theme.hex }}
                     />
