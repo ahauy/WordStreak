@@ -5,7 +5,6 @@ import { JwtPayload } from '@wordstreak/shared-types';
 
 describe('UsersController', () => {
   let controller: UsersController;
-  let service: UsersService;
 
   const mockUserPayload: JwtPayload = {
     sub: 'user-uuid-1',
@@ -41,7 +40,6 @@ describe('UsersController', () => {
     }).compile();
 
     controller = module.get<UsersController>(UsersController);
-    service = module.get<UsersService>(UsersService);
     jest.clearAllMocks();
   });
 
@@ -52,7 +50,7 @@ describe('UsersController', () => {
       const result = await controller.getProfile(mockUserPayload);
 
       expect(result).toEqual(mockProfile);
-      expect(service.getProfile).toHaveBeenCalledWith('user-uuid-1');
+      expect(mockUsersService.getProfile).toHaveBeenCalledWith('user-uuid-1');
     });
   });
 
@@ -66,9 +64,12 @@ describe('UsersController', () => {
       });
 
       expect(result).toEqual(updatedProfile);
-      expect(service.updateProfile).toHaveBeenCalledWith('user-uuid-1', {
-        dailyGoal: 20,
-      });
+      expect(mockUsersService.updateProfile).toHaveBeenCalledWith(
+        'user-uuid-1',
+        {
+          dailyGoal: 20,
+        },
+      );
     });
   });
 
@@ -84,7 +85,7 @@ describe('UsersController', () => {
       });
 
       expect(result).toEqual({ message: 'Password updated successfully' });
-      expect(service.changePassword).toHaveBeenCalledWith(
+      expect(mockUsersService.changePassword).toHaveBeenCalledWith(
         'user-uuid-1',
         'session-123',
         {

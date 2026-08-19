@@ -6,7 +6,6 @@ import { PasswordUtil } from '../auth/utils/password.util';
 
 describe('UsersService', () => {
   let service: UsersService;
-  let prisma: PrismaService;
 
   const mockUser = {
     id: 'user-uuid-1',
@@ -43,7 +42,6 @@ describe('UsersService', () => {
     }).compile();
 
     service = module.get<UsersService>(UsersService);
-    prisma = module.get<PrismaService>(PrismaService);
     jest.clearAllMocks();
   });
 
@@ -63,7 +61,7 @@ describe('UsersService', () => {
         updatedAt: mockUser.updatedAt,
       });
       expect(result).not.toHaveProperty('passwordHash');
-      expect(prisma.user.findUnique).toHaveBeenCalledWith({
+      expect(mockPrismaService.user.findUnique).toHaveBeenCalledWith({
         where: { id: 'user-uuid-1' },
       });
     });
@@ -94,7 +92,7 @@ describe('UsersService', () => {
       expect(result.dailyGoal).toBe(20);
       expect(result.avatarUrl).toBe('preset:cosmos-2');
       expect(result).not.toHaveProperty('passwordHash');
-      expect(prisma.user.update).toHaveBeenCalledWith({
+      expect(mockPrismaService.user.update).toHaveBeenCalledWith({
         where: { id: 'user-uuid-1' },
         data: {
           dailyGoal: 20,
@@ -107,8 +105,12 @@ describe('UsersService', () => {
   describe('changePassword', () => {
     it('should successfully change password and revoke other sessions', async () => {
       mockPrismaService.user.findUnique.mockResolvedValue(mockUser);
-      jest.spyOn(PasswordUtil, 'verify').mockResolvedValue(true);
-      jest.spyOn(PasswordUtil, 'hash').mockResolvedValue('new_argon2_hash');
+      const verifySpy = jest
+        .spyOn(PasswordUtil, 'verify')
+        .mockResolvedValue(true);
+      const hashSpy = jest
+        .spyOn(PasswordUtil, 'hash')
+        .mockResolvedValue('new_argon2_hash');
       mockPrismaService.user.update.mockResolvedValue({
         ...mockUser,
         passwordHash: 'new_argon2_hash',
@@ -125,25 +127,27 @@ describe('UsersService', () => {
       );
 
       expect(result).toEqual({ message: 'Password updated successfully' });
-      expect(PasswordUtil.verify).toHaveBeenCalledWith(
+      expect(verifySpy).toHaveBeenCalledWith(
         mockUser.passwordHash,
         'OldPassword123',
       );
-      expect(PasswordUtil.hash).toHaveBeenCalledWith('NewPassword123');
-      expect(prisma.user.update).toHaveBeenCalledWith({
+      expect(hashSpy).toHaveBeenCalledWith('NewPassword123');
+      expect(mockPrismaService.user.update).toHaveBeenCalledWith({
         where: { id: 'user-uuid-1' },
         data: { passwordHash: 'new_argon2_hash' },
       });
-      expect(prisma.session.updateMany).toHaveBeenCalledWith({
-        where: {
-          userId: 'user-uuid-1',
-          id: { not: 'session-123' },
-          revokedAt: null,
-        },
-        data: {
-          revokedAt: expect.any(Date),
-        },
+      expect(mockPrismaService.session.updateMany).toHaveBeenCalledTimes(1);
+      const calls = mockPrismaService.session.updateMany.mock
+        .calls as unknown as Array<
+        [{ where: Record<string, unknown>; data: { revokedAt: Date } }]
+      >;
+      const callData = calls[0][0];
+      expect(callData.where).toEqual({
+        userId: 'user-uuid-1',
+        id: { not: 'session-123' },
+        revokedAt: null,
       });
+      expect(callData.data.revokedAt).toBeInstanceOf(Date);
     });
 
     it('should throw BadRequestException if current password is incorrect', async () => {
@@ -159,8 +163,8 @@ describe('UsersService', () => {
         new BadRequestException('Current password is incorrect'),
       );
 
-      expect(prisma.user.update).not.toHaveBeenCalled();
-      expect(prisma.session.updateMany).not.toHaveBeenCalled();
+      expect(mockPrismaService.user.update).not.toHaveBeenCalled();
+      expect(mockPrismaService.session.updateMany).not.toHaveBeenCalled();
     });
 
     it('should throw BadRequestException if new password is same as current password', async () => {
@@ -178,7 +182,7 @@ describe('UsersService', () => {
         ),
       );
 
-      expect(prisma.user.update).not.toHaveBeenCalled();
+      expect(mockPrismaService.user.update).not.toHaveBeenCalled();
     });
   });
 });
