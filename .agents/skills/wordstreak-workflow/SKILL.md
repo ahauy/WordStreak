@@ -208,7 +208,7 @@ For small, well-scoped edits to existing code (`intake-classifier` will classify
 7. **`spec-validator`** validates the user stories.
 8. **`handover`** signs off and hands to implementation.
 9. **Implement directly**: Enforce mandatory tech skills and TDD.
-10. **Review & Documentation**: Verify tests, complete code review, update documentation with `technical-documentation`, check for zero regressions, and update `CHANGELOG.md`.
+10. **Review & Documentation**: Verify tests, complete code review, then (if UI was changed) run `user-guide-with-screenshots` to capture real screenshots and write/update `docs/user-guides/<slug>.md` **before committing**. Update technical documentation with `technical-documentation`, check for zero regressions, and update `CHANGELOG.md`.
 
 ---
 
@@ -223,6 +223,7 @@ For small, well-scoped edits to existing code (`intake-classifier` will classify
 - [ ] All `TC-###` test cases implemented as actual test files
 - [ ] Mandatory tech skills enforced during implementation
 - [ ] Code & UI review passed with zero `Critical` bugs remaining
+- [ ] **If feature has UI**: `user-guide-with-screenshots` skill executed — `docs/user-guides/<slug>.md` created/updated with real screenshots — **BEFORE any `git commit`**
 - [ ] `technical-documentation` executed: `docs/features/<slug>/README.md` created, index table updated, architecture/algorithms docs synced
 - [ ] All automated tests pass (Unit, Integration, E2E)
 - [ ] Verification, rollback strategy, and `CHANGELOG.md` updated

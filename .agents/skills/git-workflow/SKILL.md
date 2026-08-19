@@ -35,6 +35,18 @@ Best practices for Git version control, branching strategies, and collaborative 
    - Imperative mood, lowercase scope, no trailing period, maximum 72 characters.
    - Never write multi-line paragraphs or markdown backticks inside the `git commit -m "..."` command string.
 
+4. **Branch Minimization & Reuse Priority (Zero Unnecessary Branches)**:
+   - **ALWAYS prioritize existing / active branches** for ongoing feature work, related fixes, design adjustments, refactorings, and documentation updates.
+   - **DO NOT spawn new branches needlessly**. Avoid branch clutter and overhead.
+   - **ONLY create a new branch as a last resort** when starting a completely distinct, unrelated feature or epic that cannot logically live on the current branch.
+
+5. **Pre-Commit User Guide Gate (UI features only)**:
+   - **BEFORE** proposing any `git commit` for a feature or fix that touches UI screens, **ALWAYS** check whether a user guide exists at `docs/user-guides/<slug>.md`.
+   - If the guide does **NOT** exist, or if the UI changed in a way that makes existing screenshots stale: **STOP** and remind the user:
+     > ⚠️ **User guide required before committing.** This change affects the UI. Please run the `user-guide-with-screenshots` skill first to capture real screenshots and write the end-user guide (`docs/user-guides/<slug>.md`). Once the guide is ready, we can proceed with the commit.
+   - Only proceed with the commit after the user confirms the guide has been created or updated.
+   - Changes that do NOT touch any user-facing screen (backend-only, config, tests, scripts) are exempt from this gate.
+
 ## When to Activate
 
 - Setting up Git workflow for a new project
