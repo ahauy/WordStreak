@@ -1,6 +1,7 @@
 // Shared types and interfaces between apps/api and apps/web
 
 export * from "./auth.js";
+export * from "./decks.js";
 
 export interface User {
   id: string;
