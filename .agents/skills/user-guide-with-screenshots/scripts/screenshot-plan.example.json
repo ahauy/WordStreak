@@ -1,0 +1,57 @@
+{
+  "baseUrl": "http://localhost:5173",
+  "outDir": "docs/user-guides/assets/card-creation",
+  "viewport": { "width": 1280, "height": 800 },
+  "steps": [
+    {
+      "name": "01-deck-detail-page",
+      "url": "/decks/SAMPLE_DECK_ID",
+      "actions": [],
+      "screenshot": { "fullPage": true }
+    },
+    {
+      "name": "02-open-add-card-dialog",
+      "url": "/decks/SAMPLE_DECK_ID",
+      "actions": [
+        { "type": "click", "selector": "text=Add new card" },
+        {
+          "type": "waitForSelector",
+          "selector": "[data-testid=add-card-modal]"
+        }
+      ],
+      "screenshot": { "selector": "[data-testid=add-card-modal]" }
+    },
+    {
+      "name": "03-fill-form-and-preview",
+      "url": "/decks/SAMPLE_DECK_ID",
+      "actions": [
+        { "type": "click", "selector": "text=Add new card" },
+        { "type": "fill", "selector": "[name=term]", "value": "ubiquitous" },
+        {
+          "type": "fill",
+          "selector": "[name=meaning]",
+          "value": "present everywhere"
+        },
+        { "type": "wait", "ms": 300 }
+      ],
+      "screenshot": { "selector": "[data-testid=add-card-modal]" }
+    },
+    {
+      "name": "04-duplicate-warning",
+      "url": "/decks/SAMPLE_DECK_ID",
+      "actions": [
+        { "type": "click", "selector": "text=Add new card" },
+        {
+          "type": "fill",
+          "selector": "[name=term]",
+          "value": "TERM_ALREADY_IN_DECK"
+        },
+        {
+          "type": "waitForSelector",
+          "selector": "text=already exists in this deck"
+        }
+      ],
+      "screenshot": { "selector": "[data-testid=add-card-modal]" }
+    }
+  ]
+}
