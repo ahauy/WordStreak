@@ -33,7 +33,7 @@ const GOAL_PRESETS = [
   { value: 50, label: "50 từ", desc: "Đột phá" },
 ];
 
-export const SettingsModal: React.FC<SettingsModalProps> = ({
+const SettingsModalContent: React.FC<SettingsModalProps> = ({
   isOpen,
   onClose,
   initialTab = "profile",
@@ -79,24 +79,6 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
     type: "success" | "error";
     message: string;
   } | null>(null);
-
-  // Sync state when user changes or modal opens
-  useEffect(() => {
-    if (isOpen && user) {
-      setDailyGoal(user.dailyGoal || 10);
-      setCustomGoalInput(String(user.dailyGoal || 10));
-      setIsGoalCustom(
-        !GOAL_PRESETS.some((preset) => preset.value === user.dailyGoal),
-      );
-      setSelectedAvatar(user.avatarUrl || "preset:stellar-voyager");
-      setCustomAvatarUrl(
-        user.avatarUrl?.startsWith("http") ? user.avatarUrl : "",
-      );
-      setGoalFeedback(null);
-      setAvatarFeedback(null);
-      setPasswordFeedback(null);
-    }
-  }, [isOpen, user]);
 
   // Handle ESC key to close
   useEffect(() => {
@@ -696,5 +678,15 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
         </div>
       </div>
     </div>
+  );
+};
+export const SettingsModal: React.FC<SettingsModalProps> = (props) => {
+  const { user } = useAuthStore();
+  if (!props.isOpen) return null;
+  return (
+    <SettingsModalContent
+      key={`${user?.id || "guest"}-${props.isOpen}`}
+      {...props}
+    />
   );
 };
