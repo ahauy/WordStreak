@@ -115,6 +115,7 @@ Phase 6: Quality Verification, Review, Tech Docs (tech-doc-writer) & Delivery
 | **UI Design: In-App, Dashboard, Study/Flashcards, Decks**     | `frontend-design` + `design-taste-product` + `ui-taste-pro`  |
 | **UI Animation, Motion, Micro-interactions**                  | `motion-design`                                              |
 | **UI visual review & component QA**                           | `ui-design-review`                                           |
+| **User guide / end-user docs with screenshots**               | `user-guide-with-screenshots`                                |
 | iOS Native UI / Widgets (SwiftUI/UIKit only)                  | `liquid-glass-design` (iOS ONLY)                             |
 | Any NestJS file (controller, service, module, DTO)            | `nestjs-patterns` + `backend-patterns`                       |
 | API endpoint, REST resource                                   | `api-design` + `backend-patterns`                            |
@@ -145,6 +146,7 @@ Phase 6: Quality Verification, Review, Tech Docs (tech-doc-writer) & Delivery
 - **Zero Code Before Approved Spec**: Never write code or create mockups without an approved domain baseline and specification.
 - **Bug Severity Gate**: No feature branch can be merged or marked complete with unresolved `Critical` bugs.
 - **Post-Review Documentation Gate**: Every delivered feature must have technical documentation updated/created by `tech-doc-writer` (`technical-documentation` skill) before closing the task.
+- **User Guide Gate**: Every feature with a UI must have a user-facing guide created or updated via the `user-guide-with-screenshots` skill (real screenshots, non-technical language, saved to `docs/user-guides/<slug>.md`) before the feature is considered done. Do not close the task without this.
 - **Immutable Data Patterns**: Create new copies, do not mutate state directly.
 - **KISS, DRY, YAGNI**: Avoid over-engineering and speculative features.
 - **Code Limits**: File < 800 lines, function < 50 lines.
@@ -157,3 +159,4 @@ Phase 6: Quality Verification, Review, Tech Docs (tech-doc-writer) & Delivery
   - **Zero Auto-Commit**: Never commit without user review and explicit request.
   - **Modular Commits**: Break down commits into granular, logical parts (Spec/Docs -> Shared Types -> Backend API -> Frontend UI -> Feature Docs).
   - **Single-Line English Commits**: Strictly single-line Conventional Commits in English (e.g. `feat(scope): concise description`).
+  - **Branch Reuse Priority**: Always prioritize existing active branches for related work, fixes, or refinements; avoid creating new branches unless strictly necessary for completely independent scope separation.
