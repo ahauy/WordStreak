@@ -17,6 +17,7 @@ Danh sách tất cả các tính năng đã được deliver (code hoàn chỉnh
 | [Spaced Repetition System Review (US-SRS-01..03)](./srs-review/README.md)            | `srs-review`             | 1.0     | Hoàn thành (`Delivered`) | 2026-08-20 |
 | [Multiple Choice Quiz Mode (US-QUIZ-01)](./quiz-multiple-choice/README.md)           | `quiz-multiple-choice`   | 1.0     | Hoàn thành (`Delivered`) | 2026-08-20 |
 | [Fill-in-the-blank Quiz Mode (US-QUIZ-02)](./quiz-fill-in-the-blank/README.md)       | `quiz-fill-in-the-blank` | 1.0     | Hoàn thành (`Delivered`) | 2026-08-20 |
+| [Daily Streak Engine & Timezone Logic (US-GAME-01)](./daily-streak-engine/README.md) | `daily-streak-engine`    | 1.0     | Hoàn thành (`Delivered`) | 2026-08-20 |
 
 ---
 

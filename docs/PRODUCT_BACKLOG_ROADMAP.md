@@ -219,15 +219,15 @@ _Mục tiêu: Đa dạng hóa hình thức kiểm tra để não bộ kích ho�
 
 _Mục tiêu: Duy trì động lực học tập liên tục hàng ngày, biến việc học từ vựng thành thói quen không thể bỏ._
 
-- [ ] **US-GAME-01: Hệ thống đếm chuỗi ngày học (Daily Streak Engine)**
+- [x] **US-GAME-01: Hệ thống đếm chuỗi ngày học (Daily Streak Engine)**
   - **AC:**
     - Khi user hoàn thành phiên học/ôn tập trong ngày thỏa mãn điều kiện (`số thẻ học >= dailyGoal` hoặc hoàn thành tối thiểu 1 review session):
       - Nếu `lastActiveDate == Yesterday`: `currentStreak += 1`, cập nhật `bestStreak = max(currentStreak, bestStreak)`.
       - Nếu `lastActiveDate == Today`: Giữ nguyên streak.
       - Nếu `lastActiveDate < Yesterday`: Reset `currentStreak = 1` (trừ khi có Streak Freeze).
   - **Tasks:**
-    - [ ] Backend: `StreakService` tính toán ngày theo múi giờ địa phương (User Timezone).
-    - [ ] Frontend: Widget Ngọn lửa Streak rực sáng với animation và thông báo chúc mừng khi tăng chuỗi.
+    - [x] Backend: `StreakService` tính toán ngày theo múi giờ địa phương (User Timezone).
+    - [x] Frontend: Widget Ngọn lửa Streak rực sáng với animation và thông báo chúc mừng khi tăng chuỗi.
 - [ ] **US-GAME-02: Cơ chế Bảo vệ chuỗi (Streak Freeze)**
   - **AC:** Người dùng được trang bị tối đa 2 Streak Freeze (mua bằng điểm XP hoặc tặng hàng tháng). Nếu bỏ lỡ 1 ngày, hệ thống tự động tiêu thụ 1 Freeze để giữ nguyên chuỗi ngày học thay vì reset về 0.
   - **Tasks:**
