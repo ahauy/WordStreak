@@ -23,9 +23,13 @@ This command skill automates the creation and maintenance of end-user documentat
 ## Core Principles (User-First)
 
 1. **Non-Technical Language**: Avoid developer jargon (e.g., _API, DTO, Endpoint, Database, State, Component, Payload_). Explain features plainly as if talking to an everyday user (e.g., use "popup window" instead of "modal").
-2. **100% Real Screenshots**: Capture images directly from the running web application (`localhost:5173`). Never use fabricated mockups or placeholders.
-3. **Visual Clarity**: 1 user action = 1 clear screenshot + 1–2 concise explanatory sentences.
-4. **File Locations**:
+2. **100% Real Screenshots (MANDATORY - NO TEXT-ONLY WORKAROUNDS)**: Capture images directly from the running web application (`localhost:5173`). Never use fabricated mockups or write text-only guides for features with UI changes.
+3. **Visual Annotations & Red Highlights (Red Highlights `#EF4444` & Badges ①, ②, ③)**:
+   - Every screenshot **MUST FEATURE VIBRANT RED HIGHLIGHTS** (`outline: 3.5px solid #EF4444; box-shadow: 0 0 0 7px rgba(239, 68, 68, 0.3)`) bounding the target button, input, or container.
+   - Attach a circular red numbered badge (**①, ②, ③**) with bold white text at the top-left corner of the highlighted element.
+   - In the guide text, every instructional bullet point must explicitly reference the corresponding badge number (e.g. `① Click the button...`, `② Enter the term...`).
+4. **Visual Clarity**: 1 user action = 1 clear annotated screenshot + 1–2 concise explanatory sentences.
+5. **File Locations**:
    - Document: `docs/user-guides/<slug>.md`
    - Images: `docs/user-guides/images/<slug>/` or `docs/user-guides/assets/<slug>/`
 

@@ -47,13 +47,20 @@ This command skill automates git staging, validates quality and user guide gates
        3. Switch back to the original `CURRENT_BRANCH`.
        4. Report summary for all processed branches in Step 5.
 
-### Step 2: Pre-Commit User Guide Gate (UI Changes Only)
+### Step 2: Pre-Commit User Guide Gate (UI Changes Only - 100% Mandatory Real Screenshots)
 
 1. Check changed files: Do any changes touch user-facing screens in `apps/web/`?
-2. If UI changes exist but `docs/user-guides/<slug>.md` is missing or stale:
-   - Alert the user:
-     > ⚠️ **User Guide Gate Check:** UI changes detected without a corresponding or updated `docs/user-guides/<slug>.md`.
-   - Recommend running `/command-user-guide` before committing, or confirm with the user to proceed if the change is an internal refactor.
+2. If UI changes exist:
+   - **Verification 1 (File Existence)**: Check if `docs/user-guides/<slug>.md` exists.
+   - **Verification 2 (100% Real Screenshots Check)**:
+     - Scan `docs/user-guides/<slug>.md` for embedded screenshot links (e.g. `![...](./images/<slug>/...)`).
+     - Verify that the image files physically exist on disk in `docs/user-guides/images/<slug>/` or `docs/user-guides/assets/<slug>/`.
+     - Verify images are **100% real high-resolution screenshots with visual highlights/callouts** captured via Playwright/browser, NOT placeholders or mockups.
+   - **Strict Gate Enforcement**:
+     - If the user guide is missing, empty, text-only without images, or the image files do not exist:
+       > ⚠️ **User Guide Gate BLOCKED:** UI changes detected without a verified screenshot-backed user guide in `docs/user-guides/<slug>.md`.
+       > 👉 **Action Required:** Run `/command-user-guide <slug>` to capture real screenshots with visual highlights before committing/pushing.
+     - **AI MUST STOP IMMEDIATELY** and notify the user. NEVER auto-create a text-only guide or bypass this gate silently!
 
 ### Step 3: Modular Commits Breakdown
 

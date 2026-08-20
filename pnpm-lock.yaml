@@ -205,7 +205,11 @@ settings:
 
 importers:
 
-  .: {}
+  .:
+    devDependencies:
+      playwright:
+        specifier: ^1.62.1
+        version: 1.62.1
 
   apps/api:
     dependencies:

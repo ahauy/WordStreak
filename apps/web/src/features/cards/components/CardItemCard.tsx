@@ -14,6 +14,8 @@ import type { CardResponse } from "@wordstreak/shared-types";
 interface CardItemCardProps {
   card: CardResponse;
   deckColor?: string;
+  isSelected?: boolean;
+  onToggleSelect?: (cardId: string) => void;
   onEdit: (card: CardResponse) => void;
   onDelete: (card: CardResponse) => void;
 }
@@ -21,6 +23,8 @@ interface CardItemCardProps {
 export const CardItemCard: React.FC<CardItemCardProps> = ({
   card,
   deckColor = "#6366F1",
+  isSelected = false,
+  onToggleSelect,
   onEdit,
   onDelete,
 }) => {
@@ -91,11 +95,22 @@ export const CardItemCard: React.FC<CardItemCardProps> = ({
         {/* Top Header */}
         <div className="pt-1">
           <div className="flex items-center justify-between mb-3">
-            <span
-              className={`text-[11px] font-semibold px-2.5 py-0.5 rounded-full border ${statusInfo.bg}`}
-            >
-              {statusInfo.label}
-            </span>
+            <div className="flex items-center gap-2">
+              {onToggleSelect && (
+                <input
+                  type="checkbox"
+                  checked={isSelected}
+                  onChange={() => onToggleSelect(card.id)}
+                  aria-label={`Chọn thẻ ${card.word}`}
+                  className="w-4 h-4 rounded border-[#d4d4d4] text-[#7e22ce] focus:ring-[#7e22ce] cursor-pointer"
+                />
+              )}
+              <span
+                className={`text-[11px] font-semibold px-2.5 py-0.5 rounded-full border ${statusInfo.bg}`}
+              >
+                {statusInfo.label}
+              </span>
+            </div>
 
             <div className="flex items-center gap-1 opacity-80 group-hover:opacity-100 transition-opacity">
               <button

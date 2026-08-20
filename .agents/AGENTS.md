@@ -149,7 +149,7 @@ Phase 6: Quality Verification, Review, Tech Docs (tech-doc-writer) & Delivery
 - **Zero Code Before Approved Spec**: Never write code or create mockups without an approved domain baseline and specification.
 - **Bug Severity Gate**: No feature branch can be merged or marked complete with unresolved `Critical` bugs.
 - **Post-Review Documentation Gate**: Every delivered feature must have technical documentation updated/created by `tech-doc-writer` (`technical-documentation` skill) before closing the task.
-- **User Guide Gate**: Every feature with a UI must have a user-facing guide created or updated via the `user-guide-with-screenshots` skill (real screenshots, non-technical language, saved to `docs/user-guides/<slug>.md`) before the feature is considered done. Do not close the task without this.
+- **User Guide Gate**: Every feature with a UI must have a user-facing guide created or updated via the `user-guide-with-screenshots` skill (100% mandatory real screenshots with Red Highlights `#EF4444` & numbered callout badges, non-technical language, saved to `docs/user-guides/<slug>.md`) before the feature is considered done. Do not close tasks or push code without this verified.
 - **Immutable Data Patterns**: Create new copies, do not mutate state directly.
 - **KISS, DRY, YAGNI**: Avoid over-engineering and speculative features.
 - **Code Limits**: File < 800 lines, function < 50 lines.
@@ -158,8 +158,8 @@ Phase 6: Quality Verification, Review, Tech Docs (tech-doc-writer) & Delivery
 - **Error Handling**: Handle errors explicitly, never swallow silently.
 - **Data Privacy**: Strictly anonymize test data; never use real production credentials in dev.
 - **Traceability**: All scope changes must be documented in the feature's Change Log.
-- **Git Commit Governance**:
-  - **Zero Auto-Commit**: Never commit without user review and explicit request.
+- **Git Commit Governance (Strict Human-In-The-Loop Gate)**:
+  - **Zero Autonomous Git Execution**: AI is STRICTLY FORBIDDEN from running `git add`, `git commit`, or `git push` autonomously. Staging, committing, and pushing can ONLY be executed when the user explicitly runs `/command-git-push` (or `/push`, `/ship`, `/auto-git-push`), or when the AI explicitly proposes the exact git changes to the user and receives explicit approval.
   - **Modular Commits**: Break down commits into granular, logical parts (Spec/Docs -> Shared Types -> Backend API -> Frontend UI -> Feature Docs).
   - **Single-Line English Commits**: Strictly single-line Conventional Commits in English (e.g. `feat(scope): concise description`).
   - **Branch Reuse Priority**: Always prioritize existing active branches for related work, fixes, or refinements; avoid creating new branches unless strictly necessary for completely independent scope separation.

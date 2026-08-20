@@ -35,15 +35,17 @@ triggers:
 
 ## Core Principles
 
-1. **Readers are non-technical.** Avoid words like API, DTO, endpoint, component,
-   transaction, payload. Use plain language — write as if explaining to a friend
-   who is not a developer. Replace "modal" with "popup window", etc.
-2. **Screenshots must be real** — captured from the running app via
-   `scripts/capture-screenshots.mjs`. Never use mockups or imagined layouts.
-3. **One action = one screenshot + 1–2 sentences.** Do not write a long paragraph
-   and then drop a screenshot at the end.
-4. **Always kept separate** from the technical README. Output file goes to
-   `docs/user-guides/<slug>.md`, images to `docs/user-guides/assets/<slug>/`.
+1.  **Readers are non-technical.** Avoid words like API, DTO, endpoint, component,
+    transaction, payload. Use plain language — write as if explaining to a friend
+    who is not a developer. Replace "modal" with "popup window", etc.
+2.  **Screenshots must be 100% real** — captured from the running app via Playwright/Browser. Never use mockups or imagined layouts.
+3.  **Visual Annotations & Red Highlights (MANDATORY ON ALL SCREENSHOTS)**:
+    - Every captured step **MUST feature vibrant red highlights** (`outline: 3.5px solid #EF4444; box-shadow: 0 0 0 7px rgba(239, 68, 68, 0.3)`) bounding the target button, input, or container.
+    - Attach a circular red numbered badge (**①, ②, ③**) with bold white text at the top-left corner of the highlighted element.
+    - In the guide text, every instructional bullet point must explicitly reference the corresponding badge number (e.g. `① Click the button...`, `② Enter the term...`).
+4.  **One action = one annotated screenshot + 1–2 sentences.** Do not write a long paragraph and then drop a screenshot at the end.
+5.  **Always kept separate** from the technical README. Output file goes to
+    `docs/user-guides/<slug>.md`, images to `docs/user-guides/images/<slug>/`.
 
 ---
 

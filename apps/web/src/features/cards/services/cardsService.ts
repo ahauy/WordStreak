@@ -3,12 +3,20 @@ import type {
   CardResponse,
   CreateCardDto,
   UpdateCardDto,
+  QueryCardsDto,
+  PaginatedCardsResponse,
+  BulkCardActionDto,
+  BulkCardActionResult,
 } from "@wordstreak/shared-types";
 
 export const cardsService = {
-  async getDeckCards(deckId: string): Promise<CardResponse[]> {
-    const response = await apiClient.get<CardResponse[]>(
+  async getDeckCards(
+    deckId: string,
+    query?: QueryCardsDto,
+  ): Promise<PaginatedCardsResponse> {
+    const response = await apiClient.get<PaginatedCardsResponse>(
       `/decks/${deckId}/cards`,
+      { params: query },
     );
     return response.data;
   },
@@ -38,6 +46,17 @@ export const cardsService = {
       message: string;
       deletedCardId: string;
     }>(`/cards/${id}`);
+    return response.data;
+  },
+
+  async bulkAction(
+    deckId: string,
+    dto: BulkCardActionDto,
+  ): Promise<BulkCardActionResult> {
+    const response = await apiClient.post<BulkCardActionResult>(
+      `/decks/${deckId}/cards/bulk-action`,
+      dto,
+    );
     return response.data;
   },
 };

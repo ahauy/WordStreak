@@ -2,11 +2,20 @@ import {
   Injectable,
   NotFoundException,
   ForbiddenException,
+  BadRequestException,
 } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateCardDto } from './dto/create-card.dto';
 import { UpdateCardDto } from './dto/update-card.dto';
-import type { CardResponse, CardProgressInfo } from '@wordstreak/shared-types';
+import { QueryCardsDto } from './dto/query-cards.dto';
+import { BulkCardActionDto } from './dto/bulk-card-action.dto';
+import type {
+  CardResponse,
+  CardProgressInfo,
+  PaginatedCardsResponse,
+  BulkCardActionResult,
+} from '@wordstreak/shared-types';
 
 interface CardWithProgress {
   id: string;
@@ -90,7 +99,11 @@ export class CardsService {
     });
   }
 
-  async findAllByDeck(userId: string, deckId: string): Promise<CardResponse[]> {
+  async findAllByDeck(
+    userId: string,
+    deckId: string,
+    query?: QueryCardsDto,
+  ): Promise<PaginatedCardsResponse> {
     const deck = await this.prisma.deck.findUnique({
       where: { id: deckId },
     });
@@ -105,25 +118,92 @@ export class CardsService {
       );
     }
 
-    const cards = await this.prisma.card.findMany({
-      where: { deckId },
-      orderBy: { createdAt: 'desc' },
-      include: {
-        progress: {
-          where: { userId },
-          select: {
-            status: true,
-            interval: true,
-            easeFactor: true,
-            repetitions: true,
-            nextReviewDate: true,
-            lastReviewedAt: true,
+    const page = Math.max(1, query?.page ?? 1);
+    const limit = Math.min(100, Math.max(1, query?.limit ?? 20));
+    const skip = (page - 1) * limit;
+
+    const andConditions: Prisma.CardWhereInput[] = [{ deckId }];
+
+    if (query?.search && query.search.trim()) {
+      const term = query.search.trim();
+      andConditions.push({
+        OR: [
+          { word: { contains: term, mode: 'insensitive' } },
+          { meaning: { contains: term, mode: 'insensitive' } },
+          { exampleSentence: { contains: term, mode: 'insensitive' } },
+        ],
+      });
+    }
+
+    if (query?.status && query.status !== 'ALL') {
+      if (query.status === 'NEW') {
+        andConditions.push({
+          progress: {
+            some: {
+              userId,
+              status: 'NEW',
+            },
+          },
+        });
+      } else if (query.status === 'LEARNING') {
+        andConditions.push({
+          progress: {
+            some: {
+              userId,
+              status: { in: ['LEARNING', 'REVIEW'] },
+            },
+          },
+        });
+      } else if (query.status === 'MASTERED') {
+        andConditions.push({
+          progress: {
+            some: {
+              userId,
+              status: 'MASTERED',
+            },
+          },
+        });
+      }
+    }
+
+    const whereClause: Prisma.CardWhereInput = { AND: andConditions };
+
+    const [total, cards] = await Promise.all([
+      this.prisma.card.count({ where: whereClause }),
+      this.prisma.card.findMany({
+        where: whereClause,
+        skip,
+        take: limit,
+        orderBy: { createdAt: 'desc' },
+        include: {
+          progress: {
+            where: { userId },
+            select: {
+              status: true,
+              interval: true,
+              easeFactor: true,
+              repetitions: true,
+              nextReviewDate: true,
+              lastReviewedAt: true,
+            },
           },
         },
-      },
-    });
+      }),
+    ]);
 
-    return cards.map((c) => this.mapToResponse(c));
+    const totalPages = Math.ceil(total / limit) || 1;
+
+    return {
+      data: cards.map((c) => this.mapToResponse(c)),
+      meta: {
+        total,
+        page,
+        limit,
+        totalPages,
+        hasNextPage: page < totalPages,
+        hasPrevPage: page > 1,
+      },
+    };
   }
 
   async findOne(userId: string, id: string): Promise<CardResponse> {
@@ -219,6 +299,142 @@ export class CardsService {
       message: 'Thẻ từ vựng đã được xóa thành công',
       deletedCardId: id,
     };
+  }
+
+  async bulkAction(
+    userId: string,
+    deckId: string,
+    dto: BulkCardActionDto,
+  ): Promise<BulkCardActionResult> {
+    if (dto.action === 'MOVE') {
+      if (!dto.targetDeckId) {
+        throw new BadRequestException('Vui lòng chọn bộ từ đích để di chuyển');
+      }
+
+      if (dto.targetDeckId === deckId) {
+        throw new BadRequestException(
+          'Bộ từ đích phải khác với bộ từ hiện tại',
+        );
+      }
+    }
+
+    const originDeck = await this.prisma.deck.findUnique({
+      where: { id: deckId },
+    });
+
+    if (!originDeck) {
+      throw new NotFoundException('Không tìm thấy bộ từ vựng nguồn');
+    }
+
+    if (originDeck.userId !== userId) {
+      throw new ForbiddenException(
+        'Bạn không có quyền thao tác trên bộ từ vựng này',
+      );
+    }
+
+    // Verify all cards belong to origin deck
+    const existingCards =
+      (await this.prisma.card.findMany({
+        where: {
+          id: { in: dto.cardIds },
+          deckId,
+        },
+        select: { id: true },
+      })) || [];
+
+    const validCardIds = existingCards.map((c) => c.id);
+    if (validCardIds.length === 0) {
+      return {
+        success: true,
+        action: dto.action,
+        affectedCount: 0,
+        message: 'Không tìm thấy thẻ hợp lệ để xử lý',
+      };
+    }
+
+    if (dto.action === 'DELETE') {
+      const result = await this.prisma.$transaction(async (tx) => {
+        const deleted = await tx.card.deleteMany({
+          where: { id: { in: validCardIds } },
+        });
+        return deleted.count;
+      });
+
+      return {
+        success: true,
+        action: 'DELETE',
+        affectedCount: result,
+        message: `Đã xóa thành công ${result} thẻ từ vựng`,
+      };
+    }
+
+    if (dto.action === 'MOVE') {
+      if (!dto.targetDeckId) {
+        throw new BadRequestException('Vui lòng chọn bộ từ đích để di chuyển');
+      }
+
+      if (dto.targetDeckId === deckId) {
+        throw new BadRequestException(
+          'Bộ từ đích phải khác với bộ từ hiện tại',
+        );
+      }
+
+      const targetDeck = await this.prisma.deck.findUnique({
+        where: { id: dto.targetDeckId },
+      });
+
+      if (!targetDeck) {
+        throw new NotFoundException('Không tìm thấy bộ từ đích');
+      }
+
+      if (targetDeck.userId !== userId) {
+        throw new ForbiddenException('Bạn không sở hữu bộ từ đích');
+      }
+
+      const result = await this.prisma.$transaction(async (tx) => {
+        const updated = await tx.card.updateMany({
+          where: { id: { in: validCardIds } },
+          data: { deckId: dto.targetDeckId! },
+        });
+        return updated.count;
+      });
+
+      return {
+        success: true,
+        action: 'MOVE',
+        affectedCount: result,
+        message: `Đã chuyển thành công ${result} thẻ sang "${targetDeck.title}"`,
+      };
+    }
+
+    if (dto.action === 'RESET_PROGRESS') {
+      const result = await this.prisma.$transaction(async (tx) => {
+        const updated = await tx.userCardProgress.updateMany({
+          where: {
+            cardId: { in: validCardIds },
+            userId,
+          },
+          data: {
+            status: 'NEW',
+            interval: 0,
+            easeFactor: 2.5,
+            repetitions: 0,
+            nextReviewDate: new Date(),
+            lastReviewedAt: null,
+          },
+        });
+        return updated.count;
+      });
+
+      return {
+        success: true,
+        action: 'RESET_PROGRESS',
+        affectedCount: result,
+        message: `Đã đặt lại tiến độ học của ${result} thẻ về trạng thái Mới`,
+      };
+    }
+
+    throw new BadRequestException('Hành động không được hỗ trợ');
   }
 
   private async verifyCardOwnership(userId: string, cardId: string) {
