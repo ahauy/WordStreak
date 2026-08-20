@@ -98,8 +98,10 @@ Phase 6: Quality Verification, Review, Tech Docs (tech-doc-writer) & Delivery
 
 **CRITICAL: Before writing ANY code or documentation, AI MUST read the corresponding skill BEFORE execution.**
 
-| Context / File type                                           | MANDATORY Skill                                                |
+| Context / File type                                           | MANDATORY Skill / Reference                                    |
 | ------------------------------------------------------------- | -------------------------------------------------------------- |
+| **Mandatory Design System Tokens (ALL UI in `apps/web/`)**    | `apps/web/DESIGN.md` (MUST read before any UI work)            |
+| **Product Nature, Flame Mascot & Animation Physics**          | `apps/web/MEMORY.md` (MUST read before any UI work)            |
 | **New feature intake / complexity classification**            | `intake-classifier`                                            |
 | **Business value & 6-pillar domain elicitation**              | `elicitation-interview`                                        |
 | **AS-IS / TO-BE / gap analysis (Full Feature)**               | `gap-analysis`                                                 |
@@ -147,6 +149,9 @@ Phase 6: Quality Verification, Review, Tech Docs (tech-doc-writer) & Delivery
 ## Corporate Governance & Code Quality Rules
 
 - **Zero Code Before Approved Spec**: Never write code or create mockups without an approved domain baseline and specification.
+- **Subagent Transparency & Notification Protocol (MANDATORY)**: Whenever a subagent (e.g. `implementation-orchestrator`, `ui-design-review`, `tech-doc-writer`, `browser_subagent`) is dispatched or finishes, the AI MUST explicitly notify the user in chat with a clear announcement block specifying: (1) Subagent Name & Role, (2) Active Model Name (e.g. `Gemini 3.7 Flash`), (3) Exact Task Scope, and (4) Output Artifact / Report Link.
+- **Design System & Anti-AI-Slop Gate (STRICT)**: Before creating or modifying any UI in `apps/web/`, AI MUST read [apps/web/DESIGN.md](file:///Users/vutuanhau/Documents/PROJECT/WordStreak/apps/web/DESIGN.md) and [apps/web/MEMORY.md](file:///Users/vutuanhau/Documents/PROJECT/WordStreak/apps/web/MEMORY.md). All UI must strictly adhere to the document-first minimal canvas (`#ffffff`), 1px hairline borders (`#e5e5e5`), Obsidian pure black pills (`#000000`, `rounded-full`), Nunito/Inter/JetBrains Mono typography, and stable outer anchor hover physics. Generic AI slop (unrequested multi-color gradients, neon blobs, glassmorphism, fake pricing tiers) is strictly forbidden.
+- **UI Visual Review Gate**: Every UI slice must undergo an independent anti-slop verification using `ui-design-review` before closing.
 - **Bug Severity Gate**: No feature branch can be merged or marked complete with unresolved `Critical` bugs.
 - **Post-Review Documentation Gate**: Every delivered feature must have technical documentation updated/created by `tech-doc-writer` (`technical-documentation` skill) before closing the task.
 - **User Guide Gate**: Every feature with a UI must have a user-facing guide created or updated via the `user-guide-with-screenshots` skill (100% mandatory real screenshots with Red Highlights `#EF4444` & numbered callout badges, non-technical language, saved to `docs/user-guides/<slug>.md`) before the feature is considered done. Do not close tasks or push code without this verified.

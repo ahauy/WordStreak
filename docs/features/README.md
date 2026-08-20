@@ -14,6 +14,7 @@ Danh sách tất cả các tính năng đã được deliver (code hoàn chỉnh
 | [Deck CRUD & Vocabulary Management (US-DECK-01)](./deck-crud/README.md)              | `deck-crud`             | 1.0     | Hoàn thành (`Delivered`) | 2026-08-19 |
 | [Contextual Card Creation (US-CARD-01)](./card-creation/README.md)                   | `card-creation`         | 1.0     | Hoàn thành (`Delivered`) | 2026-08-19 |
 | [Card List Management & Search/Filter (US-CARD-02)](./card-management/README.md)     | `card-management`       | 1.0     | Hoàn thành (`Delivered`) | 2026-08-20 |
+| [Spaced Repetition System Review (US-SRS-01..03)](./srs-review/README.md)            | `srs-review`            | 1.0     | Hoàn thành (`Delivered`) | 2026-08-20 |
 
 ---
 

@@ -274,8 +274,8 @@ export const DeckDetailPage: React.FC = () => {
 
         {/* Deck Header Card */}
         <div className="rounded-2xl border border-[#e5e5e5] bg-white p-6 sm:p-8 shadow-xs mb-8">
-          <div className="flex flex-col md:flex-row md:items-start justify-between gap-6">
-            <div className="flex items-start gap-4">
+          <div className="flex flex-col xl:flex-row xl:items-start justify-between gap-6">
+            <div className="flex items-start gap-4 flex-1 min-w-0">
               <div
                 className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl flex items-center justify-center flex-shrink-0"
                 style={{
@@ -290,7 +290,7 @@ export const DeckDetailPage: React.FC = () => {
                 />
               </div>
 
-              <div>
+              <div className="flex-1 min-w-0">
                 <div className="flex flex-wrap items-center gap-2 mb-2">
                   <div className="inline-flex items-center gap-1.5 rounded-full border border-[#e9d5ff] bg-[#f3e8ff] px-2.5 py-0.5 text-[#7e22ce]">
                     <Layers className="w-3 h-3" />
@@ -342,23 +342,32 @@ export const DeckDetailPage: React.FC = () => {
             </div>
 
             {/* Header Right Action Buttons */}
-            <div className="flex flex-wrap items-center gap-2.5 self-start">
+            <div className="flex flex-wrap sm:flex-nowrap items-center gap-2.5 flex-shrink-0 self-start xl:self-start">
               <button
                 type="button"
-                onClick={() => setIsEditDeckOpen(true)}
-                className="btn-secondary h-10 px-4 text-xs font-semibold gap-1.5 cursor-pointer inline-flex items-center"
+                onClick={() => navigate(`/decks/${deckId}/review`)}
+                className="h-10 px-4 text-xs font-semibold gap-2 shadow-xs cursor-pointer inline-flex items-center rounded-full bg-[#000000] text-[#ffffff] hover:bg-[#090909] transition-all whitespace-nowrap"
               >
-                <Edit2 className="w-3.5 h-3.5 text-[#525252]" />
-                <span>Sửa bộ từ</span>
+                <Sparkles className="w-4 h-4 text-[#ffbd2e]" />
+                <span>Ôn tập ngay</span>
               </button>
 
               <button
                 type="button"
                 onClick={() => setIsAddCardOpen(true)}
-                className="btn-primary h-10 px-4 text-xs font-semibold gap-2 shadow-xs cursor-pointer inline-flex items-center"
+                className="btn-primary h-10 px-4 text-xs font-semibold gap-2 shadow-xs cursor-pointer inline-flex items-center whitespace-nowrap"
               >
                 <Plus className="w-4 h-4" />
                 <span>Thêm thẻ mới</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setIsEditDeckOpen(true)}
+                className="btn-secondary h-10 px-4 text-xs font-semibold gap-1.5 cursor-pointer inline-flex items-center whitespace-nowrap"
+              >
+                <Edit2 className="w-3.5 h-3.5 text-[#525252]" />
+                <span>Sửa bộ từ</span>
               </button>
             </div>
           </div>

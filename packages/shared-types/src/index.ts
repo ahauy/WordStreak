@@ -3,6 +3,7 @@
 export * from "./auth.js";
 export * from "./decks.js";
 export * from "./cards.js";
+export * from "./reviews.js";
 
 export interface User {
   id: string;
