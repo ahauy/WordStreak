@@ -27,27 +27,36 @@ export const BulkMoveModal: React.FC<BulkMoveModalProps> = ({
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    let ignore = false;
     if (isOpen) {
-      setIsFetchingDecks(true);
-      setError(null);
       decksService
         .getDecks()
         .then((data: DeckResponse[]) => {
-          const validDecks = data.filter(
-            (d: DeckResponse) => d.id !== currentDeckId,
-          );
-          setDecks(validDecks);
-          if (validDecks.length > 0) {
-            setSelectedTargetDeckId(validDecks[0].id);
+          if (!ignore) {
+            const validDecks = data.filter(
+              (d: DeckResponse) => d.id !== currentDeckId,
+            );
+            setDecks(validDecks);
+            if (validDecks.length > 0) {
+              setSelectedTargetDeckId(validDecks[0].id);
+            }
+            setError(null);
           }
         })
         .catch(() => {
-          setError("Không thể tải danh sách bộ từ");
+          if (!ignore) {
+            setError("Không thể tải danh sách bộ từ");
+          }
         })
         .finally(() => {
-          setIsFetchingDecks(false);
+          if (!ignore) {
+            setIsFetchingDecks(false);
+          }
         });
     }
+    return () => {
+      ignore = true;
+    };
   }, [isOpen, currentDeckId]);
 
   if (!isOpen) return null;

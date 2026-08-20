@@ -107,8 +107,35 @@ export const DeckDetailPage: React.FC = () => {
   }, [deckId]);
 
   useEffect(() => {
-    fetchDeckDetails();
-  }, [fetchDeckDetails]);
+    let ignore = false;
+    if (deckId) {
+      decksService
+        .getDeck(deckId)
+        .then((data) => {
+          if (!ignore) {
+            setDeck(data);
+            setDeckError(null);
+          }
+        })
+        .catch((err: unknown) => {
+          if (!ignore) {
+            const message =
+              err instanceof Error
+                ? err.message
+                : "Không thể tải thông tin bộ từ";
+            setDeckError(message);
+          }
+        })
+        .finally(() => {
+          if (!ignore) {
+            setIsDeckLoading(false);
+          }
+        });
+    }
+    return () => {
+      ignore = true;
+    };
+  }, [deckId]);
 
   const handleCreateCard = async (dto: CreateCardDto) => {
     const created = await createCard(dto);

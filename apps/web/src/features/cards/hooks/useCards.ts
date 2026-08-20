@@ -78,8 +78,41 @@ export function useCards(deckId: string) {
   }, [deckId, page, limit, debouncedSearch, statusFilter]);
 
   useEffect(() => {
-    fetchCards();
-  }, [fetchCards]);
+    let ignore = false;
+    if (deckId) {
+      cardsService
+        .getDeckCards(deckId, {
+          page,
+          limit,
+          search: debouncedSearch.trim() || undefined,
+          status: statusFilter,
+        })
+        .then((res) => {
+          if (!ignore) {
+            setCards(res.data);
+            setPaginationMeta(res.meta);
+            setError(null);
+          }
+        })
+        .catch((err: unknown) => {
+          if (!ignore) {
+            const message =
+              err instanceof Error
+                ? err.message
+                : "Không thể tải danh sách thẻ từ vựng";
+            setError(message);
+          }
+        })
+        .finally(() => {
+          if (!ignore) {
+            setIsLoading(false);
+          }
+        });
+    }
+    return () => {
+      ignore = true;
+    };
+  }, [deckId, page, limit, debouncedSearch, statusFilter]);
 
   const createCard = async (dto: CreateCardDto): Promise<CardResponse> => {
     const newCard = await cardsService.createCard(deckId, dto);
