@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams, useNavigate, useSearchParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Loader2, AlertCircle, ArrowLeft } from "lucide-react";
@@ -24,51 +24,52 @@ export const MultipleChoiceQuizPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Fetch deck info & questions
-  const loadQuiz = useCallback(async () => {
+  // Fetch deck info & questions on mount or param change
+  useEffect(() => {
     if (!deckId) return;
 
-    setIsLoading(true);
-    setError(null);
+    let ignore = false;
 
-    try {
-      // 1. Fetch deck info
-      try {
-        const deckRes = await decksService.getDeck(deckId);
-        if (deckRes?.title) {
+    decksService
+      .getDeck(deckId)
+      .then((deckRes) => {
+        if (!ignore && deckRes?.title) {
           setDeckTitle(deckRes.title);
         }
-      } catch {
-        // Fallback title
-      }
+      })
+      .catch(() => null);
 
-      // 2. Fetch quiz questions
-      const quizQuestions = await practiceService.getMultipleChoiceQuiz(
-        deckId,
-        limitParam,
-      );
+    practiceService
+      .getMultipleChoiceQuiz(deckId, limitParam)
+      .then((quizQuestions) => {
+        if (ignore) return;
+        if (quizQuestions.length === 0) {
+          setError(
+            "No questions could be generated. Ensure your deck has vocabulary cards.",
+          );
+        } else {
+          setQuestions(quizQuestions);
+        }
+      })
+      .catch((err: unknown) => {
+        if (ignore) return;
+        console.error("Failed to load quiz:", err);
+        const errMsg =
+          err instanceof Error
+            ? err.message
+            : "Failed to load quiz session. Please try again.";
+        setError(errMsg);
+      })
+      .finally(() => {
+        if (!ignore) {
+          setIsLoading(false);
+        }
+      });
 
-      if (quizQuestions.length === 0) {
-        setError(
-          "No questions could be generated. Ensure your deck has vocabulary cards.",
-        );
-      } else {
-        setQuestions(quizQuestions);
-      }
-    } catch (err: any) {
-      console.error("Failed to load quiz:", err);
-      setError(
-        err.response?.data?.message ||
-          "Failed to load quiz session. Please try again.",
-      );
-    } finally {
-      setIsLoading(false);
-    }
+    return () => {
+      ignore = true;
+    };
   }, [deckId, limitParam]);
-
-  useEffect(() => {
-    loadQuiz();
-  }, [loadQuiz]);
 
   const {
     currentIndex,
@@ -98,7 +99,31 @@ export const MultipleChoiceQuizPage: React.FC = () => {
 
   const handleRetake = () => {
     retakeQuiz();
-    loadQuiz();
+    if (!deckId) return;
+    setIsLoading(true);
+    setError(null);
+    practiceService
+      .getMultipleChoiceQuiz(deckId, limitParam)
+      .then((quizQuestions) => {
+        if (quizQuestions.length === 0) {
+          setError(
+            "No questions could be generated. Ensure your deck has vocabulary cards.",
+          );
+        } else {
+          setQuestions(quizQuestions);
+        }
+      })
+      .catch((err: unknown) => {
+        console.error("Failed to load quiz:", err);
+        const errMsg =
+          err instanceof Error
+            ? err.message
+            : "Failed to load quiz session. Please try again.";
+        setError(errMsg);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
   };
 
   // Loading State

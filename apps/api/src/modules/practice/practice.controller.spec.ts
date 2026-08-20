@@ -6,8 +6,8 @@ import type { JwtPayload } from '@wordstreak/shared-types';
 
 describe('PracticeController', () => {
   let controller: PracticeController;
-  let practiceService: any;
-  let quizGeneratorService: any;
+  let practiceService: { submitQuiz: jest.Mock };
+  let quizGeneratorService: { generateQuestions: jest.Mock };
 
   const mockUser: JwtPayload = {
     sub: 'user-1',

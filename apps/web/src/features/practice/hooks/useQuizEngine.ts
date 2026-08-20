@@ -34,11 +34,15 @@ export function useQuizEngine({
 
   const advanceTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const timerIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
-  const questionStartTimeRef = useRef<number>(Date.now());
+  const questionStartTimeRef = useRef<number>(0);
 
   const currentQuestion = questions[currentIndex] || null;
   const isLastQuestion = currentIndex >= questions.length - 1;
   const isCompleted = result !== null;
+
+  useEffect(() => {
+    questionStartTimeRef.current = Date.now();
+  }, [currentIndex]);
 
   // Cleanup timers on unmount
   useEffect(() => {

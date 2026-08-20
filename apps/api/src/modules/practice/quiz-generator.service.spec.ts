@@ -9,7 +9,10 @@ import { PrismaService } from '../prisma/prisma.service';
 
 describe('QuizGeneratorService', () => {
   let service: QuizGeneratorService;
-  let prisma: any;
+  let prisma: {
+    deck: { findUnique: jest.Mock };
+    card: { findMany: jest.Mock };
+  };
 
   const mockCards = [
     {

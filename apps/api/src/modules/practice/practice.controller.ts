@@ -29,9 +29,8 @@ export class PracticeController {
     @CurrentUser() user: JwtPayload,
     @Query() query: GetQuizQuestionsDto,
   ): Promise<ApiResponse> {
-    const userId = user?.sub || (user as any)?.id;
     const questions = await this.quizGeneratorService.generateQuestions(
-      userId,
+      user.sub,
       query,
     );
     return {
@@ -46,8 +45,7 @@ export class PracticeController {
     @CurrentUser() user: JwtPayload,
     @Body() dto: SubmitQuizDto,
   ): Promise<ApiResponse> {
-    const userId = user?.sub || (user as any)?.id;
-    const result = await this.practiceService.submitQuiz(userId, dto);
+    const result = await this.practiceService.submitQuiz(user.sub, dto);
     return {
       success: true,
       data: result,

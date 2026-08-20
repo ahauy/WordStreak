@@ -4,7 +4,11 @@ import { PrismaService } from '../prisma/prisma.service';
 
 describe('PracticeService', () => {
   let service: PracticeService;
-  let prisma: any;
+  let prisma: {
+    card: {
+      findMany: jest.Mock;
+    };
+  };
 
   const mockMissedCards = [
     {
