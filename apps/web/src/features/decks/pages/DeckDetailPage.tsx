@@ -11,10 +11,17 @@ import {
   Lock,
   Edit2,
   Layers,
+  LayoutGrid,
+  List,
+  ChevronLeft,
+  ChevronRight,
+  Filter,
 } from "lucide-react";
 import { decksService } from "../services/decksService";
 import { useCards } from "../../cards/hooks/useCards";
 import { CardItemCard } from "../../cards/components/CardItemCard";
+import { CardDataTable } from "../../cards/components/CardDataTable";
+import { BulkActionsToolbar } from "../../cards/components/BulkActionsToolbar";
 import { AddCardModal } from "../../cards/components/AddCardModal";
 import { EditCardModal } from "../../cards/components/EditCardModal";
 import { DeleteCardConfirmModal } from "../../cards/components/DeleteCardConfirmModal";
@@ -26,7 +33,10 @@ import type {
   CardResponse,
   CreateCardDto,
   UpdateCardDto,
+  CardStatusFilter,
 } from "@wordstreak/shared-types";
+
+const VIEW_MODE_STORAGE_KEY = "wordstreak_deck_view_mode";
 
 export const DeckDetailPage: React.FC = () => {
   const { id: deckId } = useParams<{ id: string }>();
@@ -36,13 +46,37 @@ export const DeckDetailPage: React.FC = () => {
   const [isDeckLoading, setIsDeckLoading] = useState(true);
   const [deckError, setDeckError] = useState<string | null>(null);
 
-  // Cards hook
+  // View Mode: 'grid' | 'table' (with localStorage persistence)
+  const [viewMode, setViewMode] = useState<"grid" | "table">(() => {
+    const saved = localStorage.getItem(VIEW_MODE_STORAGE_KEY);
+    return saved === "table" ? "table" : "grid";
+  });
+
+  const handleViewModeChange = (mode: "grid" | "table") => {
+    setViewMode(mode);
+    localStorage.setItem(VIEW_MODE_STORAGE_KEY, mode);
+  };
+
+  // Cards Hook with Server-side Pagination & Filter & Bulk state
   const {
     cards,
-    filteredCards,
+    paginationMeta,
     isLoading: isCardsLoading,
+    page,
+    setPage,
+    limit,
+    setLimit,
     searchQuery,
     setSearchQuery,
+    statusFilter,
+    setStatusFilter,
+    selectedCardIds,
+    toggleSelectCard,
+    selectAllCards,
+    clearSelection,
+    isAllSelected,
+    isBulkLoading,
+    executeBulkAction,
     createCard,
     updateCard,
     deleteCard,
@@ -73,30 +107,8 @@ export const DeckDetailPage: React.FC = () => {
   }, [deckId]);
 
   useEffect(() => {
-    let ignore = false;
-    if (deckId) {
-      decksService
-        .getDeck(deckId)
-        .then((data) => {
-          if (!ignore) setDeck(data);
-        })
-        .catch((err: unknown) => {
-          if (!ignore) {
-            const message =
-              err instanceof Error
-                ? err.message
-                : "Không thể tải thông tin bộ từ";
-            setDeckError(message);
-          }
-        })
-        .finally(() => {
-          if (!ignore) setIsDeckLoading(false);
-        });
-    }
-    return () => {
-      ignore = true;
-    };
-  }, [deckId]);
+    fetchDeckDetails();
+  }, [fetchDeckDetails]);
 
   const handleCreateCard = async (dto: CreateCardDto) => {
     const created = await createCard(dto);
@@ -120,6 +132,32 @@ export const DeckDetailPage: React.FC = () => {
     } finally {
       setIsDeletingCardLoading(false);
     }
+  };
+
+  // Bulk action handlers
+  const handleBulkDelete = async () => {
+    await executeBulkAction({
+      action: "DELETE",
+      cardIds: selectedCardIds,
+    });
+    fetchDeckDetails();
+  };
+
+  const handleBulkMove = async (targetDeckId: string) => {
+    await executeBulkAction({
+      action: "MOVE",
+      cardIds: selectedCardIds,
+      targetDeckId,
+    });
+    fetchDeckDetails();
+  };
+
+  const handleBulkResetProgress = async () => {
+    await executeBulkAction({
+      action: "RESET_PROGRESS",
+      cardIds: selectedCardIds,
+    });
+    fetchDeckDetails();
   };
 
   if (isDeckLoading) {
@@ -173,23 +211,29 @@ export const DeckDetailPage: React.FC = () => {
 
   const theme = getColorTheme(deck.color);
   const stats = deck.stats || {
-    totalCards: cards.length,
-    newCards: cards.filter((c) => !c.progress || c.progress.status === "NEW")
-      .length,
-    learningCards: cards.filter(
-      (c) =>
-        c.progress?.status === "LEARNING" || c.progress?.status === "REVIEW",
-    ).length,
-    masteredCards: cards.filter((c) => c.progress?.status === "MASTERED")
-      .length,
+    totalCards: paginationMeta.total,
+    newCards: 0,
+    learningCards: 0,
+    masteredCards: 0,
     dueCards: 0,
   };
+
+  const statusChips: Array<{
+    id: CardStatusFilter;
+    label: string;
+    count?: number;
+  }> = [
+    { id: "ALL", label: "Tất cả" },
+    { id: "NEW", label: "Thẻ mới", count: stats.newCards },
+    { id: "LEARNING", label: "Đang học", count: stats.learningCards },
+    { id: "MASTERED", label: "Thành thạo", count: stats.masteredCards },
+  ];
 
   return (
     <div className="min-h-screen bg-white text-black flex flex-col selection:bg-[#f3e8ff] selection:text-[#7e22ce]">
       <DashboardNavbar />
 
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10">
+      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10 pb-24">
         {/* Navigation Breadcrumb / Back */}
         <div className="mb-6">
           <Link
@@ -299,7 +343,7 @@ export const DeckDetailPage: React.FC = () => {
                 Tổng số thẻ
               </span>
               <span className="text-xl sm:text-2xl font-bold text-black font-mono">
-                {cards.length}
+                {stats.totalCards}
               </span>
             </div>
 
@@ -332,32 +376,114 @@ export const DeckDetailPage: React.FC = () => {
           </div>
         </div>
 
-        {/* Card List Toolbar */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-          <div className="flex items-center gap-2">
-            <BookOpen className="w-4 h-4 text-black" />
-            <h2
-              className="text-lg sm:text-xl font-bold text-black tracking-tight"
-              style={{ fontFamily: "var(--font-display)" }}
-            >
-              Danh sách thẻ từ vựng ({filteredCards.length})
-            </h2>
+        {/* Filter & Toolbar Row */}
+        <div className="space-y-4 mb-6">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div className="flex items-center gap-2">
+              <BookOpen className="w-4 h-4 text-black" />
+              <h2
+                className="text-lg sm:text-xl font-bold text-black tracking-tight"
+                style={{ fontFamily: "var(--font-display)" }}
+              >
+                Danh sách thẻ từ vựng ({paginationMeta.total})
+              </h2>
+            </div>
+
+            {/* Right Toolbar: View Toggle & Search */}
+            <div className="flex flex-wrap items-center gap-3">
+              {/* View Mode Toggle Switcher */}
+              <div className="flex items-center rounded-xl border border-[#e5e5e5] bg-[#fafafa] p-0.5">
+                <button
+                  type="button"
+                  onClick={() => handleViewModeChange("grid")}
+                  title="Chế độ lưới thẻ 3D"
+                  className={`p-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer ${
+                    viewMode === "grid"
+                      ? "bg-white text-black shadow-xs"
+                      : "text-[#737373] hover:text-black"
+                  }`}
+                >
+                  <LayoutGrid className="w-3.5 h-3.5" />
+                  <span className="text-[11px] hidden sm:inline">Lưới</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleViewModeChange("table")}
+                  title="Chế độ bảng danh sách"
+                  className={`p-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer ${
+                    viewMode === "table"
+                      ? "bg-white text-black shadow-xs"
+                      : "text-[#737373] hover:text-black"
+                  }`}
+                >
+                  <List className="w-3.5 h-3.5" />
+                  <span className="text-[11px] hidden sm:inline">Bảng</span>
+                </button>
+              </div>
+
+              {/* Search Box */}
+              <div className="relative w-full sm:w-64">
+                <Search className="w-3.5 h-3.5 text-[#a3a3a3] absolute left-3.5 top-1/2 -translate-y-1/2" />
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Tìm từ, nghĩa, ví dụ..."
+                  className="w-full h-9 pl-9 pr-3 rounded-xl border border-[#e5e5e5] bg-[#fafafa] focus:bg-white text-xs text-black placeholder:text-[#a3a3a3] focus:outline-none focus:border-black transition-all"
+                />
+              </div>
+            </div>
           </div>
 
-          {/* Search Cards */}
-          <div className="relative w-full sm:w-72">
-            <Search className="w-3.5 h-3.5 text-[#a3a3a3] absolute left-3.5 top-1/2 -translate-y-1/2" />
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Tìm theo từ, nghĩa, ví dụ..."
-              className="w-full h-9 pl-9 pr-3 rounded-full border border-[#e5e5e5] bg-[#fafafa] focus:bg-white text-xs text-black placeholder:text-[#a3a3a3] focus:outline-none focus:border-black transition-all"
-            />
+          {/* Status Filter Chips & Select All */}
+          <div className="flex flex-wrap items-center justify-between gap-3 pt-2">
+            <div className="flex flex-wrap items-center gap-1.5">
+              <span className="text-[11px] font-semibold text-[#737373] flex items-center gap-1 mr-1">
+                <Filter className="w-3 h-3" />
+                <span>Lọc:</span>
+              </span>
+              {statusChips.map((chip) => {
+                const isActive = statusFilter === chip.id;
+                return (
+                  <button
+                    key={chip.id}
+                    type="button"
+                    onClick={() => setStatusFilter(chip.id)}
+                    className={`px-3 py-1 rounded-full text-xs font-medium transition-all cursor-pointer ${
+                      isActive
+                        ? "bg-black text-white"
+                        : "bg-[#fafafa] hover:bg-[#f0f0f0] text-[#525252] border border-[#e5e5e5]"
+                    }`}
+                  >
+                    {chip.label}
+                    {chip.count !== undefined && (
+                      <span
+                        className={`ml-1.5 font-mono text-[10px] ${
+                          isActive ? "text-white/80" : "text-[#737373]"
+                        }`}
+                      >
+                        ({chip.count})
+                      </span>
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Select All on Page Button */}
+            {cards.length > 0 && (
+              <button
+                type="button"
+                onClick={selectAllCards}
+                className="text-xs font-semibold text-[#737373] hover:text-black cursor-pointer transition-colors"
+              >
+                {isAllSelected ? "Bỏ chọn tất cả" : "Chọn tất cả trên trang"}
+              </button>
+            )}
           </div>
         </div>
 
-        {/* Cards Grid */}
+        {/* Cards Content */}
         {isCardsLoading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
             {[1, 2, 3, 4, 5, 6].map((n) => (
@@ -367,8 +493,10 @@ export const DeckDetailPage: React.FC = () => {
               />
             ))}
           </div>
-        ) : cards.length === 0 ? (
-          /* Empty State: 0 cards */
+        ) : cards.length === 0 &&
+          !searchQuery.trim() &&
+          statusFilter === "ALL" ? (
+          /* Empty State: 0 cards in entire deck */
           <div className="rounded-2xl border border-[#e5e5e5] bg-[#fafafa] p-12 text-center flex flex-col items-center justify-center max-w-lg mx-auto">
             <div
               className="w-14 h-14 rounded-2xl flex items-center justify-center mb-4"
@@ -401,27 +529,42 @@ export const DeckDetailPage: React.FC = () => {
               <span>Thêm thẻ từ vựng đầu tiên</span>
             </button>
           </div>
-        ) : filteredCards.length === 0 ? (
-          /* Empty Search Results */
-          <div className="rounded-2xl border border-[#e5e5e5] bg-[#fafafa] p-8 text-center max-w-md mx-auto">
-            <p className="text-xs sm:text-sm text-[#737373] mb-3">
-              Không tìm thấy từ vựng nào khớp với "{searchQuery}"
+        ) : cards.length === 0 ? (
+          /* Empty Filter/Search Results */
+          <div className="rounded-2xl border border-[#e5e5e5] bg-[#fafafa] p-10 text-center max-w-md mx-auto">
+            <p className="text-xs sm:text-sm text-[#737373] mb-4">
+              Không tìm thấy từ vựng nào khớp với bộ lọc hiện tại.
             </p>
             <button
               type="button"
-              onClick={() => setSearchQuery("")}
-              className="text-xs font-semibold text-black hover:underline cursor-pointer"
+              onClick={() => {
+                setSearchQuery("");
+                setStatusFilter("ALL");
+              }}
+              className="btn-secondary h-9 px-4 text-xs font-semibold cursor-pointer"
             >
-              Xóa bộ lọc tìm kiếm
+              Xóa bộ lọc & tìm kiếm
             </button>
           </div>
+        ) : viewMode === "table" ? (
+          /* Table View */
+          <CardDataTable
+            cards={cards}
+            selectedCardIds={selectedCardIds}
+            onToggleSelect={toggleSelectCard}
+            onSelectAll={selectAllCards}
+            isAllSelected={isAllSelected}
+            onEdit={(c) => setEditingCard(c)}
+            onDelete={(c) => setDeletingCard(c)}
+          />
         ) : (
+          /* Grid View */
           <motion.div
             layout
             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5"
           >
             <AnimatePresence>
-              {filteredCards.map((card) => (
+              {cards.map((card) => (
                 <motion.div
                   key={card.id}
                   layout
@@ -433,6 +576,8 @@ export const DeckDetailPage: React.FC = () => {
                   <CardItemCard
                     card={card}
                     deckColor={deck.color}
+                    isSelected={selectedCardIds.includes(card.id)}
+                    onToggleSelect={toggleSelectCard}
                     onEdit={(c) => setEditingCard(c)}
                     onDelete={(c) => setDeletingCard(c)}
                   />
@@ -441,7 +586,102 @@ export const DeckDetailPage: React.FC = () => {
             </AnimatePresence>
           </motion.div>
         )}
+
+        {/* Pagination Bar */}
+        {paginationMeta.totalPages > 1 && (
+          <div className="mt-8 pt-6 border-t border-[#e5e5e5] flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="flex items-center gap-2 text-xs text-[#737373]">
+              <span>
+                Hiển thị trang <strong>{paginationMeta.page}</strong> /{" "}
+                {paginationMeta.totalPages} ({paginationMeta.total} thẻ)
+              </span>
+              <span className="mx-1">•</span>
+              <label htmlFor="limit-select" className="text-xs">
+                Số lượng:
+              </label>
+              <select
+                id="limit-select"
+                value={limit}
+                onChange={(e) => {
+                  setLimit(Number(e.target.value));
+                  setPage(1);
+                }}
+                className="h-7 px-2 rounded-lg border border-[#e5e5e5] bg-[#fafafa] text-xs text-black font-medium focus:outline-none focus:border-black"
+              >
+                <option value={10}>10 / trang</option>
+                <option value={20}>20 / trang</option>
+                <option value={50}>50 / trang</option>
+              </select>
+            </div>
+
+            <div className="flex items-center gap-1.5">
+              <button
+                type="button"
+                onClick={() => setPage(page - 1)}
+                disabled={!paginationMeta.hasPrevPage}
+                aria-label="Trang trước"
+                className="h-8 px-3 rounded-xl border border-[#e5e5e5] bg-[#fafafa] hover:bg-white text-xs font-semibold text-black flex items-center gap-1 disabled:opacity-40 disabled:cursor-not-allowed transition-colors cursor-pointer"
+              >
+                <ChevronLeft className="w-3.5 h-3.5" />
+                <span>Trước</span>
+              </button>
+
+              <div className="flex items-center gap-1 px-1">
+                {Array.from(
+                  { length: Math.min(5, paginationMeta.totalPages) },
+                  (_, i) => {
+                    let pageNum = i + 1;
+                    if (paginationMeta.totalPages > 5 && page > 3) {
+                      pageNum = page - 2 + i;
+                      if (pageNum > paginationMeta.totalPages) {
+                        pageNum = paginationMeta.totalPages - 4 + i;
+                      }
+                    }
+                    if (pageNum <= 0) pageNum = i + 1;
+
+                    return (
+                      <button
+                        key={pageNum}
+                        type="button"
+                        onClick={() => setPage(pageNum)}
+                        className={`w-8 h-8 rounded-xl text-xs font-mono font-bold transition-colors cursor-pointer ${
+                          page === pageNum
+                            ? "bg-black text-white"
+                            : "bg-[#fafafa] hover:bg-[#f0f0f0] text-[#525252] border border-[#e5e5e5]"
+                        }`}
+                      >
+                        {pageNum}
+                      </button>
+                    );
+                  },
+                )}
+              </div>
+
+              <button
+                type="button"
+                onClick={() => setPage(page + 1)}
+                disabled={!paginationMeta.hasNextPage}
+                aria-label="Trang sau"
+                className="h-8 px-3 rounded-xl border border-[#e5e5e5] bg-[#fafafa] hover:bg-white text-xs font-semibold text-black flex items-center gap-1 disabled:opacity-40 disabled:cursor-not-allowed transition-colors cursor-pointer"
+              >
+                <span>Sau</span>
+                <ChevronRight className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          </div>
+        )}
       </main>
+
+      {/* Floating Bulk Actions Toolbar */}
+      <BulkActionsToolbar
+        selectedCount={selectedCardIds.length}
+        currentDeckId={deckId || ""}
+        onClearSelection={clearSelection}
+        onBulkDelete={handleBulkDelete}
+        onBulkMove={handleBulkMove}
+        onBulkResetProgress={handleBulkResetProgress}
+        isLoading={isBulkLoading}
+      />
 
       {/* Add Card Modal */}
       <AddCardModal

@@ -4,21 +4,68 @@ import type {
   CardResponse,
   CreateCardDto,
   UpdateCardDto,
+  PaginationMeta,
+  CardStatusFilter,
+  BulkCardActionDto,
+  BulkCardActionResult,
 } from "@wordstreak/shared-types";
 
 export function useCards(deckId: string) {
   const [cards, setCards] = useState<CardResponse[]>([]);
+  const [paginationMeta, setPaginationMeta] = useState<PaginationMeta>({
+    total: 0,
+    page: 1,
+    limit: 20,
+    totalPages: 1,
+    hasNextPage: false,
+    hasPrevPage: false,
+  });
+
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+
+  // Filter & Pagination States
+  const [page, setPage] = useState<number>(1);
+  const [limit, setLimit] = useState<number>(20);
   const [searchQuery, setSearchQuery] = useState<string>("");
+  const [debouncedSearch, setDebouncedSearch] = useState<string>("");
+  const [statusFilter, setStatusFilter] = useState<CardStatusFilter>("ALL");
+
+  // Multi-select State for Bulk Actions
+  const [selectedCardIds, setSelectedCardIds] = useState<string[]>([]);
+  const [isBulkLoading, setIsBulkLoading] = useState<boolean>(false);
+
+  // Debounce search query changes (300ms)
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedSearch(searchQuery);
+      setPage(1); // Reset to page 1 on new search query
+    }, 300);
+
+    return () => clearTimeout(handler);
+  }, [searchQuery]);
+
+  // Handle status filter change
+  const handleStatusFilterChange = useCallback((status: CardStatusFilter) => {
+    setStatusFilter(status);
+    setPage(1); // Reset to page 1 on filter change
+    setSelectedCardIds([]);
+  }, []);
 
   const fetchCards = useCallback(async () => {
     if (!deckId) return;
     try {
       setIsLoading(true);
       setError(null);
-      const data = await cardsService.getDeckCards(deckId);
-      setCards(data);
+      const res = await cardsService.getDeckCards(deckId, {
+        page,
+        limit,
+        search: debouncedSearch.trim() || undefined,
+        status: statusFilter,
+      });
+
+      setCards(res.data);
+      setPaginationMeta(res.meta);
     } catch (err: unknown) {
       const message =
         err instanceof Error
@@ -28,42 +75,15 @@ export function useCards(deckId: string) {
     } finally {
       setIsLoading(false);
     }
-  }, [deckId]);
+  }, [deckId, page, limit, debouncedSearch, statusFilter]);
 
   useEffect(() => {
-    let ignore = false;
-    if (deckId) {
-      cardsService
-        .getDeckCards(deckId)
-        .then((data) => {
-          if (!ignore) {
-            setCards(data);
-            setError(null);
-          }
-        })
-        .catch((err: unknown) => {
-          if (!ignore) {
-            const message =
-              err instanceof Error
-                ? err.message
-                : "Không thể tải danh sách thẻ từ vựng";
-            setError(message);
-          }
-        })
-        .finally(() => {
-          if (!ignore) {
-            setIsLoading(false);
-          }
-        });
-    }
-    return () => {
-      ignore = true;
-    };
-  }, [deckId]);
+    fetchCards();
+  }, [fetchCards]);
 
   const createCard = async (dto: CreateCardDto): Promise<CardResponse> => {
     const newCard = await cardsService.createCard(deckId, dto);
-    setCards((prev) => [newCard, ...prev]);
+    await fetchCards();
     return newCard;
   };
 
@@ -78,27 +98,66 @@ export function useCards(deckId: string) {
 
   const deleteCard = async (id: string): Promise<void> => {
     await cardsService.deleteCard(id);
-    setCards((prev) => prev.filter((c) => c.id !== id));
+    setSelectedCardIds((prev) => prev.filter((item) => item !== id));
+    await fetchCards();
   };
 
-  const filteredCards = cards.filter((card) => {
-    if (!searchQuery.trim()) return true;
-    const q = searchQuery.toLowerCase();
-    return (
-      card.word.toLowerCase().includes(q) ||
-      card.meaning.toLowerCase().includes(q) ||
-      (card.phonetic && card.phonetic.toLowerCase().includes(q)) ||
-      (card.exampleSentence && card.exampleSentence.toLowerCase().includes(q))
+  // Selection helpers
+  const toggleSelectCard = useCallback((cardId: string) => {
+    setSelectedCardIds((prev) =>
+      prev.includes(cardId)
+        ? prev.filter((id) => id !== cardId)
+        : [...prev, cardId],
     );
-  });
+  }, []);
+
+  const selectAllCards = useCallback(() => {
+    if (selectedCardIds.length === cards.length && cards.length > 0) {
+      setSelectedCardIds([]);
+    } else {
+      setSelectedCardIds(cards.map((c) => c.id));
+    }
+  }, [cards, selectedCardIds]);
+
+  const clearSelection = useCallback(() => {
+    setSelectedCardIds([]);
+  }, []);
+
+  const executeBulkAction = async (
+    dto: BulkCardActionDto,
+  ): Promise<BulkCardActionResult> => {
+    try {
+      setIsBulkLoading(true);
+      const result = await cardsService.bulkAction(deckId, dto);
+      clearSelection();
+      await fetchCards();
+      return result;
+    } finally {
+      setIsBulkLoading(false);
+    }
+  };
 
   return {
     cards,
-    filteredCards,
+    filteredCards: cards,
+    paginationMeta,
     isLoading,
     error,
+    page,
+    setPage,
+    limit,
+    setLimit,
     searchQuery,
     setSearchQuery,
+    statusFilter,
+    setStatusFilter: handleStatusFilterChange,
+    selectedCardIds,
+    toggleSelectCard,
+    selectAllCards,
+    clearSelection,
+    isAllSelected: cards.length > 0 && selectedCardIds.length === cards.length,
+    isBulkLoading,
+    executeBulkAction,
     fetchCards,
     createCard,
     updateCard,
