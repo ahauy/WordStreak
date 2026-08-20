@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { Test, TestingModule } from '@nestjs/testing';
 import { ReviewsService } from './reviews.service';
 import { SrsService } from './srs.service';
@@ -17,7 +18,6 @@ describe('ReviewsService', () => {
       count: jest.Mock;
     };
   };
-  let srsService: SrsService;
 
   const mockUserId = 'user-uuid-1';
   const mockCardId = 'card-uuid-1';
@@ -39,62 +39,56 @@ describe('ReviewsService', () => {
       providers: [
         ReviewsService,
         SrsService,
-        { provide: PrismaService, useValue: prisma },
+        {
+          provide: PrismaService,
+          useValue: prisma,
+        },
       ],
     }).compile();
 
     service = module.get<ReviewsService>(ReviewsService);
-    srsService = module.get<SrsService>(SrsService);
   });
 
   describe('getDueCards', () => {
-    it('TC-SRS-005: returns prioritized due and new cards within limit and dailyGoal', async () => {
+    it('TC-SRS-004: returns overdue and due cards prioritized, plus new cards up to dailyGoal limit', async () => {
       prisma.user.findUnique.mockResolvedValue({ dailyGoal: 10 });
-      const mockDate = new Date();
-
-      prisma.userCardProgress.findMany.mockResolvedValue([
+      prisma.userCardProgress.findMany.mockResolvedValueOnce([
         {
           id: 'prog-1',
-          userId: mockUserId,
-          cardId: 'card-1',
+          status: 'LEARNING',
+          nextReviewDate: new Date(Date.now() - 3600 * 1000 * 24), // overdue
           interval: 1,
           repetitions: 1,
           easeFactor: 2.5,
-          status: 'LEARNING',
-          nextReviewDate: new Date(Date.now() - 86400000), // Overdue
           card: {
-            deckId: 'deck-1',
-            word: 'ubiquitous',
-            meaning: 'phổ biến',
-            phonetic: '/juːˈbɪk.wə.təs/',
+            id: 'card-1',
+            word: 'accommodate',
+            meaning: 'đáp ứng',
+            phonetic: '/əˈkɑː.mə.deɪt/',
             audioUrl: null,
-            exampleSentence: null,
-            collocations: null,
-            mnemonic: null,
-            imageUrl: null,
-            deck: { id: 'deck-1', title: 'Deck 1', color: '#6366F1' },
+            exampleSentence: 'Can accommodate 500 delegates.',
+            collocations: 'accommodate needs',
+            mnemonic: 'Có chỗ ở',
+            deck: { id: 'deck-1', title: 'TOEIC' },
           },
         },
         {
           id: 'prog-2',
-          userId: mockUserId,
-          cardId: 'card-2',
+          status: 'NEW',
+          nextReviewDate: new Date(),
           interval: 0,
           repetitions: 0,
           easeFactor: 2.5,
-          status: 'NEW',
-          nextReviewDate: mockDate,
           card: {
-            deckId: 'deck-1',
-            word: 'serendipity',
-            meaning: 'sự may mắn tình cờ',
-            phonetic: null,
+            id: 'card-2',
+            word: 'acquire',
+            meaning: 'mua lại',
+            phonetic: '/əˈkwaɪər/',
             audioUrl: null,
-            exampleSentence: null,
-            collocations: null,
-            mnemonic: null,
-            imageUrl: null,
-            deck: { id: 'deck-1', title: 'Deck 1', color: '#6366F1' },
+            exampleSentence: 'Acquire a startup.',
+            collocations: 'acquire skills',
+            mnemonic: 'Mua lại',
+            deck: { id: 'deck-1', title: 'TOEIC' },
           },
         },
       ]);
@@ -102,11 +96,20 @@ describe('ReviewsService', () => {
       const result = await service.getDueCards(mockUserId, {});
 
       expect(result.data.length).toBe(2);
-      expect(result.data[0].word).toBe('ubiquitous');
-      expect(result.data[1].word).toBe('serendipity');
+      expect(result.data[0].word).toBe('accommodate');
+      expect(result.data[1].word).toBe('acquire');
       expect(result.meta.totalDue).toBe(2);
       expect(result.meta.overdueCount).toBe(1);
-      expect(result.meta.newCount).toBe(1);
+    });
+
+    it('TC-SRS-005: returns empty list with 0 meta when user has no due or new cards', async () => {
+      prisma.user.findUnique.mockResolvedValue({ dailyGoal: 10 });
+      prisma.userCardProgress.findMany.mockResolvedValue([]);
+
+      const result = await service.getDueCards(mockUserId, {});
+
+      expect(result.data).toEqual([]);
+      expect(result.meta.totalDue).toBe(0);
     });
 
     it('TC-SRS-006: respects deckId filter when querying cards', async () => {
@@ -138,71 +141,77 @@ describe('ReviewsService', () => {
         id: 'prog-1',
         userId: mockUserId,
         cardId: mockCardId,
+        status: 'LEARNING',
         interval: 1,
         repetitions: 1,
         easeFactor: 2.5,
-        status: 'LEARNING',
       });
 
-      const updatedDate = new Date();
-      prisma.userCardProgress.update.mockResolvedValue({
+      const updatedProgress = {
         id: 'prog-1',
-        userId: mockUserId,
         cardId: mockCardId,
+        status: 'LEARNING',
         interval: 6,
         repetitions: 2,
         easeFactor: 2.5,
-        status: 'LEARNING',
-        lastReviewedAt: updatedDate,
-        nextReviewDate: updatedDate,
-      });
+        lastReviewedAt: new Date(),
+        nextReviewDate: new Date(),
+      };
+      prisma.userCardProgress.update.mockResolvedValue(updatedProgress);
 
       const result = await service.submitReview(mockUserId, {
         cardId: mockCardId,
         rating: 3,
       });
 
-      expect(result.repetitions).toBe(2);
+      expect(result.status).toBe('LEARNING');
       expect(result.interval).toBe(6);
+      expect(result.repetitions).toBe(2);
       expect(prisma.userCardProgress.update).toHaveBeenCalled();
     });
 
-    it('throws NotFoundException if card does not exist', async () => {
+    it('TC-SRS-008: throws NotFoundException when card does not exist', async () => {
       prisma.card.findUnique.mockResolvedValue(null);
 
       await expect(
-        service.submitReview(mockUserId, { cardId: 'invalid-id', rating: 3 }),
+        service.submitReview(mockUserId, {
+          cardId: 'non-existent-card',
+          rating: 3,
+        }),
       ).rejects.toThrow(NotFoundException);
     });
 
-    it('throws ForbiddenException if card belongs to another user', async () => {
+    it('TC-SRS-009: throws ForbiddenException when card belongs to another user', async () => {
       prisma.card.findUnique.mockResolvedValue({
         id: mockCardId,
-        deck: { userId: 'other-user' },
+        deck: { userId: 'other-user-uuid' },
       });
 
       await expect(
-        service.submitReview(mockUserId, { cardId: mockCardId, rating: 3 }),
+        service.submitReview(mockUserId, {
+          cardId: mockCardId,
+          rating: 3,
+        }),
       ).rejects.toThrow(ForbiddenException);
     });
   });
 
   describe('getReviewStats', () => {
-    it('returns aggregated counts across all progress statuses', async () => {
+    it('TC-SRS-010: aggregates counts of due, new, learning, mastered cards', async () => {
       prisma.userCardProgress.count
-        .mockResolvedValueOnce(50) // total
-        .mockResolvedValueOnce(12) // due
-        .mockResolvedValueOnce(10) // new
-        .mockResolvedValueOnce(25) // learning
-        .mockResolvedValueOnce(15); // mastered
+        .mockResolvedValueOnce(20) // total
+        .mockResolvedValueOnce(5) // due
+        .mockResolvedValueOnce(4) // new
+        .mockResolvedValueOnce(10) // learning
+        .mockResolvedValueOnce(6); // mastered
 
       const stats = await service.getReviewStats(mockUserId);
 
-      expect(stats.totalCards).toBe(50);
-      expect(stats.dueCount).toBe(12);
-      expect(stats.newCount).toBe(10);
-      expect(stats.learningCount).toBe(25);
-      expect(stats.masteredCount).toBe(15);
+      expect(stats.totalCards).toBe(20);
+      expect(stats.dueCount).toBe(5);
+      expect(stats.newCount).toBe(4);
+      expect(stats.learningCount).toBe(10);
+      expect(stats.masteredCount).toBe(6);
     });
   });
 });

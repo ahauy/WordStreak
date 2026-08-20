@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/unbound-method */
 import { Test, TestingModule } from '@nestjs/testing';
 import { ReviewsController } from './reviews.controller';
 import { ReviewsService } from './reviews.service';
@@ -44,7 +45,7 @@ describe('ReviewsController', () => {
         data: [],
         meta: { totalDue: 0, overdueCount: 0, dueTodayCount: 0, newCount: 0 },
       };
-      service.getDueCards.mockResolvedValue(mockResult as any);
+      service.getDueCards.mockResolvedValue(mockResult);
 
       const response = await controller.getDueCards(mockUser, {});
       expect(response.success).toBe(true);
@@ -57,14 +58,14 @@ describe('ReviewsController', () => {
     it('submits review rating successfully', async () => {
       const mockSubmitResult = {
         cardId: 'card-1',
-        status: 'LEARNING',
+        status: 'LEARNING' as const,
         interval: 6,
         repetitions: 2,
         easeFactor: 2.5,
         lastReviewedAt: new Date(),
         nextReviewDate: new Date(),
       };
-      service.submitReview.mockResolvedValue(mockSubmitResult as any);
+      service.submitReview.mockResolvedValue(mockSubmitResult);
 
       const response = await controller.submitReview(mockUser, {
         cardId: 'card-1',
@@ -89,11 +90,12 @@ describe('ReviewsController', () => {
         learningCount: 10,
         masteredCount: 7,
       };
-      service.getReviewStats.mockResolvedValue(mockStats as any);
+      service.getReviewStats.mockResolvedValue(mockStats);
 
       const response = await controller.getReviewStats(mockUser);
       expect(response.success).toBe(true);
       expect(response.data).toEqual(mockStats);
+      expect(service.getReviewStats).toHaveBeenCalledWith(mockUser.sub);
     });
   });
 });

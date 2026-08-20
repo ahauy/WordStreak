@@ -1,7 +1,3 @@
-import type {
-  SrsCalculationInput,
-  SrsCalculationResult,
-} from '@wordstreak/shared-types';
 import { SrsService } from './srs.service';
 
 describe('SrsService (SuperMemo-2 Algorithm Engine)', () => {
