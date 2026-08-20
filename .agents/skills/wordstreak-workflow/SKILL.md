@@ -28,28 +28,55 @@ This skill orchestrates the end-to-end development pipeline for WordStreak, plac
 
 ---
 
-## Pipeline Overview
+## Pipeline Overview (Multi-Agent Lifecycle)
 
-```
-Phase 1: Business Analysis & Domain Elicitation (wordstreak-ba-skills — 8-stage pipeline)
-  1. intake-classifier         → classify complexity & select protocol
-  2. elicitation-interview     → batched 6-pillar structured interview
-  3. gap-analysis              → AS-IS / TO-BE / GAP (Full Feature only)
-  4. domain-modeling           → RBAC matrix, state diagrams, BR- IDs, ERD
-  5. risk-contradiction-scanner → contradiction scan, risk register, MoSCoW
-  6. spec-writer               → BRD / PRD / SRS (REQ-) / User Stories (US-)
-  7. spec-validator            → IEEE 29148 quality gate + traceability matrix
-  8. handover                  → baseline SIGNED-OFF v1.0, handover brief
-  ↓ (signed-off baseline.md + spec/ documents)
-Phase 2: Specify (speckit-specify → spec.md)
-  ↓
-Phase 3: Plan (speckit-plan → plan.md, data-model.md, contracts/)
-  ↓
-Phase 4: Tasks (speckit-tasks → dependency-ordered tasks.md)
-  ↓
-Phase 5: Implement (Superpowers - TDD + Mandatory Tech Skills)
-  ↓
-Phase 6: Quality Verification, Review, Tech Docs (tech-doc-writer) & Delivery (Zero Critical Bugs + Rollback Plan)
+```mermaid
+graph TD
+    subgraph P1 ["PHASE 1: BA & Domain Elicitation"]
+        BA["🍉 business-analyst (claude-opus-4.6 / inherit)"]
+    end
+
+    subgraph P2 ["PHASE 2-4: Tech Spec & Architecture Planning"]
+        SA["🏗️ system-architect (claude-sonnet-4.6 / inherit)"]
+    end
+
+    subgraph P5 ["PHASE 5: Fullstack Implementation & TDD"]
+        CE["🔍 code-explorer (gemini-3.7-flash)"]
+        BE["⚙️ backend-developer (gemini-3.7-flash)"]
+        FE["🎨 frontend-developer (gemini-3.7-flash)"]
+        SI["⚡ slice-implementer (gemini-3.7-flash)"]
+        BR["🔧 build-resolver (gemini-3.7-flash)"]
+        E2E["🧪 e2e-runner (gemini-3.7-flash)"]
+
+        CE --> BE
+        CE --> FE
+        BE --> SI
+        FE --> SI
+        SI --> BR
+        BR --> E2E
+    end
+
+    subgraph P6A ["PHASE 6A: Adversarial Quality Review"]
+        CR["🛡️ code-reviewer (gemini-3.7-flash)"]
+        UR["👁️ ui-ux-reviewer (gemini-3.7-flash)"]
+    end
+
+    subgraph P6B ["PHASE 6B: Standard Documentation"]
+        TD["📚 tech-doc-architect (gemini-3.7-flash)"]
+        UG["💼 user-guide-creator (gemini-3.7-flash)"]
+        AE["⚖️ agent-evaluator (gemini-3.7-flash)"]
+    end
+
+    BA --> SA
+    SA --> CE
+    E2E --> CR
+    E2E --> UR
+    CR --> TD
+    CR --> UG
+    CR --> AE
+    UR --> TD
+    UR --> UG
+    UR --> AE
 ```
 
 ---

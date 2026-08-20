@@ -4,28 +4,55 @@
 
 **Core Principle:** BA Skill Pack gates all work with a signed-off domain baseline. Speckit handles technical planning. Superpowers executes code.
 
-### Pipeline for New Features
+### Pipeline for New Features (Multi-Agent Lifecycle)
 
-```
-Phase 1: Business Analysis & Domain Elicitation (wordstreak-ba-skills — 8-stage pipeline)
-  Stage 1: intake-classifier       → classifies complexity, selects protocol
-  Stage 2: elicitation-interview   → structured 6-pillar batched interview
-  Stage 3: gap-analysis            → AS-IS / TO-BE / GAP (Full Feature only)
-  Stage 4: domain-modeling         → RBAC, state machines, BR- IDs, ERD
-  Stage 5: risk-contradiction-scanner → risk register, contradiction scan, MoSCoW
-  Stage 6: spec-writer             → BRD / PRD / SRS (REQ-) / User Stories (US-)
-  Stage 7: spec-validator          → IEEE 29148 quality gate + traceability matrix
-  Stage 8: handover                → baseline SIGNED-OFF v1.0, handover brief
-  ↓
-Phase 2: Specify (speckit-specify → spec.md from signed-off baseline)
-  ↓
-Phase 3: Plan (speckit-plan → plan.md, data-model.md, contracts/)
-  ↓
-Phase 4: Tasks (speckit-tasks → tasks.md)
-  ↓
-Phase 5: Implement (Superpowers - TDD + Mandatory Tech Skills)
-  ↓
-Phase 6: Quality Verification, Review, Tech Docs (tech-doc-writer) & Delivery
+```mermaid
+graph TD
+    subgraph P1 ["PHASE 1: BA & Domain Elicitation"]
+        BA["🍉 business-analyst (claude-opus-4.6 / inherit)"]
+    end
+
+    subgraph P2 ["PHASE 2-4: Tech Spec & Architecture Planning"]
+        SA["🏗️ system-architect (claude-sonnet-4.6 / inherit)"]
+    end
+
+    subgraph P5 ["PHASE 5: Fullstack Implementation & TDD"]
+        CE["🔍 code-explorer (gemini-3.7-flash)"]
+        BE["⚙️ backend-developer (gemini-3.7-flash)"]
+        FE["🎨 frontend-developer (gemini-3.7-flash)"]
+        SI["⚡ slice-implementer (gemini-3.7-flash)"]
+        BR["🔧 build-resolver (gemini-3.7-flash)"]
+        E2E["🧪 e2e-runner (gemini-3.7-flash)"]
+
+        CE --> BE
+        CE --> FE
+        BE --> SI
+        FE --> SI
+        SI --> BR
+        BR --> E2E
+    end
+
+    subgraph P6A ["PHASE 6A: Adversarial Quality Review"]
+        CR["🛡️ code-reviewer (gemini-3.7-flash)"]
+        UR["👁️ ui-ux-reviewer (gemini-3.7-flash)"]
+    end
+
+    subgraph P6B ["PHASE 6B: Standard Documentation"]
+        TD["📚 tech-doc-architect (gemini-3.7-flash)"]
+        UG["💼 user-guide-creator (gemini-3.7-flash)"]
+        AE["⚖️ agent-evaluator (gemini-3.7-flash)"]
+    end
+
+    BA --> SA
+    SA --> CE
+    E2E --> CR
+    E2E --> UR
+    CR --> TD
+    CR --> UG
+    CR --> AE
+    UR --> TD
+    UR --> UG
+    UR --> AE
 ```
 
 #### Phase 1: Business Analysis & Domain Elicitation (8-Stage BA Pipeline)
@@ -81,12 +108,13 @@ Phase 6: Quality Verification, Review, Tech Docs (tech-doc-writer) & Delivery
   - Run `speckit-analyze` to check spec/plan/task alignment.
   - Run `requesting-code-review` and `ui-design-review` (for UI slices).
   - Enforce **Bug Severity Gates**: `Critical` bugs strictly block completion / release. Zero `Critical` bugs permitted.
-- **Step 2: Technical Documentation (MANDATORY immediately after review — delegate to `tech-doc-writer` subagent using `technical-documentation` skill)**:
+- **Step 2: Technical Documentation & User Guides (MANDATORY immediately after review — delegate to `tech-doc-architect` and `user-guide-creator` subagents)**:
   - Create `docs/features/<feature-slug>/README.md` using the template in [docs/features/README.md](../docs/features/README.md)
   - Update `docs/features/README.md` index table with the new feature entry.
   - If the feature changes architecture (new entity, new service, new API contract) — update the relevant file in `docs/architecture/`.
   - If algorithms or formulas change (e.g. SuperMemo-2, Streak, XP) — update `docs/algorithms/`.
   - Maintain Diataxis quadrants (Tutorial, How-To, Reference, Explanation) and apply Matt Palmer / OpenAI Cookbook standards.
+  - Generate user-facing visual guide with real Playwright screenshots via `user-guide-creator` (`user-guide-with-screenshots` skill) into `docs/user-guides/<slug>.md`.
   - Keep `AGENTS.md` / `CONTRIBUTING.md` / governance files synchronized.
 - **Step 3: Verification Evidence & Delivery**:
   - Run `verification-before-completion` with passing test evidence (Vitest, Jest, Playwright).
@@ -111,13 +139,13 @@ Phase 6: Quality Verification, Review, Tech Docs (tech-doc-writer) & Delivery
 | **IEEE 29148 quality gate & traceability matrix**             | `spec-validator`                                               |
 | **Baseline sign-off & dev handover**                          | `handover`                                                     |
 | **Feature execution, slice delegation & review**              | `implementation-orchestrator`                                  |
-| Technical documentation, feature README, architecture, AGENTS | `technical-documentation` (Agent: `tech-doc-writer`)           |
+| Technical documentation, feature README, architecture, AGENTS | `technical-documentation` (Agent: `tech-doc-architect`)        |
 | Any `.tsx`, `.jsx` file, React component                      | `frontend-patterns` + `frontend-a11y`                          |
 | **UI Design: Landing, Marketing, Public surfaces**            | `frontend-design` + `design-taste-frontend` + `ui-taste-pro`   |
 | **UI Design: In-App, Dashboard, Study/Flashcards, Decks**     | `frontend-design` + `design-taste-product` + `ui-taste-pro`    |
 | **UI Animation, Motion, Micro-interactions**                  | `motion-design`                                                |
 | **UI visual review & component QA**                           | `ui-design-review`                                             |
-| **User guide / end-user docs with screenshots**               | `user-guide-with-screenshots`                                  |
+| **User guide / end-user docs with screenshots**               | `user-guide-with-screenshots` (Agent: `user-guide-creator`)    |
 | iOS Native UI / Widgets (SwiftUI/UIKit only)                  | `liquid-glass-design` (iOS ONLY)                               |
 | Any NestJS file (controller, service, module, DTO)            | `nestjs-patterns` + `backend-patterns`                         |
 | API endpoint, REST resource                                   | `api-design` + `backend-patterns`                              |
@@ -149,6 +177,7 @@ Phase 6: Quality Verification, Review, Tech Docs (tech-doc-writer) & Delivery
 ## Corporate Governance & Code Quality Rules
 
 - **Zero Code Before Approved Spec**: Never write code or create mockups without an approved domain baseline and specification.
+- **Mandatory Automatic Subagent Delegation (STRICT)**: The orchestrator AI MUST NOT execute implementation slices or documentation directly in the primary context. Once Gate 2 (Technical Plan & Tasks) is approved, the orchestrator MUST automatically decompose tasks and dispatch dedicated subagents (`backend-developer`, `frontend-developer`, `ui-ux-reviewer`, `tech-doc-architect`, `user-guide-creator`) via `invoke_subagent`.
 - **Subagent Transparency & Notification Protocol (MANDATORY)**: Whenever a subagent (e.g. `implementation-orchestrator`, `ui-design-review`, `tech-doc-writer`, `browser_subagent`) is dispatched or finishes, the AI MUST explicitly notify the user in chat with a clear announcement block specifying: (1) Subagent Name & Role, (2) Active Model Name (e.g. `Gemini 3.7 Flash`), (3) Exact Task Scope, and (4) Output Artifact / Report Link.
 - **Design System & Anti-AI-Slop Gate (STRICT)**: Before creating or modifying any UI in `apps/web/`, AI MUST read [apps/web/DESIGN.md](file:///Users/vutuanhau/Documents/PROJECT/WordStreak/apps/web/DESIGN.md) and [apps/web/MEMORY.md](file:///Users/vutuanhau/Documents/PROJECT/WordStreak/apps/web/MEMORY.md). All UI must strictly adhere to the document-first minimal canvas (`#ffffff`), 1px hairline borders (`#e5e5e5`), Obsidian pure black pills (`#000000`, `rounded-full`), Nunito/Inter/JetBrains Mono typography, and stable outer anchor hover physics. Generic AI slop (unrequested multi-color gradients, neon blobs, glassmorphism, fake pricing tiers) is strictly forbidden.
 - **UI Visual Review Gate**: Every UI slice must undergo an independent anti-slop verification using `ui-design-review` before closing.

@@ -106,17 +106,21 @@ Before starting analysis or code, ensure the working environment is synced with 
 
 #### Case C: Technical Plan Complete & Approved, Ready to Implement
 
-- Activate **Phase 5: Implementation (TDD + Tech Skills)**:
+- Activate **Phase 5: Implementation (Automatic Subagent Delegation + TDD)**:
   - Create `test-plan.md` mapping User Stories to `TC-###` test cases.
-  - Read corresponding mandatory tech skills (`nestjs-patterns`, `frontend-patterns`, `prisma-patterns`, etc.).
-  - Follow TDD cycle: Write failing tests (Red) -> Implement minimal passing code (Green) -> Refactor.
+  - **AUTOMATIC SUBAGENT DELEGATION (MANDATORY)**:
+    1. Dispatch `backend-developer` (or `slice-implementer`) via `invoke_subagent` for Backend API, DTOs, Services, and Jest tests.
+    2. Dispatch `frontend-developer` via `invoke_subagent` for React components, state hooks, pages, and Vitest tests.
+  - Follow TDD cycle in each slice: Write failing tests (Red) -> Implement minimal passing code (Green) -> Refactor.
 
 #### Case D: Implementation Finished, Final Review & Documentation
 
-- Activate **Phase 6: Quality Verification, Review & Documentation**:
+- Activate **Phase 6: Quality Verification, Review & Documentation (Automatic Subagent Delegation)**:
+  - **AUTOMATIC SUBAGENT DELEGATION (MANDATORY)**:
+    1. Dispatch `ui-ux-reviewer` via `invoke_subagent` to perform adversarial UI & Anti-AI-Slop audit.
+    2. Dispatch `user-guide-creator` via `invoke_subagent` to generate [docs/user-guides/<slug>.md](../../docs/user-guides/).
+    3. Dispatch `tech-doc-architect` via `invoke_subagent` to update [docs/features/<slug>/README.md](../../docs/features/).
   - Run full test suites (`pnpm test`, `pnpm --filter api test`, `pnpm --filter web test`).
-  - If UI was added or modified: Run `/command-user-guide` to generate/update `docs/user-guides/<slug>.md` with real screenshots.
-  - Update technical documentation `docs/features/<slug>/README.md` and index tables.
   - Mark the User Story as `[x]` in `docs/PRODUCT_BACKLOG_ROADMAP.md`.
 
 ---

@@ -88,6 +88,78 @@ Whenever a subagent is dispatched (e.g. for adversarial UI review, technical doc
 - The agent MUST explicitly display a notification card in chat.
 - It MUST indicate the **Subagent Name**, the **Active Model Name** (e.g. `Gemini 3.7 Flash`), the **Goal**, and the **Final Artifact/Report Link**.
 
+## 7. Mandatory Automatic Subagent Delegation Protocol
+
+**AUTOMATIC MULTI-AGENT LIFECYCLE (MANDATORY & NON-NEGOTIABLE):**
+The primary orchestrator agent MUST strictly follow the standard multi-agent execution pipeline without waiting for manual user prompting. Every phase MUST automatically dispatch its dedicated subagents via `invoke_subagent`:
+
+```mermaid
+graph TD
+    subgraph P1 ["PHASE 1: BA & Domain Elicitation"]
+        BA["🍉 business-analyst (claude-opus-4.6 / inherit)"]
+    end
+
+    subgraph P2 ["PHASE 2-4: Tech Spec & Architecture Planning"]
+        SA["🏗️ system-architect (claude-sonnet-4.6 / inherit)"]
+    end
+
+    subgraph P5 ["PHASE 5: Fullstack Implementation & TDD"]
+        CE["🔍 code-explorer (gemini-3.7-flash)"]
+        BE["⚙️ backend-developer (gemini-3.7-flash)"]
+        FE["🎨 frontend-developer (gemini-3.7-flash)"]
+        SI["⚡ slice-implementer (gemini-3.7-flash)"]
+        BR["🔧 build-resolver (gemini-3.7-flash)"]
+        E2E["🧪 e2e-runner (gemini-3.7-flash)"]
+
+        CE --> BE
+        CE --> FE
+        BE --> SI
+        FE --> SI
+        SI --> BR
+        BR --> E2E
+    end
+
+    subgraph P6A ["PHASE 6A: Adversarial Quality Review"]
+        CR["🛡️ code-reviewer (gemini-3.7-flash)"]
+        UR["👁️ ui-ux-reviewer (gemini-3.7-flash)"]
+    end
+
+    subgraph P6B ["PHASE 6B: Standard Documentation"]
+        TD["📚 tech-doc-architect (gemini-3.7-flash)"]
+        UG["💼 user-guide-creator (gemini-3.7-flash)"]
+        AE["⚖️ agent-evaluator (gemini-3.7-flash)"]
+    end
+
+    BA --> SA
+    SA --> CE
+    E2E --> CR
+    E2E --> UR
+    CR --> TD
+    CR --> UG
+    CR --> AE
+    UR --> TD
+    UR --> UG
+    UR --> AE
+```
+
+### Protocol Execution Chain:
+
+1. **Phase 1 (BA & Domain Elicitation)**: Auto-dispatch `business-analyst` to execute the 8-stage BA Pipeline and sign off `baseline.md` v1.0.
+2. **Phase 2–4 (Spec & Architecture)**: Auto-dispatch `system-architect` to produce `spec.md`, `plan.md`, `data-model.md`, `contracts/`, and `tasks.md`.
+3. **Phase 5 (Fullstack Implementation & TDD)**:
+   - Auto-dispatch `code-explorer` to inspect existing patterns.
+   - Auto-dispatch `backend-developer` & `frontend-developer` in parallel or sequenced slices.
+   - Auto-dispatch `slice-implementer` to wire integration.
+   - Auto-dispatch `build-resolver` to eliminate type/lint build errors.
+   - Auto-dispatch `e2e-runner` to verify test suites.
+4. **Phase 6A (Adversarial Review)**:
+   - Auto-dispatch `code-reviewer` (code quality & security).
+   - Auto-dispatch `ui-ux-reviewer` (Anti-AI-Slop, `DESIGN.md`, `MEMORY.md`, WCAG AA).
+5. **Phase 6B (Documentation & Sign-off)**:
+   - Auto-dispatch `tech-doc-architect` (`docs/features/<slug>/README.md`).
+   - Auto-dispatch `user-guide-creator` (`docs/user-guides/<slug>.md`).
+   - Auto-dispatch `agent-evaluator` (Final DoD & Quality Scorecard).
+
 ---
 
-**These guidelines are working if:** fewer unnecessary changes in diffs, fewer rewrites due to overcomplication, zero generic AI slop in UI, total subagent transparency, and clarifying questions come before implementation rather than after mistakes.
+**These guidelines are working if:** fewer unnecessary changes in diffs, fewer rewrites due to overcomplication, zero generic AI slop in UI, total subagent transparency, automatic subagent delegation for all phases, and clarifying questions come before implementation rather than after mistakes.

@@ -3,7 +3,7 @@ name: code-explorer
 description: >-
   Deeply analyzes existing codebase features by tracing execution paths, mapping
   architecture layers, and documenting dependencies to inform new development.
-model: gemini-3.6-flash
+model: gemini-3.7-flash
 subagent: true
 inheritMcp: true
 commandExecutionPolicy: auto
