@@ -24,28 +24,38 @@ This command skill automates git staging, validates quality and user guide gates
 
 ## Execution Workflow
 
-### Step 1: Check Git Status & Multi-Scope Detection
+### Step 1: Check Git Status & Strict Domain-To-Branch Routing
 
 1. Run `git status` and `CURRENT_BRANCH=$(git branch --show-current)`.
 2. If the working tree is clean with no changes, notify the user and exit.
-3. **Automated Scope & Domain Analysis**:
-   - Categorize every changed file by its domain/scope (e.g., `auth`, `decks`, `cards`, `study`, `agents`, `docs`, `config`).
-   - Compare detected scopes against `CURRENT_BRANCH`.
-4. **Multi-Scope Routing**:
-   - **Single Scope**: If all files align with `CURRENT_BRANCH`, proceed normally to Step 2.
-   - **Multiple Scopes (Cross-Domain Changes)**:
-     - Alert the user:
-       > 📢 **Multi-Scope Changes Detected:** Modified files belong to multiple distinct domains. Auto-splitting changes across respective branches.
-     - Group files by target branch (e.g., `Group 1 -> CURRENT_BRANCH`, `Group 2 -> feat/deck-crud-management`, `Group 3 -> feat/auth-ui-redesign`).
-     - Execute **Automated Multi-Branch Processing**:
-       1. Stage and commit Group 1 on `CURRENT_BRANCH`, then push.
-       2. For each subsequent Group:
-          - Stash remaining unstaged files (`git stash push -m "multi-scope-stash"`).
-          - Checkout/create the target branch (`git checkout <target-branch>`).
-          - Restore corresponding files (`git checkout stash@{0} -- <files_for_this_scope>`).
-          - Execute Modular Commits (Step 3) and Smart Push (Step 4).
-       3. Switch back to the original `CURRENT_BRANCH`.
-       4. Report summary for all processed branches in Step 5.
+3. **Automated Domain & Scope Classification**:
+   Every changed file is strictly mapped to its legitimate target branch domain:
+   - **Global Governance, Agent Rules & Skill References** (`.agents/**`, `GEMINI.md`, `.specify/templates/**`, `package.json`, root configs):
+     - **Target Domain**: `chore/governance-<slug>` or `chore/agent-skills` (or `main` if merged).
+     - **STRICT PROHIBITION**: NEVER commit global governance or agent configs into domain feature branches (e.g. `feat/card-management`, `feat/auth-*`, `feat/deck-*`).
+   - **Feature-Specific Code & Documents** (`apps/web/src/features/<domain>/**`, `apps/api/src/modules/<domain>/**`, `specs/<slug>/**`, `docs/features/<slug>/**`, `docs/user-guides/<slug>.md`):
+     - **Target Domain**: `feat/<domain>-<feature-slug>` (e.g. `feat/card-management`, `feat/deck-crud-management`). All specs and user guides for a feature live together on the feature branch.
+   - **Global Architecture, Roadmaps & Product References** (`docs/architecture/**`, `docs/algorithms/**`, `docs/PRODUCT_BACKLOG_ROADMAP.md`, `README.md`, `vocabulary-app-feature-ideas*.md`):
+     - **When modified alongside a feature**: Commit on that feature's branch (`feat/<slug>`).
+     - **When updated independently (standalone roadmap/architecture update)**: `docs/<topic-slug>` (e.g. `docs/update-roadmap`, `docs/sm2-algorithm-reference`).
+   - **Shared Libraries & Packages** (`packages/shared-types/**`):
+     - Belongs to the feature branch that introduced/modified the DTOs, or `chore/shared-types` if standalone.
+
+4. **Strict Branch Compatibility & Auto-Routing Gate**:
+   - **Case A: Perfect Match**: Changed files belong exclusively to `CURRENT_BRANCH`'s domain $\rightarrow$ Proceed to Step 2.
+   - **Case B: Domain Mismatch (Cross-Contamination Prevention)**:
+     - If changed files do NOT belong to `CURRENT_BRANCH` (e.g., modifying `GEMINI.md` while on `feat/card-management`):
+       > 📢 **Domain-Branch Mismatch Detected:** Modified files belong to `[Governance/Config]` but active branch is `[feat/card-management]`.
+       > 🛡️ **Auto-Branch Routing:** Isolating changes into target branch `chore/<topic>` (or creating new dedicated branch) to protect `feat/card-management` from contamination.
+     - **Auto-Routing Steps**:
+       1. Stash changes: `git stash push -m "domain-routing-stash"`.
+       2. Check out / create legitimate target branch (e.g. `git checkout -b chore/<topic>`).
+       3. Pop/restore files: `git stash pop` (or `git checkout stash@{0} -- <files>`).
+       4. Execute Modular Commits (Step 3) and Smart Push (Step 4) on the target branch.
+       5. Return to `CURRENT_BRANCH`.
+   - **Case C: Multi-Scope (Multiple Domains Modified Simultaneously)**:
+     - Group files by domain target branch.
+     - Process each group sequentially onto its own branch, keeping every feature branch 100% clean.
 
 ### Step 2: Pre-Commit User Guide Gate (UI Changes Only - 100% Mandatory Real Screenshots)
 
