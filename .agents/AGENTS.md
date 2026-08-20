@@ -149,7 +149,7 @@ Phase 6: Quality Verification, Review, Tech Docs (tech-doc-writer) & Delivery
 - **Zero Code Before Approved Spec**: Never write code or create mockups without an approved domain baseline and specification.
 - **Bug Severity Gate**: No feature branch can be merged or marked complete with unresolved `Critical` bugs.
 - **Post-Review Documentation Gate**: Every delivered feature must have technical documentation updated/created by `tech-doc-writer` (`technical-documentation` skill) before closing the task.
-- **User Guide Gate**: Every feature with a UI must have a user-facing guide created or updated via the `user-guide-with-screenshots` skill (real screenshots, non-technical language, saved to `docs/user-guides/<slug>.md`) before the feature is considered done. Do not close the task without this.
+- **User Guide Gate**: Every feature with a UI must have a user-facing guide created or updated via the `user-guide-with-screenshots` skill (100% mandatory real screenshots with Red Highlights `#EF4444` & numbered callout badges, non-technical language, saved to `docs/user-guides/<slug>.md`) before the feature is considered done. Do not close tasks or push code without this verified.
 - **Immutable Data Patterns**: Create new copies, do not mutate state directly.
 - **KISS, DRY, YAGNI**: Avoid over-engineering and speculative features.
 - **Code Limits**: File < 800 lines, function < 50 lines.

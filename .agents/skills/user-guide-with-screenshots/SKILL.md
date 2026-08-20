@@ -39,9 +39,10 @@ triggers:
     transaction, payload. Use plain language — write as if explaining to a friend
     who is not a developer. Replace "modal" with "popup window", etc.
 2.  **Screenshots must be 100% real** — captured from the running app via Playwright/Browser. Never use mockups or imagined layouts.
-3.  **Visual Annotations & Highlights (BẮT BUỘC CHỈ DẪN TRÊN ẢNH)**:
-    - Trong mỗi bước chụp màn hình, luôn làm nổi bật (highlight bounding box với border màu tím/xanh `#7E22CE` / `#2563EB` và box-shadow glow) quanh nút bấm hoặc form cần thao tác.
-    - Đính kèm huy hiệu số thứ tự tròn (**①, ②, ③**) ngay cạnh element để người dùng nhìn vào là biết ngay cần bấm/nhập vào đâu theo đúng thứ tự.
+3.  **Visual Annotations & Highlights (BẮT BUỘC CHỈ DẪN VIỀN ĐỎ TRÊN ẢNH)**:
+    - Mọi bước chụp màn hình **bắt buộc phải làm nổi bật bằng viền đỏ rực rỡ** (`outline: 3.5px solid #EF4444; box-shadow: 0 0 0 7px rgba(239, 68, 68, 0.3)`) quanh nút bấm hoặc form cần thao tác để người dùng dễ quan sát nhất.
+    - Đính kèm huy hiệu số thứ tự tròn màu đỏ (**①, ②, ③**) có số trắng đậm ngay góc trên bên trái của vùng khoanh đỏ.
+    - Trong bài viết, từng gạch đầu dòng hướng dẫn phải tham chiếu trực tiếp đến số khoanh đỏ tương ứng (ví dụ: `① Bấm nút...`, `② Nhập...`).
 4.  **One action = one annotated screenshot + 1–2 sentences.** Do not write a long paragraph and then drop a screenshot at the end.
 5.  **Always kept separate** from the technical README. Output file goes to
     `docs/user-guides/<slug>.md`, images to `docs/user-guides/images/<slug>/`.

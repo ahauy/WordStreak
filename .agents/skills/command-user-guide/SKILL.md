@@ -23,9 +23,13 @@ This command skill automates the creation and maintenance of end-user documentat
 ## Core Principles (User-First)
 
 1. **Non-Technical Language**: Avoid developer jargon (e.g., _API, DTO, Endpoint, Database, State, Component, Payload_). Explain features plainly as if talking to an everyday user (e.g., use "popup window" instead of "modal").
-2. **100% Real Screenshots**: Capture images directly from the running web application (`localhost:5173`). Never use fabricated mockups or placeholders.
-3. **Visual Clarity**: 1 user action = 1 clear screenshot + 1–2 concise explanatory sentences.
-4. **File Locations**:
+2. **100% Real Screenshots (BẮT BUỘC KHÔNG ĐƯỢC DÙNG TEXT THUẦN)**: Chụp trực tiếp từ ứng dụng đang chạy (`localhost:5173`). Tuyệt đối không dùng bản vẽ mẫu hay viết tài liệu text-only khi có thay đổi giao diện.
+3. **Chỉ dẫn Bằng Viền Đỏ & Huy Hiệu Đánh Số (Red Highlights `#EF4444` & Badges ①, ②, ③)**:
+   - Mọi ảnh chụp hướng dẫn **BẮT BUỘC PHẢI CÓ VIỀN ĐỎ NỔI BẬT** (`outline: 3.5px solid #EF4444; box-shadow: 0 0 0 7px rgba(239, 68, 68, 0.3)`) khoanh vùng chính xác nút bấm, form, ô nhập liệu cần thao tác.
+   - Gắn huy hiệu tròn màu đỏ (**①, ②, ③**) có số màu trắng đậm ngay góc trên bên trái của vùng khoanh đỏ.
+   - Trong bài viết, từng gạch đầu dòng phải tham chiếu trực tiếp đến số khoanh đỏ tương ứng (ví dụ: `① Bấm nút...`, `② Nhập...`).
+4. **Visual Clarity**: 1 user action = 1 clear annotated screenshot + 1–2 concise explanatory sentences.
+5. **File Locations**:
    - Document: `docs/user-guides/<slug>.md`
    - Images: `docs/user-guides/images/<slug>/` or `docs/user-guides/assets/<slug>/`
 
