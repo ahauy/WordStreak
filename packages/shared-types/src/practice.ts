@@ -54,3 +54,23 @@ export interface QuizResultResponseDto {
   maxCombo: number;
   missedCards: MissedCardDto[];
 }
+
+export interface FillBlankQuestionDto {
+  id: string;
+  cardId: string;
+  sentenceWithBlank: string;
+  sentencePrefix: string;
+  sentenceSuffix: string;
+  targetWord: string;
+  targetInflection?: string;
+  meaning: string;
+  phonetic?: string | null;
+  audioUrl?: string | null;
+  scrambledLetters: string[];
+  wordLength: number;
+}
+
+export interface GetFillBlankQuestionsQueryDto {
+  deckId: string;
+  limit?: number;
+}
