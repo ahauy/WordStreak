@@ -10,7 +10,7 @@ export const reviewsService = {
   async getDueCards(
     deckId?: string,
     limit: number = 50,
-  ): Promise<{ data: DueCardItem[]; meta?: any }> {
+  ): Promise<{ data: DueCardItem[]; meta?: Record<string, unknown> }> {
     const params = deckId ? { deckId, limit } : { limit };
     const response = await apiClient.get<ApiResponse<DueCardItem[]>>(
       "/reviews/due",
@@ -19,12 +19,12 @@ export const reviewsService = {
     return {
       data: response.data.data || [],
       meta: response.data.message
-        ? JSON.parse(response.data.message)
+        ? (JSON.parse(response.data.message) as Record<string, unknown>)
         : undefined,
     };
   },
 
-  async submitReview(dto: SubmitReviewDto): Promise<any> {
+  async submitReview(dto: SubmitReviewDto): Promise<unknown> {
     const response = await apiClient.post<ApiResponse>("/reviews/submit", dto);
     return response.data.data;
   },

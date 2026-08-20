@@ -20,11 +20,10 @@ export const ReviewSessionPage: React.FC = () => {
     isSubmitting,
     isCompleted,
     error,
-    history,
+    sessionStats,
     flip,
     rateCard,
     restartSession,
-    getStats,
   } = useReviewSession(deckId);
 
   const completedCount = initialTotal - remainingCount;
@@ -69,8 +68,11 @@ export const ReviewSessionPage: React.FC = () => {
             </button>
           </div>
         ) : isCompleted ? (
-          history.length > 0 ? (
-            <ReviewSummaryModal stats={getStats()} onRestart={restartSession} />
+          sessionStats.totalReviewed > 0 ? (
+            <ReviewSummaryModal
+              stats={sessionStats}
+              onRestart={restartSession}
+            />
           ) : (
             <ReviewEmptyState
               deckTitle={deckId ? "this deck" : undefined}

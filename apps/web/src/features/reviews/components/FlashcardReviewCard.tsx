@@ -17,6 +17,16 @@ export const FlashcardReviewCard: React.FC<FlashcardReviewCardProps> = ({
   onFlip,
   onRate,
 }) => {
+  const speakWord = useCallback((text: string) => {
+    if ("speechSynthesis" in window) {
+      window.speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = "en-US";
+      utterance.rate = 0.9;
+      window.speechSynthesis.speak(utterance);
+    }
+  }, []);
+
   // Audio playback handler (Native audio or SpeechSynthesis fallback)
   const playAudio = useCallback(() => {
     if (card.audioUrl) {
@@ -28,17 +38,7 @@ export const FlashcardReviewCard: React.FC<FlashcardReviewCardProps> = ({
     } else {
       speakWord(card.word);
     }
-  }, [card.audioUrl, card.word]);
-
-  const speakWord = (text: string) => {
-    if ("speechSynthesis" in window) {
-      window.speechSynthesis.cancel();
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = "en-US";
-      utterance.rate = 0.9;
-      window.speechSynthesis.speak(utterance);
-    }
-  };
+  }, [card.audioUrl, card.word, speakWord]);
 
   // Keyboard shortcut listener
   useEffect(() => {
