@@ -13,6 +13,7 @@ import { DashboardPage } from "./features/dashboard/pages/DashboardPage";
 import { DecksListPage } from "./features/decks/pages/DecksListPage";
 import { DeckDetailPage } from "./features/decks/pages/DeckDetailPage";
 import { ReviewSessionPage } from "./features/reviews/pages/ReviewSessionPage";
+import { MultipleChoiceQuizPage } from "./features/practice/pages/MultipleChoiceQuizPage";
 import { LandingPage } from "./features/landing/pages/LandingPage";
 import { ProtectedRoute } from "./features/auth/components/ProtectedRoute";
 import { useAuthStore } from "./store/useAuthStore";
@@ -64,6 +65,24 @@ function AnimatedRoutes() {
           element={
             <ProtectedRoute>
               <ReviewSessionPage />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/decks/:id/quiz"
+          element={
+            <ProtectedRoute>
+              <MultipleChoiceQuizPage />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/practice/quiz"
+          element={
+            <ProtectedRoute>
+              <MultipleChoiceQuizPage />
             </ProtectedRoute>
           }
         />
