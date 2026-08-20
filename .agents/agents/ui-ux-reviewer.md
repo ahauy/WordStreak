@@ -7,7 +7,7 @@ description: >-
   i18n resilience, and a11y. Use after any UI-layer slice is implemented —
   either from implementation-orchestrator Stage 4 or standalone review.
   Read-only: produces a report only; never edits code.
-model: gemini-3.6-flash
+model: gemini-3.7-flash
 subagent: true
 inheritMcp: true
 commandExecutionPolicy: auto

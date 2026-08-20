@@ -3,7 +3,7 @@ name: e2e-runner
 description: >-
   End-to-end testing specialist using Playwright. Use for generating, maintaining,
   and running E2E tests for critical user journeys and UI flows.
-model: gemini-3.6-flash
+model: gemini-3.7-flash
 subagent: true
 inheritMcp: true
 commandExecutionPolicy: auto
