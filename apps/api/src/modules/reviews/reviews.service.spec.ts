@@ -2,11 +2,15 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ReviewsService } from './reviews.service';
 import { SrsService } from './srs.service';
+import { StreakService } from '../streaks/streak.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { NotFoundException, ForbiddenException } from '@nestjs/common';
 
 describe('ReviewsService', () => {
   let service: ReviewsService;
+  let streakService: {
+    recordActivity: jest.Mock;
+  };
   let prisma: {
     user: { findUnique: jest.Mock };
     card: { findUnique: jest.Mock };
@@ -23,6 +27,17 @@ describe('ReviewsService', () => {
   const mockCardId = 'card-uuid-1';
 
   beforeEach(async () => {
+    streakService = {
+      recordActivity: jest.fn().mockResolvedValue({
+        currentStreak: 1,
+        bestStreak: 1,
+        streakIncreased: true,
+        isActiveToday: true,
+        flameTier: 1,
+        message: 'New streak started!',
+      }),
+    };
+
     prisma = {
       user: { findUnique: jest.fn() },
       card: { findUnique: jest.fn() },
@@ -39,6 +54,10 @@ describe('ReviewsService', () => {
       providers: [
         ReviewsService,
         SrsService,
+        {
+          provide: StreakService,
+          useValue: streakService,
+        },
         {
           provide: PrismaService,
           useValue: prisma,
@@ -167,6 +186,9 @@ describe('ReviewsService', () => {
       expect(result.status).toBe('LEARNING');
       expect(result.interval).toBe(6);
       expect(result.repetitions).toBe(2);
+      expect(result.streak).toBeDefined();
+      expect(result.streak?.currentStreak).toBe(1);
+      expect(streakService.recordActivity).toHaveBeenCalledWith(mockUserId);
       expect(prisma.userCardProgress.update).toHaveBeenCalled();
     });
 

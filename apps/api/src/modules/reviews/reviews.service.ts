@@ -5,6 +5,7 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { SrsService } from './srs.service';
+import { StreakService } from '../streaks/streak.service';
 import { SubmitReviewDto } from './dto/submit-review.dto';
 import { QueryDueReviewsDto } from './dto/query-due-reviews.dto';
 import type {
@@ -18,6 +19,7 @@ export class ReviewsService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly srsService: SrsService,
+    private readonly streakService: StreakService,
   ) {}
 
   /**
@@ -184,6 +186,8 @@ export class ReviewsService {
       },
     });
 
+    const streakResult = await this.streakService.recordActivity(userId);
+
     return {
       cardId: updated.cardId,
       status: updated.status,
@@ -192,6 +196,7 @@ export class ReviewsService {
       easeFactor: updated.easeFactor,
       lastReviewedAt: updated.lastReviewedAt,
       nextReviewDate: updated.nextReviewDate,
+      streak: streakResult,
     };
   }
 
