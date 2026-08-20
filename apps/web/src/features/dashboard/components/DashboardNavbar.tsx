@@ -6,11 +6,14 @@ import { SettingsModal } from "../../user-profile/components/SettingsModal";
 import { StreakFlame } from "./StreakFlame";
 import { getFlameTier } from "../config/flameTiers";
 import { useAuthStore } from "../../../store/useAuthStore";
+import { useStreak } from "../hooks/useStreak";
 import type { AuthUser } from "@wordstreak/shared-types";
 
 interface DashboardNavbarProps {
   user?: AuthUser | null;
   currentStreak?: number;
+  flameTier?: number;
+  isActiveToday?: boolean;
   onOpenSettings?: (tab?: "profile" | "avatar" | "security") => void;
   onOpenFlameNurture?: () => void;
   onLogout?: () => void;
@@ -18,12 +21,17 @@ interface DashboardNavbarProps {
 
 export const DashboardNavbar: React.FC<DashboardNavbarProps> = ({
   user: propUser,
-  currentStreak = 0,
+  currentStreak: propCurrentStreak,
+  flameTier: propFlameTier,
+  isActiveToday: propIsActiveToday,
   onOpenSettings: propOpenSettings,
   onOpenFlameNurture,
   onLogout: propLogout,
 }) => {
   const { user: storeUser, logout: storeLogout } = useAuthStore();
+  const hookStreak = useStreak({
+    enabled: propCurrentStreak === undefined && !!storeUser,
+  });
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -33,6 +41,16 @@ export const DashboardNavbar: React.FC<DashboardNavbarProps> = ({
   >("profile");
 
   const user = propUser !== undefined ? propUser : storeUser;
+  const currentStreak =
+    propCurrentStreak !== undefined
+      ? propCurrentStreak
+      : hookStreak.currentStreak;
+  const flameTier =
+    propFlameTier !== undefined ? propFlameTier : hookStreak.flameTier;
+  const isActiveToday =
+    propIsActiveToday !== undefined
+      ? propIsActiveToday
+      : hookStreak.isActiveToday;
   const tierInfo = getFlameTier(currentStreak);
 
   const handleOpenSettings = (
@@ -70,8 +88,10 @@ export const DashboardNavbar: React.FC<DashboardNavbarProps> = ({
             >
               <StreakFlame
                 streakDays={currentStreak}
+                tier={flameTier}
                 size="sm"
                 showEmbers={false}
+                isActiveToday={isActiveToday}
               />
               <div>
                 <span
@@ -87,10 +107,14 @@ export const DashboardNavbar: React.FC<DashboardNavbarProps> = ({
             </Link>
 
             {/* Navigation links */}
-            <nav className="hidden sm:flex items-center gap-1">
+            <nav
+              className="hidden sm:flex items-center gap-1"
+              aria-label="Main Navigation"
+            >
               <Link
                 to="/dashboard"
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition-all ${
+                aria-current={isDashboardActive ? "page" : undefined}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition-all focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 focus:outline-none ${
                   isDashboardActive
                     ? "bg-black text-white"
                     : "text-[#737373] hover:text-black hover:bg-[#fafafa]"
@@ -102,7 +126,8 @@ export const DashboardNavbar: React.FC<DashboardNavbarProps> = ({
 
               <Link
                 to="/decks"
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition-all ${
+                aria-current={isDecksActive ? "page" : undefined}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition-all focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 focus:outline-none ${
                   isDecksActive
                     ? "bg-black text-white"
                     : "text-[#737373] hover:text-black hover:bg-[#fafafa]"
@@ -120,14 +145,17 @@ export const DashboardNavbar: React.FC<DashboardNavbarProps> = ({
             <button
               type="button"
               onClick={onOpenFlameNurture}
-              className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-xs font-semibold shadow-xs cursor-pointer hover:scale-[1.02] active:scale-[0.98] transition-all ${tierInfo.pillBg} ${tierInfo.pillText} ${tierInfo.pillBorder}`}
+              className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-xs font-semibold shadow-xs cursor-pointer hover:scale-[1.02] active:scale-[0.98] transition-all focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:ring-offset-2 focus:outline-none ${tierInfo.pillBg} ${tierInfo.pillText} ${tierInfo.pillBorder}`}
               title="Nhấn để mở Khu Vườn Nuôi Lửa & Tiến Hóa"
+              aria-label="Mở khu vườn nuôi lửa streak và tiến hóa"
             >
               <StreakFlame
                 streakDays={currentStreak}
+                tier={flameTier}
                 size="xs"
                 showEmbers={false}
                 showGlow={false}
+                isActiveToday={isActiveToday}
               />
               <span className="font-mono">{currentStreak} Ngày Streak</span>
               <span className="hidden md:inline-block text-[10px] opacity-75 font-normal">
@@ -139,8 +167,9 @@ export const DashboardNavbar: React.FC<DashboardNavbarProps> = ({
             <button
               type="button"
               onClick={() => handleOpenSettings("profile")}
-              className="flex items-center gap-2 px-1.5 py-1 sm:px-2.5 sm:py-1 rounded-full border border-[#e5e5e5] bg-white hover:bg-[#fafafa] hover:border-[#d4d4d4] transition-all cursor-pointer text-left focus:outline-none apple-tap-active"
+              className="flex items-center gap-2 px-1.5 py-1 sm:px-2.5 sm:py-1 rounded-full border border-[#e5e5e5] bg-white hover:bg-[#fafafa] hover:border-[#d4d4d4] transition-all cursor-pointer text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 apple-tap-active"
               title="Cài đặt tài khoản & Mục tiêu học"
+              aria-label="Cài đặt tài khoản và hồ sơ người dùng"
             >
               <UserAvatar
                 avatarUrl={user?.avatarUrl}
@@ -157,8 +186,8 @@ export const DashboardNavbar: React.FC<DashboardNavbarProps> = ({
             <button
               type="button"
               onClick={handleLogout}
-              className="w-9 h-9 rounded-full flex items-center justify-center text-[#dc2626] border border-[#ff5f56]/30 bg-[#fff5f5] hover:bg-[#ffebeb] hover:border-[#ff5f56]/50 transition-all cursor-pointer focus:outline-none apple-tap-active"
-              aria-label="Đăng xuất"
+              className="w-9 h-9 rounded-full flex items-center justify-center text-[#dc2626] border border-[#ff5f56]/30 bg-[#fff5f5] hover:bg-[#ffebeb] hover:border-[#ff5f56]/50 transition-all cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2 apple-tap-active"
+              aria-label="Đăng xuất khỏi tài khoản"
               title="Đăng xuất khỏi tài khoản"
             >
               <LogOut className="w-4 h-4" />

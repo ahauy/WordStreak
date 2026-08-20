@@ -15,6 +15,9 @@ import { getFlameTier } from "../config/flameTiers";
 interface StreakHeroBannerProps {
   username?: string;
   currentStreak?: number;
+  isActiveToday?: boolean;
+  isPendingToday?: boolean;
+  flameTier?: number;
   onStartReview?: () => void;
   onCreateDeck?: () => void;
   onOpenFlameNurture?: () => void;
@@ -23,6 +26,9 @@ interface StreakHeroBannerProps {
 export const StreakHeroBanner: React.FC<StreakHeroBannerProps> = ({
   username = "Learner",
   currentStreak = 0,
+  isActiveToday = false,
+  isPendingToday = false,
+  flameTier,
   onStartReview,
   onCreateDeck,
   onOpenFlameNurture,
@@ -49,14 +55,17 @@ export const StreakHeroBanner: React.FC<StreakHeroBannerProps> = ({
             <button
               type="button"
               onClick={onOpenFlameNurture}
-              className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold border cursor-pointer hover:scale-105 active:scale-95 transition-all ${tierInfo.pillBg} ${tierInfo.pillText} ${tierInfo.pillBorder}`}
+              className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold border cursor-pointer hover:scale-[1.02] active:scale-[0.98] transition-all focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:ring-offset-2 focus:outline-none ${tierInfo.pillBg} ${tierInfo.pillText} ${tierInfo.pillBorder}`}
               title="Mở Khu Vườn Nuôi Lửa & Tiến Hóa"
+              aria-label="Mở khu vườn nuôi lửa và tiến hóa"
             >
               <StreakFlame
                 streakDays={currentStreak}
+                tier={flameTier}
                 size="xs"
                 showEmbers={false}
                 showGlow={false}
+                isActiveToday={isActiveToday}
               />
               <span>{tierInfo.titleVi}</span>
               <Sparkles className="w-3 h-3 ml-0.5 opacity-75" />
@@ -65,9 +74,15 @@ export const StreakHeroBanner: React.FC<StreakHeroBannerProps> = ({
               <Brain className="w-3.5 h-3.5 text-[#9333ea]" />
               <span>SM-2 Spaced Repetition</span>
             </span>
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-[#f0fdf4] text-[#16a34a] border border-[#bbf7d0]">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-[#f0fdf4] text-[#15803d] border border-[#bbf7d0]">
               <ShieldCheck className="w-3.5 h-3.5" />
-              <span>Multi-Session Active</span>
+              <span>
+                {isActiveToday
+                  ? "Completed Today"
+                  : isPendingToday
+                    ? "Streak Pending Review"
+                    : "Review Ready"}
+              </span>
             </span>
           </div>
 
@@ -99,7 +114,12 @@ export const StreakHeroBanner: React.FC<StreakHeroBannerProps> = ({
             <div className="flex items-center gap-2">
               {daysOfWeek.map((day, idx) => {
                 const isToday = idx === todayIndex;
-                const isCompleted = idx < todayIndex && currentStreak > 0;
+                const isPastDay = idx < todayIndex;
+                const daysAgo = todayIndex - idx;
+                const isCompleted = isToday
+                  ? isActiveToday
+                  : isPastDay &&
+                    currentStreak > (isActiveToday ? daysAgo : daysAgo - 1);
 
                 return (
                   <div
@@ -113,7 +133,7 @@ export const StreakHeroBanner: React.FC<StreakHeroBannerProps> = ({
                           ? "bg-[#9333ea] text-white shadow-xs"
                           : isToday
                             ? "bg-[#f3e8ff] border-2 border-[#9333ea] text-[#7e22ce] shadow-xs scale-105 animate-pulse"
-                            : "bg-[#fafafa] border border-[#e5e5e5] text-[#a3a3a3]"
+                            : "bg-[#fafafa] border border-[#e5e5e5] text-[#737373]"
                       }`}
                     >
                       {isCompleted ? (
@@ -137,7 +157,7 @@ export const StreakHeroBanner: React.FC<StreakHeroBannerProps> = ({
           <button
             type="button"
             onClick={onStartReview}
-            className="btn-primary h-12 px-7 text-sm font-medium gap-2 shadow-xs cursor-pointer"
+            className="btn-primary h-12 px-7 text-sm font-medium gap-2 shadow-xs cursor-pointer focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 focus:outline-none"
             style={{ fontFamily: "var(--font-body)" }}
           >
             <Zap className="w-4 h-4 fill-current" />
@@ -147,7 +167,7 @@ export const StreakHeroBanner: React.FC<StreakHeroBannerProps> = ({
           <button
             type="button"
             onClick={onCreateDeck}
-            className="btn-secondary h-12 px-7 text-sm font-medium gap-2 cursor-pointer"
+            className="btn-secondary h-12 px-7 text-sm font-medium gap-2 cursor-pointer focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 focus:outline-none"
           >
             <PlusCircle className="w-4 h-4 text-[#525252]" />
             <span>Create Deck</span>

@@ -81,7 +81,7 @@ export const DashboardStatsGrid: React.FC<DashboardStatsGridProps> = ({
             <Clock className="w-3.5 h-3.5 text-[#9333ea]" /> Best:{" "}
             {longestStreak}d
           </span>
-          <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-[#16a34a] bg-[#f0fdf4] px-2 py-0.5 rounded-full border border-[#bbf7d0]">
+          <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-[#15803d] bg-[#f0fdf4] px-2 py-0.5 rounded-full border border-[#bbf7d0]">
             <Shield className="w-2.5 h-2.5" /> Freeze: 1
           </span>
         </div>
@@ -138,7 +138,7 @@ export const DashboardStatsGrid: React.FC<DashboardStatsGridProps> = ({
           <span className="text-xs font-semibold uppercase tracking-wider text-[#737373]">
             Due Today
           </span>
-          <div className="w-9 h-9 rounded-xl bg-[#f0fdf4] text-[#16a34a] border border-[#bbf7d0] flex items-center justify-center">
+          <div className="w-9 h-9 rounded-xl bg-[#f0fdf4] text-[#15803d] border border-[#bbf7d0] flex items-center justify-center">
             <BookOpen className="w-4 h-4" />
           </div>
         </div>
@@ -153,7 +153,7 @@ export const DashboardStatsGrid: React.FC<DashboardStatsGridProps> = ({
           <span className="text-xs font-medium text-[#737373]">Cards</span>
         </div>
 
-        <div className="mt-3 pt-3 border-t border-[#f0f0f0] flex items-center justify-between text-xs text-[#16a34a]">
+        <div className="mt-3 pt-3 border-t border-[#f0f0f0] flex items-center justify-between text-xs text-[#15803d]">
           <span className="flex items-center gap-1 font-medium">
             ✓{" "}
             {cardsDueToday === 0 ? "All reviews complete!" : "Ready to review"}
