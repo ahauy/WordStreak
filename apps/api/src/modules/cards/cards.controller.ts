@@ -6,6 +6,7 @@ import {
   Delete,
   Body,
   Param,
+  Query,
   UseGuards,
   HttpCode,
   HttpStatus,
@@ -15,7 +16,14 @@ import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import { CreateCardDto } from './dto/create-card.dto';
 import { UpdateCardDto } from './dto/update-card.dto';
-import type { JwtPayload, CardResponse } from '@wordstreak/shared-types';
+import { QueryCardsDto } from './dto/query-cards.dto';
+import { BulkCardActionDto } from './dto/bulk-card-action.dto';
+import type {
+  JwtPayload,
+  CardResponse,
+  PaginatedCardsResponse,
+  BulkCardActionResult,
+} from '@wordstreak/shared-types';
 
 @Controller()
 @UseGuards(JwtAuthGuard)
@@ -35,8 +43,19 @@ export class CardsController {
   async findAllByDeck(
     @CurrentUser() user: JwtPayload,
     @Param('deckId') deckId: string,
-  ): Promise<CardResponse[]> {
-    return this.cardsService.findAllByDeck(user.sub, deckId);
+    @Query() query?: QueryCardsDto,
+  ): Promise<PaginatedCardsResponse> {
+    return this.cardsService.findAllByDeck(user.sub, deckId, query);
+  }
+
+  @Post('decks/:deckId/cards/bulk-action')
+  @HttpCode(HttpStatus.OK)
+  async bulkAction(
+    @CurrentUser() user: JwtPayload,
+    @Param('deckId') deckId: string,
+    @Body() dto: BulkCardActionDto,
+  ): Promise<BulkCardActionResult> {
+    return this.cardsService.bulkAction(user.sub, deckId, dto);
   }
 
   @Get('cards/:id')

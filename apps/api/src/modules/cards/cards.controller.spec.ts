@@ -4,7 +4,14 @@ import { CardsController } from './cards.controller';
 import { CardsService } from './cards.service';
 import { CreateCardDto } from './dto/create-card.dto';
 import { UpdateCardDto } from './dto/update-card.dto';
-import type { JwtPayload, CardResponse } from '@wordstreak/shared-types';
+import { QueryCardsDto } from './dto/query-cards.dto';
+import { BulkCardActionDto } from './dto/bulk-card-action.dto';
+import type {
+  JwtPayload,
+  CardResponse,
+  PaginatedCardsResponse,
+  BulkCardActionResult,
+} from '@wordstreak/shared-types';
 
 describe('CardsController', () => {
   let controller: CardsController;
@@ -42,6 +49,18 @@ describe('CardsController', () => {
     },
   };
 
+  const mockPaginatedResponse: PaginatedCardsResponse = {
+    data: [mockCardResponse],
+    meta: {
+      total: 1,
+      page: 1,
+      limit: 20,
+      totalPages: 1,
+      hasNextPage: false,
+      hasPrevPage: false,
+    },
+  };
+
   beforeEach(async () => {
     const mockCardsService = {
       create: jest.fn(),
@@ -49,6 +68,7 @@ describe('CardsController', () => {
       findOne: jest.fn(),
       update: jest.fn(),
       remove: jest.fn(),
+      bulkAction: jest.fn(),
     };
 
     const module: TestingModule = await Test.createTestingModule({
@@ -91,16 +111,48 @@ describe('CardsController', () => {
   });
 
   describe('findAllByDeck', () => {
-    it('should return all cards for a deck', async () => {
-      service.findAllByDeck.mockResolvedValue([mockCardResponse]);
+    it('should return paginated cards for a deck', async () => {
+      service.findAllByDeck.mockResolvedValue(mockPaginatedResponse);
 
-      const result = await controller.findAllByDeck(mockUser, mockDeckId);
+      const query: QueryCardsDto = { page: 1, limit: 20 };
+      const result = await controller.findAllByDeck(
+        mockUser,
+        mockDeckId,
+        query,
+      );
 
       expect(service.findAllByDeck).toHaveBeenCalledWith(
         mockUser.sub,
         mockDeckId,
+        query,
       );
-      expect(result).toEqual([mockCardResponse]);
+      expect(result).toEqual(mockPaginatedResponse);
+    });
+  });
+
+  describe('bulkAction', () => {
+    it('should call service.bulkAction with proper args', async () => {
+      const bulkDto: BulkCardActionDto = {
+        action: 'DELETE',
+        cardIds: [mockCardId],
+      };
+      const mockResult: BulkCardActionResult = {
+        success: true,
+        action: 'DELETE',
+        affectedCount: 1,
+        message: 'Đã xóa thành công 1 thẻ từ vựng',
+      };
+
+      service.bulkAction.mockResolvedValue(mockResult);
+
+      const result = await controller.bulkAction(mockUser, mockDeckId, bulkDto);
+
+      expect(service.bulkAction).toHaveBeenCalledWith(
+        mockUser.sub,
+        mockDeckId,
+        bulkDto,
+      );
+      expect(result).toEqual(mockResult);
     });
   });
 
