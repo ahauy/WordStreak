@@ -4,6 +4,7 @@ import {
   ForbiddenException,
   BadRequestException,
 } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateCardDto } from './dto/create-card.dto';
 import { UpdateCardDto } from './dto/update-card.dto';
@@ -121,71 +122,51 @@ export class CardsService {
     const limit = Math.min(100, Math.max(1, query?.limit ?? 20));
     const skip = (page - 1) * limit;
 
-    const whereClause: any = { deckId };
+    const andConditions: Prisma.CardWhereInput[] = [{ deckId }];
 
     if (query?.search && query.search.trim()) {
       const term = query.search.trim();
-      whereClause.OR = [
-        { word: { contains: term, mode: 'insensitive' } },
-        { meaning: { contains: term, mode: 'insensitive' } },
-        { exampleSentence: { contains: term, mode: 'insensitive' } },
-      ];
+      andConditions.push({
+        OR: [
+          { word: { contains: term, mode: 'insensitive' } },
+          { meaning: { contains: term, mode: 'insensitive' } },
+          { exampleSentence: { contains: term, mode: 'insensitive' } },
+        ],
+      });
     }
 
     if (query?.status && query.status !== 'ALL') {
       if (query.status === 'NEW') {
-        whereClause.OR = whereClause.OR
-          ? [
-              {
-                AND: [
-                  { OR: whereClause.OR },
-                  {
-                    progress: {
-                      some: {
-                        userId,
-                        status: 'NEW',
-                      },
-                    },
-                  },
-                ],
-              },
-            ]
-          : [
-              {
-                progress: {
-                  some: {
-                    userId,
-                    status: 'NEW',
-                  },
-                },
-              },
-            ];
+        andConditions.push({
+          progress: {
+            some: {
+              userId,
+              status: 'NEW',
+            },
+          },
+        });
       } else if (query.status === 'LEARNING') {
-        const learningCondition = {
+        andConditions.push({
           progress: {
             some: {
               userId,
               status: { in: ['LEARNING', 'REVIEW'] },
             },
           },
-        };
-        whereClause.AND = whereClause.AND
-          ? [...whereClause.AND, learningCondition]
-          : [learningCondition];
+        });
       } else if (query.status === 'MASTERED') {
-        const masteredCondition = {
+        andConditions.push({
           progress: {
             some: {
               userId,
               status: 'MASTERED',
             },
           },
-        };
-        whereClause.AND = whereClause.AND
-          ? [...whereClause.AND, masteredCondition]
-          : [masteredCondition];
+        });
       }
     }
+
+    const whereClause: Prisma.CardWhereInput = { AND: andConditions };
 
     const [total, cards] = await Promise.all([
       this.prisma.card.count({ where: whereClause }),
