@@ -8,5 +8,8 @@
     "dev:web": "pnpm --filter web dev",
     "build": "pnpm -r run build",
     "lint": "pnpm -r run lint"
+  },
+  "devDependencies": {
+    "playwright": "^1.62.1"
   }
 }
