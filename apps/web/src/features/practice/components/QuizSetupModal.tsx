@@ -2,12 +2,18 @@ import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Play, Clock, Sparkles, AlertCircle } from "lucide-react";
 
+export type PracticeMode = "multiple-choice" | "fill-in-the-blank";
+
 interface QuizSetupModalProps {
   isOpen: boolean;
   deckTitle: string;
   totalCards: number;
   onClose: () => void;
-  onStart: (options: { limit: number; isZenMode: boolean }) => void;
+  onStart: (options: {
+    mode: PracticeMode;
+    limit: number;
+    isZenMode: boolean;
+  }) => void;
 }
 
 export const QuizSetupModal: React.FC<QuizSetupModalProps> = ({
@@ -17,6 +23,8 @@ export const QuizSetupModal: React.FC<QuizSetupModalProps> = ({
   onClose,
   onStart,
 }) => {
+  const [selectedMode, setSelectedMode] =
+    useState<PracticeMode>("multiple-choice");
   const [selectedLimit, setSelectedLimit] = useState<number>(10);
   const [isZenMode, setIsZenMode] = useState<boolean>(false);
 
@@ -32,10 +40,15 @@ export const QuizSetupModal: React.FC<QuizSetupModalProps> = ({
 
   if (!isOpen) return null;
 
-  const isTooSmall = totalCards < 4;
+  const isMultipleChoiceTooSmall =
+    selectedMode === "multiple-choice" && totalCards < 4;
+  const isFillBlankEmpty =
+    selectedMode === "fill-in-the-blank" && totalCards < 1;
+  const isTooSmall = isMultipleChoiceTooSmall || isFillBlankEmpty;
 
   const handleStart = () => {
     onStart({
+      mode: selectedMode,
       limit: selectedLimit,
       isZenMode,
     });
@@ -84,6 +97,60 @@ export const QuizSetupModal: React.FC<QuizSetupModalProps> = ({
           </div>
 
           <div className="py-5 space-y-5">
+            {/* Practice Mode Selector */}
+            <div>
+              <span className="text-xs font-mono text-[#737373] uppercase tracking-wider block mb-2">
+                Chế độ ôn luyện (Practice Mode)
+              </span>
+              <div className="grid grid-cols-2 gap-2.5">
+                <button
+                  type="button"
+                  onClick={() => setSelectedMode("multiple-choice")}
+                  className={`p-3 rounded-2xl border text-left transition-all ${
+                    selectedMode === "multiple-choice"
+                      ? "bg-[#000000] text-white border-[#000000] shadow-sm"
+                      : "bg-[#fafafa] text-[#000000] border-[#e5e5e5] hover:border-[#d4d4d4]"
+                  }`}
+                >
+                  <span className="block text-sm font-semibold leading-tight">
+                    Trắc nghiệm
+                  </span>
+                  <span
+                    className={`block text-[11px] font-mono mt-1 ${
+                      selectedMode === "multiple-choice"
+                        ? "text-white/70"
+                        : "text-[#737373]"
+                    }`}
+                  >
+                    4 Choices (A/B/C/D)
+                  </span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setSelectedMode("fill-in-the-blank")}
+                  className={`p-3 rounded-2xl border text-left transition-all ${
+                    selectedMode === "fill-in-the-blank"
+                      ? "bg-[#000000] text-white border-[#000000] shadow-sm"
+                      : "bg-[#fafafa] text-[#000000] border-[#e5e5e5] hover:border-[#d4d4d4]"
+                  }`}
+                >
+                  <span className="block text-sm font-semibold leading-tight">
+                    Điền từ vào câu
+                  </span>
+                  <span
+                    className={`block text-[11px] font-mono mt-1 ${
+                      selectedMode === "fill-in-the-blank"
+                        ? "text-white/70"
+                        : "text-[#737373]"
+                    }`}
+                  >
+                    Fill in Blank / Anagram
+                  </span>
+                </button>
+              </div>
+            </div>
+
             {/* Deck info */}
             <div>
               <span className="text-xs font-mono text-[#737373] uppercase tracking-wider block mb-1">
@@ -94,7 +161,7 @@ export const QuizSetupModal: React.FC<QuizSetupModalProps> = ({
               </p>
             </div>
 
-            {/* Warning if deck has fewer than 4 cards */}
+            {/* Warning if deck has insufficient cards */}
             {isTooSmall ? (
               <div className="p-4 bg-[#fef2f2] border border-[#ef4444]/30 rounded-2xl flex items-start gap-3">
                 <AlertCircle className="w-5 h-5 text-[#ef4444] shrink-0 mt-0.5" />
@@ -102,9 +169,9 @@ export const QuizSetupModal: React.FC<QuizSetupModalProps> = ({
                   <span className="font-semibold block text-sm mb-0.5">
                     Not enough cards
                   </span>
-                  This deck has only {totalCards} cards. Multiple choice quizzes
-                  require at least 4 cards across your account to generate
-                  options.
+                  {selectedMode === "multiple-choice"
+                    ? `This deck has only ${totalCards} cards. Multiple choice quizzes require at least 4 cards across your account to generate options.`
+                    : "This deck has no cards. Add cards to start fill-in-the-blank practice."}
                 </div>
               </div>
             ) : (

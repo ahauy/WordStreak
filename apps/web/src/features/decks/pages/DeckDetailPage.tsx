@@ -778,9 +778,15 @@ export const DeckDetailPage: React.FC = () => {
         deckTitle={deck.title}
         totalCards={deck.stats?.totalCards || paginationMeta.total}
         onClose={() => setIsQuizSetupOpen(false)}
-        onStart={({ limit, isZenMode }) => {
+        onStart={({ mode, limit, isZenMode }) => {
           setIsQuizSetupOpen(false);
-          navigate(`/decks/${deckId}/quiz?limit=${limit}&zen=${isZenMode}`);
+          if (mode === "fill-in-the-blank") {
+            navigate(
+              `/decks/${deckId}/practice/fill-blank?limit=${limit}&zen=${isZenMode}`,
+            );
+          } else {
+            navigate(`/decks/${deckId}/quiz?limit=${limit}&zen=${isZenMode}`);
+          }
         }}
       />
     </div>
