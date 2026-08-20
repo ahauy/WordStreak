@@ -1,78 +1,95 @@
-# Hướng dẫn Người dùng: Quản lý & Tra cứu Thẻ Từ vựng (Card List Management)
+# 📖 Hướng dẫn Người dùng: Quản lý & Tra cứu Thẻ Từ vựng
 
-Chào mừng bạn đến với hướng dẫn sử dụng tính năng **Quản lý & Tra cứu Danh sách Thẻ Từ vựng** trên WordStreak! Tính năng này giúp bạn dễ dàng tìm kiếm, lọc theo trạng thái ghi nhớ, chuyển đổi linh hoạt giữa giao diện Lưới thẻ 3D và Bảng dữ liệu chi tiết, cũng như thực hiện các thao tác quản lý hàng loạt nhanh chóng.
-
----
-
-## 📑 Mục lục
-
-1. [Chuyển đổi Chế độ hiển thị (Lưới 3D vs Bảng dữ liệu)](#1-chuyển-đổi-chế-độ-hiển-thị)
-2. [Tìm kiếm & Lọc thẻ theo Trạng thái Ghi nhớ (SRS)](#2-tìm-kiếm--lọc-thẻ-theo-trạng-thái)
-3. [Nghe Phát âm Audio Trực tiếp](#3-nghe-phát-âm-audio-trực-tiếp)
-4. [Thao tác Quản lý Hàng loạt (Bulk Actions)](#4-thao-tác-quản-lý-hàng-loạt)
-   - [Xóa nhiều thẻ cùng lúc](#xóa-nhiều-thẻ-cùng-lúc)
-   - [Di chuyển thẻ sang bộ từ khác](#di-chuyển-thẻ-sang-bộ-từ-khác)
-   - [Đặt lại tiến độ học (Reset về Mới)](#đặt-lại-tiến-độ-học)
-5. [Phân trang Danh sách Thẻ](#5-phân-trang-danh-sách-thẻ)
+> **Đối tượng:** Người học WordStreak  
+> **Cập nhật lần cuối:** 2026-08-20  
+> **Trạng thái:** Đã kiểm thử trên giao diện thực tế (100% Real Screenshots)
 
 ---
 
-## 1. Chuyển đổi Chế độ hiển thị (Lưới 3D vs Bảng dữ liệu)
+## 🎯 Tổng quan
 
-Ngay phía trên danh sách từ vựng, bạn sẽ thấy nút chuyển đổi chế độ xem:
-
-- **Chế độ Lưới (Grid View - Mặc định)**: Hiển thị các thẻ từ vựng dưới dạng Flashcard 3D trực quan, có vạch màu chủ đề của bộ từ, nút mở rộng xem Mẹo nhớ (Mnemonic) và Collocations.
-- **Chế độ Bảng (Table View)**: Hiển thị các từ vựng theo hàng ngang mật độ cao. Phù hợp khi bạn muốn rà soát nhanh hàng chục/hàng trăm từ vựng trong bộ từ lớn mà không cần cuộn trang nhiều.
-
-> 💡 **Mẹo**: Lựa chọn chế độ xem của bạn sẽ được tự động lưu lại trên trình duyệt, không bị mất đi khi bạn tải lại trang.
+Tính năng **Quản lý & Tra cứu Thẻ Từ vựng** giúp bạn dễ dàng xem lại, tìm kiếm nhanh và sắp xếp hàng trăm từ vựng trong từng Bộ từ. Bạn có thể linh hoạt chuyển đổi giữa giao diện **Lưới thẻ Flashcard 3D** và **Bảng dữ liệu danh sách**, lọc nhanh các từ theo cấp độ ghi nhớ, cũng như xóa hoặc di chuyển nhiều từ cùng lúc chỉ với vài thao tác đơn giản.
 
 ---
 
-## 2. Tìm kiếm & Lọc thẻ theo Trạng thái
+## 🚀 Hướng dẫn Chi tiết Từng Bước
 
-- **Thanh Tìm kiếm thông minh**: Nhập bất kỳ từ khóa nào (tiếng Anh, nghĩa tiếng Việt, câu ví dụ). Kết quả sẽ tự động lọc theo thời gian thực (real-time debounce).
-- **Bộ lọc Trạng thái (Filter Chips)**:
-  - **Tất cả (ALL)**: Toàn bộ thẻ trong bộ từ.
-  - **Thẻ mới (NEW)**: Những từ vựng bạn vừa thêm vào và chưa trải qua phiên ôn tập Spaced Repetition nào.
-  - **Đang học (LEARNING)**: Những từ vựng đang trong chu kỳ lặp lại ngắt quãng để ghi nhớ.
-  - **Thành thạo (MASTERED)**: Những từ vựng bạn đã nhớ xuất sắc với khoảng cách ôn tập $\ge 21$ ngày.
+### Bước 1: Xem Danh sách Thẻ ở Chế độ Lưới (Grid View)
 
----
+![Chế độ Lưới Thẻ](./images/card-management/step-01-view-modes.png)
 
-## 3. Nghe Phát âm Audio Trực tiếp
-
-- Tại cả 2 chế độ (Lưới thẻ và Bảng dữ liệu), cạnh mỗi từ vựng luôn có biểu tượng **Loa (Speaker)**.
-- Bấm vào biểu tượng loa để nghe giọng đọc bản xứ chuẩn xác ngay tức thì mà không cần mở form chỉnh sửa.
+- Khi mở chi tiết một Bộ từ vựng, mặc định danh sách từ sẽ hiển thị dưới dạng **Lưới thẻ Flashcard 3D**.
+- Mỗi thẻ hiển thị rõ từ vựng, phiên âm IPA, nghĩa tiếng Việt, vạch màu chủ đề và nhãn trạng thái học Spaced Repetition (`Mới`, `Đang học`, `Thành thạo`).
+- Bấm vào nút loa trên từng thẻ để nghe phát âm giọng đọc bản xứ.
 
 ---
 
-## 4. Thao tác Quản lý Hàng loạt (Bulk Actions)
+### Bước 2: Tìm kiếm Nhanh & Lọc theo Trạng thái Ghi nhớ
 
-Khi bạn tích chọn 1 hoặc nhiều ô vuông cạnh từ vựng (hoặc bấm **"Chọn tất cả trên trang"**), một thanh công cụ màu đen sang trọng sẽ xuất hiện ở đáy màn hình:
+![Tìm kiếm và Lọc trạng thái](./images/card-management/step-02-search-filter.png)
 
-### Xóa nhiều thẻ cùng lúc (Bulk Delete)
-
-1. Chọn các thẻ bạn muốn xóa.
-2. Bấm nút **"Xóa"** màu đỏ trên thanh công cụ.
-3. Hộp thoại xác nhận sẽ hiển thị chính xác số lượng thẻ cần xóa. Bấm **"Xóa vĩnh viễn"** để hoàn tất.
-
-### Di chuyển thẻ sang bộ từ khác (Bulk Move)
-
-1. Chọn các thẻ cần di chuyển.
-2. Bấm nút **"Di chuyển"**.
-3. Chọn bộ từ đích trong danh sách các bộ từ bạn sở hữu và bấm **"Xác nhận di chuyển"**.
-4. Các thẻ được chuyển sang bộ từ mới mà vẫn giữ nguyên toàn bộ lịch sử tiến độ ôn tập của bạn.
-
-### Đặt lại tiến độ học (Bulk Reset Progress)
-
-1. Chọn các thẻ bạn muốn học lại từ đầu.
-2. Bấm nút **"Đặt lại tiến độ"**.
-3. Xác nhận để đưa các thẻ đã chọn về trạng thái **Thẻ mới (NEW)**.
+- **Tìm kiếm từ khóa**: Nhập từ tiếng Anh, nghĩa tiếng Việt hoặc câu ví dụ vào thanh tìm kiếm. Hệ thống sẽ lọc kết quả tức thì theo thời gian thực.
+- **Thẻ lọc trạng thái (Filter Chips)**: Bấm chọn các nhãn để lọc:
+  - **Tất cả**: Hiển thị toàn bộ từ vựng trong bộ từ.
+  - **Thẻ mới**: Các từ vựng vừa thêm vào, chưa trải qua phiên ôn tập nào.
+  - **Đang học**: Các từ đang trong quá trình ôn tập định kỳ.
+  - **Thành thạo**: Các từ bạn đã ghi nhớ vững chắc (khoảng cách ôn tập $\ge 21$ ngày).
 
 ---
 
-## 5. Phân trang Danh sách Thẻ
+### Bước 3: Chuyển sang Chế độ Bảng Danh sách (Table View)
 
-- Ở cuối danh sách, thanh phân trang hiển thị số lượng thẻ và số trang hiện tại.
-- Bạn có thể tùy chỉnh số lượng hiển thị trên mỗi trang (`10`, `20`, `50` thẻ/trang).
-- Bấm số trang hoặc nút **Trước / Sau** để di chuyển mượt mà giữa các trang.
+![Chế độ Bảng Danh sách](./images/card-management/step-03-table-view.png)
+
+- Bấm nút **"Bảng"** ở góc phải thanh công cụ để chuyển sang giao diện bảng mật độ cao.
+- Chế độ bảng giúp bạn rà soát số lượng lớn từ vựng một cách nhanh chóng, bao gồm cột từ vựng, loại từ & phiên âm, nghĩa tiếng Việt, câu ví dụ, nhãn trạng thái và nút nghe phát âm trực tiếp trên từng dòng.
+- Lựa chọn chế độ xem (Lưới hoặc Bảng) sẽ được tự động lưu lại trên máy của bạn.
+
+---
+
+### Bước 4: Chọn Nhiều Thẻ & Thanh Thao tác Hàng loạt (Bulk Actions)
+
+![Chọn nhiều thẻ và thanh công cụ](./images/card-management/step-04-bulk-actions.png)
+
+- Tích chọn ô vuông ở đầu các dòng từ vựng bạn muốn thao tác (hoặc tích chọn ô trên cùng để chọn tất cả từ trên trang).
+- Một **Thanh công cụ màu đen (Floating Toolbar)** sẽ nổi lên ở đáy màn hình hiển thị chính xác số lượng thẻ đã chọn kèm 3 chức năng:
+  - 🗑️ **Xóa**: Xóa các thẻ đã chọn khỏi bộ từ.
+  - 📦 **Di chuyển**: Chuyển các thẻ sang bộ từ khác.
+  - 🔄 **Đặt lại tiến độ**: Đưa các thẻ đã chọn về trạng thái Thẻ mới để học lại từ đầu.
+
+---
+
+### Bước 5: Di chuyển Thẻ sang Bộ từ Khác (Bulk Move)
+
+![Cửa sổ di chuyển thẻ](./images/card-management/step-05-bulk-move-modal.png)
+
+1. Bấm nút **"Di chuyển"** trên thanh công cụ hàng loạt.
+2. Một cửa sổ sẽ xuất hiện, cho phép bạn chọn Bộ từ đích trong danh sách các bộ từ bạn đang sở hữu.
+3. Bấm **"Xác nhận di chuyển"** để hoàn tất. Toàn bộ tiến độ học Spaced Repetition của các từ này sẽ được giữ nguyên vẹn khi sang bộ từ mới.
+
+---
+
+### Bước 6: Phân trang & Điều hướng Danh sách
+
+![Thanh phân trang](./images/card-management/step-06-pagination.png)
+
+- Ở chân trang, thanh phân trang hiển thị tổng số thẻ và số trang hiện tại.
+- Bạn có thể chuyển đổi số lượng thẻ hiển thị trên mỗi trang (`10`, `20`, `50` thẻ/trang).
+- Bấm số trang hoặc nút **Trước / Sau** để di chuyển mượt mà giữa các trang danh sách.
+
+---
+
+## 💡 Mẹo Hữu ích (Tips)
+
+- **Xem nhanh Collocations & Mẹo nhớ**: Ở chế độ Lưới, bấm nút mở rộng dưới chân mỗi thẻ để đọc mẹo ghi nhớ sinh động và các cụm từ thường đi kèm trong đề thi TOEIC.
+- **Học lại từ khó**: Nếu muốn ôn tập lại một nhóm từ vựng từ đầu, hãy chọn chúng và dùng chức năng **Đặt lại tiến độ** thay vì phải xóa đi tạo lại.
+
+---
+
+## ❓ Câu hỏi Thường gặp (FAQ)
+
+- **Q: Khi tôi chuyển thẻ sang bộ từ khác, tiến độ học của tôi có bị mất không?**  
+  **A:** Không. WordStreak giữ nguyên toàn bộ lịch sử ôn tập Spaced Repetition (độ dễ, số lần lặp lại, ngày ôn tiếp theo) của bạn khi di chuyển thẻ.
+
+- **Q: Tôi có thể chọn tất cả các thẻ ở tất cả các trang cùng lúc không?**  
+  **A:** Ô tích chọn trên cùng sẽ chọn tất cả thẻ trên **trang hiện tại** (tối đa 50 thẻ/lần). Điều này giúp bạn kiểm soát chính xác các từ vựng trước khi thực hiện thao tác hàng loạt.
