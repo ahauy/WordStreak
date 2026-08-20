@@ -16,6 +16,7 @@ import {
   ChevronLeft,
   ChevronRight,
   Filter,
+  Zap,
 } from "lucide-react";
 import { decksService } from "../services/decksService";
 import { useCards } from "../../cards/hooks/useCards";
@@ -26,6 +27,7 @@ import { AddCardModal } from "../../cards/components/AddCardModal";
 import { EditCardModal } from "../../cards/components/EditCardModal";
 import { DeleteCardConfirmModal } from "../../cards/components/DeleteCardConfirmModal";
 import { EditDeckModal } from "../components/EditDeckModal";
+import { QuizSetupModal } from "../../practice/components/QuizSetupModal";
 import { DashboardNavbar } from "../../dashboard/components/DashboardNavbar";
 import { DeckIcon, getColorTheme } from "../constants/deckThemes";
 import type {
@@ -88,6 +90,7 @@ export const DeckDetailPage: React.FC = () => {
   const [deletingCard, setDeletingCard] = useState<CardResponse | null>(null);
   const [isDeletingCardLoading, setIsDeletingCardLoading] = useState(false);
   const [isEditDeckOpen, setIsEditDeckOpen] = useState(false);
+  const [isQuizSetupOpen, setIsQuizSetupOpen] = useState(false);
 
   // Fetch Deck metadata
   const fetchDeckDetails = useCallback(async () => {
@@ -350,6 +353,15 @@ export const DeckDetailPage: React.FC = () => {
               >
                 <Sparkles className="w-4 h-4 text-[#ffbd2e]" />
                 <span>Ôn tập ngay</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setIsQuizSetupOpen(true)}
+                className="h-10 px-4 text-xs font-semibold gap-1.5 shadow-xs cursor-pointer inline-flex items-center rounded-full bg-[#f3e8ff] text-[#7e22ce] hover:bg-[#e9d5ff] border border-[#d8b4fe] transition-all whitespace-nowrap"
+              >
+                <Zap className="w-4 h-4 text-[#9333ea]" />
+                <span>Trắc nghiệm Quiz</span>
               </button>
 
               <button
@@ -757,6 +769,18 @@ export const DeckDetailPage: React.FC = () => {
           const updated = await decksService.updateDeck(id, dto);
           setDeck(updated);
           return updated;
+        }}
+      />
+
+      {/* Quiz Setup Modal */}
+      <QuizSetupModal
+        isOpen={isQuizSetupOpen}
+        deckTitle={deck.title}
+        totalCards={deck.stats?.totalCards || paginationMeta.total}
+        onClose={() => setIsQuizSetupOpen(false)}
+        onStart={({ limit, isZenMode }) => {
+          setIsQuizSetupOpen(false);
+          navigate(`/decks/${deckId}/quiz?limit=${limit}&zen=${isZenMode}`);
         }}
       />
     </div>
