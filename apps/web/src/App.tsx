@@ -12,6 +12,7 @@ import { RegisterPage } from "./features/auth/pages/RegisterPage";
 import { DashboardPage } from "./features/dashboard/pages/DashboardPage";
 import { DecksListPage } from "./features/decks/pages/DecksListPage";
 import { DeckDetailPage } from "./features/decks/pages/DeckDetailPage";
+import { ReviewSessionPage } from "./features/reviews/pages/ReviewSessionPage";
 import { LandingPage } from "./features/landing/pages/LandingPage";
 import { ProtectedRoute } from "./features/auth/components/ProtectedRoute";
 import { useAuthStore } from "./store/useAuthStore";
@@ -54,6 +55,24 @@ function AnimatedRoutes() {
           element={
             <ProtectedRoute>
               <DeckDetailPage />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/decks/:id/review"
+          element={
+            <ProtectedRoute>
+              <ReviewSessionPage />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/review"
+          element={
+            <ProtectedRoute>
+              <ReviewSessionPage />
             </ProtectedRoute>
           }
         />

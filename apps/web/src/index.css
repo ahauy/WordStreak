@@ -214,6 +214,21 @@ html.dark .shadow-apple-product {
   transform: translateY(-2px);
 }
 
+/* ─── 3D Card Flip Perspective Utilities ─── */
+.perspective-1000 {
+  perspective: 1000px;
+}
+.transform-style-3d {
+  transform-style: preserve-3d;
+}
+.backface-hidden {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+.rotate-y-180 {
+  transform: rotateY(180deg);
+}
+
 @media (prefers-reduced-motion: reduce) {
   .apple-tap-active,
   .interactive-flashcard,

@@ -53,10 +53,7 @@ export const DashboardPage: React.FC = () => {
   };
 
   const handleStartReview = () => {
-    // In future phases: navigate to active practice/review session
-    // For demo/testing: feeds 10 wood logs to the flame mascot!
-    handleFeedWood(10);
-    openSettings("profile");
+    navigate("/review");
   };
 
   const handleCreateDeck = () => {
