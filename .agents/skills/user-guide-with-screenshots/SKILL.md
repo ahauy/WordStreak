@@ -39,10 +39,10 @@ triggers:
     transaction, payload. Use plain language — write as if explaining to a friend
     who is not a developer. Replace "modal" with "popup window", etc.
 2.  **Screenshots must be 100% real** — captured from the running app via Playwright/Browser. Never use mockups or imagined layouts.
-3.  **Visual Annotations & Highlights (BẮT BUỘC CHỈ DẪN VIỀN ĐỎ TRÊN ẢNH)**:
-    - Mọi bước chụp màn hình **bắt buộc phải làm nổi bật bằng viền đỏ rực rỡ** (`outline: 3.5px solid #EF4444; box-shadow: 0 0 0 7px rgba(239, 68, 68, 0.3)`) quanh nút bấm hoặc form cần thao tác để người dùng dễ quan sát nhất.
-    - Đính kèm huy hiệu số thứ tự tròn màu đỏ (**①, ②, ③**) có số trắng đậm ngay góc trên bên trái của vùng khoanh đỏ.
-    - Trong bài viết, từng gạch đầu dòng hướng dẫn phải tham chiếu trực tiếp đến số khoanh đỏ tương ứng (ví dụ: `① Bấm nút...`, `② Nhập...`).
+3.  **Visual Annotations & Red Highlights (MANDATORY ON ALL SCREENSHOTS)**:
+    - Every captured step **MUST feature vibrant red highlights** (`outline: 3.5px solid #EF4444; box-shadow: 0 0 0 7px rgba(239, 68, 68, 0.3)`) bounding the target button, input, or container.
+    - Attach a circular red numbered badge (**①, ②, ③**) with bold white text at the top-left corner of the highlighted element.
+    - In the guide text, every instructional bullet point must explicitly reference the corresponding badge number (e.g. `① Click the button...`, `② Enter the term...`).
 4.  **One action = one annotated screenshot + 1–2 sentences.** Do not write a long paragraph and then drop a screenshot at the end.
 5.  **Always kept separate** from the technical README. Output file goes to
     `docs/user-guides/<slug>.md`, images to `docs/user-guides/images/<slug>/`.

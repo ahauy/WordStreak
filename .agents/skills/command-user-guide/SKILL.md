@@ -23,11 +23,11 @@ This command skill automates the creation and maintenance of end-user documentat
 ## Core Principles (User-First)
 
 1. **Non-Technical Language**: Avoid developer jargon (e.g., _API, DTO, Endpoint, Database, State, Component, Payload_). Explain features plainly as if talking to an everyday user (e.g., use "popup window" instead of "modal").
-2. **100% Real Screenshots (BẮT BUỘC KHÔNG ĐƯỢC DÙNG TEXT THUẦN)**: Chụp trực tiếp từ ứng dụng đang chạy (`localhost:5173`). Tuyệt đối không dùng bản vẽ mẫu hay viết tài liệu text-only khi có thay đổi giao diện.
-3. **Chỉ dẫn Bằng Viền Đỏ & Huy Hiệu Đánh Số (Red Highlights `#EF4444` & Badges ①, ②, ③)**:
-   - Mọi ảnh chụp hướng dẫn **BẮT BUỘC PHẢI CÓ VIỀN ĐỎ NỔI BẬT** (`outline: 3.5px solid #EF4444; box-shadow: 0 0 0 7px rgba(239, 68, 68, 0.3)`) khoanh vùng chính xác nút bấm, form, ô nhập liệu cần thao tác.
-   - Gắn huy hiệu tròn màu đỏ (**①, ②, ③**) có số màu trắng đậm ngay góc trên bên trái của vùng khoanh đỏ.
-   - Trong bài viết, từng gạch đầu dòng phải tham chiếu trực tiếp đến số khoanh đỏ tương ứng (ví dụ: `① Bấm nút...`, `② Nhập...`).
+2. **100% Real Screenshots (MANDATORY - NO TEXT-ONLY WORKAROUNDS)**: Capture images directly from the running web application (`localhost:5173`). Never use fabricated mockups or write text-only guides for features with UI changes.
+3. **Visual Annotations & Red Highlights (Red Highlights `#EF4444` & Badges ①, ②, ③)**:
+   - Every screenshot **MUST FEATURE VIBRANT RED HIGHLIGHTS** (`outline: 3.5px solid #EF4444; box-shadow: 0 0 0 7px rgba(239, 68, 68, 0.3)`) bounding the target button, input, or container.
+   - Attach a circular red numbered badge (**①, ②, ③**) with bold white text at the top-left corner of the highlighted element.
+   - In the guide text, every instructional bullet point must explicitly reference the corresponding badge number (e.g. `① Click the button...`, `② Enter the term...`).
 4. **Visual Clarity**: 1 user action = 1 clear annotated screenshot + 1–2 concise explanatory sentences.
 5. **File Locations**:
    - Document: `docs/user-guides/<slug>.md`

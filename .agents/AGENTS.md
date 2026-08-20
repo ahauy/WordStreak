@@ -158,8 +158,8 @@ Phase 6: Quality Verification, Review, Tech Docs (tech-doc-writer) & Delivery
 - **Error Handling**: Handle errors explicitly, never swallow silently.
 - **Data Privacy**: Strictly anonymize test data; never use real production credentials in dev.
 - **Traceability**: All scope changes must be documented in the feature's Change Log.
-- **Git Commit Governance**:
-  - **Zero Auto-Commit**: Never commit without user review and explicit request.
+- **Git Commit Governance (Strict Human-In-The-Loop Gate)**:
+  - **Zero Autonomous Git Execution**: AI is STRICTLY FORBIDDEN from running `git add`, `git commit`, or `git push` autonomously. Staging, committing, and pushing can ONLY be executed when the user explicitly runs `/command-git-push` (or `/push`, `/ship`, `/auto-git-push`), or when the AI explicitly proposes the exact git changes to the user and receives explicit approval.
   - **Modular Commits**: Break down commits into granular, logical parts (Spec/Docs -> Shared Types -> Backend API -> Frontend UI -> Feature Docs).
   - **Single-Line English Commits**: Strictly single-line Conventional Commits in English (e.g. `feat(scope): concise description`).
   - **Branch Reuse Priority**: Always prioritize existing active branches for related work, fixes, or refinements; avoid creating new branches unless strictly necessary for completely independent scope separation.
