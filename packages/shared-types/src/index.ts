@@ -5,6 +5,7 @@ export * from "./decks.js";
 export * from "./cards.js";
 export * from "./reviews.js";
 export * from "./practice.js";
+export * from "./streaks.js";
 
 export interface User {
   id: string;
