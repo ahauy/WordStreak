@@ -10,11 +10,19 @@ import { StreakHeatmapTracker } from "../components/StreakHeatmapTracker";
 import { DecksPreviewSection } from "../components/DecksPreviewSection";
 import { FlameNurtureModal } from "../components/FlameNurtureModal";
 import { DraggableFlameMascot } from "../components/DraggableFlameMascot";
+import { useStreak } from "../hooks/useStreak";
 import { Globe } from "lucide-react";
 
 export const DashboardPage: React.FC = () => {
   const { user, logout } = useAuthStore();
   const navigate = useNavigate();
+  const {
+    currentStreak,
+    bestStreak,
+    flameTier,
+    isActiveToday,
+    isPendingToday,
+  } = useStreak();
 
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isFlameNurtureOpen, setIsFlameNurtureOpen] = useState(false);
@@ -26,8 +34,7 @@ export const DashboardPage: React.FC = () => {
     "profile" | "avatar" | "security"
   >("profile");
 
-  const currentStreak = 0;
-  const longestStreak = 0;
+  const longestStreak = bestStreak;
   const cardsFedToday = 0;
   const dailyGoal = user?.dailyGoal || 10;
 
@@ -70,6 +77,8 @@ export const DashboardPage: React.FC = () => {
           <DashboardNavbar
             user={user}
             currentStreak={currentStreak}
+            flameTier={flameTier}
+            isActiveToday={isActiveToday}
             onOpenSettings={openSettings}
             onOpenFlameNurture={openFlameNurture}
             onLogout={handleLogout}
@@ -81,6 +90,9 @@ export const DashboardPage: React.FC = () => {
             <StreakHeroBanner
               username={user?.username || "Learner"}
               currentStreak={currentStreak}
+              flameTier={flameTier}
+              isActiveToday={isActiveToday}
+              isPendingToday={isPendingToday}
               onStartReview={handleStartReview}
               onCreateDeck={handleCreateDeck}
               onOpenFlameNurture={openFlameNurture}
@@ -112,7 +124,7 @@ export const DashboardPage: React.FC = () => {
           </main>
 
           {/* Minimalist Footer */}
-          <footer className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 text-xs text-[#a3a3a3] border-t border-[#e5e5e5] flex flex-col sm:flex-row items-center justify-between gap-4 mt-10">
+          <footer className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 text-xs text-[#737373] border-t border-[#e5e5e5] flex flex-col sm:flex-row items-center justify-between gap-4 mt-10">
             <p>
               © {new Date().getFullYear()} WordStreak. 100% Free & Open-Source.
             </p>
@@ -120,14 +132,14 @@ export const DashboardPage: React.FC = () => {
               <button
                 type="button"
                 onClick={() => openSettings("profile")}
-                className="hover:text-black transition-colors cursor-pointer"
+                className="hover:text-black transition-colors cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-black rounded-xs"
               >
                 Cài đặt
               </button>
               <button
                 type="button"
                 onClick={() => openSettings("security")}
-                className="hover:text-black transition-colors cursor-pointer"
+                className="hover:text-black transition-colors cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-black rounded-xs"
               >
                 Bảo mật
               </button>
@@ -135,7 +147,7 @@ export const DashboardPage: React.FC = () => {
                 href="https://github.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="hover:text-black transition-colors"
+                className="hover:text-black transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-black rounded-xs"
               >
                 GitHub
               </a>

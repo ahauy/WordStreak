@@ -1,8 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate, useSearchParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Loader2, AlertCircle, ArrowLeft } from "lucide-react";
-import type { QuizQuestionDto } from "@wordstreak/shared-types";
+import type {
+  QuizQuestionDto,
+  StreakActivityResponseDto,
+} from "@wordstreak/shared-types";
 import { practiceService } from "../services/practiceService";
 import { decksService } from "../../decks/services/decksService";
 import { useQuizEngine } from "../hooks/useQuizEngine";
@@ -10,11 +13,19 @@ import { QuizProgressBar } from "../components/QuizProgressBar";
 import { QuizQuestionCard } from "../components/QuizQuestionCard";
 import { QuizOptionButton } from "../components/QuizOptionButton";
 import { QuizResultsView } from "../components/QuizResultsView";
+import { StreakCelebrationModal } from "../../dashboard/components/StreakCelebrationModal";
+import { useStreak } from "../../dashboard/hooks/useStreak";
 
 export const MultipleChoiceQuizPage: React.FC = () => {
   const { id: deckId } = useParams<{ id: string }>();
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+  const { recordActivity } = useStreak({ enabled: false });
+
+  const [celebrationData, setCelebrationData] =
+    useState<StreakActivityResponseDto | null>(null);
+  const [isCelebrationOpen, setIsCelebrationOpen] = useState(false);
+  const hasRecordedStreakRef = useRef(false);
 
   const limitParam = parseInt(searchParams.get("limit") || "10", 10);
   const isZenMode = searchParams.get("zen") === "true";
@@ -98,6 +109,9 @@ export const MultipleChoiceQuizPage: React.FC = () => {
   };
 
   const handleRetake = () => {
+    hasRecordedStreakRef.current = false;
+    setCelebrationData(null);
+    setIsCelebrationOpen(false);
     retakeQuiz();
     if (!deckId) return;
     setIsLoading(true);
@@ -125,6 +139,23 @@ export const MultipleChoiceQuizPage: React.FC = () => {
         setIsLoading(false);
       });
   };
+
+  // Record streak activity when quiz completes
+  useEffect(() => {
+    if (isCompleted && result && !hasRecordedStreakRef.current) {
+      hasRecordedStreakRef.current = true;
+      recordActivity()
+        .then((actResult) => {
+          if (actResult.streakIncreased) {
+            setCelebrationData(actResult);
+            setIsCelebrationOpen(true);
+          }
+        })
+        .catch((err) => {
+          console.error("Failed to record streak for quiz session:", err);
+        });
+    }
+  }, [isCompleted, result, recordActivity]);
 
   // Loading State
   if (isLoading) {
@@ -172,6 +203,20 @@ export const MultipleChoiceQuizPage: React.FC = () => {
           onRetake={handleRetake}
           onBackToDeck={handleBackToDeck}
         />
+
+        {celebrationData && (
+          <StreakCelebrationModal
+            isOpen={isCelebrationOpen}
+            onClose={() => setIsCelebrationOpen(false)}
+            streakDays={celebrationData.currentStreak}
+            bestStreak={celebrationData.bestStreak}
+            flameTier={celebrationData.flameTier}
+            message={celebrationData.message}
+            isNewBest={
+              celebrationData.currentStreak >= celebrationData.bestStreak
+            }
+          />
+        )}
       </div>
     );
   }

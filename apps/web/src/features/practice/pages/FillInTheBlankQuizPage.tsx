@@ -1,8 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate, useSearchParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Loader2, AlertCircle, ArrowLeft } from "lucide-react";
-import type { FillBlankQuestionDto } from "@wordstreak/shared-types";
+import type {
+  FillBlankQuestionDto,
+  StreakActivityResponseDto,
+} from "@wordstreak/shared-types";
 import { practiceService } from "../services/practiceService";
 import { decksService } from "../../decks/services/decksService";
 import { useFillBlankQuiz } from "../hooks/useFillBlankQuiz";
@@ -10,11 +13,19 @@ import { QuizProgressBar } from "../components/QuizProgressBar";
 import { FillBlankInput } from "../components/FillBlankInput";
 import { AnagramTilePicker } from "../components/AnagramTilePicker";
 import { QuizResultsView } from "../components/QuizResultsView";
+import { StreakCelebrationModal } from "../../dashboard/components/StreakCelebrationModal";
+import { useStreak } from "../../dashboard/hooks/useStreak";
 
 export const FillInTheBlankQuizPage: React.FC = () => {
   const { id: deckId } = useParams<{ id: string }>();
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+  const { recordActivity } = useStreak({ enabled: false });
+
+  const [celebrationData, setCelebrationData] =
+    useState<StreakActivityResponseDto | null>(null);
+  const [isCelebrationOpen, setIsCelebrationOpen] = useState(false);
+  const hasRecordedStreakRef = useRef(false);
 
   const limitParam = parseInt(searchParams.get("limit") || "10", 10);
   const isZenMode = searchParams.get("zen") === "true";
@@ -107,6 +118,9 @@ export const FillInTheBlankQuizPage: React.FC = () => {
   };
 
   const handleRetake = () => {
+    hasRecordedStreakRef.current = false;
+    setCelebrationData(null);
+    setIsCelebrationOpen(false);
     retakeQuiz();
     if (!deckId) return;
     setIsLoading(true);
@@ -134,6 +148,23 @@ export const FillInTheBlankQuizPage: React.FC = () => {
         setIsLoading(false);
       });
   };
+
+  // Record streak activity when practice completes
+  useEffect(() => {
+    if (isCompleted && result && !hasRecordedStreakRef.current) {
+      hasRecordedStreakRef.current = true;
+      recordActivity()
+        .then((actResult) => {
+          if (actResult.streakIncreased) {
+            setCelebrationData(actResult);
+            setIsCelebrationOpen(true);
+          }
+        })
+        .catch((err) => {
+          console.error("Failed to record streak for fill-in-blank quiz:", err);
+        });
+    }
+  }, [isCompleted, result, recordActivity]);
 
   // Loading State
   if (isLoading) {
@@ -181,6 +212,20 @@ export const FillInTheBlankQuizPage: React.FC = () => {
           onRetake={handleRetake}
           onBackToDeck={handleBackToDeck}
         />
+
+        {celebrationData && (
+          <StreakCelebrationModal
+            isOpen={isCelebrationOpen}
+            onClose={() => setIsCelebrationOpen(false)}
+            streakDays={celebrationData.currentStreak}
+            bestStreak={celebrationData.bestStreak}
+            flameTier={celebrationData.flameTier}
+            message={celebrationData.message}
+            isNewBest={
+              celebrationData.currentStreak >= celebrationData.bestStreak
+            }
+          />
+        )}
       </div>
     );
   }

@@ -138,7 +138,7 @@ export class FillBlankGeneratorService {
       return letters;
     }
 
-    let shuffled = this.shuffle([...letters]);
+    const shuffled = this.shuffle([...letters]);
 
     // Ensure shuffled result isn't identical to original word if there are multiple unique characters
     const hasMultipleUnique = new Set(letters).size > 1;

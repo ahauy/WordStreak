@@ -9,6 +9,7 @@ import { DecksModule } from './modules/decks/decks.module';
 import { CardsModule } from './modules/cards/cards.module';
 import { ReviewsModule } from './modules/reviews/reviews.module';
 import { PracticeModule } from './modules/practice/practice.module';
+import { StreakModule } from './modules/streaks/streak.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { PracticeModule } from './modules/practice/practice.module';
     CardsModule,
     ReviewsModule,
     PracticeModule,
+    StreakModule,
   ],
   controllers: [AppController],
   providers: [AppService],
