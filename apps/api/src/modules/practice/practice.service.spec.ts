@@ -25,9 +25,6 @@ describe('PracticeService', () => {
       card: {
         findMany: jest.fn(),
       },
-      user: {
-        findUnique: jest.fn(),
-      },
     };
 
     const module: TestingModule = await Test.createTestingModule({

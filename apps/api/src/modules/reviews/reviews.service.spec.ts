@@ -3,6 +3,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { ReviewsService } from './reviews.service';
 import { SrsService } from './srs.service';
 import { StreakService } from '../streaks/streak.service';
+import { XpService } from '../gamification/services/xp.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { NotFoundException, ForbiddenException } from '@nestjs/common';
 
@@ -10,6 +11,9 @@ describe('ReviewsService', () => {
   let service: ReviewsService;
   let streakService: {
     recordActivity: jest.Mock;
+  };
+  let xpService: {
+    awardReviewXp: jest.Mock;
   };
   let prisma: {
     user: { findUnique: jest.Mock };
@@ -21,6 +25,7 @@ describe('ReviewsService', () => {
       update: jest.Mock;
       count: jest.Mock;
     };
+    reviewLog: { create: jest.Mock };
   };
 
   const mockUserId = 'user-uuid-1';
@@ -35,6 +40,27 @@ describe('ReviewsService', () => {
         isActiveToday: true,
         flameTier: 1,
         message: 'New streak started!',
+      }),
+    };
+
+    xpService = {
+      awardReviewXp: jest.fn().mockResolvedValue({
+        xpEarned: 10,
+        breakdown: [{ type: 'CARD_REVIEW', xp: 10 }],
+        totalXp: 10,
+        level: 1,
+        tier: 'BRONZE',
+        currentLevelXp: 10,
+        nextLevelRequiredXp: 100,
+        levelProgressPercent: 10,
+        levelUp: {
+          isLevelUp: false,
+          previousLevel: 1,
+          currentLevel: 1,
+          previousTier: 'BRONZE',
+          currentTier: 'BRONZE',
+          isTierPromotion: false,
+        },
       }),
     };
 
@@ -67,6 +93,10 @@ describe('ReviewsService', () => {
         {
           provide: StreakService,
           useValue: streakService,
+        },
+        {
+          provide: XpService,
+          useValue: xpService,
         },
         {
           provide: PrismaService,
@@ -198,7 +228,15 @@ describe('ReviewsService', () => {
       expect(result.repetitions).toBe(2);
       expect(result.streak).toBeDefined();
       expect(result.streak?.currentStreak).toBe(1);
-      expect(streakService.recordActivity).toHaveBeenCalledWith(mockUserId);
+      expect(result.xp).toBeDefined();
+      expect(result.xp.xpEarned).toBe(10);
+      expect(streakService.recordActivity).toHaveBeenCalledWith(mockUserId, {
+        timezone: undefined,
+      });
+      expect(xpService.awardReviewXp).toHaveBeenCalledWith(
+        mockUserId,
+        expect.objectContaining({ cardId: mockCardId, rating: 3 }),
+      );
       expect(prisma.userCardProgress.update).toHaveBeenCalled();
     });
 

@@ -14,7 +14,7 @@ describe('PracticeController', () => {
   const mockUser: JwtPayload = {
     sub: 'user-1',
     email: 'test@example.com',
-    username: 'testuser',
+    sessionId: 'sess-1',
   };
 
   beforeEach(async () => {

@@ -20,7 +20,7 @@ describe('CardsController', () => {
   const mockUser: JwtPayload = {
     sub: 'user-uuid-123',
     email: 'learner@wordstreak.com',
-    username: 'learner',
+    sessionId: 'sess-123',
   };
 
   const mockDeckId = 'deck-uuid-456';

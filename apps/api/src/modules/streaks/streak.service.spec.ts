@@ -17,9 +17,9 @@ describe('StreakService', () => {
   beforeEach(async () => {
     prisma = {
       userStreak: {
-        findFirst: (jest.MockedFunction<any> = jest.fn()),
-        create: (jest.MockedFunction<any> = jest.fn()),
-        update: (jest.MockedFunction<any> = jest.fn()),
+        findFirst: jest.fn(),
+        create: jest.fn(),
+        update: jest.fn(),
       },
     };
 

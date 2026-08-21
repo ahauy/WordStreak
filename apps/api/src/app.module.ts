@@ -12,6 +12,7 @@ import { PracticeModule } from './modules/practice/practice.module';
 import { StreakModule } from './modules/streaks/streak.module';
 import { AiVocabularyModule } from './modules/ai-vocabulary/ai-vocabulary.module';
 import { AnalyticsModule } from './modules/analytics/analytics.module';
+import { GamificationModule } from './modules/gamification/gamification.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { AnalyticsModule } from './modules/analytics/analytics.module';
     StreakModule,
     AiVocabularyModule,
     AnalyticsModule,
+    GamificationModule,
   ],
   controllers: [AppController],
   providers: [AppService],

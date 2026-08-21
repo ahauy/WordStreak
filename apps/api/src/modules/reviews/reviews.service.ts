@@ -6,6 +6,7 @@ import {
 import { PrismaService } from '../prisma/prisma.service';
 import { SrsService } from './srs.service';
 import { StreakService } from '../streaks/streak.service';
+import { XpService } from '../gamification/services/xp.service';
 import { SubmitReviewDto } from './dto/submit-review.dto';
 import { QueryDueReviewsDto } from './dto/query-due-reviews.dto';
 import type {
@@ -20,6 +21,7 @@ export class ReviewsService {
     private readonly prisma: PrismaService,
     private readonly srsService: SrsService,
     private readonly streakService: StreakService,
+    private readonly xpService: XpService,
   ) {}
 
   /**
@@ -124,7 +126,11 @@ export class ReviewsService {
   /**
    * Submits user SRS rating for a single card, computes SM-2 interval, and updates progress.
    */
-  async submitReview(userId: string, dto: SubmitReviewDto) {
+  async submitReview(
+    userId: string,
+    dto: SubmitReviewDto,
+    clientTimezone?: string,
+  ) {
     const { cardId, rating } = dto;
 
     // 1. Fetch card and verify ownership
@@ -197,7 +203,16 @@ export class ReviewsService {
       },
     });
 
-    const streakResult = await this.streakService.recordActivity(userId);
+    const streakResult = await this.streakService.recordActivity(userId, {
+      timezone: clientTimezone,
+    });
+
+    const xpResult = await this.xpService.awardReviewXp(userId, {
+      cardId,
+      rating,
+      streakResult,
+      clientTimezone,
+    });
 
     return {
       cardId: updated.cardId,
@@ -208,6 +223,7 @@ export class ReviewsService {
       lastReviewedAt: updated.lastReviewedAt,
       nextReviewDate: updated.nextReviewDate,
       streak: streakResult,
+      xp: xpResult,
     };
   }
 
