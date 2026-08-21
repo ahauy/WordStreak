@@ -90,7 +90,7 @@ export function useReviewSession(deckId?: string) {
       setIsSubmitting(true);
       try {
         await reviewsService.submitReview({
-          cardId: currentCard.id,
+          cardId: currentCard.cardId,
           rating,
         });
 
@@ -98,7 +98,7 @@ export function useReviewSession(deckId?: string) {
         setHistory((prev) => [
           ...prev,
           {
-            cardId: currentCard.id,
+            cardId: currentCard.cardId,
             rating,
             timestamp: Date.now(),
           },
