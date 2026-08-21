@@ -8,6 +8,7 @@ export * from "./practice.js";
 export * from "./streaks.js";
 export * from "./ai-vocabulary.js";
 export * from "./analytics.js";
+export * from "./gamification-xp.js";
 
 export interface User {
   id: string;
@@ -15,6 +16,9 @@ export interface User {
   email: string;
   dailyGoal: number;
   avatarUrl?: string | null;
+  totalXp?: number;
+  level?: number;
+  tier?: string;
   createdAt: Date | string;
   updatedAt?: Date | string;
 }
