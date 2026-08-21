@@ -28,6 +28,7 @@
    - [Epic 7: AI-Assisted Vocabulary Generator & Caching](#epic-07-ai-assisted-vocabulary-generator--caching-tự-động-hóa-ai)
    - [Epic 8: Speech Recognition & Pronunciation Assessment](#epic-08-speech-recognition--pronunciation-luyện-phát-âm-ai)
    - [Epic 9: Import/Export, Community & Ecosystem](#epic-09-importexport-community--ecosystem-hệ-sinh-thái)
+   - [Epic 10: Multi-language & Internationalization (i18n)](#epic-10-multi-language--internationalization-i18n-đa-ngôn-ngữ-anhviệt)
 5. [Lộ trình phát hành theo Giai đoạn & Sprint (Release Roadmap)](#5-lộ-trình-phát-hành-theo-giai-đoạn--sprint)
 6. [Quy chuẩn định nghĩa hoàn thành (Definition of Done - DoD)](#6-quy-chuẩn-định-nghĩa-hoàn-thành-definition-of-done)
 
@@ -106,6 +107,7 @@ graph TD
 | **EPIC-08** | Luyện phát âm (Voice Recognition via Web Speech) |   **Could Have**    |    6.2     |  **P2 (Medium)**   |        Sprint 5         |
 | **EPIC-09** | Import/Export Anki (.apkg) & CSV                 |   **Could Have**    |    6.5     |  **P2 (Medium)**   |        Sprint 6         |
 | **EPIC-09** | Community Deck Sharing (Public/Clone Deck)       |   **Could Have**    |    6.0     |  **P2 (Medium)**   |        Sprint 6         |
+| **EPIC-10** | Multi-language & i18n (Tiếng Anh & Tiếng Việt)   |   **Should Have**   |    8.0     |   **P1 (High)**    |        Sprint 6         |
 | **EPIC-09** | Chrome Extension (Highlight to Save Deck)        | **Won't Have (v1)** |    5.5     |  **P3 (Phase 4)**  |        Sprint 7         |
 | **EPIC-09** | PWA & Offline Study Mode                         | **Won't Have (v1)** |    5.0     |  **P3 (Phase 4)**  |        Sprint 7         |
 
@@ -339,6 +341,32 @@ _Mục tiêu: Giúp người dùng dễ dàng chuyển đổi dữ liệu và m�
 
 ---
 
+### EPIC 10: Multi-language & Internationalization (i18n - Đa ngôn ngữ Anh/Việt)
+
+_Mục tiêu: Xóa bỏ rào cản ngôn ngữ, hỗ trợ song ngữ toàn diện (Tiếng Anh ⇄ Tiếng Việt) giúp cả người mới bắt đầu lẫn người học nâng cao tối ưu hóa trải nghiệm học tập._
+
+- [ ] **US-I18N-01: Hạ tầng i18n Core & Nút chuyển đổi ngôn ngữ tức thì (Instant Language Switcher)**
+  - **AC:** Cài đặt bộ thư viện chuẩn `i18next` + `react-i18next` + `i18next-browser-languagedetector`. Chuyển đổi ngôn ngữ tức thì giữa Tiếng Việt (`vi`) và Tiếng Anh (`en`) mà không tải lại trang. Tự động nhận diện ngôn ngữ trình duyệt cho khách vãng lai và lưu vào `localStorage`. Phân tách file dịch theo Namespaces chuyên biệt (`common`, `auth`, `dashboard`, `decks`, `study`, `practice`, `community`, `analytics`, `settings`). Nút chuyển ngữ Obsidian Pill tối giản hiển thị cờ/mã ngôn ngữ trên Header, DashboardNavbar và LandingPage.
+  - **Tasks:**
+    - [ ] Frontend: Khởi tạo module `apps/web/src/locales/` với cấu hình `i18n.ts` và hệ thống namespace type-safe.
+    - [ ] Frontend: Xây dựng các file dịch cơ bản `common.json`, `auth.json`, `dashboard.json`, `settings.json` cho cả 2 locale `en` và `vi`.
+    - [ ] Frontend: Component `LanguageSwitcher` (Obsidian Pill geometry, click/dropdown toggle, không giật hover) gắn trên Header, Navbar và Landing Page.
+- [ ] **US-I18N-02: Bản địa hóa toàn bộ màn hình & Thông báo lỗi (Complete UI Localization & Error Mapping)**
+  - **AC:** Thay thế 100% hardcoded strings trên tất cả các màn hình (Landing, Auth, Dashboard, Decks, Flashcard Review, 4 Quiz Modes, Community Marketplace, Analytics, Settings Modals) sang `t('key')`. Hỗ trợ interpolation (truyền biến `{{count}} words`, `{{streak}} days`) và pluralization (số ít/số nhiều tiếng Anh). Ánh xạ các mã lỗi API backend (ví dụ `ERR_DECK_NOT_FOUND`, `ERR_UNAUTHORIZED`) thành câu thông báo toast chuẩn theo ngôn ngữ hiện hành. Giữ nguyên nội dung thẻ từ vựng của người dùng (không can thiệp dịch nội dung thẻ).
+  - **Tasks:**
+    - [ ] Frontend: Bản địa hóa màn hình Auth & Landing (`LoginPage`, `RegisterPage`, `LandingPage`).
+    - [ ] Frontend: Bản địa hóa màn hình Core Deck & Study (`DecksListPage`, `DeckDetailPage`, `ReviewSessionPage`, `CardEditorForm`).
+    - [ ] Frontend: Bản địa hóa 4 chế độ Quiz & Luyện âm (`MultipleChoiceQuizPage`, `FillInTheBlankQuizPage`, `ListeningQuizPage`, `WordMatchingPage`, `PronunciationPracticeModal`).
+    - [ ] Frontend: Bản địa hóa màn hình Community, Analytics & Modals (`CommunityDecksPage`, `AnalyticsPage`, `SettingsModal`, `StreakSavedModal`, `XpHistoryDrawer`).
+- [ ] **US-I18N-03: Cài đặt tùy chọn ngôn ngữ & Đồng bộ hồ sơ người dùng (User Language Preferences Sync)**
+  - **AC:** Bổ sung mục "Tùy chọn ngôn ngữ" (Language Preferences) trong `SettingsModal`. Khi người dùng đã đăng nhập đổi ngôn ngữ, hệ thống tự động lưu vào database (`User.language`) để duy trì đồng bộ trên mọi thiết bị và phiên đăng nhập tiếp theo.
+  - **Tasks:**
+    - [ ] Database: Thêm trường `language String @default("vi")` vào model `User` trong Prisma schema và migration.
+    - [ ] Backend: Cập nhật `PATCH /api/v1/users/profile` hỗ trợ cập nhật `language` và trả về trường `language` trong Profile response.
+    - [ ] Frontend: Tích hợp chọn ngôn ngữ vào `SettingsModal` (Tab Profile/Preferences) và đồng bộ vào `useAuthStore` khi khởi tạo ứng dụng.
+
+---
+
 ## 5. Lộ trình phát hành theo Giai đoạn & Sprint
 
 ```
@@ -372,9 +400,10 @@ _Mục tiêu: Giúp người dùng dễ dàng chuyển đổi dữ liệu và m�
   ├── EPIC-04: Listening & Word Matching Games
   └── EPIC-08: Web Speech API Pronunciation Check & Soundwaves
 
-[ Sprint 6 - Community & Data Portability ]  ──► [ P2 GROWTH 🌐 ]
+[ Sprint 6 - Community, Portability & i18n ]  ──► [ P2 GROWTH 🌐 ]
   ├── EPIC-09: Import / Export (.apkg, CSV, Excel)
   ├── EPIC-09: Community Decks Discovery & 1-Click Clone
+  ├── EPIC-10: Multi-language (i18n - English / Vietnamese Switcher)
   └── Study Notification / Streak Reminder Service
 
 [ Sprint 7 - Ecosystem & Platform Expansion ]  ──► [ P3 FUTURE 🧩 ]

@@ -7,6 +7,7 @@ import { StreakFlame } from "./StreakFlame";
 import { TopbarLevelWidget } from "../../gamification/components/TopbarLevelWidget";
 import { getFlameTier } from "../config/flameTiers";
 import { useAuthStore } from "../../../store/useAuthStore";
+import { useMascotStore } from "../../../store/useMascotStore";
 import { useStreak } from "../hooks/useStreak";
 import type { AuthUser } from "@wordstreak/shared-types";
 
@@ -194,7 +195,10 @@ export const DashboardNavbar: React.FC<DashboardNavbarProps> = ({
             {/* Dynamic Multi-Tier Streak Flame Pill (Interactive Nuôi Lửa trigger) */}
             <button
               type="button"
-              onClick={onOpenFlameNurture}
+              onClick={
+                onOpenFlameNurture ||
+                (() => useMascotStore.getState().openFlameNurture())
+              }
               className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-xs font-semibold shadow-xs cursor-pointer hover:scale-[1.02] active:scale-[0.98] transition-all focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:ring-offset-2 focus:outline-none ${tierInfo.pillBg} ${tierInfo.pillText} ${tierInfo.pillBorder}`}
               title="Nhấn để mở Khu Vườn Nuôi Lửa & Tiến Hóa"
               aria-label="Mở khu vườn nuôi lửa streak và tiến hóa"

@@ -21,6 +21,7 @@ import { LandingPage } from "./features/landing/pages/LandingPage";
 import { AnalyticsPage } from "./features/analytics/pages/AnalyticsPage";
 import { CommunityDecksPage } from "./features/community/pages/CommunityDecksPage";
 import { ProtectedRoute } from "./features/auth/components/ProtectedRoute";
+import { GlobalFlameMascot } from "./features/dashboard/components/GlobalFlameMascot";
 import { useAuthStore } from "./store/useAuthStore";
 import { useThemeStore } from "./store/useThemeStore";
 
@@ -186,6 +187,7 @@ function App() {
   return (
     <BrowserRouter>
       <AnimatedRoutes />
+      <GlobalFlameMascot />
     </BrowserRouter>
   );
 }

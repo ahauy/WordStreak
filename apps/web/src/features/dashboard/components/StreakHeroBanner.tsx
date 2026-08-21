@@ -79,9 +79,11 @@ export const StreakHeroBanner: React.FC<StreakHeroBannerProps> = ({
               <span>
                 {isActiveToday
                   ? "Completed Today"
-                  : isPendingToday
-                    ? "Streak Pending Review"
-                    : "Review Ready"}
+                  : currentStreak > 0
+                    ? isPendingToday
+                      ? "Streak Pending Review"
+                      : "Review Ready"
+                    : "Ready to Learn"}
               </span>
             </span>
           </div>
@@ -91,25 +93,44 @@ export const StreakHeroBanner: React.FC<StreakHeroBannerProps> = ({
             className="text-3xl sm:text-4xl lg:text-[38px] font-bold text-black tracking-tight leading-tight"
             style={{ fontFamily: "var(--font-display)" }}
           >
-            Ready for today's streak,{" "}
-            <span className="text-[#9333ea]">{username}</span>?
+            {currentStreak > 0 ? (
+              <>
+                Ready for today's streak,{" "}
+                <span className="text-[#9333ea]">{username}</span>?
+              </>
+            ) : (
+              <>
+                Chào mừng bạn đến với WordStreak,{" "}
+                <span className="text-[#9333ea]">{username}</span>!
+              </>
+            )}
           </h1>
 
           {/* Subtext */}
           <p className="text-[#737373] text-sm sm:text-[15px] leading-relaxed">
-            Your spaced repetition review session is ready. Practice now to
-            reinforce short-term memory into permanent recall and keep your{" "}
-            <strong className="text-black font-semibold">
-              {currentStreak}-day streak ({tierInfo.titleVi})
-            </strong>{" "}
-            burning!
+            {currentStreak > 0 ? (
+              <>
+                Phiên ôn tập Spaced Repetition của bạn đã sẵn sàng. Hãy ôn tập
+                ngay để củng cố trí nhớ vĩnh viễn và giữ ngọn lửa{" "}
+                <strong className="text-black font-semibold">
+                  {currentStreak} ngày streak ({tierInfo.titleVi})
+                </strong>{" "}
+                luôn bùng cháy rực rỡ!
+              </>
+            ) : (
+              <>
+                Khởi đầu hành trình chinh phục từ vựng khoa học. Hãy tạo bộ thẻ
+                đầu tiên hoặc bắt đầu phiên ôn tập để kích hoạt chuỗi Streak và
+                nuôi ngọn lửa tím đồng hành của bạn!
+              </>
+            )}
           </p>
 
           {/* 7-Day Weekly Streak Tracker */}
           <div className="pt-2 flex flex-col sm:flex-row sm:items-center gap-3">
-            <span className="text-xs font-semibold uppercase tracking-wider text-[#525252] flex items-center gap-1.5">
+            <span className="text-xs font-semibold uppercase tracking-wider text-[#525252] flex items-center gap-1.5 font-mono">
               <Calendar className="w-3.5 h-3.5 text-[#9333ea]" />
-              <span>This Week:</span>
+              <span>Tuần này:</span>
             </span>
             <div className="flex items-center gap-2">
               {daysOfWeek.map((day, idx) => {
@@ -119,13 +140,14 @@ export const StreakHeroBanner: React.FC<StreakHeroBannerProps> = ({
                 const isCompleted = isToday
                   ? isActiveToday
                   : isPastDay &&
+                    currentStreak > 0 &&
                     currentStreak > (isActiveToday ? daysAgo : daysAgo - 1);
 
                 return (
                   <div
                     key={idx}
                     className="flex flex-col items-center gap-1"
-                    title={`${dayNames[idx]}${isToday ? " (Today)" : ""}`}
+                    title={`${dayNames[idx]}${isToday ? " (Hôm nay)" : ""}`}
                   >
                     <div
                       className={`w-7 h-7 sm:w-8 sm:h-8 rounded-xl flex items-center justify-center text-xs font-bold transition-all duration-200 ${
