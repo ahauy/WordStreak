@@ -5,7 +5,7 @@ description: >-
   multi-lane reviews across Security, TypeScript strictness, React 19 patterns,
   NestJS backend architecture, and Prisma/PostgreSQL query performance. Operates
   strictly read-only (produces report only, never edits code) with an 80%+ confidence gate.
-model: gemini-3.7-flash
+model: claude-sonnet-4.6
 subagent: true
 inheritMcp: true
 commandExecutionPolicy: auto

@@ -11,7 +11,7 @@ describe('ReviewsController', () => {
   const mockUser: JwtPayload = {
     sub: 'user-uuid-1',
     email: 'test@example.com',
-    username: 'testuser',
+    sessionId: 'sess-1',
   };
 
   beforeEach(async () => {
@@ -64,6 +64,33 @@ describe('ReviewsController', () => {
         easeFactor: 2.5,
         lastReviewedAt: new Date(),
         nextReviewDate: new Date(),
+        streak: {
+          currentStreak: 1,
+          bestStreak: 1,
+          streakIncreased: true,
+          isActiveToday: true,
+          flameTier: 1 as const,
+          message: 'Streak active!',
+          streakFreezes: 0,
+        },
+        xp: {
+          xpEarned: 10,
+          breakdown: [],
+          totalXp: 10,
+          level: 1,
+          tier: 'BRONZE' as const,
+          currentLevelXp: 10,
+          nextLevelRequiredXp: 100,
+          levelProgressPercent: 10,
+          levelUp: {
+            isLevelUp: false,
+            previousLevel: 1,
+            currentLevel: 1,
+            previousTier: 'BRONZE' as const,
+            currentTier: 'BRONZE' as const,
+            isTierPromotion: false,
+          },
+        },
       };
       service.submitReview.mockResolvedValue(mockSubmitResult);
 
@@ -74,10 +101,14 @@ describe('ReviewsController', () => {
 
       expect(response.success).toBe(true);
       expect(response.data).toEqual(mockSubmitResult);
-      expect(service.submitReview).toHaveBeenCalledWith(mockUser.sub, {
-        cardId: 'card-1',
-        rating: 3,
-      });
+      expect(service.submitReview).toHaveBeenCalledWith(
+        mockUser.sub,
+        {
+          cardId: 'card-1',
+          rating: 3,
+        },
+        undefined,
+      );
     });
   });
 

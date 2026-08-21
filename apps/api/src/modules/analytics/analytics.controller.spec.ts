@@ -16,7 +16,7 @@ describe('AnalyticsController', () => {
   const mockUser: JwtPayload = {
     sub: 'user-123',
     email: 'test@wordstreak.com',
-    username: 'tester',
+    sessionId: 'sess-123',
   };
 
   beforeEach(async () => {

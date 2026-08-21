@@ -15,7 +15,7 @@ describe('StreakController', () => {
   const mockUser: JwtPayload = {
     sub: 'user-uuid-streak-1',
     email: 'streakuser@example.com',
-    username: 'streakuser',
+    sessionId: 'sess-streak-1',
   };
 
   beforeEach(async () => {
@@ -53,6 +53,8 @@ describe('StreakController', () => {
         isPendingToday: false,
         timezone: 'Asia/Tokyo',
         flameTier: 1,
+        streakFreezes: 0,
+        maxStreakFreezes: 2,
       };
       service.getStreak.mockResolvedValue(mockResult);
 
@@ -80,6 +82,8 @@ describe('StreakController', () => {
         isPendingToday: false,
         timezone: 'America/New_York',
         flameTier: 1,
+        streakFreezes: 0,
+        maxStreakFreezes: 2,
       };
       service.getStreak.mockResolvedValue(mockResult);
 
@@ -107,6 +111,7 @@ describe('StreakController', () => {
         isActiveToday: true,
         flameTier: 1,
         message: 'Streak increased! Great job!',
+        streakFreezes: 0,
       };
       service.recordActivity.mockResolvedValue(mockResponse);
 
@@ -132,6 +137,7 @@ describe('StreakController', () => {
         isActiveToday: true,
         flameTier: 1,
         message: 'New streak started!',
+        streakFreezes: 0,
       };
       service.recordActivity.mockResolvedValue(mockResponse);
 

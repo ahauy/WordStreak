@@ -33,14 +33,14 @@ graph TD
     end
 
     subgraph P6A ["PHASE 6A: Adversarial Quality Review"]
-        CR["🛡️ code-reviewer (gemini-3.7-flash)"]
+        CR["🛡️ code-reviewer (claude-sonnet-4.6 / inherit)"]
         UR["👁️ ui-ux-reviewer (gemini-3.7-flash)"]
     end
 
     subgraph P6B ["PHASE 6B: Standard Documentation"]
         TD["📚 tech-doc-architect (gemini-3.7-flash)"]
         UG["💼 user-guide-creator (gemini-3.7-flash)"]
-        AE["⚖️ agent-evaluator (gemini-3.7-flash)"]
+        AE["⚖️ agent-evaluator (claude-sonnet-4.6 / inherit)"]
     end
 
     BA --> SA

@@ -56,13 +56,13 @@ Before starting analysis or code, ensure the working environment is synced with 
 
 #### Case A: No Domain Baseline (Net-New Feature)
 
-- Activate **Phase 1: BA Skill Pack**:
-  - Run `intake-classifier` to determine complexity (Bounded Task vs Full Feature) and create `.specify/features/<slug>/`.
-  - Execute `elicitation-interview`, `domain-modeling`, `risk-contradiction-scanner`, `spec-writer`, `spec-validator`, and `handover`.
-  - Pause at every checkpoint requiring user input or domain clarification.
+- **MANDATORY AUTOMATIC SUBAGENT DELEGATION**:
+  - The Orchestrator MUST NEVER run BA stages directly on the primary context.
+  - Dispatch `business-analyst` via `invoke_subagent` (`claude-opus-4.6` / `inherit`) to execute the 8-stage BA Pipeline (`intake-classifier`, `elicitation-interview`, `gap-analysis`, `domain-modeling`, `risk-contradiction-scanner`, `spec-writer`, `spec-validator`, `handover`).
+  - The subagent creates `.specify/features/<slug>/` and drafts `baseline.md`.
 
 - **🛑 CONFIRMATION GATE 1 — Spec Sign-Off (MANDATORY)**:
-  After Phase 1 completes and `baseline.md` is drafted, the AI **MUST STOP** and present a structured summary of the Domain Baseline to the user for review. The AI may **not** proceed to Speckit or any implementation work until the user gives explicit approval.
+  After `business-analyst` completes and `baseline.md` is drafted, the Orchestrator **MUST STOP** and present a structured summary of the Domain Baseline to the user for review. The AI may **not** proceed to Speckit or any implementation work until the user gives explicit approval.
 
   **Present to user:**
   - A concise summary of: scope, key business rules (`BR-`), user stories drafted, risks identified, and anything marked Won't-Have.
@@ -71,8 +71,7 @@ Before starting analysis or code, ensure the working environment is synced with 
 
   **If the user does NOT confirm (asks questions, requests changes, or is unsure):**
   - Do NOT proceed.
-  - Identify the specific blocker (missing information, disagreement, unclear scope, etc.).
-  - Ask targeted follow-up questions (max 3 at a time) OR present a concrete proposal with options.
+  - Identify the specific blocker and dispatch follow-up questions or concrete proposals.
   - Re-present the updated spec summary and loop back to this gate until the user explicitly says "approve", "confirmed", "let's proceed", or equivalent.
 
   **Only when the user explicitly approves**: mark `baseline.md` as `SIGNED-OFF v1.0` and advance to Case B.
@@ -81,13 +80,14 @@ Before starting analysis or code, ensure the working environment is synced with 
 
 #### Case B: Domain Baseline SIGNED-OFF but Technical Plan Missing
 
-- Activate **Phase 2, 3, 4: Speckit Pipeline**:
-  - Run `speckit-specify` -> create `spec.md`.
-  - Run `speckit-plan` -> create `plan.md`, `data-model.md`, `contracts/`.
-  - Run `speckit-tasks` -> create `tasks.md`.
+- **MANDATORY AUTOMATIC SUBAGENT DELEGATION**:
+  - Dispatch `system-architect` via `invoke_subagent` (`claude-sonnet-4.6` / `inherit`) to run the Speckit Pipeline:
+    - Run `speckit-specify` -> create `spec.md`.
+    - Run `speckit-plan` -> create `plan.md`, `data-model.md`, `contracts/`.
+    - Run `speckit-tasks` -> create `tasks.md`.
 
 - **🛑 CONFIRMATION GATE 2 — Technical Plan & Task Sign-Off (MANDATORY)**:
-  After Speckit artifacts are generated, the AI **MUST STOP** and present the technical plan summary to the user for review. The AI may **not** begin any code writing until the user explicitly approves.
+  After `system-architect` completes, the Orchestrator **MUST STOP** and present the technical plan summary to the user for review. The AI may **not** begin any code writing until the user explicitly approves.
 
   **Present to user:**
   - A concise summary of: architecture decisions, data model changes, API contracts, implementation phases from `tasks.md`.
@@ -96,8 +96,7 @@ Before starting analysis or code, ensure the working environment is synced with 
 
   **If the user does NOT confirm (asks questions, requests changes, or is unsure):**
   - Do NOT proceed.
-  - Identify the specific blocker and ask targeted follow-up questions (max 3 at a time) OR present concrete alternatives.
-  - Update the relevant speckit artifact(s) and re-present for approval.
+  - Identify the specific blocker, update the plan with the architect subagent, and re-present for approval.
   - Loop back to this gate until the user explicitly approves.
 
   **Only when the user explicitly approves**: advance to Case C.
@@ -106,21 +105,23 @@ Before starting analysis or code, ensure the working environment is synced with 
 
 #### Case C: Technical Plan Complete & Approved, Ready to Implement
 
-- Activate **Phase 5: Implementation (Automatic Subagent Delegation + TDD)**:
+- **MANDATORY AUTOMATIC SUBAGENT DELEGATION**:
+  - The Orchestrator is **STRICTLY PROHIBITED** from coding directly.
   - Create `test-plan.md` mapping User Stories to `TC-###` test cases.
-  - **AUTOMATIC SUBAGENT DELEGATION (MANDATORY)**:
-    1. Dispatch `backend-developer` (or `slice-implementer`) via `invoke_subagent` for Backend API, DTOs, Services, and Jest tests.
-    2. Dispatch `frontend-developer` via `invoke_subagent` for React components, state hooks, pages, and Vitest tests.
+  - Dispatch `backend-developer` (`gemini-3.7-flash`) via `invoke_subagent` for Backend API, DTOs, Services, and Jest tests.
+  - Dispatch `frontend-developer` (`gemini-3.7-flash`) via `invoke_subagent` for React components, state hooks, pages, and Vitest tests.
+  - Dispatch `slice-implementer` (`gemini-3.7-flash`) to wire fullstack integration.
+  - Dispatch `build-resolver` (`gemini-3.7-flash`) to fix any compilation / lint errors.
   - Follow TDD cycle in each slice: Write failing tests (Red) -> Implement minimal passing code (Green) -> Refactor.
 
 #### Case D: Implementation Finished, Final Review & Documentation
 
-- Activate **Phase 6: Quality Verification, Review & Documentation (Automatic Subagent Delegation)**:
-  - **AUTOMATIC SUBAGENT DELEGATION (MANDATORY)**:
-    1. Dispatch `ui-ux-reviewer` via `invoke_subagent` to perform adversarial UI & Anti-AI-Slop audit.
-    2. Dispatch `user-guide-creator` via `invoke_subagent` to generate [docs/user-guides/<slug>.md](../../docs/user-guides/).
-    3. Dispatch `tech-doc-architect` via `invoke_subagent` to update [docs/features/<slug>/README.md](../../docs/features/).
-  - Run full test suites (`pnpm test`, `pnpm --filter api test`, `pnpm --filter web test`).
+- **MANDATORY AUTOMATIC SUBAGENT DELEGATION**:
+  - Dispatch `code-reviewer` (`claude-sonnet-4.6` / `inherit`) via `invoke_subagent` for adversarial code quality & security audit.
+  - Dispatch `ui-ux-reviewer` (`gemini-3.7-flash`) via `invoke_subagent` for adversarial UI, anti-slop, and WCAG AA review.
+  - Dispatch `user-guide-creator` (`gemini-3.7-flash`) via `invoke_subagent` to generate [docs/user-guides/<slug>.md](../../docs/user-guides/) with real Playwright screenshots.
+  - Dispatch `tech-doc-architect` (`gemini-3.7-flash`) via `invoke_subagent` to update [docs/features/<slug>/README.md](../../docs/features/).
+  - Run full test suites (`pnpm test`).
   - Mark the User Story as `[x]` in `docs/PRODUCT_BACKLOG_ROADMAP.md`.
 
 ---

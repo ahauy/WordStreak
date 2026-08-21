@@ -120,14 +120,14 @@ graph TD
     end
 
     subgraph P6A ["PHASE 6A: Adversarial Quality Review"]
-        CR["🛡️ code-reviewer (gemini-3.7-flash)"]
+        CR["🛡️ code-reviewer (claude-sonnet-4.6 / inherit)"]
         UR["👁️ ui-ux-reviewer (gemini-3.7-flash)"]
     end
 
     subgraph P6B ["PHASE 6B: Standard Documentation"]
         TD["📚 tech-doc-architect (gemini-3.7-flash)"]
         UG["💼 user-guide-creator (gemini-3.7-flash)"]
-        AE["⚖️ agent-evaluator (gemini-3.7-flash)"]
+        AE["⚖️ agent-evaluator (claude-sonnet-4.6 / inherit)"]
     end
 
     BA --> SA
@@ -142,23 +142,33 @@ graph TD
     UR --> AE
 ```
 
+### Strict Orchestrator Invariants & Hard Coding Ban (NON-NEGOTIABLE):
+
+- **Zero Direct Feature Coding by Orchestrator**: The primary orchestrator agent is **STRICTLY PROHIBITED** from calling `write_to_file` or `replace_file_content` directly for any feature code, specifications, database schemas, or unit/E2E test files.
+- **Mandatory Delegation via `invoke_subagent`**: All domain elicitation, architecture planning, backend/frontend implementation, code review, and user guide generation MUST be delegated to dedicated subagents spawned via `invoke_subagent`.
+- **Model Allocation Matrix**:
+  - `Model: "claude-opus-4.6" / "inherit"` (Deep Domain Elicitation): `business-analyst`.
+  - `Model: "claude-sonnet-4.6" / "inherit"` (Architecture & Adversarial Review): `system-architect`, `code-reviewer`, `agent-evaluator`.
+  - `Model: "gemini-3.7-flash"` (Fast Execution & Testing): `code-explorer`, `backend-developer`, `frontend-developer`, `slice-implementer`, `build-resolver`, `ui-ux-reviewer`, `tech-doc-architect`, `user-guide-creator`.
+- **Pre-execution Catalog Definition**: Before running any phase, the orchestrator MUST ensure subagents are defined via `define_subagent` with specialized system prompts.
+
 ### Protocol Execution Chain:
 
-1. **Phase 1 (BA & Domain Elicitation)**: Auto-dispatch `business-analyst` to execute the 8-stage BA Pipeline and sign off `baseline.md` v1.0.
-2. **Phase 2–4 (Spec & Architecture)**: Auto-dispatch `system-architect` to produce `spec.md`, `plan.md`, `data-model.md`, `contracts/`, and `tasks.md`.
+1. **Phase 1 (BA & Domain Elicitation)**: Auto-dispatch `business-analyst` (`claude-opus-4.6` / `inherit`) to execute the 8-stage BA Pipeline and draft `baseline.md`. Present Confirmation Gate 1 to User.
+2. **Phase 2–4 (Spec & Architecture)**: Auto-dispatch `system-architect` (`claude-sonnet-4.6` / `inherit`) to produce `spec.md`, `plan.md`, `data-model.md`, `contracts/`, and `tasks.md`. Present Confirmation Gate 2 to User.
 3. **Phase 5 (Fullstack Implementation & TDD)**:
-   - Auto-dispatch `code-explorer` to inspect existing patterns.
-   - Auto-dispatch `backend-developer` & `frontend-developer` in parallel or sequenced slices.
-   - Auto-dispatch `slice-implementer` to wire integration.
-   - Auto-dispatch `build-resolver` to eliminate type/lint build errors.
-   - Auto-dispatch `e2e-runner` to verify test suites.
+   - Auto-dispatch `code-explorer` (`gemini-3.7-flash`) to inspect existing patterns.
+   - Auto-dispatch `backend-developer` (`gemini-3.7-flash`) & `frontend-developer` (`gemini-3.7-flash`) in parallel or sequenced slices.
+   - Auto-dispatch `slice-implementer` (`gemini-3.7-flash`) to wire integration.
+   - Auto-dispatch `build-resolver` (`gemini-3.7-flash`) to eliminate type/lint build errors.
+   - Auto-dispatch `e2e-runner` (`gemini-3.7-flash`) to verify test suites.
 4. **Phase 6A (Adversarial Review)**:
-   - Auto-dispatch `code-reviewer` (code quality & security).
-   - Auto-dispatch `ui-ux-reviewer` (Anti-AI-Slop, `DESIGN.md`, `MEMORY.md`, WCAG AA).
+   - Auto-dispatch `code-reviewer` (`claude-sonnet-4.6` / `inherit`) for adversarial code quality & security review.
+   - Auto-dispatch `ui-ux-reviewer` (`gemini-3.7-flash`) for Anti-AI-Slop, `DESIGN.md`, `MEMORY.md`, and WCAG AA verification.
 5. **Phase 6B (Documentation & Sign-off)**:
-   - Auto-dispatch `tech-doc-architect` (`docs/features/<slug>/README.md`).
-   - Auto-dispatch `user-guide-creator` (`docs/user-guides/<slug>.md`).
-   - Auto-dispatch `agent-evaluator` (Final DoD & Quality Scorecard).
+   - Auto-dispatch `tech-doc-architect` (`gemini-3.7-flash`) (`docs/features/<slug>/README.md`).
+   - Auto-dispatch `user-guide-creator` (`gemini-3.7-flash`) (`docs/user-guides/<slug>.md`).
+   - Auto-dispatch `agent-evaluator` (`claude-sonnet-4.6` / `inherit`) (Final DoD & Quality Scorecard).
 
 ---
 

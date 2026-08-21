@@ -6,6 +6,8 @@ import { ReviewProgressBar } from "../components/ReviewProgressBar";
 import { ReviewEmptyState } from "../components/ReviewEmptyState";
 import { ReviewSummaryModal } from "../components/ReviewSummaryModal";
 import { StreakCelebrationModal } from "../../dashboard/components/StreakCelebrationModal";
+import { FloatingXpToast } from "../../gamification/components/FloatingXpToast";
+import { LevelUpCelebrationModal } from "../../gamification/components/LevelUpCelebrationModal";
 import { useStreak } from "../../dashboard/hooks/useStreak";
 import { Loader2, AlertCircle, RotateCcw } from "lucide-react";
 import type { StreakActivityResponseDto } from "@wordstreak/shared-types";
@@ -32,6 +34,10 @@ export const ReviewSessionPage: React.FC = () => {
     sessionStats,
     flip,
     rateCard,
+    lastXpReward,
+    levelUpData,
+    clearXpReward,
+    clearLevelUpData,
     restartSession: baseRestartSession,
   } = useReviewSession(deckId);
 
@@ -39,6 +45,8 @@ export const ReviewSessionPage: React.FC = () => {
     hasRecordedStreakRef.current = false;
     setCelebrationData(null);
     setIsCelebrationOpen(false);
+    clearXpReward();
+    clearLevelUpData();
     baseRestartSession();
   };
 
@@ -57,8 +65,8 @@ export const ReviewSessionPage: React.FC = () => {
             setIsCelebrationOpen(true);
           }
         })
-        .catch((err) => {
-          console.error("Failed to record streak for review session:", err);
+        .catch(() => {
+          // Streak recording failure should not block review completion flow
         });
     }
   }, [isCompleted, sessionStats.totalReviewed, recordActivity]);
@@ -117,13 +125,26 @@ export const ReviewSessionPage: React.FC = () => {
             />
           )
         ) : currentCard ? (
-          <FlashcardReviewCard
-            card={currentCard}
-            isFlipped={isFlipped}
-            isSubmitting={isSubmitting}
-            onFlip={flip}
-            onRate={rateCard}
-          />
+          <div className="relative w-full flex flex-col items-center">
+            {/* Floating XP Toast directly above card */}
+            {lastXpReward && (
+              <div className="absolute -top-12 left-1/2 -translate-x-1/2 z-40">
+                <FloatingXpToast
+                  xpEarned={lastXpReward.xpEarned}
+                  breakdown={lastXpReward.breakdown}
+                  onComplete={clearXpReward}
+                />
+              </div>
+            )}
+
+            <FlashcardReviewCard
+              card={currentCard}
+              isFlipped={isFlipped}
+              isSubmitting={isSubmitting}
+              onFlip={flip}
+              onRate={rateCard}
+            />
+          </div>
         ) : null}
       </main>
 
@@ -133,6 +154,15 @@ export const ReviewSessionPage: React.FC = () => {
           Powered by SuperMemo-2 Spaced Repetition Engine · WordStreak
         </span>
       </footer>
+
+      {/* Level-Up Celebration Modal */}
+      {levelUpData && (
+        <LevelUpCelebrationModal
+          isOpen={Boolean(levelUpData?.isLevelUp)}
+          onClose={clearLevelUpData}
+          levelUpData={levelUpData}
+        />
+      )}
 
       {/* Streak Celebration Modal */}
       {celebrationData && (

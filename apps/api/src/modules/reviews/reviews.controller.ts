@@ -4,6 +4,7 @@ import {
   Post,
   Body,
   Query,
+  Headers,
   UseGuards,
   HttpCode,
   HttpStatus,
@@ -38,8 +39,13 @@ export class ReviewsController {
   async submitReview(
     @CurrentUser() user: JwtPayload,
     @Body() dto: SubmitReviewDto,
+    @Headers('x-timezone') timezone?: string,
   ): Promise<ApiResponse> {
-    const data = await this.reviewsService.submitReview(user.sub, dto);
+    const data = await this.reviewsService.submitReview(
+      user.sub,
+      dto,
+      timezone,
+    );
     return {
       success: true,
       data,

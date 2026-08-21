@@ -13,6 +13,7 @@ import {
   Lock,
   Mail,
   User as UserIcon,
+  Award,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "../../../common/components/Button";
@@ -20,11 +21,12 @@ import { useAuthStore } from "../../../store/useAuthStore";
 import { userService } from "../services/userService";
 import { AVATAR_PRESETS } from "../config/avatarPresets";
 import { UserAvatar } from "./UserAvatar";
+import { XpHistoryDrawer } from "../../gamification/components/XpHistoryDrawer";
 
 interface SettingsModalProps {
   isOpen: boolean;
   onClose: () => void;
-  initialTab?: "profile" | "avatar" | "security";
+  initialTab?: "profile" | "avatar" | "security" | "gamification";
 }
 
 const GOAL_PRESETS = [
@@ -41,9 +43,9 @@ const SettingsModalContent: React.FC<SettingsModalProps> = ({
   initialTab = "profile",
 }) => {
   const { user, updateUser } = useAuthStore();
-  const [activeTab, setActiveTab] = useState<"profile" | "avatar" | "security">(
-    initialTab,
-  );
+  const [activeTab, setActiveTab] = useState<
+    "profile" | "avatar" | "security" | "gamification"
+  >(initialTab);
 
   // Profile / Goal Tab State
   const [dailyGoal, setDailyGoal] = useState<number>(user?.dailyGoal || 10);
@@ -326,6 +328,18 @@ const SettingsModalContent: React.FC<SettingsModalProps> = ({
             >
               <Shield className="w-4 h-4" />
               <span>Bảo mật</span>
+            </button>
+
+            <button
+              onClick={() => setActiveTab("gamification")}
+              className={`flex items-center gap-2 px-3.5 py-2.5 text-xs sm:text-sm font-semibold border-b-2 transition-all cursor-pointer whitespace-nowrap ${
+                activeTab === "gamification"
+                  ? "border-[#9333ea] text-black"
+                  : "border-transparent text-[#737373] hover:text-black"
+              }`}
+            >
+              <Award className="w-4 h-4" />
+              <span>Cấp độ & XP</span>
             </button>
           </div>
 
@@ -658,6 +672,9 @@ const SettingsModalContent: React.FC<SettingsModalProps> = ({
                 </div>
               </form>
             )}
+
+            {/* TAB 4: GAMIFICATION & XP ACTIVITY */}
+            {activeTab === "gamification" && <XpHistoryDrawer />}
           </div>
 
           {/* Sticky Modal Action Footer */}
@@ -667,6 +684,8 @@ const SettingsModalContent: React.FC<SettingsModalProps> = ({
               {activeTab === "avatar" && "Chọn ảnh đại diện và lưu thay đổi"}
               {activeTab === "security" &&
                 "Mật khẩu bảo mật tài khoản WordStreak"}
+              {activeTab === "gamification" &&
+                "Theo dõi tiến trình cấp độ và lịch sử điểm thưởng XP"}
             </div>
 
             <div className="flex items-center gap-2.5 w-full sm:w-auto justify-end">

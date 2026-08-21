@@ -15,6 +15,9 @@ model User {
   username     String             @unique
   dailyGoal    Int                @default(10)
   avatarUrl    String?
+  totalXp      Int                @default(0)
+  level        Int                @default(1)
+  tier         String             @default("BRONZE")
   createdAt    DateTime           @default(now())
   updatedAt    DateTime           @updatedAt
   sessions     Session[]
@@ -22,6 +25,7 @@ model User {
   progress     UserCardProgress[]
   streaks      UserStreak[]
   reviewLogs   ReviewLog[]
+  activityLogs UserActivityLog[]
 
   @@map("users")
 }
@@ -150,4 +154,22 @@ model ReviewLog {
   @@index([cardId])
   @@map("review_logs")
 }
+
+model UserActivityLog {
+  id           String   @id @default(uuid())
+  userId       String
+  activityType String   // CARD_REVIEW | DAILY_GOAL_COMPLETED | STREAK_7_DAYS | STREAK_30_DAYS | PRACTICE_QUIZ | ADMIN_ADJUSTMENT | HISTORICAL_BACKFILL
+  xpEarned     Int
+  metadata     Json?    // e.g. { "cardId": "...", "rating": 3, "streakDays": 7, "localDate": "2026-08-21" }
+  createdAt    DateTime @default(now())
+
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
+  @@index([userId, activityType])
+  @@index([userId, activityType, createdAt])
+  @@index([createdAt])
+  @@map("user_activity_logs")
+}
+
 

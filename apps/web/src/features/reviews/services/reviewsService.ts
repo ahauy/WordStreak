@@ -4,7 +4,20 @@ import type {
   SubmitReviewDto,
   ReviewStatsResponse,
   ApiResponse,
+  XpReviewRewardDto,
 } from "@wordstreak/shared-types";
+
+export interface SubmitReviewResponse {
+  cardId: string;
+  status: string;
+  interval: number;
+  repetitions: number;
+  easeFactor: number;
+  lastReviewedAt: string;
+  nextReviewDate: string;
+  streak?: unknown;
+  xp?: XpReviewRewardDto;
+}
 
 export const reviewsService = {
   async getDueCards(
@@ -24,9 +37,12 @@ export const reviewsService = {
     };
   },
 
-  async submitReview(dto: SubmitReviewDto): Promise<unknown> {
-    const response = await apiClient.post<ApiResponse>("/reviews/submit", dto);
-    return response.data.data;
+  async submitReview(dto: SubmitReviewDto): Promise<SubmitReviewResponse> {
+    const response = await apiClient.post<ApiResponse<SubmitReviewResponse>>(
+      "/reviews/submit",
+      dto,
+    );
+    return response.data.data as SubmitReviewResponse;
   },
 
   async getReviewStats(): Promise<ReviewStatsResponse> {
