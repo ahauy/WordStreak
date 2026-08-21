@@ -6,6 +6,7 @@ export * from "./cards.js";
 export * from "./reviews.js";
 export * from "./practice.js";
 export * from "./streaks.js";
+export * from "./ai-vocabulary.js";
 
 export interface User {
   id: string;

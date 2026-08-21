@@ -111,3 +111,25 @@ model UserStreak {
 
   @@map("user_streaks")
 }
+
+model GlobalDictionaryCache {
+  id                 String   @id @default(uuid())
+  word               String   @unique
+  partOfSpeech       String?
+  phonetic           String?
+  meaningVi          String
+  meaningEn          String?
+  exampleSentence    String?
+  exampleTranslation String?
+  collocations       String?
+  mnemonic           String?
+  audioUrl           String?
+  source             String   @default("GEMINI_FLASH")
+  hitCount           Int      @default(1)
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  @@index([word])
+  @@map("global_dictionary_cache")
+}
+

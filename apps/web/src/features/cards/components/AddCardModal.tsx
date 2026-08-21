@@ -12,6 +12,7 @@ import {
   HelpCircle,
 } from "lucide-react";
 import { CardPreview } from "./CardPreview";
+import { useAiVocabulary } from "../../ai-vocabulary/hooks/useAiVocabulary";
 import type { CreateCardDto, CardResponse } from "@wordstreak/shared-types";
 
 interface AddCardModalProps {
@@ -45,7 +46,45 @@ export const AddCardModal: React.FC<AddCardModalProps> = ({
   const [submitSuccess, setSubmitSuccess] = useState<string | null>(null);
   const [errors, setErrors] = useState<{ word?: string; meaning?: string }>({});
 
+  const {
+    isGenerating,
+    error: aiError,
+    generateCard: runAiGenerate,
+    clearError: clearAiError,
+  } = useAiVocabulary();
+
   const wordInputRef = useRef<HTMLInputElement>(null);
+
+  const handleAiAutoFill = async () => {
+    if (!word.trim()) {
+      setErrors((prev) => ({
+        ...prev,
+        word: "Vui lòng nhập từ vựng trước khi tạo với AI",
+      }));
+      return;
+    }
+    clearAiError();
+    const res = await runAiGenerate(word.trim());
+    if (res?.card) {
+      if (res.card.meaningVi) setMeaning(res.card.meaningVi);
+      if (res.card.phonetic) setPhonetic(res.card.phonetic);
+      if (res.card.exampleSentence)
+        setExampleSentence(res.card.exampleSentence);
+      if (res.card.collocations && res.card.collocations.length > 0) {
+        setCollocations(res.card.collocations.join(", "));
+      }
+      if (res.card.mnemonic) setMnemonic(res.card.mnemonic);
+      if (res.card.audioUrl) setAudioUrl(res.card.audioUrl);
+      if (
+        res.card.mnemonic ||
+        res.card.collocations?.length ||
+        res.card.audioUrl
+      ) {
+        setShowAdvanced(true);
+      }
+      setErrors({});
+    }
+  };
 
   useEffect(() => {
     if (isOpen) {
@@ -208,19 +247,39 @@ export const AddCardModal: React.FC<AddCardModalProps> = ({
             <div className="lg:col-span-7 space-y-4">
               {/* Word Input */}
               <div>
-                <div className="flex items-center justify-between mb-1">
+                <div className="flex items-center justify-between mb-1.5 flex-wrap gap-1">
                   <label
                     htmlFor="card-word-input"
                     className="text-xs font-semibold text-[#525252] uppercase tracking-wider flex items-center gap-1"
                   >
                     Từ vựng <span className="text-[#ff5f56]">*</span>
                   </label>
-                  {isDuplicate && (
-                    <span className="text-[11px] font-medium text-[#d97706] bg-[#fffbeb] px-2 py-0.5 rounded-md border border-[#fef3c7] flex items-center gap-1">
-                      <AlertCircle className="w-3 h-3" />
-                      Từ này đã có trong bộ từ
-                    </span>
-                  )}
+                  <div className="flex items-center gap-2">
+                    {isDuplicate && (
+                      <span className="text-[11px] font-medium text-[#d97706] bg-[#fffbeb] px-2 py-0.5 rounded-md border border-[#fef3c7] flex items-center gap-1">
+                        <AlertCircle className="w-3 h-3" />
+                        Từ này đã có
+                      </span>
+                    )}
+                    <button
+                      type="button"
+                      onClick={handleAiAutoFill}
+                      disabled={isGenerating || isSubmitting || !word.trim()}
+                      className="inline-flex items-center gap-1.5 px-2.5 py-0.5 text-[11px] font-semibold rounded-full bg-purple-50 hover:bg-purple-100 text-purple-700 border border-purple-200 transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed shadow-2xs"
+                      title="Tự động điền nghĩa, IPA, ví dụ và mẹo nhớ với AI"
+                    >
+                      <Sparkles
+                        className={`w-3 h-3 ${
+                          isGenerating
+                            ? "animate-spin text-purple-600"
+                            : "text-purple-600"
+                        }`}
+                      />
+                      <span>
+                        {isGenerating ? "Đang tạo AI..." : "Tự động điền AI"}
+                      </span>
+                    </button>
+                  </div>
                 </div>
                 <input
                   id="card-word-input"
@@ -231,9 +290,21 @@ export const AddCardModal: React.FC<AddCardModalProps> = ({
                     setWord(e.target.value);
                     if (errors.word)
                       setErrors((prev) => ({ ...prev, word: undefined }));
+                    if (aiError) clearAiError();
+                  }}
+                  onKeyDown={(e) => {
+                    if (
+                      e.key === "Enter" &&
+                      !e.shiftKey &&
+                      word.trim() &&
+                      !meaning.trim()
+                    ) {
+                      e.preventDefault();
+                      handleAiAutoFill();
+                    }
                   }}
                   placeholder="Ví dụ: serendipity, resilient..."
-                  disabled={isSubmitting}
+                  disabled={isSubmitting || isGenerating}
                   className={`w-full px-3.5 py-2 rounded-xl bg-[#fafafa] focus:bg-white border text-black placeholder:text-[#a3a3a3] text-sm font-semibold focus:outline-none transition-all duration-200 ${
                     errors.word
                       ? "border-[#ff5f56] focus:border-[#ff5f56]"
@@ -244,6 +315,12 @@ export const AddCardModal: React.FC<AddCardModalProps> = ({
                   <p className="mt-1 text-xs text-[#ff5f56] font-medium flex items-center gap-1">
                     <AlertCircle className="w-3.5 h-3.5" />
                     {errors.word}
+                  </p>
+                )}
+                {aiError && (
+                  <p className="mt-1.5 text-xs text-[#d97706] bg-[#fffbeb] border border-[#fef3c7] px-2.5 py-1.5 rounded-lg font-medium flex items-center gap-1.5">
+                    <AlertCircle className="w-3.5 h-3.5 flex-shrink-0 text-[#d97706]" />
+                    <span>{aiError}</span>
                   </p>
                 )}
               </div>
