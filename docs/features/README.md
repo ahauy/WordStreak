@@ -20,6 +20,7 @@ Danh sách tất cả các tính năng đã được deliver (code hoàn chỉnh
 | [Daily Streak Engine & Timezone Logic (US-GAME-01)](./daily-streak-engine/README.md)         | `daily-streak-engine`     | 1.0     | Hoàn thành (`Delivered`) | 2026-08-20 |
 | [Streak Freeze Protection Mechanic (US-GAME-02)](./streak-freeze/README.md)                  | `streak-freeze`           | 1.0     | Hoàn thành (`Delivered`) | 2026-08-21 |
 | [AI Vocabulary Generator & Global Cache (US-AI-01..02)](./ai-vocabulary-generator/README.md) | `ai-vocabulary-generator` | 1.0     | Hoàn thành (`Delivered`) | 2026-08-21 |
+| [Learning Analytics & Retention Dashboard (US-STAT-01..03)](./learning-analytics/README.md)  | `learning-analytics`      | 1.0     | Hoàn thành (`Delivered`) | 2026-08-21 |
 
 ---
 
