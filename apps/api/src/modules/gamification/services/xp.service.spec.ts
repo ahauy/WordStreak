@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/unbound-method */
 import { Test, TestingModule } from '@nestjs/testing';
 import {
   HttpException,
-  HttpStatus,
   NotFoundException,
   BadRequestException,
 } from '@nestjs/common';
@@ -17,7 +17,6 @@ import { MasteryTier, XpActionType } from '@wordstreak/shared-types';
 describe('XpService', () => {
   let service: XpService;
   let prisma: any;
-  let levelEngine: LevelEngineService;
   let xpRateLimiter: XpRateLimiterService;
 
   beforeEach(async () => {
@@ -59,7 +58,6 @@ describe('XpService', () => {
     }).compile();
 
     service = module.get<XpService>(XpService);
-    levelEngine = module.get<LevelEngineService>(LevelEngineService);
     xpRateLimiter = module.get<XpRateLimiterService>(XpRateLimiterService);
   });
 

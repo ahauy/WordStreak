@@ -1,5 +1,7 @@
 import { Logger } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
+import { PrismaPg } from '@prisma/adapter-pg';
+import pg from 'pg';
 import {
   calculateLevelFromXp,
   calculateTierFromLevel,
@@ -79,9 +81,6 @@ export async function backfillHistoricalXp(prisma: PrismaClient) {
 }
 
 if (process.env.NODE_ENV !== 'test' && require.main === module) {
-  /* eslint-disable @typescript-eslint/no-require-imports */
-  const { PrismaPg } = require('@prisma/adapter-pg');
-  const pg = require('pg');
   const connectionString =
     process.env.DATABASE_URL ||
     'postgresql://postgres:23012005@localhost:5432/wordstreak_db?schema=public';
@@ -90,7 +89,7 @@ if (process.env.NODE_ENV !== 'test' && require.main === module) {
   const prisma = new PrismaClient({ adapter });
 
   backfillHistoricalXp(prisma)
-    .catch((err) => {
+    .catch((err: unknown) => {
       logger.error('Backfill failed:', err);
       process.exit(1);
     })
