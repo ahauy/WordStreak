@@ -318,11 +318,13 @@ _Mục tiêu: Giúp người dùng không chỉ nhớ mặt chữ mà còn tự 
 
 _Mục tiêu: Giúp người dùng dễ dàng chuyển đổi dữ liệu và mở rộng việc học ra toàn bộ môi trường duyệt web._
 
-- [ ] **US-ECO-01: Nhập và xuất dữ liệu Bộ từ (Import/Export CSV & Anki .apkg)**
-  - **AC:** Hỗ trợ nhập danh sách từ từ file Excel/CSV mẫu; xuất deck ra file CSV hoặc tương thích Anki (.apkg).
+- [x] **US-ECO-01: Nhập và xuất dữ liệu Bộ từ (Import/Export CSV & Anki .apkg)**
+  - **AC:** Hỗ trợ nhập danh sách từ từ file Excel/CSV mẫu; tự do ánh xạ cột (Flexible Column Mapping) với màn hình xem trước dữ liệu (Preview); xử lý trùng lặp (Skip / Overwrite / Keep Both); xuất deck ra file CSV (UTF-8 BOM, CWE-1236 defense) hoặc tương thích Anki (.apkg) theo bộ lọc trạng thái (All / Mastered / Learning).
   - **Tasks:**
-    - [ ] Backend: Parser CSV/Excel và trình xuất file an toàn.
-    - [ ] Frontend: Dropzone tải file lên, màn hình xem trước dữ liệu (Preview & Map Columns) trước khi lưu.
+    - [x] Backend: Bulk import endpoint `POST /api/v1/decks/:deckId/cards/bulk` với Prisma `$transaction` nguyên tử, xử lý trùng lặp và khởi tạo trạng thái `NEW` SM-2.
+    - [x] Backend: Export endpoint `GET /api/v1/decks/:deckId/export` xuất CSV (UTF-8 BOM kèm chống formula injection) và Anki package (.apkg) theo bộ lọc trạng thái.
+    - [x] Frontend: Bộ parser `csvParser`, `xlsxParser`, `ankiParser` (WASM/JSZip) và `columnMapper` tự động nhận diện header song ngữ.
+    - [x] Frontend: 4-Step Import Wizard `DeckImportModal`, bảng xem trước dữ liệu `ImportPreviewTable`, và `DeckExportModal` tích hợp vào `DeckDetailPage` & `DecksListPage`.
 - [ ] **US-ECO-02: Chia sẻ Bộ từ vựng cộng đồng (Community Decks Marketplace)**
   - **AC:** Người dùng có thể bật `isPublic = true` để chia sẻ deck. Người khác có thể xem, đánh giá sao (Rating) và bấm "Clone to My Decks".
   - **Tasks:**

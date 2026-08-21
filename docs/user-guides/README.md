@@ -20,6 +20,7 @@ Tập hợp tất cả các tài liệu hướng dẫn sử dụng trực quan, 
 | 10  | **Luyện Nghe & Gõ Từ Vựng (Listening & Typing Practice)**     |   `US-QUIZ-03`   | [listening-practice.md](./listening-practice.md)                           |      ✅ Có       |
 | 11  | **Luyện Nối Từ Vựng (Word Matching Game)**                    |   `US-QUIZ-04`   | [quiz-word-matching.md](./quiz-word-matching.md)                           |      ✅ Có       |
 | 12  | **Luyện Phát Âm & Nhận Diện Giọng Nói (Voice Studio)**        |  `US-VOICE-01`   | [speech-pronunciation-assessment.md](./speech-pronunciation-assessment.md) |      ✅ Có       |
+| 13  | **Nhập & Xuất Dữ Liệu Bộ Từ (CSV, Excel & Anki)**             |   `US-ECO-01`    | [deck-import-export.md](./deck-import-export.md)                           |      ✅ Có       |
 
 ---
 

@@ -25,6 +25,7 @@ Danh sách tất cả các tính năng đã được deliver (code hoàn chỉnh
 | [Listening & Typing Practice Quiz (US-QUIZ-03)](./quiz-listening-practice/README.md)                           | `quiz-listening-practice`         | 1.0     | Hoàn thành (`Delivered`) | 2026-08-21 |
 | [Word Matching Game (US-QUIZ-04)](./quiz-word-matching/README.md)                                              | `quiz-word-matching`              | 1.0     | Hoàn thành (`Delivered`) | 2026-08-21 |
 | [Speech Recognition & Pronunciation Assessment (US-VOICE-01..02)](./speech-pronunciation-assessment/README.md) | `speech-pronunciation-assessment` | 1.0     | Hoàn thành (`Delivered`) | 2026-08-21 |
+| [Deck Import & Export (CSV, Excel & Anki .apkg) (US-ECO-01)](./deck-import-export/README.md)                   | `deck-import-export`              | 1.0     | Hoàn thành (`Delivered`) | 2026-08-21 |
 
 ---
 
