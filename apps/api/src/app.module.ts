@@ -10,6 +10,7 @@ import { CardsModule } from './modules/cards/cards.module';
 import { ReviewsModule } from './modules/reviews/reviews.module';
 import { PracticeModule } from './modules/practice/practice.module';
 import { StreakModule } from './modules/streaks/streak.module';
+import { AiVocabularyModule } from './modules/ai-vocabulary/ai-vocabulary.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { StreakModule } from './modules/streaks/streak.module';
     ReviewsModule,
     PracticeModule,
     StreakModule,
+    AiVocabularyModule,
   ],
   controllers: [AppController],
   providers: [AppService],
