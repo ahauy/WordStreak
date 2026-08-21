@@ -8,22 +8,23 @@ Danh sách tất cả các tính năng đã được deliver (code hoàn chỉnh
 
 ## 📋 Danh sách tính năng
 
-| Feature                                                                                      | Slug                      | Version | Trạng thái               | Ngày ship  |
-| :------------------------------------------------------------------------------------------- | :------------------------ | :------ | :----------------------- | :--------- |
-| [User Profile & Daily Goal Settings (US-AUTH-04)](./user-profile-settings/README.md)         | `user-profile-settings`   | 1.0     | Hoàn thành (`Delivered`) | 2026-08-17 |
-| [Deck CRUD & Vocabulary Management (US-DECK-01)](./deck-crud/README.md)                      | `deck-crud`               | 1.0     | Hoàn thành (`Delivered`) | 2026-08-19 |
-| [Contextual Card Creation (US-CARD-01)](./card-creation/README.md)                           | `card-creation`           | 1.0     | Hoàn thành (`Delivered`) | 2026-08-19 |
-| [Card List Management & Search/Filter (US-CARD-02)](./card-management/README.md)             | `card-management`         | 1.0     | Hoàn thành (`Delivered`) | 2026-08-20 |
-| [Spaced Repetition System Review (US-SRS-01..03)](./srs-review/README.md)                    | `srs-review`              | 1.0     | Hoàn thành (`Delivered`) | 2026-08-20 |
-| [Multiple Choice Quiz Mode (US-QUIZ-01)](./quiz-multiple-choice/README.md)                   | `quiz-multiple-choice`    | 1.0     | Hoàn thành (`Delivered`) | 2026-08-20 |
-| [Fill-in-the-blank Quiz Mode (US-QUIZ-02)](./quiz-fill-in-the-blank/README.md)               | `quiz-fill-in-the-blank`  | 1.0     | Hoàn thành (`Delivered`) | 2026-08-20 |
-| [Daily Streak Engine & Timezone Logic (US-GAME-01)](./daily-streak-engine/README.md)         | `daily-streak-engine`     | 1.0     | Hoàn thành (`Delivered`) | 2026-08-20 |
-| [Streak Freeze Protection Mechanic (US-GAME-02)](./streak-freeze/README.md)                  | `streak-freeze`           | 1.0     | Hoàn thành (`Delivered`) | 2026-08-21 |
-| [AI Vocabulary Generator & Global Cache (US-AI-01..02)](./ai-vocabulary-generator/README.md) | `ai-vocabulary-generator` | 1.0     | Hoàn thành (`Delivered`) | 2026-08-21 |
-| [Learning Analytics & Retention Dashboard (US-STAT-01..03)](./learning-analytics/README.md)  | `learning-analytics`      | 1.0     | Hoàn thành (`Delivered`) | 2026-08-21 |
-| [Gamification XP & Learner Levels System (US-GAME-03)](./gamification-xp-levels/README.md)   | `gamification-xp-levels`  | 1.0     | Hoàn thành (`Delivered`) | 2026-08-21 |
-| [Listening & Typing Practice Quiz (US-QUIZ-03)](./quiz-listening-practice/README.md)         | `quiz-listening-practice` | 1.0     | Hoàn thành (`Delivered`) | 2026-08-21 |
-| [Word Matching Game (US-QUIZ-04)](./quiz-word-matching/README.md)                            | `quiz-word-matching`      | 1.0     | Hoàn thành (`Delivered`) | 2026-08-21 |
+| Feature                                                                                                        | Slug                              | Version | Trạng thái               | Ngày ship  |
+| :------------------------------------------------------------------------------------------------------------- | :-------------------------------- | :------ | :----------------------- | :--------- |
+| [User Profile & Daily Goal Settings (US-AUTH-04)](./user-profile-settings/README.md)                           | `user-profile-settings`           | 1.0     | Hoàn thành (`Delivered`) | 2026-08-17 |
+| [Deck CRUD & Vocabulary Management (US-DECK-01)](./deck-crud/README.md)                                        | `deck-crud`                       | 1.0     | Hoàn thành (`Delivered`) | 2026-08-19 |
+| [Contextual Card Creation (US-CARD-01)](./card-creation/README.md)                                             | `card-creation`                   | 1.0     | Hoàn thành (`Delivered`) | 2026-08-19 |
+| [Card List Management & Search/Filter (US-CARD-02)](./card-management/README.md)                               | `card-management`                 | 1.0     | Hoàn thành (`Delivered`) | 2026-08-20 |
+| [Spaced Repetition System Review (US-SRS-01..03)](./srs-review/README.md)                                      | `srs-review`                      | 1.0     | Hoàn thành (`Delivered`) | 2026-08-20 |
+| [Multiple Choice Quiz Mode (US-QUIZ-01)](./quiz-multiple-choice/README.md)                                     | `quiz-multiple-choice`            | 1.0     | Hoàn thành (`Delivered`) | 2026-08-20 |
+| [Fill-in-the-blank Quiz Mode (US-QUIZ-02)](./quiz-fill-in-the-blank/README.md)                                 | `quiz-fill-in-the-blank`          | 1.0     | Hoàn thành (`Delivered`) | 2026-08-20 |
+| [Daily Streak Engine & Timezone Logic (US-GAME-01)](./daily-streak-engine/README.md)                           | `daily-streak-engine`             | 1.0     | Hoàn thành (`Delivered`) | 2026-08-20 |
+| [Streak Freeze Protection Mechanic (US-GAME-02)](./streak-freeze/README.md)                                    | `streak-freeze`                   | 1.0     | Hoàn thành (`Delivered`) | 2026-08-21 |
+| [AI Vocabulary Generator & Global Cache (US-AI-01..02)](./ai-vocabulary-generator/README.md)                   | `ai-vocabulary-generator`         | 1.0     | Hoàn thành (`Delivered`) | 2026-08-21 |
+| [Learning Analytics & Retention Dashboard (US-STAT-01..03)](./learning-analytics/README.md)                    | `learning-analytics`              | 1.0     | Hoàn thành (`Delivered`) | 2026-08-21 |
+| [Gamification XP & Learner Levels System (US-GAME-03)](./gamification-xp-levels/README.md)                     | `gamification-xp-levels`          | 1.0     | Hoàn thành (`Delivered`) | 2026-08-21 |
+| [Listening & Typing Practice Quiz (US-QUIZ-03)](./quiz-listening-practice/README.md)                           | `quiz-listening-practice`         | 1.0     | Hoàn thành (`Delivered`) | 2026-08-21 |
+| [Word Matching Game (US-QUIZ-04)](./quiz-word-matching/README.md)                                              | `quiz-word-matching`              | 1.0     | Hoàn thành (`Delivered`) | 2026-08-21 |
+| [Speech Recognition & Pronunciation Assessment (US-VOICE-01..02)](./speech-pronunciation-assessment/README.md) | `speech-pronunciation-assessment` | 1.0     | Hoàn thành (`Delivered`) | 2026-08-21 |
 
 ---
 

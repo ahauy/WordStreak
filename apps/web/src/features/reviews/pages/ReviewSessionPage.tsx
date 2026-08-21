@@ -8,6 +8,7 @@ import { ReviewSummaryModal } from "../components/ReviewSummaryModal";
 import { StreakCelebrationModal } from "../../dashboard/components/StreakCelebrationModal";
 import { FloatingXpToast } from "../../gamification/components/FloatingXpToast";
 import { LevelUpCelebrationModal } from "../../gamification/components/LevelUpCelebrationModal";
+import { PronunciationPracticeModal } from "../../practice/components/PronunciationPracticeModal";
 import { useStreak } from "../../dashboard/hooks/useStreak";
 import { Loader2, AlertCircle, RotateCcw } from "lucide-react";
 import type { StreakActivityResponseDto } from "@wordstreak/shared-types";
@@ -20,6 +21,7 @@ export const ReviewSessionPage: React.FC = () => {
   const [celebrationData, setCelebrationData] =
     useState<StreakActivityResponseDto | null>(null);
   const [isCelebrationOpen, setIsCelebrationOpen] = useState(false);
+  const [isVoicePracticeOpen, setIsVoicePracticeOpen] = useState(false);
   const hasRecordedStreakRef = useRef(false);
 
   const {
@@ -143,10 +145,25 @@ export const ReviewSessionPage: React.FC = () => {
               isSubmitting={isSubmitting}
               onFlip={flip}
               onRate={rateCard}
+              onOpenVoicePractice={() => setIsVoicePracticeOpen(true)}
             />
           </div>
         ) : null}
       </main>
+
+      {/* Pronunciation Practice Modal */}
+      {currentCard && (
+        <PronunciationPracticeModal
+          isOpen={isVoicePracticeOpen}
+          onClose={() => setIsVoicePracticeOpen(false)}
+          cardId={currentCard.cardId || currentCard.id}
+          targetWord={currentCard.word}
+          phonetic={currentCard.phonetic}
+          meaning={currentCard.meaning}
+          audioUrlUS={currentCard.audioUrl}
+          audioUrlUK={null}
+        />
+      )}
 
       {/* Bottom Footer Guidance */}
       <footer className="w-full py-4 text-center text-xs text-[#737373] border-t border-[#e5e5e5]">

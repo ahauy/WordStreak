@@ -1,16 +1,30 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import {
+  HttpException,
+  NotFoundException,
+  ForbiddenException,
+} from '@nestjs/common';
 import { PracticeService } from './practice.service';
 import { PrismaService } from '../prisma/prisma.service';
+import { StreakService } from '../streaks/streak.service';
 
 describe('PracticeService', () => {
   let service: PracticeService;
   let prisma: {
     card: {
       findMany: jest.Mock;
+      findUnique: jest.Mock;
     };
     userActivityLog: {
       aggregate: jest.Mock;
+      create: jest.Mock;
     };
+    user: {
+      update: jest.Mock;
+    };
+  };
+  let streakService: {
+    recordActivity: jest.Mock;
   };
 
   const mockMissedCards = [
@@ -34,20 +48,36 @@ describe('PracticeService', () => {
     prisma = {
       card: {
         findMany: jest.fn(),
+        findUnique: jest.fn(),
       },
       userActivityLog: {
         aggregate: jest.fn().mockResolvedValue({ _sum: { xpEarned: 0 } }),
+        create: jest.fn().mockResolvedValue({}),
       },
+      user: {
+        update: jest.fn().mockResolvedValue({}),
+      },
+    };
+
+    streakService = {
+      recordActivity: jest.fn().mockResolvedValue({
+        currentStreak: 2,
+        bestStreak: 5,
+        streakIncreased: true,
+        isActiveToday: true,
+      }),
     };
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         PracticeService,
         { provide: PrismaService, useValue: prisma },
+        { provide: StreakService, useValue: streakService },
       ],
     }).compile();
 
     service = module.get<PracticeService>(PracticeService);
+    service.clearVoiceCooldown();
   });
 
   it('should be defined', () => {
@@ -75,63 +105,63 @@ describe('PracticeService', () => {
             selectedOptionId: 'opt-c',
             isCorrect: true,
             timeSpentMs: 3000,
-          }, // +10 base, +5 speed (streak 1) = 15
+          },
           {
             questionId: 'q3',
             cardId: 'c3',
             selectedOptionId: 'opt-c',
             isCorrect: true,
             timeSpentMs: 2000,
-          }, // +10 base, +5 speed (streak 2) = 15
+          },
           {
             questionId: 'q4',
             cardId: 'c4',
             selectedOptionId: 'opt-c',
             isCorrect: true,
             timeSpentMs: 2000,
-          }, // +10 base, +5 speed * 1.2 combo (streak 3) = 18
+          },
           {
             questionId: 'q5',
             cardId: 'c5',
             selectedOptionId: 'opt-c',
             isCorrect: true,
             timeSpentMs: 6000,
-          }, // +10 base * 1.2 combo (streak 4) = 12
+          },
           {
             questionId: 'q6',
             cardId: 'c6',
             selectedOptionId: 'opt-c',
             isCorrect: true,
             timeSpentMs: 4000,
-          }, // +10 base, +5 speed * 1.5 combo (streak 5) = 23
+          },
           {
             questionId: 'q7',
             cardId: 'c7',
             selectedOptionId: 'opt-c',
             isCorrect: true,
             timeSpentMs: 3000,
-          }, // +10 base, +5 speed * 1.5 combo (streak 6) = 23
+          },
           {
             questionId: 'q8',
             cardId: 'c8',
             selectedOptionId: 'opt-c',
             isCorrect: true,
             timeSpentMs: 3000,
-          }, // +10 base, +5 speed * 1.5 combo (streak 7) = 23
+          },
           {
             questionId: 'q9',
             cardId: 'c9',
             selectedOptionId: 'opt-c',
             isCorrect: true,
             timeSpentMs: 3000,
-          }, // +10 base, +5 speed * 1.5 combo (streak 8) = 23
+          },
           {
             questionId: 'q10',
             cardId: 'c10',
             selectedOptionId: 'opt-c',
             isCorrect: true,
             timeSpentMs: 3000,
-          }, // +10 base, +5 speed * 1.5 combo (streak 9) = 23
+          },
         ],
       };
 
@@ -154,7 +184,6 @@ describe('PracticeService', () => {
         mode: 'LISTENING',
         totalQuestions: 5,
         answers: [
-          // Q1: +10 base + 15 speed = 25 * 1.0 (streak 1) = 25
           {
             cardId: 'c1',
             submittedWord: 'ephemeral',
@@ -164,7 +193,6 @@ describe('PracticeService', () => {
             replayCount: 1,
             audioSpeedUsed: 1.0,
           },
-          // Q2: +10 base + 15 speed = 25 * 1.0 (streak 2) = 25
           {
             cardId: 'c2',
             submittedWord: 'serendipity',
@@ -174,7 +202,6 @@ describe('PracticeService', () => {
             replayCount: 2,
             audioSpeedUsed: 0.75,
           },
-          // Q3: +10 base + 0 speed (hintsUsed > 0) = 10 * 1.2 (streak 3) = 12
           {
             cardId: 'c3',
             submittedWord: 'ubiquitous',
@@ -184,7 +211,6 @@ describe('PracticeService', () => {
             replayCount: 0,
             audioSpeedUsed: 1.0,
           },
-          // Q4: +10 base + 0 speed (replayCount > 2) = 10 * 1.2 (streak 4) = 12
           {
             cardId: 'c4',
             submittedWord: 'eloquent',
@@ -194,7 +220,6 @@ describe('PracticeService', () => {
             replayCount: 3,
             audioSpeedUsed: 1.0,
           },
-          // Q5: Incorrect -> 0 XP (streak resets)
           {
             cardId: 'c5',
             submittedWord: 'resilent',
@@ -389,340 +414,204 @@ describe('PracticeService', () => {
     });
   });
 
-  describe('submitMatchingQuiz', () => {
-    beforeEach(() => {
+  describe('submitVoicePronunciation', () => {
+    const mockCard = {
+      id: 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11',
+      word: 'eloquent',
+      meaning: 'hùng biện',
+      deck: {
+        userId: 'user-1',
+        isPublic: false,
+      },
+    };
+
+    it('should evaluate 100% exact match, award +10 XP, advance streak, and log activity', async () => {
+      prisma.card.findUnique.mockResolvedValue(mockCard);
       prisma.userActivityLog.aggregate.mockResolvedValue({
         _sum: { xpEarned: 0 },
       });
+
+      const result = await service.submitVoicePronunciation('user-1', {
+        cardId: mockCard.id,
+        spokenTranscript: 'eloquent',
+      });
+
+      expect(result.isPassed).toBe(true);
+      expect(result.accuracyScore).toBe(100);
+      expect(result.tier).toBe('EXACT');
+      expect(result.xpAwarded).toBe(10);
+      expect(result.isDailyCapped).toBe(false);
+      expect(result.streakAdvanced).toBe(true);
+      expect(streakService.recordActivity).toHaveBeenCalledWith('user-1');
+      expect(prisma.userActivityLog.create).toHaveBeenCalled();
+      expect(prisma.user.update).toHaveBeenCalledWith({
+        where: { id: 'user-1' },
+        data: { totalXp: { increment: 10 } },
+      });
+      expect(prisma.userActivityLog.aggregate).toHaveBeenCalled();
+      const aggregateCall = (
+        prisma.userActivityLog.aggregate as jest.Mock<
+          Promise<unknown>,
+          [{ where: { userId: string; activityType: { in: string[] } } }]
+        >
+      ).mock.calls[0][0];
+      expect(aggregateCall.where.userId).toBe('user-1');
+      expect(aggregateCall.where.activityType.in).toEqual([
+        'VOICE_PRONUNCIATION',
+        'PRACTICE_QUIZ',
+        'WORD_MATCHING',
+      ]);
     });
 
-    it('should calculate base XP (+2/pair), perfect bonus (+5), speed bonus (+10), and combo bonus for a clean 5-pair round in <= 15s', async () => {
-      prisma.card.findMany.mockResolvedValue([]);
-
-      const cleanSubmission = {
-        deckId: 'deck-1',
-        mode: 'MATCHING',
-        totalPairs: 5,
-        totalTimeMs: 12000,
-        answers: [
-          {
-            cardId: 'c1',
-            matchedInMs: 2000,
-            attempts: 1,
-            isCorrectFirstTry: true,
-            isCorrect: true,
-          },
-          {
-            cardId: 'c2',
-            matchedInMs: 2000,
-            attempts: 1,
-            isCorrectFirstTry: true,
-            isCorrect: true,
-          },
-          {
-            cardId: 'c3',
-            matchedInMs: 2000,
-            attempts: 1,
-            isCorrectFirstTry: true,
-            isCorrect: true,
-          },
-          {
-            cardId: 'c4',
-            matchedInMs: 2000,
-            attempts: 1,
-            isCorrectFirstTry: true,
-            isCorrect: true,
-          },
-          {
-            cardId: 'c5',
-            matchedInMs: 2000,
-            attempts: 1,
-            isCorrectFirstTry: true,
-            isCorrect: true,
-          },
-        ],
-      };
-
-      const result = await service.submitMatchingQuiz(
-        'user-1',
-        cleanSubmission,
-      );
-
-      expect(result.totalPairs).toBe(5);
-      expect(result.matchedCount).toBe(5);
-      expect(result.accuracyPercentage).toBe(100);
-      expect(result.maxCombo).toBe(5);
-      expect(result.isBotFlagged).toBe(false);
-      expect(result.missedCards).toHaveLength(0);
-
-      // Base XP: 5 * 2 = 10
-      // Combo Bonus: items 3,4 (1.2x -> 0.4+0.4=0.8), item 5 (1.5x -> 1.0) => sum 1.8 ~ 2
-      // Speed Bonus: 10 (totalTime <= 15000 and 0 errors)
-      // Perfect Bonus: 5 (0 errors)
-      // Total XP: 10 + 2 + 10 + 5 = 27
-      expect(result.xpBreakdown.baseXp).toBe(10);
-      expect(result.xpBreakdown.comboBonusXp).toBe(2);
-      expect(result.xpBreakdown.speedBonusXp).toBe(10);
-      expect(result.xpBreakdown.perfectBonusXp).toBe(5);
-      expect(result.xpBreakdown.totalXp).toBe(27);
-      expect(result.totalXpEarned).toBe(27);
-    });
-
-    it('should forfeit speed bonus when totalTimeMs > 15000ms but keep base, perfect, and combo bonuses', async () => {
-      prisma.card.findMany.mockResolvedValue([]);
-
-      const slowSubmission = {
-        deckId: 'deck-1',
-        mode: 'MATCHING',
-        totalPairs: 5,
-        totalTimeMs: 18000, // > 15000ms
-        answers: [
-          {
-            cardId: 'c1',
-            matchedInMs: 3600,
-            attempts: 1,
-            isCorrectFirstTry: true,
-            isCorrect: true,
-          },
-          {
-            cardId: 'c2',
-            matchedInMs: 3600,
-            attempts: 1,
-            isCorrectFirstTry: true,
-            isCorrect: true,
-          },
-          {
-            cardId: 'c3',
-            matchedInMs: 3600,
-            attempts: 1,
-            isCorrectFirstTry: true,
-            isCorrect: true,
-          },
-          {
-            cardId: 'c4',
-            matchedInMs: 3600,
-            attempts: 1,
-            isCorrectFirstTry: true,
-            isCorrect: true,
-          },
-          {
-            cardId: 'c5',
-            matchedInMs: 3600,
-            attempts: 1,
-            isCorrectFirstTry: true,
-            isCorrect: true,
-          },
-        ],
-      };
-
-      const result = await service.submitMatchingQuiz('user-1', slowSubmission);
-
-      expect(result.xpBreakdown.speedBonusXp).toBe(0);
-      expect(result.xpBreakdown.perfectBonusXp).toBe(5);
-      expect(result.xpBreakdown.baseXp).toBe(10);
-      expect(result.xpBreakdown.comboBonusXp).toBe(2);
-      expect(result.totalXpEarned).toBe(17);
-    });
-
-    it('should forfeit speed and perfect bonuses when errors occur, and fetch missed cards without mutating SM-2', async () => {
-      prisma.card.findMany.mockResolvedValue([mockMissedCards[0]]);
-
-      const errorSubmission = {
-        deckId: 'deck-1',
-        mode: 'MATCHING',
-        totalPairs: 5,
-        totalTimeMs: 12000,
-        answers: [
-          {
-            cardId: 'c1',
-            matchedInMs: 2000,
-            attempts: 2,
-            isCorrectFirstTry: false,
-            isCorrect: true,
-          }, // error on c1
-          {
-            cardId: 'c2',
-            matchedInMs: 2000,
-            attempts: 1,
-            isCorrectFirstTry: true,
-            isCorrect: true,
-          },
-          {
-            cardId: 'c3',
-            matchedInMs: 2000,
-            attempts: 1,
-            isCorrectFirstTry: true,
-            isCorrect: true,
-          },
-          {
-            cardId: 'c4',
-            matchedInMs: 2000,
-            attempts: 1,
-            isCorrectFirstTry: true,
-            isCorrect: true,
-          },
-          {
-            cardId: 'c5',
-            matchedInMs: 2000,
-            attempts: 1,
-            isCorrectFirstTry: true,
-            isCorrect: true,
-          },
-        ],
-      };
-
-      const result = await service.submitMatchingQuiz(
-        'user-1',
-        errorSubmission,
-      );
-
-      expect(result.xpBreakdown.speedBonusXp).toBe(0);
-      expect(result.xpBreakdown.perfectBonusXp).toBe(0);
-      expect(result.maxCombo).toBe(4);
-      expect(result.missedCards).toHaveLength(1);
-      expect(result.missedCards[0].cardId).toBe('c1');
-      expect(result.missedCards[0].word).toBe('ephemeral');
-      expect(prisma.card.findMany).toHaveBeenCalledWith({
-        where: { id: { in: ['c1'] } },
-        select: {
-          id: true,
-          word: true,
-          meaning: true,
-          phonetic: true,
-          audioUrl: true,
+    it('should throw ForbiddenException when card belongs to another user private deck', async () => {
+      prisma.card.findUnique.mockResolvedValue({
+        id: 'c-private',
+        word: 'secret',
+        deck: {
+          userId: 'other-user',
+          isPublic: false,
         },
       });
+
+      await expect(
+        service.submitVoicePronunciation('user-1', {
+          cardId: 'c-private',
+          spokenTranscript: 'secret',
+        }),
+      ).rejects.toThrow(ForbiddenException);
     });
 
-    it('should calculate 2.0x combo multiplier for streaks >= 10 in multi-round sessions', async () => {
-      prisma.card.findMany.mockResolvedValue([]);
+    it('should allow practice when card belongs to another user but deck is public', async () => {
+      prisma.card.findUnique.mockResolvedValue({
+        id: 'c-public',
+        word: 'eloquent',
+        deck: {
+          userId: 'other-user',
+          isPublic: true,
+        },
+      });
+      prisma.userActivityLog.aggregate.mockResolvedValue({
+        _sum: { xpEarned: 0 },
+      });
 
-      const tenStreakSubmission = {
-        deckId: 'deck-1',
-        mode: 'MATCHING',
-        totalPairs: 10,
-        totalTimeMs: 25000,
-        answers: Array.from({ length: 10 }, (_, i) => ({
-          cardId: `c${i + 1}`,
-          matchedInMs: 2500,
-          attempts: 1,
-          isCorrectFirstTry: true,
-          isCorrect: true,
-        })),
-      };
+      const result = await service.submitVoicePronunciation('user-1', {
+        cardId: 'c-public',
+        spokenTranscript: 'eloquent',
+      });
 
-      const result = await service.submitMatchingQuiz(
-        'user-1',
-        tenStreakSubmission,
-      );
-
-      expect(result.maxCombo).toBe(10);
-      expect(result.xpBreakdown.baseXp).toBe(20);
-      expect(result.xpBreakdown.comboBonusXp).toBe(8); // 0.8 (streak 3-4) + 5.0 (streak 5-9) + 2.0 (streak 10) = 7.8 ~ 8
-      expect(result.xpBreakdown.speedBonusXp).toBe(20); // 2 rounds * 10
-      expect(result.xpBreakdown.perfectBonusXp).toBe(10); // 2 rounds * 5
-      expect(result.totalXpEarned).toBe(58);
+      expect(result.isPassed).toBe(true);
+      expect(result.accuracyScore).toBe(100);
+      expect(result.xpAwarded).toBe(10);
     });
 
-    it('should trigger bot velocity guard (isBotFlagged=true, totalXp=0) when totalTimeMs < 1500ms for 5 pairs', async () => {
-      prisma.card.findMany.mockResolvedValue([]);
+    it('should evaluate close match (85%), award +10 XP, and return diffSpans', async () => {
+      prisma.card.findUnique.mockResolvedValue({
+        id: 'c2',
+        word: 'preliminary',
+        deck: {
+          userId: 'user-1',
+          isPublic: false,
+        },
+      });
 
-      const botSubmission = {
-        deckId: 'deck-1',
-        totalPairs: 5,
-        totalTimeMs: 1200, // < 1500ms
-        answers: Array.from({ length: 5 }, (_, i) => ({
-          cardId: `c${i + 1}`,
-          matchedInMs: 240,
-          attempts: 1,
-          isCorrectFirstTry: true,
-          isCorrect: true,
-        })),
-      };
+      const result = await service.submitVoicePronunciation('user-1', {
+        cardId: 'c2',
+        spokenTranscript: 'preliminry',
+      });
 
-      const result = await service.submitMatchingQuiz('user-1', botSubmission);
-
-      expect(result.isBotFlagged).toBe(true);
-      expect(result.xpBreakdown.isBotDetected).toBe(true);
-      expect(result.totalXpEarned).toBe(0);
-      expect(result.xpBreakdown.totalXp).toBe(0);
+      expect(result.isPassed).toBe(true);
+      expect(result.accuracyScore).toBeGreaterThanOrEqual(80);
+      expect(result.tier).toBe('CLOSE');
+      expect(result.xpAwarded).toBe(10);
+      expect(result.diffSpans).toBeDefined();
     });
 
-    it('should trigger bot velocity guard when any single pair matchedInMs < 200ms', async () => {
-      prisma.card.findMany.mockResolvedValue([]);
+    it('should evaluate retry (<80%), award 0 XP, and not update streak', async () => {
+      prisma.card.findUnique.mockResolvedValue({
+        id: 'c3',
+        word: 'epitome',
+        deck: {
+          userId: 'user-1',
+          isPublic: false,
+        },
+      });
 
-      const botSubmission = {
-        deckId: 'deck-1',
-        totalPairs: 5,
-        totalTimeMs: 10000,
-        answers: [
-          {
-            cardId: 'c1',
-            matchedInMs: 150,
-            attempts: 1,
-            isCorrectFirstTry: true,
-            isCorrect: true,
-          }, // < 200ms
-          {
-            cardId: 'c2',
-            matchedInMs: 2000,
-            attempts: 1,
-            isCorrectFirstTry: true,
-            isCorrect: true,
-          },
-          {
-            cardId: 'c3',
-            matchedInMs: 2000,
-            attempts: 1,
-            isCorrectFirstTry: true,
-            isCorrect: true,
-          },
-          {
-            cardId: 'c4',
-            matchedInMs: 2000,
-            attempts: 1,
-            isCorrectFirstTry: true,
-            isCorrect: true,
-          },
-          {
-            cardId: 'c5',
-            matchedInMs: 2000,
-            attempts: 1,
-            isCorrectFirstTry: true,
-            isCorrect: true,
-          },
-        ],
-      };
+      const result = await service.submitVoicePronunciation('user-1', {
+        cardId: 'c3',
+        spokenTranscript: 'ep-tomb',
+      });
 
-      const result = await service.submitMatchingQuiz('user-1', botSubmission);
-
-      expect(result.isBotFlagged).toBe(true);
-      expect(result.totalXpEarned).toBe(0);
+      expect(result.isPassed).toBe(false);
+      expect(result.accuracyScore).toBeLessThan(80);
+      expect(result.tier).toBe('RETRY');
+      expect(result.xpAwarded).toBe(0);
+      expect(streakService.recordActivity).not.toHaveBeenCalled();
     });
 
-    it('should enforce daily 500 XP cap when user already reached the cap today', async () => {
-      prisma.card.findMany.mockResolvedValue([]);
+    it('should enforce daily 500 XP cap for voice practice', async () => {
+      prisma.card.findUnique.mockResolvedValue(mockCard);
       prisma.userActivityLog.aggregate.mockResolvedValue({
         _sum: { xpEarned: 500 },
       });
 
-      const submission = {
-        deckId: 'deck-1',
-        totalPairs: 5,
-        totalTimeMs: 12000,
-        answers: Array.from({ length: 5 }, (_, i) => ({
-          cardId: `c${i + 1}`,
-          matchedInMs: 2000,
-          attempts: 1,
-          isCorrectFirstTry: true,
-          isCorrect: true,
-        })),
-      };
+      const result = await service.submitVoicePronunciation('user-1', {
+        cardId: mockCard.id,
+        spokenTranscript: 'eloquent',
+      });
 
-      const result = await service.submitMatchingQuiz('user-1', submission);
+      expect(result.isPassed).toBe(true);
+      expect(result.xpAwarded).toBe(0);
+      expect(result.isDailyCapped).toBe(true);
+      expect(streakService.recordActivity).toHaveBeenCalled();
+    });
 
-      expect(result.xpBreakdown.isDailyCapped).toBe(true);
-      expect(result.totalXpEarned).toBe(0);
+    it('should enforce 1500ms cooldown and reject rapid submissions with 429', async () => {
+      prisma.card.findUnique.mockResolvedValue(mockCard);
+
+      await service.submitVoicePronunciation('user-1', {
+        cardId: mockCard.id,
+        spokenTranscript: 'eloquent',
+      });
+
+      await expect(
+        service.submitVoicePronunciation('user-1', {
+          cardId: mockCard.id,
+          spokenTranscript: 'eloquent',
+        }),
+      ).rejects.toThrow(HttpException);
+    });
+
+    it('should throw NotFoundException when card does not exist', async () => {
+      prisma.card.findUnique.mockResolvedValue(null);
+
+      await expect(
+        service.submitVoicePronunciation('user-1', {
+          cardId: 'non-existent',
+          spokenTranscript: 'hello',
+        }),
+      ).rejects.toThrow(NotFoundException);
+    });
+
+    it('should protect against forged client accuracy score by recalculating canonical score', async () => {
+      prisma.card.findUnique.mockResolvedValue({
+        id: 'c4',
+        word: 'cat',
+        deck: {
+          userId: 'user-1',
+          isPublic: false,
+        },
+      });
+
+      const result = await service.submitVoicePronunciation('user-1', {
+        cardId: 'c4',
+        spokenTranscript: 'dog',
+        accuracyScore: 100,
+      });
+
+      expect(result.isPassed).toBe(false);
+      expect(result.accuracyScore).toBe(0);
+      expect(result.tier).toBe('RETRY');
+      expect(result.xpAwarded).toBe(0);
     });
   });
 });

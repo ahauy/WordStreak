@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Volume2, Edit2, Trash2, Lightbulb } from "lucide-react";
+import { Volume2, Edit2, Trash2, Lightbulb, Mic } from "lucide-react";
 import { playWordPronunciation } from "../utils/speech";
 import type { CardResponse } from "@wordstreak/shared-types";
 
@@ -11,6 +11,7 @@ interface CardDataTableProps {
   isAllSelected: boolean;
   onEdit: (card: CardResponse) => void;
   onDelete: (card: CardResponse) => void;
+  onVoicePractice?: (card: CardResponse) => void;
 }
 
 export const CardDataTable: React.FC<CardDataTableProps> = ({
@@ -21,6 +22,7 @@ export const CardDataTable: React.FC<CardDataTableProps> = ({
   isAllSelected,
   onEdit,
   onDelete,
+  onVoicePractice,
 }) => {
   const [playingAudioId, setPlayingAudioId] = useState<string | null>(null);
 
@@ -124,21 +126,43 @@ export const CardDataTable: React.FC<CardDataTableProps> = ({
                   {/* Word & Phonetic */}
                   <td className="py-3.5 px-4">
                     <div className="flex items-center gap-2">
-                      <button
-                        type="button"
-                        onClick={(e) =>
-                          handlePlayAudio(e, card.id, card.word, card.audioUrl)
-                        }
-                        aria-label={`Phát âm ${card.word}`}
-                        title="Phát âm"
-                        className={`p-1.5 rounded-full transition-colors cursor-pointer flex-shrink-0 ${
-                          isPlaying
-                            ? "bg-[#f3e8ff] text-[#7e22ce] animate-pulse"
-                            : "text-[#737373] hover:text-black hover:bg-[#f0f0f0]"
-                        }`}
-                      >
-                        <Volume2 className="w-3.5 h-3.5" />
-                      </button>
+                      <div className="flex items-center gap-1 flex-shrink-0">
+                        <button
+                          type="button"
+                          onClick={(e) =>
+                            handlePlayAudio(
+                              e,
+                              card.id,
+                              card.word,
+                              card.audioUrl,
+                            )
+                          }
+                          aria-label={`Phát âm ${card.word}`}
+                          title="Phát âm"
+                          className={`p-1.5 rounded-full transition-colors cursor-pointer ${
+                            isPlaying
+                              ? "bg-[#f3e8ff] text-[#7e22ce] animate-pulse"
+                              : "text-[#737373] hover:text-black hover:bg-[#f0f0f0]"
+                          }`}
+                        >
+                          <Volume2 className="w-3.5 h-3.5" />
+                        </button>
+                        {onVoicePractice && (
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              onVoicePractice(card);
+                            }}
+                            aria-label={`Luyện phát âm ${card.word}`}
+                            title="Luyện phát âm"
+                            data-testid={`voice-practice-table-${card.id}`}
+                            className="p-1.5 rounded-full text-[#737373] hover:text-[#7e22ce] hover:bg-[#f3e8ff] transition-colors cursor-pointer"
+                          >
+                            <Mic className="w-3.5 h-3.5" />
+                          </button>
+                        )}
+                      </div>
                       <div>
                         <span className="font-bold text-black text-sm block group-hover:text-[#7e22ce] transition-colors">
                           {card.word}
@@ -197,6 +221,17 @@ export const CardDataTable: React.FC<CardDataTableProps> = ({
                     onClick={(e) => e.stopPropagation()}
                   >
                     <div className="flex items-center justify-end gap-1">
+                      {onVoicePractice && (
+                        <button
+                          type="button"
+                          onClick={() => onVoicePractice(card)}
+                          aria-label={`Luyện phát âm ${card.word}`}
+                          title="Luyện phát âm"
+                          className="p-1.5 rounded-full text-[#737373] hover:text-[#7e22ce] hover:bg-[#f3e8ff] transition-colors cursor-pointer"
+                        >
+                          <Mic className="w-3.5 h-3.5" />
+                        </button>
+                      )}
                       <button
                         type="button"
                         onClick={() => onEdit(card)}

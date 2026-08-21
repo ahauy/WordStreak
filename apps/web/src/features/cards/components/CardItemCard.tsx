@@ -7,6 +7,7 @@ import {
   Lightbulb,
   ChevronDown,
   ChevronUp,
+  Mic,
 } from "lucide-react";
 import { playWordPronunciation } from "../utils/speech";
 import type { CardResponse } from "@wordstreak/shared-types";
@@ -18,6 +19,7 @@ interface CardItemCardProps {
   onToggleSelect?: (cardId: string) => void;
   onEdit: (card: CardResponse) => void;
   onDelete: (card: CardResponse) => void;
+  onVoicePractice?: (card: CardResponse) => void;
 }
 
 export const CardItemCard: React.FC<CardItemCardProps> = ({
@@ -27,6 +29,7 @@ export const CardItemCard: React.FC<CardItemCardProps> = ({
   onToggleSelect,
   onEdit,
   onDelete,
+  onVoicePractice,
 }) => {
   const [isPlayingAudio, setIsPlayingAudio] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
@@ -126,6 +129,22 @@ export const CardItemCard: React.FC<CardItemCardProps> = ({
                   className={`w-4 h-4 ${isPlayingAudio ? "animate-pulse" : ""}`}
                 />
               </button>
+
+              {onVoicePractice && (
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onVoicePractice(card);
+                  }}
+                  aria-label={`Luyện phát âm ${card.word}`}
+                  title="Luyện phát âm"
+                  data-testid={`voice-practice-${card.id}`}
+                  className="p-1.5 rounded-full text-[#737373] hover:text-[#7e22ce] hover:bg-[#f3e8ff] transition-colors cursor-pointer"
+                >
+                  <Mic className="w-3.5 h-3.5" />
+                </button>
+              )}
 
               <button
                 type="button"

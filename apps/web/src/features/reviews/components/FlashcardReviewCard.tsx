@@ -1,5 +1,5 @@
 import React, { useEffect, useCallback } from "react";
-import { Volume2, BookOpen, Lightbulb, RotateCw } from "lucide-react";
+import { Volume2, BookOpen, Lightbulb, RotateCw, Mic } from "lucide-react";
 import type { DueCardItem, SrsRating } from "@wordstreak/shared-types";
 
 interface FlashcardReviewCardProps {
@@ -8,6 +8,7 @@ interface FlashcardReviewCardProps {
   isSubmitting: boolean;
   onFlip: () => void;
   onRate: (rating: SrsRating) => void;
+  onOpenVoicePractice?: () => void;
 }
 
 export const FlashcardReviewCard: React.FC<FlashcardReviewCardProps> = ({
@@ -16,6 +17,7 @@ export const FlashcardReviewCard: React.FC<FlashcardReviewCardProps> = ({
   isSubmitting,
   onFlip,
   onRate,
+  onOpenVoicePractice,
 }) => {
   const speakWord = useCallback((text: string) => {
     if ("speechSynthesis" in window) {
@@ -113,25 +115,40 @@ export const FlashcardReviewCard: React.FC<FlashcardReviewCardProps> = ({
               <h2 className="text-4xl sm:text-5xl font-semibold text-[#000000] tracking-tight font-display mb-3">
                 {card.word}
               </h2>
-              {card.phonetic && (
-                <div className="flex items-center justify-center gap-2">
+              <div className="flex items-center justify-center gap-2">
+                {card.phonetic && (
                   <span className="text-lg text-[#737373] font-mono">
                     {card.phonetic}
                   </span>
+                )}
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    playAudio();
+                  }}
+                  className="p-1.5 rounded-full hover:bg-[#fafafa] text-[#525252] hover:text-[#000000] transition-colors cursor-pointer"
+                  title="Listen pronunciation (R)"
+                  aria-label="Listen pronunciation"
+                >
+                  <Volume2 className="w-4 h-4" />
+                </button>
+                {onOpenVoicePractice && (
                   <button
                     type="button"
                     onClick={(e) => {
                       e.stopPropagation();
-                      playAudio();
+                      onOpenVoicePractice();
                     }}
-                    className="p-1.5 rounded-full hover:bg-[#fafafa] text-[#525252] hover:text-[#000000] transition-colors"
-                    title="Listen pronunciation (R)"
-                    aria-label="Listen pronunciation"
+                    className="p-1.5 rounded-full hover:bg-[#f3e8ff] text-[#7e22ce] hover:text-[#6b21a8] transition-colors cursor-pointer"
+                    title="Luyện phát âm"
+                    aria-label="Luyện phát âm"
+                    data-testid="voice-practice-trigger-front"
                   >
-                    <Volume2 className="w-4 h-4" />
+                    <Mic className="w-4 h-4" />
                   </button>
-                </div>
-              )}
+                )}
+              </div>
             </div>
 
             {/* Flip prompt */}
@@ -162,11 +179,27 @@ export const FlashcardReviewCard: React.FC<FlashcardReviewCardProps> = ({
                       e.stopPropagation();
                       playAudio();
                     }}
-                    className="p-1 rounded-full hover:bg-[#fafafa] text-[#737373] hover:text-[#000000]"
+                    className="p-1 rounded-full hover:bg-[#fafafa] text-[#737373] hover:text-[#000000] cursor-pointer"
                     title="Replay audio (R)"
+                    aria-label="Replay audio"
                   >
                     <Volume2 className="w-4 h-4" />
                   </button>
+                  {onOpenVoicePractice && (
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onOpenVoicePractice();
+                      }}
+                      className="p-1 rounded-full hover:bg-[#f3e8ff] text-[#7e22ce] hover:text-[#6b21a8] transition-colors cursor-pointer"
+                      title="Luyện phát âm"
+                      aria-label="Luyện phát âm"
+                      data-testid="voice-practice-trigger-back"
+                    >
+                      <Mic className="w-4 h-4" />
+                    </button>
+                  )}
                 </div>
                 {card.phonetic && (
                   <span className="text-sm text-[#737373] font-mono">

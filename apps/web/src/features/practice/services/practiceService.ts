@@ -9,6 +9,7 @@ import type {
   SubmitMatchingQuizDto,
   MatchingQuizResultDto,
   ApiResponse,
+  VoicePronunciationResultDto,
 } from "@wordstreak/shared-types";
 
 export const practiceService = {
@@ -113,5 +114,20 @@ export const practiceService = {
         missedCards: [],
       }
     );
+  },
+
+  async submitVoicePronunciation(dto: {
+    cardId: string;
+    targetWord?: string;
+    spokenTranscript: string;
+    accuracyScore?: number;
+    accent?: string;
+    timeSpentMs?: number;
+    evaluationMode?: "STRICT" | "LENIENT";
+  }): Promise<ApiResponse<VoicePronunciationResultDto>> {
+    const response = await apiClient.post<
+      ApiResponse<VoicePronunciationResultDto>
+    >("/practice/voice/submit", dto);
+    return response.data;
   },
 };
