@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Sparkles, Trophy, ArrowRight, Zap } from "lucide-react";
+import { X, Sparkles, Trophy, ArrowRight, Zap, Snowflake } from "lucide-react";
 import { StreakFlame } from "./StreakFlame";
 import { getFlameTier } from "../config/flameTiers";
 
@@ -13,6 +13,8 @@ export interface StreakCelebrationModalProps {
   flameTier?: number;
   message?: string;
   isNewBest?: boolean;
+  earnedMilestoneFreeze?: boolean;
+  streakFreezes?: number;
 }
 
 // Deterministic confetti particle data for celebration explosion
@@ -50,9 +52,13 @@ export const StreakCelebrationModal: React.FC<StreakCelebrationModalProps> = ({
   flameTier,
   message,
   isNewBest,
+  earnedMilestoneFreeze,
+  streakFreezes,
 }) => {
   const tierInfo = getFlameTier(streakDays);
   const primaryButtonRef = useRef<HTMLButtonElement>(null);
+  const isFreezeMilestone =
+    earnedMilestoneFreeze || streakDays === 7 || streakDays === 30;
 
   // Close on Escape key and autofocus primary action
   useEffect(() => {
@@ -170,6 +176,25 @@ export const StreakCelebrationModal: React.FC<StreakCelebrationModalProps> = ({
                 ({tierInfo.daysRange})
               </span>
             </motion.div>
+
+            {/* Bonus Milestone Freeze Badge */}
+            {isFreezeMilestone && (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9, y: 4 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                transition={{ delay: 0.25, duration: 0.3 }}
+                data-testid="milestone-freeze-badge"
+                className="mt-2.5 inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-cyan-50 text-cyan-700 border border-cyan-200"
+              >
+                <Snowflake className="w-3.5 h-3.5 text-cyan-600" />
+                <span>
+                  +1 Streak Freeze Earned! 🧊
+                  {streakFreezes !== undefined
+                    ? ` (${streakFreezes} held)`
+                    : ""}
+                </span>
+              </motion.div>
+            )}
           </div>
 
           {/* Headline & Celebration Copy */}

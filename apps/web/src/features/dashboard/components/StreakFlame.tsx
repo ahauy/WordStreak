@@ -49,6 +49,7 @@ export const StreakFlame: React.FC<StreakFlameProps> = ({
           ]
         : getFlameTier(streakDays);
 
+  const isExplicit = explicitTier !== undefined || customTierInfo !== undefined;
   const sizeMap = {
     xs: { box: "h-5 w-5", svg: 16, glow: "h-5 w-5", textSize: "text-[10px]" },
     sm: { box: "h-8 w-8", svg: 24, glow: "h-7 w-7", textSize: "text-xs" },
@@ -64,9 +65,15 @@ export const StreakFlame: React.FC<StreakFlameProps> = ({
   };
 
   const dim = sizeMap[size];
-  const gradId = `flameGrad-${tierInfo.tier}-${size}`;
+  const reactId = React.useId().replace(/:/g, "");
+  const gradId = `flameGrad-${tierInfo.tier}-${size}-${reactId}`;
   const isFlameActive =
-    isActiveToday !== undefined ? isActiveToday : streakDays > 0;
+    isActiveToday !== undefined
+      ? isActiveToday
+      : isExplicit
+        ? tierInfo.tier > 0
+        : streakDays > 0;
+  const shouldGrayscale = !isExplicit && !isFlameActive && streakDays === 0;
 
   return (
     <div
@@ -152,7 +159,7 @@ export const StreakFlame: React.FC<StreakFlameProps> = ({
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
             aria-hidden="true"
-            className={`relative z-10 ${!isFlameActive && streakDays === 0 ? "opacity-40 grayscale" : ""}`}
+            className={`relative z-10 ${shouldGrayscale ? "opacity-40 grayscale" : ""}`}
           >
             <defs>
               {/* Outer Burning Gradient */}

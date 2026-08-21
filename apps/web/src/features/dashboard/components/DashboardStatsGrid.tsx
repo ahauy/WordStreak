@@ -19,6 +19,8 @@ interface DashboardStatsGridProps {
   dailyGoal?: number;
   cardsDueToday?: number;
   totalDecks?: number;
+  streakFreezes?: number;
+  maxStreakFreezes?: number;
   onOpenGoalSettings?: () => void;
   onOpenFlameNurture?: () => void;
   onCreateDeck?: () => void;
@@ -30,6 +32,8 @@ export const DashboardStatsGrid: React.FC<DashboardStatsGridProps> = ({
   dailyGoal = 10,
   cardsDueToday = 0,
   totalDecks = 0,
+  streakFreezes = 1,
+  maxStreakFreezes = 2,
   onOpenGoalSettings,
   onOpenFlameNurture,
   onCreateDeck,
@@ -81,8 +85,9 @@ export const DashboardStatsGrid: React.FC<DashboardStatsGridProps> = ({
             <Clock className="w-3.5 h-3.5 text-[#9333ea]" /> Best:{" "}
             {longestStreak}d
           </span>
-          <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-[#15803d] bg-[#f0fdf4] px-2 py-0.5 rounded-full border border-[#bbf7d0]">
-            <Shield className="w-2.5 h-2.5" /> Freeze: 1
+          <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-cyan-700 bg-cyan-50 px-2 py-0.5 rounded-full border border-cyan-200">
+            <Shield className="w-2.5 h-2.5 text-cyan-600" /> Freeze:{" "}
+            {streakFreezes}/{maxStreakFreezes}
           </span>
         </div>
       </motion.div>

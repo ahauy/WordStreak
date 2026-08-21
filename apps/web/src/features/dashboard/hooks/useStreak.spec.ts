@@ -117,6 +117,34 @@ describe("useStreak", () => {
     expect(result.current.flameTier).toBe(2);
   });
 
+  it("should expose streak freeze properties and allow dismissing freeze notice", async () => {
+    const mockFreezeData: UserStreakDto = {
+      ...mockStreakData,
+      streakFreezes: 1,
+      maxStreakFreezes: 2,
+      wasProtectedByFreeze: true,
+    };
+    vi.spyOn(streakService, "getStreak").mockResolvedValueOnce(mockFreezeData);
+
+    const { result } = renderHook(() => useStreak({ enabled: true }));
+
+    await waitFor(() => {
+      expect(result.current.isLoading).toBe(false);
+    });
+
+    expect(result.current.streakFreezes).toBe(1);
+    expect(result.current.maxStreakFreezes).toBe(2);
+    expect(result.current.wasProtectedByFreeze).toBe(true);
+
+    // Dismiss notice
+    act(() => {
+      result.current.dismissFreezeSavedNotice();
+    });
+
+    expect(result.current.wasProtectedByFreeze).toBe(false);
+    expect(result.current.streak?.wasProtectedByFreeze).toBe(false);
+  });
+
   it("should handle error when getStreak fails", async () => {
     vi.spyOn(streakService, "getStreak").mockRejectedValueOnce(
       new Error("Network Error"),
