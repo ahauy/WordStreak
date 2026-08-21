@@ -99,12 +99,15 @@ model UserCardProgress {
 }
 
 model UserStreak {
-  id             String    @id @default(uuid())
-  userId         String
-  currentStreak  Int       @default(0)
-  bestStreak     Int       @default(0)
-  lastActiveDate DateTime?
-  user           User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id               String    @id @default(uuid())
+  userId           String    @unique
+  currentStreak    Int       @default(0)
+  bestStreak       Int       @default(0)
+  lastActiveDate   DateTime?
+  streakFreezes    Int       @default(1)
+  lastFreezeDate   DateTime?
+  totalFreezesUsed Int       @default(0)
+  user             User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("user_streaks")
 }
