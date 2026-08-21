@@ -35,20 +35,18 @@ export const CommunityDeckPreviewModal: React.FC<
 
   useEffect(() => {
     if (!isOpen || !deck) {
-      setDetail(null);
-      setError(null);
       return;
     }
 
     let isMounted = true;
-    setLoading(true);
-    setError(null);
 
     communityService
       .getCommunityDeckDetail(deck.id)
       .then((res) => {
         if (isMounted) {
           setDetail(res);
+          setError(null);
+          setLoading(false);
         }
       })
       .catch((err: unknown) => {
@@ -58,10 +56,8 @@ export const CommunityDeckPreviewModal: React.FC<
               ? err.message
               : "Không thể tải chi tiết bộ từ vựng",
           );
+          setLoading(false);
         }
-      })
-      .finally(() => {
-        if (isMounted) setLoading(false);
       });
 
     return () => {

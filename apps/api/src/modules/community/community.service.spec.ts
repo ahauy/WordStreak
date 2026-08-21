@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { Test, TestingModule } from '@nestjs/testing';
 import {
   NotFoundException,
@@ -258,26 +257,28 @@ describe('CommunityService (US-ECO-02)', () => {
 
       mockPrismaService.deck.findUnique.mockResolvedValue(targetDeck);
 
-      mockPrismaService.$transaction.mockImplementation(async (callback) => {
-        const tx = {
-          deck: {
-            create: jest.fn().mockResolvedValue({
-              id: 'cloned-deck-uuid',
-              title: 'Oxford 3000 (Bản sao)',
-            }),
-            update: jest.fn().mockResolvedValue({}),
-          },
-          card: {
-            create: jest.fn().mockResolvedValue({
-              id: 'cloned-card-uuid',
-            }),
-          },
-          userCardProgress: {
-            create: jest.fn().mockResolvedValue({}),
-          },
-        };
-        return callback(tx);
-      });
+      mockPrismaService.$transaction.mockImplementation(
+        (callback: (tx: unknown) => Promise<unknown>) => {
+          const tx = {
+            deck: {
+              create: jest.fn().mockResolvedValue({
+                id: 'cloned-deck-uuid',
+                title: 'Oxford 3000 (Bản sao)',
+              }),
+              update: jest.fn().mockResolvedValue({}),
+            },
+            card: {
+              create: jest.fn().mockResolvedValue({
+                id: 'cloned-card-uuid',
+              }),
+            },
+            userCardProgress: {
+              create: jest.fn().mockResolvedValue({}),
+            },
+          };
+          return callback(tx);
+        },
+      );
 
       const result = await service.cloneDeck('learner-1', 'source-deck-1');
 
@@ -309,23 +310,25 @@ describe('CommunityService (US-ECO-02)', () => {
         isArchived: false,
       });
 
-      mockPrismaService.$transaction.mockImplementation(async (callback) => {
-        const tx = {
-          deckRating: {
-            upsert: jest.fn().mockResolvedValue({
-              rating: 4,
-              comment: 'Good explanations',
-            }),
-            findMany: jest
-              .fn()
-              .mockResolvedValue([{ rating: 5 }, { rating: 4 }]),
-          },
-          deck: {
-            update: jest.fn().mockResolvedValue({}),
-          },
-        };
-        return callback(tx);
-      });
+      mockPrismaService.$transaction.mockImplementation(
+        (callback: (tx: unknown) => Promise<unknown>) => {
+          const tx = {
+            deckRating: {
+              upsert: jest.fn().mockResolvedValue({
+                rating: 4,
+                comment: 'Good explanations',
+              }),
+              findMany: jest
+                .fn()
+                .mockResolvedValue([{ rating: 5 }, { rating: 4 }]),
+            },
+            deck: {
+              update: jest.fn().mockResolvedValue({}),
+            },
+          };
+          return callback(tx);
+        },
+      );
 
       const result = await service.rateDeck('learner-1', 'deck-1', {
         rating: 4,

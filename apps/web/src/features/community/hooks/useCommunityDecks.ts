@@ -20,34 +20,46 @@ export function useCommunityDecks(initialQuery?: CommunityDecksQueryDto) {
   );
   const [page, setPage] = useState(initialQuery?.page || 1);
 
-  const fetchDecks = useCallback(async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      const response = await communityService.getCommunityDecks({
+  const [refetchIndex, setRefetchIndex] = useState(0);
+
+  useEffect(() => {
+    let ignore = false;
+    communityService
+      .getCommunityDecks({
         search: search.trim() || undefined,
         category: category !== "ALL" ? category : undefined,
         sort,
         page,
         limit: 12,
+      })
+      .then((response) => {
+        if (!ignore) {
+          setDecks(response.items);
+          setTotalPages(response.meta.totalPages);
+          setTotalItems(response.meta.totalItems);
+          setError(null);
+          setLoading(false);
+        }
+      })
+      .catch((err: unknown) => {
+        if (!ignore) {
+          const message =
+            err instanceof Error
+              ? err.message
+              : "Không thể tải danh sách bộ từ vựng cộng đồng";
+          setError(message);
+          setLoading(false);
+        }
       });
-      setDecks(response.items);
-      setTotalPages(response.meta.totalPages);
-      setTotalItems(response.meta.totalItems);
-    } catch (err: unknown) {
-      const message =
-        err instanceof Error
-          ? err.message
-          : "Không thể tải danh sách bộ từ vựng cộng đồng";
-      setError(message);
-    } finally {
-      setLoading(false);
-    }
-  }, [search, category, sort, page]);
 
-  useEffect(() => {
-    void fetchDecks();
-  }, [fetchDecks]);
+    return () => {
+      ignore = true;
+    };
+  }, [search, category, sort, page, refetchIndex]);
+
+  const refetch = useCallback(() => {
+    setRefetchIndex((prev) => prev + 1);
+  }, []);
 
   const handleSearchChange = (val: string) => {
     setSearch(val);
@@ -78,6 +90,6 @@ export function useCommunityDecks(initialQuery?: CommunityDecksQueryDto) {
     handleSearchChange,
     handleCategoryChange,
     handleSortChange,
-    refetch: fetchDecks,
+    refetch,
   };
 }
