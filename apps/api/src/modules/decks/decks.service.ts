@@ -14,7 +14,6 @@ import type {
   DeckResponse,
   DeckStats,
   BulkImportCardsResult,
-  ConflictStrategy,
   BulkImportErrorItem,
   DeckExportCardItem,
   DeckExportDataResponse,
@@ -384,14 +383,13 @@ export class DecksService {
           };
 
           const existing = existingCardsMap.get(normalizedWord);
-          const action = (
+          const action =
             item.rowConflictAction && item.rowConflictAction !== 'DEFAULT'
               ? item.rowConflictAction
               : item.conflictAction ||
                 dto.conflictStrategy ||
                 dto.defaultStrategy ||
-                'SKIP'
-          ) as ConflictStrategy;
+                'SKIP';
 
           if (existing && action === 'SKIP') {
             skipped++;

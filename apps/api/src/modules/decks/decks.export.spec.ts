@@ -299,7 +299,7 @@ describe('DecksService - Export Deck (US-ECO-01)', () => {
       );
 
       expect(typeof output).toBe('string');
-      expect(output.startsWith('\uFEFF')).toBe(true);
+      expect((output as string).startsWith('\uFEFF')).toBe(true);
       expect(mockSet).toHaveBeenCalledWith(
         expect.objectContaining({
           'Content-Type': 'text/csv; charset=utf-8',
