@@ -300,15 +300,17 @@ _Mục tiêu: Tiết kiệm 90% thời gian tạo thẻ cho người dùng, tố
 
 _Mục tiêu: Giúp người dùng không chỉ nhớ mặt chữ mà còn tự tin phát âm chuẩn xác._
 
-- [ ] **US-VOICE-01: Nhận diện giọng nói & Kiểm tra phát âm (Web Speech Recognition)**
-  - **AC:** Người dùng nhấn giữ icon Microphone và đọc to từ vựng hiển thị trên màn hình. Trình duyệt nhận diện âm thanh và so sánh chuỗi ký tự nhận diện với từ mục tiêu.
+- [x] **US-VOICE-01: Nhận diện giọng nói & Kiểm tra phát âm (Web Speech Recognition)**
+  - **AC:** Người dùng nhấn giữ icon Microphone hoặc bấm phím Space và đọc to từ vựng hiển thị trên màn hình. Trình duyệt nhận diện âm thanh qua Web Speech API và so sánh chuỗi ký tự nhận diện với từ mục tiêu bằng thuật toán Levenshtein & LCS character diff. Chấm điểm 3 phân hạng: Exact (100%), Close (80-99%), Retry (<80%). Thưởng +10 XP cho kết quả >= 80%, ghi nhận streak, cooldown 1500ms và trần 500 XP/ngày.
   - **Tasks:**
-    - [ ] Frontend: Tích hợp `webkitSpeechRecognition` / Web Speech API trong React Hook `useSpeechRecognition`.
-    - [ ] Frontend: Đánh giá kết quả (Phát âm chuẩn xác 100%, Gần đúng, hoặc Cần thử lại) kèm visual soundwave.
-- [ ] **US-VOICE-02: Phát âm mẫu chất lượng cao (Native Audio Playback)**
-  - **AC:** Phát âm thanh giọng đọc chuẩn Anh-Mỹ (US) và Anh-Anh (UK) từ CDN từ điển (hoặc Google Text-to-Speech API).
+    - [x] Backend: Endpoint `POST /api/v1/practice/voice/submit`, anti-abuse cooldown (1500ms), trần 500 XP/ngày, server-side Levenshtein/LCS scoring, và ghi nhận Daily Streak.
+    - [x] Frontend: Hook `useSpeechRecognition` (interim streaming, silence/max watchdog), `useAudioVisualizer` (AnalyserNode FFT 60 FPS), `AcousticSoundwave`, `PronunciationScoreBadge`, `MicPermissionBanner`, và `PronunciationPracticeModal`.
+- [x] **US-VOICE-02: Phát âm mẫu chất lượng cao & Hướng dẫn phát âm (Native Audio & IPA Syllable Guide)**
+  - **AC:** Phát âm thanh giọng đọc chuẩn Anh-Mỹ (US) và Anh-Anh (UK). Tốc độ đọc chậm 0.75x với bảo toàn cao độ (`preservesPitch = true`). Tự động fallback sang Web Speech Synthesis khi audio URL lỗi. Phân tách IPA thành các chip âm tiết tương tác với trọng âm chính (`ˈ`) và trọng âm phụ (`ˌ`). Hỗ trợ phím tắt (`Space`, `R`, `S`, `Escape`) và `aria-live` a11y.
   - **Tasks:**
-    - [ ] Backend/Frontend: Tự động crawl/map link audio chuẩn chất lượng cao từ Oxford/Cambridge CDN.
+    - [x] Frontend: `AccentAudioSelector` (US/UK switch, 0.75x slow toggle with pitch preservation), hook `useAudioSynthesizer` (Web Speech Synthesis failover).
+    - [x] Frontend: Bộ phân tích `ipaSyllableParser` và giao diện `PhoneticWordBreakdown` với chip âm tiết tương tác bấm nghe riêng lẻ.
+    - [x] Integration & A11y: Gắn trigger button vào Flashcard Review (`ReviewSessionPage`), Deck Detail (`DeckDetailPage`), Card Table (`CardDataTable`), Card Item (`CardItemCard`) và `QuizSetupModal`. Hỗ trợ phím tắt và `aria-live="polite"`.
 
 ---
 
@@ -348,23 +350,23 @@ _Mục tiêu: Giúp người dùng dễ dàng chuyển đổi dữ liệu và m�
   ├── Cinematic Cosmos Landing Page & Auth Screens
   └── Database Schema & Migrations
 
-[ Sprint 2 - Core Learning Loop MVP ]  ──► [ P0 MUST HAVE 🚀 ]
+[ Sprint 2 - Core Learning Loop MVP ]  ──► [ COMPLETED ✅ ]
   ├── EPIC-02: Decks & Cards CRUD Management
   ├── EPIC-03: SuperMemo-2 (SM-2) Spaced Repetition Engine
   └── EPIC-03: 3D Flashcard Review UI with Keyboard Shortcuts
 
-[ Sprint 3 - Quiz & Habit Retention ]  ──► [ P0 MUST HAVE 🎯 ]
+[ Sprint 3 - Quiz & Habit Retention ]  ──► [ COMPLETED ✅ ]
   ├── EPIC-04: Multiple Choice & Fill-in-the-blank Quizzes
   ├── EPIC-05: Daily Streak Engine & Timezone Logic
   └── EPIC-05: Daily Goal Settings & Progress Widget
 
-[ Sprint 4 - AI Automation & Deep Analytics ]  ──► [ P1 SHOULD HAVE 🤖 ]
+[ Sprint 4 - AI Automation & Deep Analytics ]  ──► [ COMPLETED ✅ ]
   ├── EPIC-07: AI Auto-fill Flashcard Data (OpenAI/Gemini)
   ├── EPIC-07: Centralized Global Dictionary Cache
   ├── EPIC-06: Word Mastery Breakdown & GitHub Heatmap
   └── EPIC-05: Streak Freeze Protection Mechanic
 
-[ Sprint 5 - Advanced Practice & Voice ]  ──► [ P1/P2 EXTENSION 🎙️ ]
+[ Sprint 5 - Advanced Practice & Voice ]  ──► [ COMPLETED ✅ ]
   ├── EPIC-04: Listening & Word Matching Games
   └── EPIC-08: Web Speech API Pronunciation Check & Soundwaves
 
