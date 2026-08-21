@@ -21,7 +21,12 @@ import { GetListeningQuizDto } from './dto/get-listening-quiz.dto';
 import { GetMatchingQuizDto } from './dto/get-matching-quiz.dto';
 import { SubmitQuizDto } from './dto/submit-quiz.dto';
 import { SubmitMatchingQuizDto } from './dto/submit-matching-quiz.dto';
-import type { JwtPayload, ApiResponse } from '@wordstreak/shared-types';
+import { SubmitVoiceDto } from './dto/submit-voice.dto';
+import type {
+  JwtPayload,
+  ApiResponse,
+  VoicePronunciationResultDto,
+} from '@wordstreak/shared-types';
 
 function isMatchingSubmission(
   dto: SubmitQuizDto | SubmitMatchingQuizDto,
@@ -167,6 +172,23 @@ export class PracticeController {
       success: true,
       data: result,
       message: 'Quiz session submitted successfully',
+    };
+  }
+
+  @Post('voice/submit')
+  @HttpCode(HttpStatus.OK)
+  async submitVoicePronunciation(
+    @CurrentUser() user: JwtPayload,
+    @Body() dto: SubmitVoiceDto,
+  ): Promise<ApiResponse<VoicePronunciationResultDto>> {
+    const result = await this.practiceService.submitVoicePronunciation(
+      user.sub,
+      dto,
+    );
+    return {
+      success: true,
+      data: result,
+      message: 'Voice pronunciation evaluated successfully',
     };
   }
 }

@@ -1,5 +1,17 @@
-import { Injectable, Logger } from '@nestjs/common';
+import {
+  Injectable,
+  Logger,
+  NotFoundException,
+  ForbiddenException,
+  HttpException,
+  HttpStatus,
+} from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { StreakService } from '../streaks/streak.service';
+import {
+  computePronunciationScore,
+  computeDiffSpans,
+} from './utils/pronunciation-scoring.util';
 import type {
   SubmitQuizDto,
   QuizResultResponseDto,
@@ -7,13 +19,140 @@ import type {
   SubmitMatchingQuizDto,
   MatchingQuizResultDto,
   MatchingMissedCardDto,
+  SubmitVoiceDto,
+  VoicePronunciationResultDto,
 } from '@wordstreak/shared-types';
 
 @Injectable()
 export class PracticeService {
   private readonly logger = new Logger(PracticeService.name);
+  private readonly voiceCooldownMap = new Map<string, number>();
 
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly streakService: StreakService,
+  ) {}
+
+  /**
+   * Resets voice cooldown map (useful for testing).
+   */
+  clearVoiceCooldown(userId?: string): void {
+    if (userId) {
+      this.voiceCooldownMap.delete(userId);
+    } else {
+      this.voiceCooldownMap.clear();
+    }
+  }
+
+  /**
+   * Validates voice pronunciation submission, verifies similarity, updates streaks, and rewards XP.
+   */
+  async submitVoicePronunciation(
+    userId: string,
+    dto: SubmitVoiceDto,
+  ): Promise<VoicePronunciationResultDto> {
+    this.checkVoiceCooldown(userId);
+
+    const card = await this.prisma.card.findUnique({
+      where: { id: dto.cardId },
+      include: { deck: true },
+    });
+
+    if (!card) {
+      throw new NotFoundException(`Card with ID ${dto.cardId} not found`);
+    }
+
+    if (card.deck && card.deck.userId !== userId && !card.deck.isPublic) {
+      throw new ForbiddenException('You do not have access to this card');
+    }
+
+    const {
+      score: accuracyScore,
+      tier,
+      isPassed,
+    } = computePronunciationScore(card.word, dto.spokenTranscript);
+    const diffSpans = computeDiffSpans(card.word, dto.spokenTranscript);
+
+    const baseXp = isPassed ? 10 : 0;
+    const { finalXp: xpAwarded, isDailyCapped } =
+      await this.enforceDailyPracticeCap(userId, baseXp);
+
+    let streakAdvanced = false;
+    if (isPassed) {
+      const streakResult = await this.streakService.recordActivity(userId);
+      streakAdvanced =
+        streakResult.streakIncreased || streakResult.isActiveToday;
+    }
+
+    if (xpAwarded > 0) {
+      await this.recordVoiceActivityAndXp(
+        userId,
+        card,
+        dto,
+        accuracyScore,
+        tier,
+        xpAwarded,
+      );
+    }
+
+    return {
+      isPassed,
+      accuracyScore,
+      tier,
+      xpAwarded,
+      isDailyCapped,
+      streakAdvanced,
+      diffSpans,
+    };
+  }
+
+  /**
+   * Enforces 1500ms anti-abuse cooldown per user for voice submissions.
+   */
+  private checkVoiceCooldown(userId: string): void {
+    const now = Date.now();
+    const lastTime = this.voiceCooldownMap.get(userId) ?? 0;
+    if (now - lastTime < 1500) {
+      throw new HttpException(
+        'Too many requests. Please wait 1.5 seconds before submitting another voice attempt.',
+        HttpStatus.TOO_MANY_REQUESTS,
+      );
+    }
+    this.voiceCooldownMap.set(userId, now);
+  }
+
+  /**
+   * Logs voice practice activity and increments user total XP.
+   */
+  private async recordVoiceActivityAndXp(
+    userId: string,
+    card: { id: string; word: string },
+    dto: SubmitVoiceDto,
+    accuracyScore: number,
+    tier: string,
+    xpAwarded: number,
+  ): Promise<void> {
+    await this.prisma.userActivityLog.create({
+      data: {
+        userId,
+        activityType: 'VOICE_PRONUNCIATION',
+        xpEarned: xpAwarded,
+        metadata: {
+          cardId: card.id,
+          targetWord: card.word,
+          spokenTranscript: dto.spokenTranscript,
+          accuracyScore,
+          tier,
+          accent: dto.accent,
+        },
+      },
+    });
+
+    await this.prisma.user.update({
+      where: { id: userId },
+      data: { totalXp: { increment: xpAwarded } },
+    });
+  }
 
   /**
    * Evaluates standard/listening quiz submissions, calculates XP and fetches missed cards.
@@ -330,6 +469,9 @@ export class PracticeService {
     const agg = await this.prisma.userActivityLog.aggregate({
       where: {
         userId,
+        activityType: {
+          in: ['VOICE_PRONUNCIATION', 'PRACTICE_QUIZ', 'WORD_MATCHING'],
+        },
         createdAt: { gte: todayStart, lte: todayEnd },
       },
       _sum: { xpEarned: true },

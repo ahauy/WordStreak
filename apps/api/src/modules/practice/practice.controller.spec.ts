@@ -9,7 +9,11 @@ import type { JwtPayload } from '@wordstreak/shared-types';
 
 describe('PracticeController', () => {
   let controller: PracticeController;
-  let practiceService: { submitQuiz: jest.Mock; submitMatchingQuiz: jest.Mock };
+  let practiceService: {
+    submitQuiz: jest.Mock;
+    submitMatchingQuiz: jest.Mock;
+    submitVoicePronunciation: jest.Mock;
+  };
   let quizGeneratorService: { generateQuestions: jest.Mock };
   let fillBlankGeneratorService: { generateQuestions: jest.Mock };
   let listeningGeneratorService: { generateQuestions: jest.Mock };
@@ -25,6 +29,7 @@ describe('PracticeController', () => {
     practiceService = {
       submitQuiz: jest.fn(),
       submitMatchingQuiz: jest.fn(),
+      submitVoicePronunciation: jest.fn(),
     };
 
     quizGeneratorService = {
@@ -261,6 +266,39 @@ describe('PracticeController', () => {
         totalQuestions: 10,
         answers: [],
       });
+    });
+  });
+
+  describe('submitVoicePronunciation', () => {
+    it('should delegate to PracticeService.submitVoicePronunciation', async () => {
+      const mockResult = {
+        isPassed: true,
+        accuracyScore: 100,
+        tier: 'EXACT' as const,
+        xpAwarded: 10,
+        isDailyCapped: false,
+        streakAdvanced: true,
+      };
+      practiceService.submitVoicePronunciation.mockResolvedValue(mockResult);
+
+      const payload = {
+        cardId: 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11',
+        spokenTranscript: 'eloquent',
+        accent: 'en-US',
+      };
+
+      const result = await controller.submitVoicePronunciation(
+        mockUser,
+        payload,
+      );
+
+      expect(result.success).toBe(true);
+      expect(result.data).toEqual(mockResult);
+      expect(result.message).toBe('Voice pronunciation evaluated successfully');
+      expect(practiceService.submitVoicePronunciation).toHaveBeenCalledWith(
+        'user-1',
+        payload,
+      );
     });
   });
 });
