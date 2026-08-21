@@ -211,10 +211,13 @@ _Mục tiêu: Đa dạng hóa hình thức kiểm tra để não bộ kích ho�
     - [x] Backend: Tích hợp logic tính điểm thưởng tốc độ XP (+15 XP) và chống bot trong `PracticeService.submitQuiz`.
     - [x] Frontend: Trình phát audio `useAudioPlayer` với nút nghe lại chậm (0.75x speed), Web Speech failover, dynamic character input slots (`ListeningTypingInput`), visual diff badge và thang gợi ý (`ProgressiveHintBox`).
     - [x] Frontend: Tích hợp tab Luyện nghe trong `QuizSetupModal` và trang làm bài `ListeningQuizPage`.
-- [ ] **US-QUIZ-04: Chế độ Nối từ vựng (Word Matching Game)**
-  - **AC:** Hiển thị 2 cột (5 từ tiếng Anh bên trái, 5 nghĩa tiếng Việt bên phải đã xáo trộn). Người dùng click chọn cặp tương ứng. Đúng thì biến mất, sai thì rung đỏ.
+- [x] **US-QUIZ-04: Chế độ Nối từ vựng (Word Matching Game)**
+  - **AC:** Hiển thị 2 cột (5 từ tiếng Anh bên trái, 5 nghĩa tiếng Việt bên phải đã xáo trộn). Người dùng click chọn cặp tương ứng. Đúng thì biến mất, sai thì rung đỏ. Hỗ trợ chọn 2 chiều, phím tắt (1-5, Q-T), đếm combo, thưởng tốc độ, âm thanh Web Audio không phụ thuộc asset ngoài và chống bot.
   - **Tasks:**
-    - [ ] Frontend: Component `WordMatchingGame` với animations bắt mắt và đếm ngược combo điểm số.
+    - [x] Backend: Endpoint `GET /api/v1/practice/matching` & `MatchingGeneratorService` sinh bàn cờ 2 cột 5 cặp từ được xáo trộn độc lập (Fisher-Yates).
+    - [x] Backend: Endpoint `POST /api/v1/practice/matching/submit` tính điểm XP (+2/pair), combo multiplier (lên đến 2.0x), speed bonus (+10 XP), perfect bonus (+5 XP), trần 500 XP/ngày và phát hiện bot tốc độ.
+    - [x] Frontend: Game engine `useMatchingGameEngine` & `useWebAudioSynthesizer` hỗ trợ chọn 2 chiều, phím tắt (`1-5`, `Q-T`), âm thanh Web Audio không phụ thuộc asset ngoài.
+    - [x] Frontend: Giao diện bàn cờ 2 cột `MatchingGameBoard`, `MatchingTile`, thanh tiến độ `MatchingProgressBar`, tích hợp `QuizSetupModal` và trang làm bài `WordMatchingPage`.
 
 ---
 
