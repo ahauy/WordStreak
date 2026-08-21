@@ -28,6 +28,7 @@ import { EditCardModal } from "../../cards/components/EditCardModal";
 import { DeleteCardConfirmModal } from "../../cards/components/DeleteCardConfirmModal";
 import { EditDeckModal } from "../components/EditDeckModal";
 import { QuizSetupModal } from "../../practice/components/QuizSetupModal";
+import { PronunciationPracticeModal } from "../../practice/components/PronunciationPracticeModal";
 import { DashboardNavbar } from "../../dashboard/components/DashboardNavbar";
 import { DeckIcon, getColorTheme } from "../constants/deckThemes";
 import type {
@@ -91,6 +92,8 @@ export const DeckDetailPage: React.FC = () => {
   const [isDeletingCardLoading, setIsDeletingCardLoading] = useState(false);
   const [isEditDeckOpen, setIsEditDeckOpen] = useState(false);
   const [isQuizSetupOpen, setIsQuizSetupOpen] = useState(false);
+  const [practicingVoiceCard, setPracticingVoiceCard] =
+    useState<CardResponse | null>(null);
 
   // Fetch Deck metadata
   const fetchDeckDetails = useCallback(async () => {
@@ -111,30 +114,31 @@ export const DeckDetailPage: React.FC = () => {
 
   useEffect(() => {
     let ignore = false;
-    if (deckId) {
-      decksService
-        .getDeck(deckId)
-        .then((data) => {
-          if (!ignore) {
-            setDeck(data);
-            setDeckError(null);
-          }
-        })
-        .catch((err: unknown) => {
-          if (!ignore) {
-            const message =
-              err instanceof Error
-                ? err.message
-                : "Không thể tải thông tin bộ từ";
-            setDeckError(message);
-          }
-        })
-        .finally(() => {
-          if (!ignore) {
-            setIsDeckLoading(false);
-          }
-        });
-    }
+    if (!deckId) return;
+
+    decksService
+      .getDeck(deckId)
+      .then((data) => {
+        if (!ignore) {
+          setDeck(data);
+          setDeckError(null);
+        }
+      })
+      .catch((err: unknown) => {
+        if (!ignore) {
+          const message =
+            err instanceof Error
+              ? err.message
+              : "Không thể tải thông tin bộ từ";
+          setDeckError(message);
+        }
+      })
+      .finally(() => {
+        if (!ignore) {
+          setIsDeckLoading(false);
+        }
+      });
+
     return () => {
       ignore = true;
     };
@@ -604,6 +608,7 @@ export const DeckDetailPage: React.FC = () => {
             isAllSelected={isAllSelected}
             onEdit={(c) => setEditingCard(c)}
             onDelete={(c) => setDeletingCard(c)}
+            onVoicePractice={(c) => setPracticingVoiceCard(c)}
           />
         ) : (
           /* Grid View */
@@ -628,6 +633,7 @@ export const DeckDetailPage: React.FC = () => {
                     onToggleSelect={toggleSelectCard}
                     onEdit={(c) => setEditingCard(c)}
                     onDelete={(c) => setDeletingCard(c)}
+                    onVoicePractice={(c) => setPracticingVoiceCard(c)}
                   />
                 </motion.div>
               ))}
@@ -780,7 +786,11 @@ export const DeckDetailPage: React.FC = () => {
         onClose={() => setIsQuizSetupOpen(false)}
         onStart={({ mode, limit, isZenMode }) => {
           setIsQuizSetupOpen(false);
-          if (mode === "fill-in-the-blank") {
+          if (mode === "pronunciation") {
+            if (cards.length > 0) {
+              setPracticingVoiceCard(cards[0]);
+            }
+          } else if (mode === "fill-in-the-blank") {
             navigate(
               `/decks/${deckId}/practice/fill-blank?limit=${limit}&zen=${isZenMode}`,
             );
@@ -797,6 +807,20 @@ export const DeckDetailPage: React.FC = () => {
           }
         }}
       />
+
+      {/* Pronunciation Practice Modal */}
+      {practicingVoiceCard && (
+        <PronunciationPracticeModal
+          isOpen={Boolean(practicingVoiceCard)}
+          onClose={() => setPracticingVoiceCard(null)}
+          cardId={practicingVoiceCard.id}
+          targetWord={practicingVoiceCard.word}
+          phonetic={practicingVoiceCard.phonetic}
+          meaning={practicingVoiceCard.meaning}
+          audioUrlUS={practicingVoiceCard.audioUrl}
+          audioUrlUK={null}
+        />
+      )}
     </div>
   );
 };
