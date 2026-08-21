@@ -17,8 +17,9 @@ export class PracticeService {
     userId: string,
     dto: SubmitQuizDto,
   ): Promise<QuizResultResponseDto> {
-    const { answers, totalQuestions } = dto;
+    const { answers, totalQuestions, mode } = dto;
     const totalCount = totalQuestions || answers.length;
+    const isListeningMode = mode === 'LISTENING';
 
     let correctCount = 0;
     let currentStreak = 0;
@@ -38,7 +39,7 @@ export class PracticeService {
         }
 
         const base = 10;
-        const speedBonus = ans.timeSpentMs && ans.timeSpentMs <= 5000 ? 5 : 0;
+        const speedBonus = this.calculateSpeedBonus(ans, isListeningMode);
         const multiplier =
           currentStreak >= 5 ? 1.5 : currentStreak >= 3 ? 1.2 : 1.0;
 
@@ -51,38 +52,14 @@ export class PracticeService {
       }
     }
 
-    // Anti-abuse check: Underhuman submission speed (<3000ms for >=5 questions)
-    if (answers.length >= 5 && totalTimeMs < 3000) {
+    if (this.isBotSubmission(answers, totalTimeMs)) {
       totalXpEarned = 0;
     }
 
     const accuracyPercentage =
       totalCount > 0 ? Math.round((correctCount / totalCount) * 100) : 0;
 
-    // Fetch details of missed cards
-    let missedCards: MissedCardDto[] = [];
-    if (missedCardIds.length > 0) {
-      const cards = await this.prisma.card.findMany({
-        where: {
-          id: { in: missedCardIds },
-        },
-        select: {
-          id: true,
-          word: true,
-          meaning: true,
-          phonetic: true,
-          audioUrl: true,
-        },
-      });
-
-      missedCards = cards.map((c) => ({
-        cardId: c.id,
-        word: c.word,
-        meaning: c.meaning,
-        phonetic: c.phonetic,
-        audioUrl: c.audioUrl,
-      }));
-    }
+    const missedCards = await this.fetchMissedCards(missedCardIds);
 
     return {
       totalQuestions: totalCount,
@@ -92,5 +69,86 @@ export class PracticeService {
       maxCombo,
       missedCards,
     };
+  }
+
+  /**
+   * Calculates speed bonus (+15 for listening drill, +5 for standard quiz).
+   */
+  private calculateSpeedBonus(
+    ans: SubmitQuizDto['answers'][0],
+    isListeningMode: boolean,
+  ): number {
+    const isListeningItem =
+      isListeningMode ||
+      ans.hintsUsed !== undefined ||
+      ans.replayCount !== undefined ||
+      ans.audioSpeedUsed !== undefined ||
+      ans.submittedWord !== undefined;
+
+    if (isListeningItem) {
+      const withinTime =
+        ans.timeSpentMs !== undefined && ans.timeSpentMs <= 8000;
+      const noHints = (ans.hintsUsed ?? 0) === 0;
+      const lowReplay = (ans.replayCount ?? 0) <= 2;
+
+      return withinTime && noHints && lowReplay ? 15 : 0;
+    }
+
+    return ans.timeSpentMs !== undefined && ans.timeSpentMs <= 5000 ? 5 : 0;
+  }
+
+  /**
+   * Detects automated bot scripts submitting at underhuman velocity.
+   */
+  private isBotSubmission(
+    answers: SubmitQuizDto['answers'],
+    totalTimeMs: number,
+  ): boolean {
+    if (answers.length >= 5 && totalTimeMs < 3000) {
+      return true;
+    }
+
+    if (
+      answers.length > 0 &&
+      answers.some(
+        (ans) => ans.timeSpentMs !== undefined && ans.timeSpentMs < 400,
+      )
+    ) {
+      return true;
+    }
+
+    return false;
+  }
+
+  /**
+   * Fetches missed card details without mutating any SRS state.
+   */
+  private async fetchMissedCards(
+    missedCardIds: string[],
+  ): Promise<MissedCardDto[]> {
+    if (missedCardIds.length === 0) {
+      return [];
+    }
+
+    const cards = await this.prisma.card.findMany({
+      where: {
+        id: { in: missedCardIds },
+      },
+      select: {
+        id: true,
+        word: true,
+        meaning: true,
+        phonetic: true,
+        audioUrl: true,
+      },
+    });
+
+    return cards.map((c) => ({
+      cardId: c.id,
+      word: c.word,
+      meaning: c.meaning,
+      phonetic: c.phonetic,
+      audioUrl: c.audioUrl,
+    }));
   }
 }

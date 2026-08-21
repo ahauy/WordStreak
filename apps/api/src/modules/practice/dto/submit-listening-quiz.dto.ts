@@ -12,18 +12,10 @@ import {
 } from 'class-validator';
 import { Type } from 'class-transformer';
 
-export class QuizAnswerItemDto {
-  @IsOptional()
-  @IsString()
-  questionId?: string;
-
+export class ListeningAnswerSubmissionDto {
   @IsNotEmpty()
   @IsString()
   cardId!: string;
-
-  @IsOptional()
-  @IsString()
-  selectedOptionId?: string | null;
 
   @IsOptional()
   @IsString()
@@ -53,7 +45,7 @@ export class QuizAnswerItemDto {
   audioSpeedUsed?: number;
 }
 
-export class SubmitQuizDto {
+export class SubmitListeningQuizDto {
   @IsNotEmpty()
   @IsString()
   deckId!: string;
@@ -69,6 +61,6 @@ export class SubmitQuizDto {
 
   @IsArray()
   @ValidateNested({ each: true })
-  @Type(() => QuizAnswerItemDto)
-  answers!: QuizAnswerItemDto[];
+  @Type(() => ListeningAnswerSubmissionDto)
+  answers!: ListeningAnswerSubmissionDto[];
 }
