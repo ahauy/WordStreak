@@ -19,6 +19,7 @@ import { ListeningQuizPage } from "./features/practice/pages/ListeningQuizPage";
 import { WordMatchingPage } from "./features/practice/pages/WordMatchingPage";
 import { LandingPage } from "./features/landing/pages/LandingPage";
 import { AnalyticsPage } from "./features/analytics/pages/AnalyticsPage";
+import { CommunityDecksPage } from "./features/community/pages/CommunityDecksPage";
 import { ProtectedRoute } from "./features/auth/components/ProtectedRoute";
 import { useAuthStore } from "./store/useAuthStore";
 import { useThemeStore } from "./store/useThemeStore";
@@ -35,6 +36,9 @@ function AnimatedRoutes() {
         {/* Public Auth Routes */}
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
+
+        {/* Community Decks (Publicly accessible browse/preview) */}
+        <Route path="/community" element={<CommunityDecksPage />} />
 
         {/* Protected Application Routes */}
         <Route
