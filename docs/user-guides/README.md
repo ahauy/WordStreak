@@ -13,6 +13,7 @@ Tập hợp tất cả các tài liệu hướng dẫn sử dụng trực quan, 
 |  3  | **Luyện Trắc nghiệm Từ vựng Nhanh (Multiple Choice Quiz)**    |  `US-QUIZ-01`   | [quiz-multiple-choice.md](./quiz-multiple-choice.md)     |      ✅ Có       |
 |  4  | **Luyện Điền từ vào câu ví dụ (Fill-in-the-blank & Anagram)** |  `US-QUIZ-02`   | [quiz-fill-in-the-blank.md](./quiz-fill-in-the-blank.md) |      ✅ Có       |
 |  5  | **Hệ thống Chuỗi Ngày học & Linh vật Ngọn lửa Tím**           |  `US-GAME-01`   | [daily-streak-engine.md](./daily-streak-engine.md)       |      ✅ Có       |
+|  6  | **Khiên Đóng Băng Chuỗi Ngày Học (Streak Freeze)**            |  `US-GAME-02`   | [streak-freeze.md](./streak-freeze.md)                   |      ✅ Có       |
 
 ---
 
