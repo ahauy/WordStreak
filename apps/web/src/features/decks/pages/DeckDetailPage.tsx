@@ -788,6 +788,10 @@ export const DeckDetailPage: React.FC = () => {
             navigate(
               `/decks/${deckId}/practice/listening?limit=${limit}&zen=${isZenMode}`,
             );
+          } else if (mode === "matching") {
+            navigate(
+              `/decks/${deckId}/practice/matching?limit=${limit}&zen=${isZenMode}`,
+            );
           } else {
             navigate(`/decks/${deckId}/quiz?limit=${limit}&zen=${isZenMode}`);
           }

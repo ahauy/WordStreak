@@ -5,6 +5,9 @@ import type {
   ListeningQuestionDto,
   SubmitQuizDto,
   QuizResultResponseDto,
+  MatchingQuizResponseDto,
+  SubmitMatchingQuizDto,
+  MatchingQuizResultDto,
   ApiResponse,
 } from "@wordstreak/shared-types";
 
@@ -48,6 +51,26 @@ export const practiceService = {
     return response.data.data || [];
   },
 
+  async getMatchingQuiz(
+    deckId: string,
+    limit: number = 10,
+  ): Promise<MatchingQuizResponseDto> {
+    const response = await apiClient.get<ApiResponse<MatchingQuizResponseDto>>(
+      "/practice/matching",
+      {
+        params: { deckId, limit },
+      },
+    );
+    return (
+      response.data.data || {
+        deckId,
+        totalCards: 0,
+        totalRounds: 0,
+        rounds: [],
+      }
+    );
+  },
+
   async submitQuiz(dto: SubmitQuizDto): Promise<QuizResultResponseDto> {
     const response = await apiClient.post<ApiResponse<QuizResultResponseDto>>(
       "/practice/submit-quiz",
@@ -60,6 +83,33 @@ export const practiceService = {
         accuracyPercentage: 0,
         totalXpEarned: 0,
         maxCombo: 0,
+        missedCards: [],
+      }
+    );
+  },
+
+  async submitMatchingQuiz(
+    dto: SubmitMatchingQuizDto,
+  ): Promise<MatchingQuizResultDto> {
+    const response = await apiClient.post<ApiResponse<MatchingQuizResultDto>>(
+      "/practice/matching/submit",
+      dto,
+    );
+    return (
+      response.data.data || {
+        totalPairs: 0,
+        matchedCount: 0,
+        accuracyPercentage: 0,
+        maxCombo: 0,
+        totalTimeMs: 0,
+        totalXpEarned: 0,
+        xpBreakdown: {
+          baseXp: 0,
+          comboBonusXp: 0,
+          speedBonusXp: 0,
+          perfectBonusXp: 0,
+          totalXp: 0,
+        },
         missedCards: [],
       }
     );

@@ -7,11 +7,15 @@ import {
   ArrowLeft,
   Volume2,
   CheckCircle2,
+  Zap,
 } from "lucide-react";
-import type { QuizResultResponseDto } from "@wordstreak/shared-types";
+import type {
+  QuizResultResponseDto,
+  MatchingQuizResultDto,
+} from "@wordstreak/shared-types";
 
 interface QuizResultsViewProps {
-  result: QuizResultResponseDto;
+  result: QuizResultResponseDto | MatchingQuizResultDto;
   onRetake: () => void;
   onBackToDeck: () => void;
 }
@@ -34,6 +38,13 @@ export const QuizResultsView: React.FC<QuizResultsViewProps> = ({
 
   const isPerfect = result.accuracyPercentage === 100;
   const isGood = result.accuracyPercentage >= 70;
+
+  const isMatching = "totalPairs" in result;
+  const totalItems = isMatching ? result.totalPairs : result.totalQuestions;
+  const correctItems = isMatching ? result.matchedCount : result.correctCount;
+  const xpBreakdown = isMatching
+    ? (result as MatchingQuizResultDto).xpBreakdown
+    : null;
 
   return (
     <motion.div
@@ -61,12 +72,12 @@ export const QuizResultsView: React.FC<QuizResultsViewProps> = ({
         </h1>
         <p className="text-sm font-sans text-[#737373] mb-6">
           {isPerfect
-            ? "You scored 100% accuracy with zero mistakes."
-            : `You mastered ${result.correctCount} out of ${result.totalQuestions} questions.`}
+            ? `You scored 100% accuracy with zero mistakes across ${totalItems} ${isMatching ? "pairs" : "questions"}.`
+            : `You mastered ${correctItems} out of ${totalItems} ${isMatching ? "pairs" : "questions"}.`}
         </p>
 
         {/* Stats Grid */}
-        <div className="grid grid-cols-3 gap-3 mb-8">
+        <div className="grid grid-cols-3 gap-3 mb-6">
           {/* Accuracy */}
           <div className="bg-[#fafafa] border border-[#e5e5e5] rounded-2xl p-3.5">
             <span className="block text-xs font-mono text-[#737373] mb-1">
@@ -99,11 +110,56 @@ export const QuizResultsView: React.FC<QuizResultsViewProps> = ({
           </div>
         </div>
 
+        {/* XP Bonus Breakdown (if available) */}
+        {xpBreakdown && (
+          <div className="p-3.5 bg-[#fafafa] border border-[#e5e5e5] rounded-2xl mb-6 text-left">
+            <div className="text-[11px] font-mono font-bold text-[#737373] uppercase tracking-wider mb-2 flex items-center gap-1.5">
+              <Zap className="w-3.5 h-3.5 text-[#9333ea]" />
+              Chi tiết điểm thưởng (XP Breakdown)
+            </div>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs font-mono">
+              <div className="bg-white border border-[#e5e5e5] p-2 rounded-xl">
+                <span className="text-[#737373] block text-[10px]">Cơ bản</span>
+                <span className="font-bold text-[#000000]">
+                  +{xpBreakdown.baseXp} XP
+                </span>
+              </div>
+              <div className="bg-white border border-[#e5e5e5] p-2 rounded-xl">
+                <span className="text-[#737373] block text-[10px]">
+                  Combo Bonus
+                </span>
+                <span className="font-bold text-[#9333ea]">
+                  +{xpBreakdown.comboBonusXp} XP
+                </span>
+              </div>
+              <div className="bg-white border border-[#e5e5e5] p-2 rounded-xl">
+                <span className="text-[#737373] block text-[10px]">
+                  Tốc độ (Speed)
+                </span>
+                <span className="font-bold text-[#10b981]">
+                  +{xpBreakdown.speedBonusXp} XP
+                </span>
+              </div>
+              <div className="bg-white border border-[#e5e5e5] p-2 rounded-xl">
+                <span className="text-[#737373] block text-[10px]">
+                  Hoàn hảo
+                </span>
+                <span className="font-bold text-[#f59e0b]">
+                  +{xpBreakdown.perfectBonusXp} XP
+                </span>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Missed Words Section */}
         {result.missedCards && result.missedCards.length > 0 && (
           <div className="text-left mb-8">
-            <h3 className="text-xs font-mono font-bold text-[#737373] uppercase tracking-wider mb-3">
-              Words to Review ({result.missedCards.length})
+            <h3 className="text-xs font-mono font-bold text-[#737373] uppercase tracking-wider mb-3 flex items-center justify-between">
+              <span>Words to Review ({result.missedCards.length})</span>
+              <span className="text-[11px] font-normal text-[#a3a3a3]">
+                Thẻ cần ôn lại
+              </span>
             </h3>
             <div className="divide-y divide-[#e5e5e5] border border-[#e5e5e5] rounded-2xl overflow-hidden">
               {result.missedCards.map((card) => (
@@ -121,6 +177,13 @@ export const QuizResultsView: React.FC<QuizResultsViewProps> = ({
                           {card.phonetic}
                         </span>
                       )}
+                      {"errorAttempts" in card &&
+                        (card as { errorAttempts?: number }).errorAttempts && (
+                          <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-[#fef2f2] text-[#ef4444] border border-[#ef4444]/20">
+                            {(card as { errorAttempts: number }).errorAttempts}{" "}
+                            lỗi
+                          </span>
+                        )}
                     </div>
                     <p className="text-xs text-[#737373] truncate mt-0.5">
                       {card.meaning}
