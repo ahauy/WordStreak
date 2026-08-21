@@ -7,6 +7,12 @@ export interface UserStreakDto {
   isPendingToday: boolean;
   timezone: string;
   flameTier: 1 | 2 | 3 | 4;
+  streakFreezes: number;
+  maxStreakFreezes: number;
+  totalFreezesUsed?: number;
+  lastFreezeDate?: string | null;
+  wasProtectedByFreeze?: boolean;
+  freezesUsed?: number;
 }
 
 export interface RecordStreakActivityDto {
@@ -20,4 +26,8 @@ export interface StreakActivityResponseDto {
   isActiveToday: boolean;
   flameTier: 1 | 2 | 3 | 4;
   message: string;
+  streakFreezes: number;
+  wasProtectedByFreeze?: boolean;
+  freezesUsed?: number;
+  earnedMilestoneFreeze?: boolean;
 }
