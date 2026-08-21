@@ -10,6 +10,7 @@ Behavioral guidelines to reduce common LLM coding mistakes. Merge with project-s
 
 Before implementing:
 
+- **Zero Speculation & Zero Hallucination**: NEVER invent, fabricate, or silently assume business rules, formulas, error handling, default parameters, or edge cases. If something is unknown, ambiguous, or underspecified, STOP and ask the customer directly.
 - State your assumptions explicitly. If uncertain, ask.
 - If multiple interpretations exist, present them - don't pick silently.
 - If a simpler approach exists, say so. Push back when warranted.
@@ -154,7 +155,13 @@ graph TD
 
 ### Protocol Execution Chain:
 
-1. **Phase 1 (BA & Domain Elicitation)**: Auto-dispatch `business-analyst` (`claude-opus-4.6` / `inherit`) to execute the 8-stage BA Pipeline and draft `baseline.md`. Present Confirmation Gate 1 to User.
+1. **Phase 1 (BA & Domain Elicitation — 8-Stage Pipeline)**:
+   - **Stage 1 (Intake)**: Auto-dispatch `business-analyst` to run `intake-classifier` and create `.specify/features/<slug>/`.
+   - **🛑 STAGE 2 INTERACTIVE ELICITATION INTERVIEW (MANDATORY CUSTOMER GATE)**:
+     - The AI / `business-analyst` **MUST PAUSE** and conduct a live, interactive interview with the User (batched 2–3 questions at a time covering Business Value & the 6 Domain Pillars: RBAC, State Machine, Business Rules/Formulas, Workflows/Edge cases, Data/Privacy, UX/NFRs) using direct chat turns or `ask_question`.
+     - **Strict No-Hallucination Policy**: AI is STRICTLY FORBIDDEN from inventing business rules, error behaviors, default parameters, or edge cases. If anything is unknown or ambiguous, AI MUST ask the customer directly. Silent auto-generation of unconfirmed `ASM-` assumptions without user interaction is strictly prohibited.
+   - **Stage 3–8 (Domain Modeling to Handover)**: Only after the user confirms elicitation answers, `business-analyst` executes gap analysis, domain modeling, risk scanning, spec writing, IEEE 29148 validation, and handover brief to produce `baseline.md`.
+   - **🛑 Confirmation Gate 1**: Present Domain Baseline summary to User for sign-off.
 2. **Phase 2–4 (Spec & Architecture)**: Auto-dispatch `system-architect` (`claude-sonnet-4.6` / `inherit`) to produce `spec.md`, `plan.md`, `data-model.md`, `contracts/`, and `tasks.md`. Present Confirmation Gate 2 to User.
 3. **Phase 5 (Fullstack Implementation & TDD)**:
    - Auto-dispatch `code-explorer` (`gemini-3.7-flash`) to inspect existing patterns.
