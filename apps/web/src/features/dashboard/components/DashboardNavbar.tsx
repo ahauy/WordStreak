@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { LogOut, Layers, Home } from "lucide-react";
+import { LogOut, Layers, Home, BarChart2 } from "lucide-react";
 import { UserAvatar } from "../../user-profile/components/UserAvatar";
 import { SettingsModal } from "../../user-profile/components/SettingsModal";
 import { StreakFlame } from "./StreakFlame";
@@ -135,6 +135,21 @@ export const DashboardNavbar: React.FC<DashboardNavbarProps> = ({
               >
                 <Layers className="w-3.5 h-3.5" />
                 <span>Bộ từ vựng</span>
+              </Link>
+
+              <Link
+                to="/analytics"
+                aria-current={
+                  location.pathname === "/analytics" ? "page" : undefined
+                }
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition-all focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 focus:outline-none ${
+                  location.pathname === "/analytics"
+                    ? "bg-black text-white"
+                    : "text-[#737373] hover:text-black hover:bg-[#fafafa]"
+                }`}
+              >
+                <BarChart2 className="w-3.5 h-3.5" />
+                <span>Thống kê</span>
               </Link>
             </nav>
           </div>

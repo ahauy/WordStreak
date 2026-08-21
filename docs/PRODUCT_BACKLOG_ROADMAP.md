@@ -246,24 +246,24 @@ _Mục tiêu: Duy trì động lực học tập liên tục hàng ngày, biến
 
 _Mục tiêu: Trực quan hóa toàn bộ quá trình tiến bộ của người học, tạo cảm giác thành tựu và kiểm soát lộ trình._
 
-- [ ] **US-STAT-01: Biểu đồ phân bổ trạng thái từ vựng (Word Mastery Breakdown)**
+- [x] **US-STAT-01: Biểu đồ phân bổ trạng thái từ vựng (Word Mastery Breakdown)**
   - **AC:** Thống kê tổng số từ theo 3 nhóm:
     - **Mastered (Thành thạo):** $Interval \ge 21$ ngày ($Repetitions \ge 4$).
     - **Learning (Đang học):** $1 \le Interval < 21$ ngày.
     - **New (Từ mới):** Chưa qua phiên ôn tập nào.
   - **Tasks:**
-    - [ ] Backend: `GET /api/v1/analytics/mastery-summary` tính toán theo toàn bộ deck hoặc deck cụ thể.
-    - [ ] Frontend: Biểu đồ Donut Chart / Progress Bars với màu sắc hiện đại.
-- [ ] **US-STAT-02: Bản đồ nhiệt độ hoạt động (GitHub-style Activity Heatmap)**
-  - **AC:** Lưới 365 ô vuông thể hiện tần suất học tập của từng ngày trong năm (màu xanh đậm dần theo số lượng từ đã ôn tập).
+    - [x] Backend: `GET /api/v1/analytics/mastery-summary` tính toán theo toàn bộ deck hoặc deck cụ thể.
+    - [x] Frontend: Biểu đồ Donut Chart / Progress Bars với màu sắc hiện đại.
+- [x] **US-STAT-02: Bản đồ nhiệt độ hoạt động (GitHub-style Activity Heatmap)**
+  - **AC:** Lưới 365 ô vuông thể hiện tần suất học tập của từng ngày trong năm (52 tuần trượt theo user timezone, 5 cấp độ màu).
   - **Tasks:**
-    - [ ] Backend: `GET /api/v1/analytics/activity-heatmap?year=2026` trả về mảng `{ date: string, count: number }`.
-    - [ ] Frontend: Heatmap component có tooltip hiển thị: "X từ đã ôn ngày DD/MM/YYYY".
-- [ ] **US-STAT-03: Dự báo ngày hoàn thành Bộ từ vựng (Deck Completion Forecast)**
-  - **AC:** Dựa trên tốc độ học trung bình và tỷ lệ nhớ lại của người dùng, dự đoán ngày toàn bộ từ trong Deck đạt trạng thái `Mastered`.
+    - [x] Backend: `GET /api/v1/analytics/activity-heatmap` trả về 365 ngày trượt với số lượt ôn tập và level.
+    - [x] Frontend: Heatmap component 52 tuần với tooltip hiển thị số thẻ ôn tập mỗi ngày.
+- [x] **US-STAT-03: Dự báo ngày hoàn thành Bộ từ vựng (Deck Completion Forecast)**
+  - **AC:** Dựa trên tốc độ học trung bình 7 ngày qua và số từ chưa Mastered, dự đoán ngày hoàn thành 100% bộ từ.
   - **Tasks:**
-    - [ ] Backend: Thuật toán ước lượng tuyến tính dựa trên `dailyGoal` và `retentionRate`.
-    - [ ] Frontend: Thẻ thông tin dự báo trực quan trên trang chi tiết Deck.
+    - [x] Backend: `GET /api/v1/analytics/deck-forecast/:deckId` & `GET /api/v1/analytics/decks-progress`.
+    - [x] Frontend: Bảng tiến độ và badge dự báo trực quan trên trang `/analytics` và `/dashboard`.
 
 ---
 

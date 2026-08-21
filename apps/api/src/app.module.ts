@@ -11,6 +11,7 @@ import { ReviewsModule } from './modules/reviews/reviews.module';
 import { PracticeModule } from './modules/practice/practice.module';
 import { StreakModule } from './modules/streaks/streak.module';
 import { AiVocabularyModule } from './modules/ai-vocabulary/ai-vocabulary.module';
+import { AnalyticsModule } from './modules/analytics/analytics.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { AiVocabularyModule } from './modules/ai-vocabulary/ai-vocabulary.module
     PracticeModule,
     StreakModule,
     AiVocabularyModule,
+    AnalyticsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -21,6 +21,7 @@ model User {
   decks        Deck[]
   progress     UserCardProgress[]
   streaks      UserStreak[]
+  reviewLogs   ReviewLog[]
 
   @@map("users")
 }
@@ -77,6 +78,7 @@ model Card {
   updatedAt       DateTime           @updatedAt
   deck            Deck               @relation(fields: [deckId], references: [id], onDelete: Cascade)
   progress        UserCardProgress[]
+  reviewLogs      ReviewLog[]
 
   @@map("cards")
 }
@@ -131,5 +133,21 @@ model GlobalDictionaryCache {
 
   @@index([word])
   @@map("global_dictionary_cache")
+}
+
+model ReviewLog {
+  id         String   @id @default(uuid())
+  userId     String
+  cardId     String
+  rating     Int      // 1: Again, 2: Hard, 3: Good, 4: Easy
+  interval   Int      // New interval computed in days
+  reviewedAt DateTime @default(now())
+
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  card       Card     @relation(fields: [cardId], references: [id], onDelete: Cascade)
+
+  @@index([userId, reviewedAt])
+  @@index([cardId])
+  @@map("review_logs")
 }
 
