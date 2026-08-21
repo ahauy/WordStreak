@@ -231,3 +231,80 @@ export interface MatchingQuizResultDto {
   xpBreakdown: MatchingXpBreakdownDto;
   missedCards: MatchingMissedCardDto[];
 }
+
+// ==========================================
+// Voice Practice & Speech Recognition Types (EPIC-08)
+// ==========================================
+
+export const VoicePronunciationTier = {
+  EXACT: "EXACT",
+  CLOSE: "CLOSE",
+  RETRY: "RETRY",
+} as const;
+
+export type VoicePronunciationTier =
+  (typeof VoicePronunciationTier)[keyof typeof VoicePronunciationTier];
+
+export const VoiceEvaluationMode = {
+  STRICT: "STRICT",
+  LENIENT: "LENIENT",
+} as const;
+
+export type VoiceEvaluationMode =
+  (typeof VoiceEvaluationMode)[keyof typeof VoiceEvaluationMode];
+
+export type VoicePracticeState =
+  | "IDLE"
+  | "PRE_PROMPT"
+  | "REQUESTING"
+  | "LISTENING"
+  | "PROCESSING"
+  | "EVALUATED"
+  | "PERMISSION_DENIED"
+  | "ERROR";
+
+export interface IpaSyllableToken {
+  syllable: string;
+  isPrimaryStress: boolean;
+  isSecondaryStress: boolean;
+  rawIpa?: string;
+}
+
+export interface VoicePronunciationSubmitDto {
+  cardId: string;
+  spokenTranscript: string;
+  targetWord?: string;
+  accuracyScore?: number;
+  accent?: "en-US" | "en-GB" | string;
+  timeSpentMs?: number;
+  evaluationMode?: VoiceEvaluationMode;
+}
+
+export type SubmitVoicePracticeDto = VoicePronunciationSubmitDto;
+export type VoicePracticeSubmissionDto = VoicePronunciationSubmitDto;
+export type SubmitVoiceDto = VoicePronunciationSubmitDto;
+
+export interface VoicePronunciationResultDto {
+  isPassed: boolean;
+  accuracyScore: number;
+  tier: VoicePronunciationTier;
+  xpAwarded: number;
+  isDailyCapped: boolean;
+  streakAdvanced: boolean;
+  diffSpans?: DiffSpan[];
+}
+
+export type VoicePracticeResultDto = VoicePronunciationResultDto;
+
+export interface VoicePracticeAttempt {
+  id?: string;
+  userId?: string;
+  cardId: string;
+  targetWord: string;
+  recognizedText: string;
+  accuracyScore: number;
+  isPassed: boolean;
+  xpAwarded: number;
+  accentUsed?: string;
+  createdAt?: Date | string;
+}
