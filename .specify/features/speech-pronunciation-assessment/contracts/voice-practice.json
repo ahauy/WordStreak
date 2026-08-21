@@ -1,0 +1,159 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "VoicePracticeContracts",
+  "description": "JSON Schemas for Speech Recognition & Pronunciation Assessment (EPIC-08)",
+  "definitions": {
+    "VoiceAccentLocale": {
+      "type": "string",
+      "enum": ["en-US", "en-GB"]
+    },
+    "VoiceAssessmentTier": {
+      "type": "string",
+      "enum": ["EXACT", "CLOSE", "RETRY"]
+    },
+    "VoiceDiffSpan": {
+      "type": "object",
+      "required": ["char", "type"],
+      "properties": {
+        "char": { "type": "string" },
+        "type": {
+          "type": "string",
+          "enum": ["MATCH", "MISSING", "EXTRA", "WRONG"]
+        }
+      }
+    },
+    "IpaSyllableToken": {
+      "type": "object",
+      "required": [
+        "id",
+        "syllable",
+        "isPrimaryStress",
+        "isSecondaryStress",
+        "rawText"
+      ],
+      "properties": {
+        "id": { "type": "string" },
+        "syllable": { "type": "string" },
+        "isPrimaryStress": { "type": "boolean" },
+        "isSecondaryStress": { "type": "boolean" },
+        "rawText": { "type": "string" }
+      }
+    },
+    "VoicePracticeSubmissionDto": {
+      "type": "object",
+      "required": [
+        "cardId",
+        "targetWord",
+        "spokenTranscript",
+        "accuracyScore",
+        "accent"
+      ],
+      "properties": {
+        "cardId": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the vocabulary card being practiced"
+        },
+        "targetWord": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100,
+          "description": "Expected target word or phrase"
+        },
+        "spokenTranscript": {
+          "type": "string",
+          "maxLength": 200,
+          "description": "Speech-to-text transcript captured from Web Speech API"
+        },
+        "accuracyScore": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100,
+          "description": "Calculated Levenshtein similarity percentage"
+        },
+        "accent": {
+          "$ref": "#/definitions/VoiceAccentLocale",
+          "description": "Accent locale used during pronunciation check"
+        },
+        "timeSpentMs": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Duration of voice attempt in milliseconds"
+        }
+      }
+    },
+    "VoicePracticeResultDto": {
+      "type": "object",
+      "required": [
+        "isPassed",
+        "accuracyScore",
+        "tier",
+        "xpAwarded",
+        "isDailyCapped",
+        "streakAdvanced",
+        "diffSpans",
+        "feedbackMessage"
+      ],
+      "properties": {
+        "isPassed": {
+          "type": "boolean",
+          "description": "True if accuracyScore >= 80"
+        },
+        "accuracyScore": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "tier": {
+          "$ref": "#/definitions/VoiceAssessmentTier"
+        },
+        "xpAwarded": {
+          "type": "integer",
+          "enum": [0, 10],
+          "description": "+10 XP for passing scores under daily cap, 0 otherwise"
+        },
+        "isDailyCapped": {
+          "type": "boolean",
+          "description": "True if user reached the 500 XP daily voice limit"
+        },
+        "streakAdvanced": {
+          "type": "boolean",
+          "description": "True if this submission qualified or extended the daily streak"
+        },
+        "diffSpans": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/VoiceDiffSpan"
+          },
+          "description": "Character-by-character diff between target and spoken transcript"
+        },
+        "feedbackMessage": {
+          "type": "string",
+          "description": "Encouraging UI message tailored to the assessment tier"
+        }
+      }
+    }
+  },
+  "endpoints": {
+    "submitVoicePractice": {
+      "method": "POST",
+      "path": "/api/v1/practice/voice/submit",
+      "headers": {
+        "Authorization": "Bearer <JWT_TOKEN>",
+        "Content-Type": "application/json"
+      },
+      "request": {
+        "$ref": "#/definitions/VoicePracticeSubmissionDto"
+      },
+      "response": {
+        "type": "object",
+        "required": ["success", "data"],
+        "properties": {
+          "success": { "type": "boolean", "const": true },
+          "data": { "$ref": "#/definitions/VoicePracticeResultDto" },
+          "message": { "type": "string" }
+        }
+      }
+    }
+  }
+}
