@@ -204,10 +204,13 @@ _Mục tiêu: Đa dạng hóa hình thức kiểm tra để não bộ kích ho�
     - [x] Backend: Thuật toán làm mờ từ mục tiêu trong câu ví dụ (hỗ trợ cả các biến thể thì số ít/số nhiều/past tense).
     - [x] Frontend: Input gõ từ với cơ chế tự động kiểm tra, gợi ý chữ cái đầu (hint).
 
-- [ ] **US-QUIZ-03: Chế độ Luyện nghe gõ từ (Listening & Typing Practice)**
-  - **AC:** Phát âm thanh đọc từ, không hiển thị chữ -> Người dùng nghe và gõ lại chính xác từ vựng.
+- [x] **US-QUIZ-03: Chế độ Luyện nghe gõ từ (Listening & Typing Practice)**
+  - **AC:** Phát âm thanh đọc từ, không hiển thị chữ -> Người dùng nghe và gõ lại chính xác từ vựng. Hỗ trợ tốc độ chậm 0.75x, Web Speech API fallback, thang gợi ý 3 cấp độ, so khớp lỗi chính tả (LCS Diff) và điểm thưởng tốc độ.
   - **Tasks:**
-    - [ ] Frontend: Trình phát audio với nút nghe lại chậm (0.75x speed) và trường nhập liệu tự động focus.
+    - [x] Backend: Endpoint `GET /api/v1/practice/listening`, validate query DTO và xử lý shuffle/filter.
+    - [x] Backend: Tích hợp logic tính điểm thưởng tốc độ XP (+15 XP) và chống bot trong `PracticeService.submitQuiz`.
+    - [x] Frontend: Trình phát audio `useAudioPlayer` với nút nghe lại chậm (0.75x speed), Web Speech failover, dynamic character input slots (`ListeningTypingInput`), visual diff badge và thang gợi ý (`ProgressiveHintBox`).
+    - [x] Frontend: Tích hợp tab Luyện nghe trong `QuizSetupModal` và trang làm bài `ListeningQuizPage`.
 - [ ] **US-QUIZ-04: Chế độ Nối từ vựng (Word Matching Game)**
   - **AC:** Hiển thị 2 cột (5 từ tiếng Anh bên trái, 5 nghĩa tiếng Việt bên phải đã xáo trộn). Người dùng click chọn cặp tương ứng. Đúng thì biến mất, sai thì rung đỏ.
   - **Tasks:**
