@@ -11,7 +11,9 @@ import { DecksPreviewSection } from "../components/DecksPreviewSection";
 import { FlameNurtureModal } from "../components/FlameNurtureModal";
 import { DraggableFlameMascot } from "../components/DraggableFlameMascot";
 import { StreakSavedModal } from "../components/StreakSavedModal";
+import { DashboardAnalyticsWidget } from "../../analytics/components/DashboardAnalyticsWidget";
 import { useStreak } from "../hooks/useStreak";
+import { useAnalytics } from "../../analytics/hooks/useAnalytics";
 import { Globe } from "lucide-react";
 
 export const DashboardPage: React.FC = () => {
@@ -28,6 +30,8 @@ export const DashboardPage: React.FC = () => {
     wasProtectedByFreeze,
     dismissFreezeSavedNotice,
   } = useStreak();
+  const { overview: analyticsOverview, isLoading: isAnalyticsLoading } =
+    useAnalytics();
 
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isFlameNurtureOpen, setIsFlameNurtureOpen] = useState(false);
@@ -121,6 +125,12 @@ export const DashboardPage: React.FC = () => {
             <StreakHeatmapTracker
               currentStreak={currentStreak}
               longestStreak={longestStreak}
+            />
+
+            {/* Learning Analytics & Memory Curve Overview */}
+            <DashboardAnalyticsWidget
+              overview={analyticsOverview}
+              isLoading={isAnalyticsLoading}
             />
 
             {/* Decks & Spaced Repetition Active Review Hub */}

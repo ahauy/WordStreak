@@ -16,6 +16,7 @@ import { ReviewSessionPage } from "./features/reviews/pages/ReviewSessionPage";
 import { MultipleChoiceQuizPage } from "./features/practice/pages/MultipleChoiceQuizPage";
 import { FillInTheBlankQuizPage } from "./features/practice/pages/FillInTheBlankQuizPage";
 import { LandingPage } from "./features/landing/pages/LandingPage";
+import { AnalyticsPage } from "./features/analytics/pages/AnalyticsPage";
 import { ProtectedRoute } from "./features/auth/components/ProtectedRoute";
 import { useAuthStore } from "./store/useAuthStore";
 import { useThemeStore } from "./store/useThemeStore";
@@ -111,6 +112,15 @@ function AnimatedRoutes() {
           element={
             <ProtectedRoute>
               <ReviewSessionPage />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/analytics"
+          element={
+            <ProtectedRoute>
+              <AnalyticsPage />
             </ProtectedRoute>
           }
         />
