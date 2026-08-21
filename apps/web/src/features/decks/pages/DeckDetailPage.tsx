@@ -6,17 +6,11 @@ import {
   Plus,
   Search,
   BookOpen,
-  Sparkles,
-  Globe,
-  Lock,
-  Edit2,
-  Layers,
   LayoutGrid,
   List,
   ChevronLeft,
   ChevronRight,
   Filter,
-  Zap,
 } from "lucide-react";
 import { decksService } from "../services/decksService";
 import { useCards } from "../../cards/hooks/useCards";
@@ -27,10 +21,13 @@ import { AddCardModal } from "../../cards/components/AddCardModal";
 import { EditCardModal } from "../../cards/components/EditCardModal";
 import { DeleteCardConfirmModal } from "../../cards/components/DeleteCardConfirmModal";
 import { EditDeckModal } from "../components/EditDeckModal";
+import { DeckDetailHeader } from "../components/DeckDetailHeader";
+import { DeckImportModal } from "../../../components/deck/DeckImportModal";
+import { DeckExportModal } from "../../../components/deck/DeckExportModal";
 import { QuizSetupModal } from "../../practice/components/QuizSetupModal";
 import { PronunciationPracticeModal } from "../../practice/components/PronunciationPracticeModal";
 import { DashboardNavbar } from "../../dashboard/components/DashboardNavbar";
-import { DeckIcon, getColorTheme } from "../constants/deckThemes";
+import { getColorTheme } from "../constants/deckThemes";
 import type {
   DeckResponse,
   CardResponse,
@@ -80,6 +77,7 @@ export const DeckDetailPage: React.FC = () => {
     isAllSelected,
     isBulkLoading,
     executeBulkAction,
+    fetchCards,
     createCard,
     updateCard,
     deleteCard,
@@ -91,6 +89,8 @@ export const DeckDetailPage: React.FC = () => {
   const [deletingCard, setDeletingCard] = useState<CardResponse | null>(null);
   const [isDeletingCardLoading, setIsDeletingCardLoading] = useState(false);
   const [isEditDeckOpen, setIsEditDeckOpen] = useState(false);
+  const [isImportOpen, setIsImportOpen] = useState(false);
+  const [isExportOpen, setIsExportOpen] = useState(false);
   const [isQuizSetupOpen, setIsQuizSetupOpen] = useState(false);
   const [practicingVoiceCard, setPracticingVoiceCard] =
     useState<CardResponse | null>(null);
@@ -113,9 +113,8 @@ export const DeckDetailPage: React.FC = () => {
   }, [deckId]);
 
   useEffect(() => {
-    let ignore = false;
     if (!deckId) return;
-
+    let ignore = false;
     decksService
       .getDeck(deckId)
       .then((data) => {
@@ -280,153 +279,16 @@ export const DeckDetailPage: React.FC = () => {
         </div>
 
         {/* Deck Header Card */}
-        <div className="rounded-2xl border border-[#e5e5e5] bg-white p-6 sm:p-8 shadow-xs mb-8">
-          <div className="flex flex-col xl:flex-row xl:items-start justify-between gap-6">
-            <div className="flex items-start gap-4 flex-1 min-w-0">
-              <div
-                className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl flex items-center justify-center flex-shrink-0"
-                style={{
-                  backgroundColor: theme.bgLight,
-                  border: `1px solid ${theme.borderLight}`,
-                  color: theme.hex,
-                }}
-              >
-                <DeckIcon
-                  iconName={deck.icon}
-                  className="w-7 h-7 sm:w-8 sm:h-8"
-                />
-              </div>
-
-              <div className="flex-1 min-w-0">
-                <div className="flex flex-wrap items-center gap-2 mb-2">
-                  <div className="inline-flex items-center gap-1.5 rounded-full border border-[#e9d5ff] bg-[#f3e8ff] px-2.5 py-0.5 text-[#7e22ce]">
-                    <Layers className="w-3 h-3" />
-                    <span className="text-[11px] font-bold uppercase tracking-wider font-mono">
-                      Bộ từ vựng
-                    </span>
-                  </div>
-
-                  {deck.isPublic ? (
-                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-[#fafafa] text-[#737373] border border-[#e5e5e5]">
-                      <Globe className="w-3 h-3" />
-                      <span>Công khai</span>
-                    </span>
-                  ) : (
-                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-[#fafafa] text-[#737373] border border-[#e5e5e5]">
-                      <Lock className="w-3 h-3" />
-                      <span>Riêng tư</span>
-                    </span>
-                  )}
-                </div>
-
-                <h1
-                  className="text-2xl sm:text-3xl font-bold text-black tracking-tight"
-                  style={{ fontFamily: "var(--font-display)" }}
-                >
-                  {deck.title}
-                </h1>
-
-                {deck.description && (
-                  <p className="text-xs sm:text-sm text-[#737373] mt-1 max-w-2xl leading-relaxed">
-                    {deck.description}
-                  </p>
-                )}
-
-                {/* Tags */}
-                {deck.tags && deck.tags.length > 0 && (
-                  <div className="flex flex-wrap gap-1.5 mt-3">
-                    {deck.tags.map((tag, idx) => (
-                      <span
-                        key={idx}
-                        className="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-mono text-[#525252] bg-[#fafafa] border border-[#e5e5e5]"
-                      >
-                        #{tag}
-                      </span>
-                    ))}
-                  </div>
-                )}
-              </div>
-            </div>
-
-            {/* Header Right Action Buttons */}
-            <div className="flex flex-wrap sm:flex-nowrap items-center gap-2.5 flex-shrink-0 self-start xl:self-start">
-              <button
-                type="button"
-                onClick={() => navigate(`/decks/${deckId}/review`)}
-                className="h-10 px-4 text-xs font-semibold gap-2 shadow-xs cursor-pointer inline-flex items-center rounded-full bg-[#000000] text-[#ffffff] hover:bg-[#090909] transition-all whitespace-nowrap"
-              >
-                <Sparkles className="w-4 h-4 text-[#ffbd2e]" />
-                <span>Ôn tập ngay</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setIsQuizSetupOpen(true)}
-                className="h-10 px-4 text-xs font-semibold gap-1.5 shadow-xs cursor-pointer inline-flex items-center rounded-full bg-[#f3e8ff] text-[#7e22ce] hover:bg-[#e9d5ff] border border-[#d8b4fe] transition-all whitespace-nowrap"
-              >
-                <Zap className="w-4 h-4 text-[#9333ea]" />
-                <span>Trắc nghiệm Quiz</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setIsAddCardOpen(true)}
-                className="btn-primary h-10 px-4 text-xs font-semibold gap-2 shadow-xs cursor-pointer inline-flex items-center whitespace-nowrap"
-              >
-                <Plus className="w-4 h-4" />
-                <span>Thêm thẻ mới</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setIsEditDeckOpen(true)}
-                className="btn-secondary h-10 px-4 text-xs font-semibold gap-1.5 cursor-pointer inline-flex items-center whitespace-nowrap"
-              >
-                <Edit2 className="w-3.5 h-3.5 text-[#525252]" />
-                <span>Sửa bộ từ</span>
-              </button>
-            </div>
-          </div>
-
-          {/* Stats Bar */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-6 pt-6 border-t border-[#e5e5e5]">
-            <div className="p-3.5 rounded-xl bg-[#fafafa] border border-[#e5e5e5]">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-[#737373] block mb-1">
-                Tổng số thẻ
-              </span>
-              <span className="text-xl sm:text-2xl font-bold text-black font-mono">
-                {stats.totalCards}
-              </span>
-            </div>
-
-            <div className="p-3.5 rounded-xl bg-[#fafafa] border border-[#e5e5e5]">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-[#7e22ce] block mb-1">
-                Thẻ mới (New)
-              </span>
-              <span className="text-xl sm:text-2xl font-bold text-black font-mono">
-                {stats.newCards}
-              </span>
-            </div>
-
-            <div className="p-3.5 rounded-xl bg-[#fafafa] border border-[#e5e5e5]">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-[#2563eb] block mb-1">
-                Đang học (Learning)
-              </span>
-              <span className="text-xl sm:text-2xl font-bold text-black font-mono">
-                {stats.learningCards}
-              </span>
-            </div>
-
-            <div className="p-3.5 rounded-xl bg-[#fafafa] border border-[#e5e5e5]">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-[#16a34a] block mb-1">
-                Thành thạo (Mastered)
-              </span>
-              <span className="text-xl sm:text-2xl font-bold text-black font-mono">
-                {stats.masteredCards}
-              </span>
-            </div>
-          </div>
-        </div>
+        <DeckDetailHeader
+          deck={deck}
+          stats={stats}
+          onStartReview={() => navigate(`/decks/${deckId}/review`)}
+          onStartQuiz={() => setIsQuizSetupOpen(true)}
+          onAddCard={() => setIsAddCardOpen(true)}
+          onImport={() => setIsImportOpen(true)}
+          onExport={() => setIsExportOpen(true)}
+          onEditDeck={() => setIsEditDeckOpen(true)}
+        />
 
         {/* Filter & Toolbar Row */}
         <div className="space-y-4 mb-6">
@@ -558,7 +420,7 @@ export const DeckDetailPage: React.FC = () => {
                 color: theme.hex,
               }}
             >
-              <Sparkles className="w-7 h-7" />
+              <Plus className="w-7 h-7" />
             </div>
 
             <h3
@@ -568,18 +430,28 @@ export const DeckDetailPage: React.FC = () => {
               Bộ từ này chưa có thẻ từ vựng nào
             </h3>
             <p className="text-xs sm:text-sm text-[#737373] mb-6 max-w-sm leading-relaxed">
-              Hãy bắt đầu thêm những từ vựng đầu tiên với đầy đủ phiên âm, ví dụ
-              và mẹo nhớ để bắt đầu hành trình ôn tập.
+              Bắt đầu thêm thẻ từ hoặc nhập hàng loạt từ file CSV, Excel, Anki
+              để ôn tập với Spaced Repetition (SM-2).
             </p>
 
-            <button
-              type="button"
-              onClick={() => setIsAddCardOpen(true)}
-              className="btn-primary h-10 px-5 text-xs font-semibold gap-2 shadow-xs cursor-pointer inline-flex items-center"
-            >
-              <Plus className="w-4 h-4" />
-              <span>Thêm thẻ từ vựng đầu tiên</span>
-            </button>
+            <div className="flex flex-wrap items-center justify-center gap-3">
+              <button
+                type="button"
+                onClick={() => setIsAddCardOpen(true)}
+                className="btn-primary h-10 px-5 text-xs font-semibold gap-2 shadow-xs cursor-pointer inline-flex items-center"
+              >
+                <Plus className="w-4 h-4" />
+                <span>Thêm thẻ từ mới</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setIsImportOpen(true)}
+                className="btn-secondary h-10 px-5 text-xs font-semibold gap-2 cursor-pointer inline-flex items-center"
+              >
+                <span>Nhập từ từ file</span>
+              </button>
+            </div>
           </div>
         ) : cards.length === 0 ? (
           /* Empty Filter/Search Results */
@@ -821,6 +693,26 @@ export const DeckDetailPage: React.FC = () => {
           audioUrlUK={null}
         />
       )}
+
+      {/* Deck Import Modal */}
+      <DeckImportModal
+        isOpen={isImportOpen}
+        targetDeck={deck}
+        onClose={() => setIsImportOpen(false)}
+        onImportSuccess={() => {
+          fetchCards();
+          fetchDeckDetails();
+        }}
+        onStartReview={(dId) => navigate(`/decks/${dId}/review`)}
+      />
+
+      {/* Deck Export Modal */}
+      <DeckExportModal
+        isOpen={isExportOpen}
+        deck={deck}
+        cards={cards}
+        onClose={() => setIsExportOpen(false)}
+      />
     </div>
   );
 };
