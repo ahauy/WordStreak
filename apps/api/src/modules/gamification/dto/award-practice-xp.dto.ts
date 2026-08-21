@@ -21,7 +21,7 @@ export function IsLessThanOrEqualProperty(
       options: validationOptions,
       validator: {
         validate(value: unknown, args: ValidationArguments) {
-          const [relatedPropertyName] = args.constraints as string[];
+          const [relatedPropertyName] = args.constraints as [string];
           const relatedValue = (args.object as Record<string, unknown>)[
             relatedPropertyName
           ];
@@ -32,7 +32,7 @@ export function IsLessThanOrEqualProperty(
           );
         },
         defaultMessage(args: ValidationArguments) {
-          const [relatedPropertyName] = args.constraints as string[];
+          const [relatedPropertyName] = args.constraints as [string];
           return `${args.property} must not exceed ${relatedPropertyName}`;
         },
       },

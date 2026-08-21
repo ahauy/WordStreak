@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/unbound-method */
 import { Test, TestingModule } from '@nestjs/testing';
 import {
   HttpException,
@@ -17,7 +16,10 @@ import { MasteryTier, XpActionType } from '@wordstreak/shared-types';
 describe('XpService', () => {
   let service: XpService;
   let prisma: any;
-  let xpRateLimiter: XpRateLimiterService;
+  let xpRateLimiter: {
+    checkRateLimit: jest.Mock;
+    recordReviewXp: jest.Mock;
+  };
 
   beforeEach(async () => {
     prisma = {
@@ -206,7 +208,7 @@ describe('XpService', () => {
     it('TC-XP-013: should suppress review XP when velocity rate limit is triggered', async () => {
       prisma.user.findUnique.mockResolvedValue(mockUser);
       prisma.reviewLog.count.mockResolvedValue(3);
-      (xpRateLimiter.checkRateLimit as jest.Mock).mockResolvedValueOnce({
+      xpRateLimiter.checkRateLimit.mockResolvedValueOnce({
         isAllowed: false,
         hourlyXp: 500,
         dailyXp: 500,
