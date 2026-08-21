@@ -448,16 +448,19 @@ describe('PracticeService', () => {
         where: { id: 'user-1' },
         data: { totalXp: { increment: 10 } },
       });
-      expect(prisma.userActivityLog.aggregate).toHaveBeenCalledWith(
-        expect.objectContaining({
-          where: expect.objectContaining({
-            userId: 'user-1',
-            activityType: {
-              in: ['VOICE_PRONUNCIATION', 'PRACTICE_QUIZ', 'WORD_MATCHING'],
-            },
-          }),
-        }),
-      );
+      expect(prisma.userActivityLog.aggregate).toHaveBeenCalled();
+      const aggregateCall = (
+        prisma.userActivityLog.aggregate as jest.Mock<
+          Promise<unknown>,
+          [{ where: { userId: string; activityType: { in: string[] } } }]
+        >
+      ).mock.calls[0][0];
+      expect(aggregateCall.where.userId).toBe('user-1');
+      expect(aggregateCall.where.activityType.in).toEqual([
+        'VOICE_PRONUNCIATION',
+        'PRACTICE_QUIZ',
+        'WORD_MATCHING',
+      ]);
     });
 
     it('should throw ForbiddenException when card belongs to another user private deck', async () => {

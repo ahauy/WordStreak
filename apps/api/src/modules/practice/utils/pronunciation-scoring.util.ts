@@ -98,7 +98,7 @@ export function computeDiffSpans(
   const n = normSpoken.length;
   const m = normTarget.length;
   const dp: number[][] = Array.from({ length: n + 1 }, () =>
-    Array(m + 1).fill(0),
+    new Array<number>(m + 1).fill(0),
   );
 
   for (let i = 1; i <= n; i++) {
