@@ -1,8 +1,16 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Play, Clock, Sparkles, AlertCircle } from "lucide-react";
+import {
+  X,
+  Play,
+  Clock,
+  Sparkles,
+  AlertCircle,
+  Headphones,
+} from "lucide-react";
 
-export type PracticeMode = "multiple-choice" | "fill-in-the-blank";
+export type PracticeMode =
+  "multiple-choice" | "fill-in-the-blank" | "listening";
 
 interface QuizSetupModalProps {
   isOpen: boolean;
@@ -44,7 +52,9 @@ export const QuizSetupModal: React.FC<QuizSetupModalProps> = ({
     selectedMode === "multiple-choice" && totalCards < 4;
   const isFillBlankEmpty =
     selectedMode === "fill-in-the-blank" && totalCards < 1;
-  const isTooSmall = isMultipleChoiceTooSmall || isFillBlankEmpty;
+  const isListeningEmpty = selectedMode === "listening" && totalCards < 1;
+  const isTooSmall =
+    isMultipleChoiceTooSmall || isFillBlankEmpty || isListeningEmpty;
 
   const handleStart = () => {
     onStart({
@@ -74,7 +84,7 @@ export const QuizSetupModal: React.FC<QuizSetupModalProps> = ({
           initial={{ opacity: 0, scale: 0.95, y: 12 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: 12 }}
-          className="relative w-full max-w-md bg-white border border-[#e5e5e5] rounded-3xl p-6 sm:p-7 shadow-xl z-10"
+          className="relative w-full max-w-lg bg-white border border-[#e5e5e5] rounded-3xl p-6 sm:p-7 shadow-xl z-10"
         >
           {/* Header */}
           <div className="flex items-center justify-between pb-4 border-b border-[#e5e5e5]">
@@ -102,7 +112,7 @@ export const QuizSetupModal: React.FC<QuizSetupModalProps> = ({
               <span className="text-xs font-mono text-[#737373] uppercase tracking-wider block mb-2">
                 Chế độ ôn luyện (Practice Mode)
               </span>
-              <div className="grid grid-cols-2 gap-2.5">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
                 <button
                   type="button"
                   onClick={() => setSelectedMode("multiple-choice")}
@@ -122,7 +132,7 @@ export const QuizSetupModal: React.FC<QuizSetupModalProps> = ({
                         : "text-[#737373]"
                     }`}
                   >
-                    4 Choices (A/B/C/D)
+                    4 Choices
                   </span>
                 </button>
 
@@ -136,7 +146,7 @@ export const QuizSetupModal: React.FC<QuizSetupModalProps> = ({
                   }`}
                 >
                   <span className="block text-sm font-semibold leading-tight">
-                    Điền từ vào câu
+                    Điền từ
                   </span>
                   <span
                     className={`block text-[11px] font-mono mt-1 ${
@@ -145,7 +155,33 @@ export const QuizSetupModal: React.FC<QuizSetupModalProps> = ({
                         : "text-[#737373]"
                     }`}
                   >
-                    Fill in Blank / Anagram
+                    Fill in Blank
+                  </span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setSelectedMode("listening")}
+                  className={`p-3 rounded-2xl border text-left transition-all ${
+                    selectedMode === "listening"
+                      ? "bg-[#000000] text-white border-[#000000] shadow-sm"
+                      : "bg-[#fafafa] text-[#000000] border-[#e5e5e5] hover:border-[#d4d4d4]"
+                  }`}
+                >
+                  <div className="flex items-center gap-1.5">
+                    <span className="block text-sm font-semibold leading-tight">
+                      Luyện nghe
+                    </span>
+                    <Headphones className="w-3.5 h-3.5 shrink-0 opacity-80" />
+                  </div>
+                  <span
+                    className={`block text-[11px] font-mono mt-1 ${
+                      selectedMode === "listening"
+                        ? "text-white/70"
+                        : "text-[#737373]"
+                    }`}
+                  >
+                    Audio & Typing
                   </span>
                 </button>
               </div>
@@ -171,7 +207,9 @@ export const QuizSetupModal: React.FC<QuizSetupModalProps> = ({
                   </span>
                   {selectedMode === "multiple-choice"
                     ? `This deck has only ${totalCards} cards. Multiple choice quizzes require at least 4 cards across your account to generate options.`
-                    : "This deck has no cards. Add cards to start fill-in-the-blank practice."}
+                    : selectedMode === "listening"
+                      ? "This deck has no cards. Add cards to start listening & typing practice."
+                      : "This deck has no cards. Add cards to start fill-in-the-blank practice."}
                 </div>
               </div>
             ) : (

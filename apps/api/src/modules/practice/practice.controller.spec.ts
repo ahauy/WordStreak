@@ -3,6 +3,7 @@ import { PracticeController } from './practice.controller';
 import { PracticeService } from './practice.service';
 import { QuizGeneratorService } from './quiz-generator.service';
 import { FillBlankGeneratorService } from './fill-blank-generator.service';
+import { ListeningGeneratorService } from './listening-generator.service';
 import type { JwtPayload } from '@wordstreak/shared-types';
 
 describe('PracticeController', () => {
@@ -10,6 +11,7 @@ describe('PracticeController', () => {
   let practiceService: { submitQuiz: jest.Mock };
   let quizGeneratorService: { generateQuestions: jest.Mock };
   let fillBlankGeneratorService: { generateQuestions: jest.Mock };
+  let listeningGeneratorService: { generateQuestions: jest.Mock };
 
   const mockUser: JwtPayload = {
     sub: 'user-1',
@@ -30,6 +32,10 @@ describe('PracticeController', () => {
       generateQuestions: jest.fn(),
     };
 
+    listeningGeneratorService = {
+      generateQuestions: jest.fn(),
+    };
+
     const module: TestingModule = await Test.createTestingModule({
       controllers: [PracticeController],
       providers: [
@@ -38,6 +44,10 @@ describe('PracticeController', () => {
         {
           provide: FillBlankGeneratorService,
           useValue: fillBlankGeneratorService,
+        },
+        {
+          provide: ListeningGeneratorService,
+          useValue: listeningGeneratorService,
         },
       ],
     }).compile();
@@ -79,6 +89,24 @@ describe('PracticeController', () => {
       expect(result.success).toBe(true);
       expect(result.data).toEqual([]);
       expect(fillBlankGeneratorService.generateQuestions).toHaveBeenCalledWith(
+        'user-1',
+        { deckId: 'deck-1', limit: 10 },
+      );
+    });
+  });
+
+  describe('getListeningQuiz', () => {
+    it('should delegate to ListeningGeneratorService', async () => {
+      listeningGeneratorService.generateQuestions.mockResolvedValue([]);
+
+      const result = await controller.getListeningQuiz(mockUser, {
+        deckId: 'deck-1',
+        limit: 10,
+      });
+
+      expect(result.success).toBe(true);
+      expect(result.data).toEqual([]);
+      expect(listeningGeneratorService.generateQuestions).toHaveBeenCalledWith(
         'user-1',
         { deckId: 'deck-1', limit: 10 },
       );

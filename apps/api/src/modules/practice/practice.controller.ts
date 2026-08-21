@@ -13,8 +13,10 @@ import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import { PracticeService } from './practice.service';
 import { QuizGeneratorService } from './quiz-generator.service';
 import { FillBlankGeneratorService } from './fill-blank-generator.service';
+import { ListeningGeneratorService } from './listening-generator.service';
 import { GetQuizQuestionsDto } from './dto/get-quiz-questions.dto';
 import { GetFillBlankQuestionsDto } from './dto/get-fill-blank-questions.dto';
+import { GetListeningQuizDto } from './dto/get-listening-quiz.dto';
 import { SubmitQuizDto } from './dto/submit-quiz.dto';
 import type { JwtPayload, ApiResponse } from '@wordstreak/shared-types';
 
@@ -25,6 +27,7 @@ export class PracticeController {
     private readonly practiceService: PracticeService,
     private readonly quizGeneratorService: QuizGeneratorService,
     private readonly fillBlankGeneratorService: FillBlankGeneratorService,
+    private readonly listeningGeneratorService: ListeningGeneratorService,
   ) {}
 
   @Get('multiple-choice')
@@ -48,6 +51,21 @@ export class PracticeController {
     @Query() query: GetFillBlankQuestionsDto,
   ): Promise<ApiResponse> {
     const questions = await this.fillBlankGeneratorService.generateQuestions(
+      user.sub,
+      query,
+    );
+    return {
+      success: true,
+      data: questions,
+    };
+  }
+
+  @Get('listening')
+  async getListeningQuiz(
+    @CurrentUser() user: JwtPayload,
+    @Query() query: GetListeningQuizDto,
+  ): Promise<ApiResponse> {
+    const questions = await this.listeningGeneratorService.generateQuestions(
       user.sub,
       query,
     );

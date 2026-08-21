@@ -784,6 +784,10 @@ export const DeckDetailPage: React.FC = () => {
             navigate(
               `/decks/${deckId}/practice/fill-blank?limit=${limit}&zen=${isZenMode}`,
             );
+          } else if (mode === "listening") {
+            navigate(
+              `/decks/${deckId}/practice/listening?limit=${limit}&zen=${isZenMode}`,
+            );
           } else {
             navigate(`/decks/${deckId}/quiz?limit=${limit}&zen=${isZenMode}`);
           }

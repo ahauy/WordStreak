@@ -22,6 +22,7 @@ Danh sách tất cả các tính năng đã được deliver (code hoàn chỉnh
 | [AI Vocabulary Generator & Global Cache (US-AI-01..02)](./ai-vocabulary-generator/README.md) | `ai-vocabulary-generator` | 1.0     | Hoàn thành (`Delivered`) | 2026-08-21 |
 | [Learning Analytics & Retention Dashboard (US-STAT-01..03)](./learning-analytics/README.md)  | `learning-analytics`      | 1.0     | Hoàn thành (`Delivered`) | 2026-08-21 |
 | [Gamification XP & Learner Levels System (US-GAME-03)](./gamification-xp-levels/README.md)   | `gamification-xp-levels`  | 1.0     | Hoàn thành (`Delivered`) | 2026-08-21 |
+| [Listening & Typing Practice Quiz (US-QUIZ-03)](./quiz-listening-practice/README.md)         | `quiz-listening-practice` | 1.0     | Hoàn thành (`Delivered`) | 2026-08-21 |
 
 ---
 

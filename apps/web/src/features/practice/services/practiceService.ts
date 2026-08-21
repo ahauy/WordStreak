@@ -2,6 +2,7 @@ import { apiClient } from "../../../common/api/axios";
 import type {
   QuizQuestionDto,
   FillBlankQuestionDto,
+  ListeningQuestionDto,
   SubmitQuizDto,
   QuizResultResponseDto,
   ApiResponse,
@@ -27,6 +28,19 @@ export const practiceService = {
   ): Promise<FillBlankQuestionDto[]> {
     const response = await apiClient.get<ApiResponse<FillBlankQuestionDto[]>>(
       "/practice/fill-in-the-blank",
+      {
+        params: { deckId, limit },
+      },
+    );
+    return response.data.data || [];
+  },
+
+  async getListeningQuiz(
+    deckId: string,
+    limit: number = 10,
+  ): Promise<ListeningQuestionDto[]> {
+    const response = await apiClient.get<ApiResponse<ListeningQuestionDto[]>>(
+      "/practice/listening",
       {
         params: { deckId, limit },
       },
