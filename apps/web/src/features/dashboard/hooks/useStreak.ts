@@ -63,6 +63,9 @@ export function useStreak(options: UseStreakOptions = {}) {
                 isActiveToday: result.isActiveToday,
                 isPendingToday: !result.isActiveToday,
                 flameTier: result.flameTier,
+                streakFreezes: result.streakFreezes,
+                wasProtectedByFreeze: result.wasProtectedByFreeze,
+                freezesUsed: result.freezesUsed,
               }
             : {
                 userId: "",
@@ -76,6 +79,10 @@ export function useStreak(options: UseStreakOptions = {}) {
                   timezone ||
                   Intl.DateTimeFormat().resolvedOptions().timeZone,
                 flameTier: result.flameTier,
+                streakFreezes: result.streakFreezes,
+                maxStreakFreezes: 2,
+                wasProtectedByFreeze: result.wasProtectedByFreeze,
+                freezesUsed: result.freezesUsed,
               };
           onStreakUpdatedRef.current?.(updated);
           return updated;
@@ -144,6 +151,9 @@ export function useStreak(options: UseStreakOptions = {}) {
                 isActiveToday: result.isActiveToday,
                 isPendingToday: !result.isActiveToday,
                 flameTier: result.flameTier,
+                streakFreezes: result.streakFreezes,
+                wasProtectedByFreeze: result.wasProtectedByFreeze,
+                freezesUsed: result.freezesUsed,
               }
             : {
                 userId: "",
@@ -155,6 +165,10 @@ export function useStreak(options: UseStreakOptions = {}) {
                 timezone:
                   timezone || Intl.DateTimeFormat().resolvedOptions().timeZone,
                 flameTier: result.flameTier,
+                streakFreezes: result.streakFreezes,
+                maxStreakFreezes: 2,
+                wasProtectedByFreeze: result.wasProtectedByFreeze,
+                freezesUsed: result.freezesUsed,
               };
           onStreakUpdatedRef.current?.(updated);
           return updated;
@@ -173,11 +187,29 @@ export function useStreak(options: UseStreakOptions = {}) {
     }
   }, [refetchStreak, timezone]);
 
+  const [isFreezeNoticeDismissed, setIsFreezeNoticeDismissed] =
+    useState<boolean>(false);
+
+  const dismissFreezeSavedNotice = useCallback(() => {
+    setIsFreezeNoticeDismissed(true);
+    setStreak((prev) =>
+      prev ? { ...prev, wasProtectedByFreeze: false } : null,
+    );
+  }, []);
+
+  const streakFreezes = streak?.streakFreezes ?? 0;
+  const maxStreakFreezes = streak?.maxStreakFreezes ?? 2;
+  const wasProtectedByFreeze =
+    !isFreezeNoticeDismissed && Boolean(streak?.wasProtectedByFreeze);
+
   return {
     streak,
     currentStreak: streak?.currentStreak ?? 0,
     bestStreak: streak?.bestStreak ?? 0,
     flameTier: streak?.flameTier ?? 1,
+    streakFreezes,
+    maxStreakFreezes,
+    wasProtectedByFreeze,
     isActiveToday: streak?.isActiveToday ?? false,
     isPendingToday: streak?.isPendingToday ?? false,
     isLoading,
@@ -186,5 +218,6 @@ export function useStreak(options: UseStreakOptions = {}) {
     recordActivity,
     refetchStreak,
     setStreak,
+    dismissFreezeSavedNotice,
   };
 }

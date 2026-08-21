@@ -10,6 +10,7 @@ import { StreakHeatmapTracker } from "../components/StreakHeatmapTracker";
 import { DecksPreviewSection } from "../components/DecksPreviewSection";
 import { FlameNurtureModal } from "../components/FlameNurtureModal";
 import { DraggableFlameMascot } from "../components/DraggableFlameMascot";
+import { StreakSavedModal } from "../components/StreakSavedModal";
 import { useStreak } from "../hooks/useStreak";
 import { Globe } from "lucide-react";
 
@@ -22,6 +23,10 @@ export const DashboardPage: React.FC = () => {
     flameTier,
     isActiveToday,
     isPendingToday,
+    streakFreezes,
+    maxStreakFreezes,
+    wasProtectedByFreeze,
+    dismissFreezeSavedNotice,
   } = useStreak();
 
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
@@ -105,6 +110,8 @@ export const DashboardPage: React.FC = () => {
               dailyGoal={dailyGoal}
               cardsDueToday={0}
               totalDecks={3}
+              streakFreezes={streakFreezes}
+              maxStreakFreezes={maxStreakFreezes}
               onOpenGoalSettings={() => openSettings("profile")}
               onOpenFlameNurture={openFlameNurture}
               onCreateDeck={handleCreateDeck}
@@ -176,6 +183,15 @@ export const DashboardPage: React.FC = () => {
           dailyGoal={dailyGoal}
           onStartReview={handleStartReview}
           onFeedWood={handleFeedWood}
+        />
+
+        {/* Streak Freeze Auto-Saved Alert Modal */}
+        <StreakSavedModal
+          isOpen={wasProtectedByFreeze}
+          onClose={dismissFreezeSavedNotice}
+          streakDays={currentStreak}
+          streakFreezes={streakFreezes}
+          maxStreakFreezes={maxStreakFreezes}
         />
 
         {/* Settings Modal */}

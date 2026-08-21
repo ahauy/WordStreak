@@ -37,6 +37,18 @@ describe("StreakFlame Component", () => {
     expect(countEl.textContent).toBe("15");
   });
 
+  it("should apply grayscale class when streakDays is 0 and no explicit tier is provided", () => {
+    const { container } = render(<StreakFlame streakDays={0} />);
+    const svgEl = container.querySelector("svg");
+    expect(svgEl?.getAttribute("class")).toContain("grayscale");
+  });
+
+  it("should NOT apply grayscale class when explicit tier is provided", () => {
+    const { container } = render(<StreakFlame tier={2} />);
+    const svgEl = container.querySelector("svg");
+    expect(svgEl?.getAttribute("class")).not.toContain("grayscale");
+  });
+
   it("should render without crashing for all sizes", () => {
     const sizes = ["xs", "sm", "md", "lg", "xl", "2xl"] as const;
     sizes.forEach((size) => {
