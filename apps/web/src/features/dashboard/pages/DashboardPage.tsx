@@ -8,17 +8,18 @@ import { StreakHeroBanner } from "../components/StreakHeroBanner";
 import { DashboardStatsGrid } from "../components/DashboardStatsGrid";
 import { StreakHeatmapTracker } from "../components/StreakHeatmapTracker";
 import { DecksPreviewSection } from "../components/DecksPreviewSection";
-import { FlameNurtureModal } from "../components/FlameNurtureModal";
-import { DraggableFlameMascot } from "../components/DraggableFlameMascot";
-import { StreakSavedModal } from "../components/StreakSavedModal";
 import { DashboardAnalyticsWidget } from "../../analytics/components/DashboardAnalyticsWidget";
+import { CreateDeckModal } from "../../decks/components/CreateDeckModal";
 import { useStreak } from "../hooks/useStreak";
 import { useAnalytics } from "../../analytics/hooks/useAnalytics";
+import { useDecks } from "../../decks/hooks/useDecks";
+import { useMascotStore } from "../../../store/useMascotStore";
 import { Globe } from "lucide-react";
 
 export const DashboardPage: React.FC = () => {
   const { user, logout } = useAuthStore();
   const navigate = useNavigate();
+  const { openFlameNurture } = useMascotStore();
   const {
     currentStreak,
     bestStreak,
@@ -27,25 +28,27 @@ export const DashboardPage: React.FC = () => {
     isPendingToday,
     streakFreezes,
     maxStreakFreezes,
-    wasProtectedByFreeze,
-    dismissFreezeSavedNotice,
   } = useStreak();
-  const { overview: analyticsOverview, isLoading: isAnalyticsLoading } =
-    useAnalytics();
+  const {
+    overview: analyticsOverview,
+    heatmap: analyticsHeatmap,
+    isLoading: isAnalyticsLoading,
+  } = useAnalytics();
+  const { decks, isLoading: isDecksLoading, createDeck } = useDecks("active");
 
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
-  const [isFlameNurtureOpen, setIsFlameNurtureOpen] = useState(false);
-  const [feedingTrigger, setFeedingTrigger] = useState<{
-    id: number;
-    wordCount: number;
-  } | null>(null);
+  const [isCreateDeckOpen, setIsCreateDeckOpen] = useState(false);
   const [settingsTab, setSettingsTab] = useState<
     "profile" | "avatar" | "security" | "gamification"
   >("profile");
 
   const longestStreak = bestStreak;
-  const cardsFedToday = 0;
   const dailyGoal = user?.dailyGoal || 10;
+  const totalDecks = decks.length;
+  const cardsDueToday = decks.reduce(
+    (sum, d) => sum + (d.stats?.dueCards || 0),
+    0,
+  );
 
   const handleLogout = async () => {
     await logout();
@@ -59,24 +62,16 @@ export const DashboardPage: React.FC = () => {
     setIsSettingsOpen(true);
   };
 
-  const openFlameNurture = () => {
-    setIsFlameNurtureOpen(true);
-  };
-
-  const handleFeedWood = (count: number) => {
-    setFeedingTrigger({
-      id: Date.now(),
-      wordCount: count,
-    });
-  };
-
-  const handleStartReview = () => {
-    navigate("/review");
+  const handleStartReview = (deckId?: string) => {
+    if (deckId) {
+      navigate(`/decks/${deckId}/review`);
+    } else {
+      navigate("/review");
+    }
   };
 
   const handleCreateDeck = () => {
-    // In future phases: open create deck modal or route
-    openSettings("profile");
+    setIsCreateDeckOpen(true);
   };
 
   return (
@@ -104,7 +99,7 @@ export const DashboardPage: React.FC = () => {
               flameTier={flameTier}
               isActiveToday={isActiveToday}
               isPendingToday={isPendingToday}
-              onStartReview={handleStartReview}
+              onStartReview={() => handleStartReview()}
               onCreateDeck={handleCreateDeck}
               onOpenFlameNurture={openFlameNurture}
             />
@@ -114,8 +109,8 @@ export const DashboardPage: React.FC = () => {
               currentStreak={currentStreak}
               longestStreak={longestStreak}
               dailyGoal={dailyGoal}
-              cardsDueToday={0}
-              totalDecks={3}
+              cardsDueToday={cardsDueToday}
+              totalDecks={totalDecks}
               streakFreezes={streakFreezes}
               maxStreakFreezes={maxStreakFreezes}
               onOpenGoalSettings={() => openSettings("profile")}
@@ -125,6 +120,8 @@ export const DashboardPage: React.FC = () => {
 
             {/* Streak & Consistency Heatmap Matrix */}
             <StreakHeatmapTracker
+              heatmapData={analyticsHeatmap}
+              isLoading={isAnalyticsLoading}
               currentStreak={currentStreak}
               longestStreak={longestStreak}
             />
@@ -137,6 +134,8 @@ export const DashboardPage: React.FC = () => {
 
             {/* Decks & Spaced Repetition Active Review Hub */}
             <DecksPreviewSection
+              decks={decks}
+              isLoading={isDecksLoading}
               onStartPractice={handleStartReview}
               onCreateDeck={handleCreateDeck}
             />
@@ -178,32 +177,11 @@ export const DashboardPage: React.FC = () => {
           </footer>
         </div>
 
-        {/* Draggable Floating Streak Flame Mascot (Can be dragged anywhere on screen) */}
-        <DraggableFlameMascot
-          currentStreak={currentStreak}
-          onOpenFlameNurture={openFlameNurture}
-          feedingTrigger={feedingTrigger}
-        />
-
-        {/* Flame Nurturing & Evolution Modal */}
-        <FlameNurtureModal
-          isOpen={isFlameNurtureOpen}
-          onClose={() => setIsFlameNurtureOpen(false)}
-          currentStreak={currentStreak}
-          longestStreak={longestStreak}
-          cardsFedToday={cardsFedToday}
-          dailyGoal={dailyGoal}
-          onStartReview={handleStartReview}
-          onFeedWood={handleFeedWood}
-        />
-
-        {/* Streak Freeze Auto-Saved Alert Modal */}
-        <StreakSavedModal
-          isOpen={wasProtectedByFreeze}
-          onClose={dismissFreezeSavedNotice}
-          streakDays={currentStreak}
-          streakFreezes={streakFreezes}
-          maxStreakFreezes={maxStreakFreezes}
+        {/* Create Deck Modal */}
+        <CreateDeckModal
+          isOpen={isCreateDeckOpen}
+          onClose={() => setIsCreateDeckOpen(false)}
+          onSubmit={createDeck}
         />
 
         {/* Settings Modal */}

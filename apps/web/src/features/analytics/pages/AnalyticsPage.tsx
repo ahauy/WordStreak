@@ -6,7 +6,6 @@ import { useStreak } from "../../dashboard/hooks/useStreak";
 import { PageTransition } from "../../../common/components/layout/PageTransition";
 import { DashboardNavbar } from "../../dashboard/components/DashboardNavbar";
 import { SettingsModal } from "../../user-profile/components/SettingsModal";
-import { FlameNurtureModal } from "../../dashboard/components/FlameNurtureModal";
 import { AnalyticsHeroStats } from "../components/AnalyticsHeroStats";
 import { ActivityHeatmap } from "../components/ActivityHeatmap";
 import { MasteryDistributionCard } from "../components/MasteryDistributionCard";
@@ -28,7 +27,6 @@ export const AnalyticsPage: React.FC = () => {
   } = useAnalytics();
 
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
-  const [isFlameNurtureOpen, setIsFlameNurtureOpen] = useState(false);
   const [settingsTab, setSettingsTab] = useState<
     "profile" | "avatar" | "security" | "gamification"
   >("profile");
@@ -56,7 +54,6 @@ export const AnalyticsPage: React.FC = () => {
             flameTier={flameTier}
             isActiveToday={isActiveToday}
             onOpenSettings={openSettings}
-            onOpenFlameNurture={() => setIsFlameNurtureOpen(true)}
             onLogout={handleLogout}
           />
 
@@ -130,16 +127,6 @@ export const AnalyticsPage: React.FC = () => {
           isOpen={isSettingsOpen}
           initialTab={settingsTab}
           onClose={() => setIsSettingsOpen(false)}
-        />
-
-        {/* Mascot Nurture Modal */}
-        <FlameNurtureModal
-          isOpen={isFlameNurtureOpen}
-          currentStreak={currentStreak}
-          cardsFedToday={0}
-          dailyGoal={user?.dailyGoal || 10}
-          onClose={() => setIsFlameNurtureOpen(false)}
-          onFeedWood={() => {}}
         />
       </div>
     </PageTransition>

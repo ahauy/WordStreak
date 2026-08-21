@@ -2,6 +2,7 @@ import React, { useState, useMemo } from "react";
 import { TrendingUp, Award } from "lucide-react";
 import { motion } from "framer-motion";
 import { PurpleStreakFlame } from "../../landing/components/PurpleStreakFlame";
+import type { ActivityHeatmapResponseDto } from "@wordstreak/shared-types";
 
 interface HeatmapCell {
   week: number;
@@ -12,11 +13,15 @@ interface HeatmapCell {
 }
 
 interface StreakHeatmapTrackerProps {
+  heatmapData?: ActivityHeatmapResponseDto | null;
+  isLoading?: boolean;
   currentStreak?: number;
   longestStreak?: number;
 }
 
 export const StreakHeatmapTracker: React.FC<StreakHeatmapTrackerProps> = ({
+  heatmapData = null,
+  isLoading = false,
   currentStreak = 0,
 }) => {
   const [activeCell, setActiveCell] = useState<HeatmapCell | null>(null);
@@ -24,41 +29,40 @@ export const StreakHeatmapTracker: React.FC<StreakHeatmapTrackerProps> = ({
   const totalWeeks = 18;
   const daysPerWeek = 7;
 
-  // Generate realistic, deterministic activity data for recent weeks
+  // Build 18-week heatmap data from real ActivityHeatmapResponseDto
   const { weeksData, totalReviews, activeDaysCount } = useMemo(() => {
     const weeks: HeatmapCell[][] = [];
-    let reviewsCount = 0;
-    let activeDays = 0;
+
+    // Create a fast lookup map for real backend days (keyed by YYYY-MM-DD)
+    const dayMap = new Map<string, { count: number; level: number }>();
+    if (heatmapData?.days) {
+      for (const item of heatmapData.days) {
+        dayMap.set(item.date, { count: item.count, level: item.level });
+      }
+    }
+
+    const today = new Date();
+    // Compute total days in 18 weeks (126 days), ending today
+    const totalDays = totalWeeks * daysPerWeek;
 
     for (let w = 0; w < totalWeeks; w++) {
       const week: HeatmapCell[] = [];
       for (let d = 0; d < daysPerWeek; d++) {
-        // Pseudo-random distribution based on week & day
-        const seed = (w * 19 + d * 11 + 7) % 100;
-        let level = 0;
-        let reviews = 0;
+        // Calculate the specific calendar date for this cell
+        const daysAgo = totalDays - 1 - (w * daysPerWeek + d);
+        const cellDate = new Date(today);
+        cellDate.setDate(today.getDate() - daysAgo);
 
-        // More activity in recent weeks
-        if (w >= totalWeeks - 4) {
-          if (seed > 30) {
-            level = seed > 75 ? 4 : seed > 50 ? 3 : 2;
-            reviews = level * 6 + (seed % 8);
-          }
-        } else if (seed > 55) {
-          level = seed > 80 ? 3 : seed > 68 ? 2 : 1;
-          reviews = level * 5 + (seed % 5);
-        }
+        const yyyy = cellDate.getFullYear();
+        const mm = String(cellDate.getMonth() + 1).padStart(2, "0");
+        const dd = String(cellDate.getDate()).padStart(2, "0");
+        const dateKey = `${yyyy}-${mm}-${dd}`;
 
-        if (level > 0) {
-          activeDays++;
-          reviewsCount += reviews;
-        }
+        const realDay = dayMap.get(dateKey);
+        const level = realDay ? realDay.level : 0;
+        const reviews = realDay ? realDay.count : 0;
 
-        const date = new Date();
-        date.setDate(
-          date.getDate() - ((totalWeeks - 1 - w) * 7 + (daysPerWeek - 1 - d)),
-        );
-        const dateStr = date.toLocaleDateString("vi-VN", {
+        const dateStr = cellDate.toLocaleDateString("vi-VN", {
           weekday: "short",
           month: "numeric",
           day: "numeric",
@@ -77,10 +81,10 @@ export const StreakHeatmapTracker: React.FC<StreakHeatmapTrackerProps> = ({
 
     return {
       weeksData: weeks,
-      totalReviews: reviewsCount,
-      activeDaysCount: activeDays,
+      totalReviews: heatmapData?.totalReviews || 0,
+      activeDaysCount: heatmapData?.activeDaysCount || 0,
     };
-  }, [totalWeeks, daysPerWeek]);
+  }, [heatmapData, totalWeeks, daysPerWeek]);
 
   const getCellColor = (level: number, isHovered: boolean) => {
     if (isHovered) {
@@ -119,7 +123,7 @@ export const StreakHeatmapTracker: React.FC<StreakHeatmapTrackerProps> = ({
               showEmbers={false}
               className="w-3.5 h-3.5"
             />
-            <span className="text-[11px] font-bold uppercase tracking-wider">
+            <span className="text-[11px] font-bold uppercase tracking-wider font-mono">
               Streak & Habit Tracker
             </span>
           </div>
@@ -153,32 +157,40 @@ export const StreakHeatmapTracker: React.FC<StreakHeatmapTrackerProps> = ({
       </div>
 
       {/* Main Heatmap Matrix */}
-      <div className="overflow-x-auto pb-2 scrollbar-none">
-        <div className="flex gap-1.5 min-w-[500px] justify-between">
-          {weeksData.map((week, wIdx) => (
-            <div key={wIdx} className="flex flex-col gap-1.5 flex-1">
-              {week.map((cell) => {
-                const isHovered =
-                  activeCell?.week === cell.week &&
-                  activeCell?.day === cell.day;
+      {isLoading ? (
+        <div className="h-32 bg-[#fafafa] rounded-2xl animate-pulse" />
+      ) : (
+        <div className="overflow-x-auto pb-2 scrollbar-none">
+          <div className="flex gap-1.5 min-w-[500px] justify-between">
+            {weeksData.map((week, wIdx) => (
+              <div key={wIdx} className="flex flex-col gap-1.5 flex-1">
+                {week.map((cell) => {
+                  const isHovered =
+                    activeCell?.week === cell.week &&
+                    activeCell?.day === cell.day;
 
-                return (
-                  <div
-                    key={`${cell.week}-${cell.day}`}
-                    onMouseEnter={() => setActiveCell(cell)}
-                    onMouseLeave={() => setActiveCell(null)}
-                    className={`h-4 w-full rounded-xs transition-all duration-150 cursor-pointer ${getCellColor(
-                      cell.level,
-                      isHovered,
-                    )}`}
-                    title={`${cell.dateStr}: ${cell.reviews} thẻ ôn tập`}
-                  />
-                );
-              })}
-            </div>
-          ))}
+                  return (
+                    <div
+                      key={`${cell.week}-${cell.day}`}
+                      onMouseEnter={() => setActiveCell(cell)}
+                      onMouseLeave={() => setActiveCell(null)}
+                      className={`h-4 w-full rounded-xs transition-all duration-150 cursor-pointer ${getCellColor(
+                        cell.level,
+                        isHovered,
+                      )}`}
+                      title={`${cell.dateStr}: ${
+                        cell.reviews === 0
+                          ? "Chưa có lượt ôn tập"
+                          : `${cell.reviews} thẻ ôn tập`
+                      }`}
+                    />
+                  );
+                })}
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Heatmap Footer / Metrics / Legend */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pt-2 border-t border-[#f0f0f0] text-xs text-[#737373]">
@@ -189,8 +201,15 @@ export const StreakHeatmapTracker: React.FC<StreakHeatmapTrackerProps> = ({
             <span className="text-black font-medium">
               {activeCell.dateStr}:{" "}
               <strong className="text-[#7e22ce]">
-                {activeCell.reviews} thẻ ôn tập
+                {activeCell.reviews === 0
+                  ? "Chưa có lượt ôn tập"
+                  : `${activeCell.reviews} thẻ ôn tập`}
               </strong>
+            </span>
+          ) : totalReviews === 0 ? (
+            <span className="text-neutral-500 font-medium">
+              Chưa có lượt ôn tập nào. Bắt đầu phiên học đầu tiên để ghi nhận
+              chuỗi hoạt động!
             </span>
           ) : (
             <span className="text-black font-medium">

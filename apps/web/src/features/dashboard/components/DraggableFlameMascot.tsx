@@ -95,7 +95,7 @@ export const DraggableFlameMascot: React.FC<DraggableFlameMascotProps> = ({
   const dragControls = useDragControls();
   const mascotRef = useRef<HTMLDivElement>(null);
 
-  // Position state (persisted in localStorage)
+  // Position state (persisted in localStorage, defaults to bottom-right corner)
   const [position, setPosition] = useState<{ x: number; y: number }>(() => {
     if (typeof window !== "undefined") {
       try {
@@ -104,8 +104,8 @@ export const DraggableFlameMascot: React.FC<DraggableFlameMascotProps> = ({
           const parsed = JSON.parse(saved);
           if (typeof parsed.x === "number" && typeof parsed.y === "number") {
             // Keep within viewport boundaries
-            const maxX = Math.max(20, window.innerWidth - 90);
-            const maxY = Math.max(20, window.innerHeight - 110);
+            const maxX = Math.max(20, window.innerWidth - 88);
+            const maxY = Math.max(20, window.innerHeight - 108);
             return {
               x: Math.min(Math.max(20, parsed.x), maxX),
               y: Math.min(Math.max(20, parsed.y), maxY),
@@ -116,11 +116,11 @@ export const DraggableFlameMascot: React.FC<DraggableFlameMascotProps> = ({
         // Fallback below
       }
       return {
-        x: Math.max(20, window.innerWidth - 90),
-        y: Math.max(20, window.innerHeight - 120),
+        x: Math.max(20, window.innerWidth - 88),
+        y: Math.max(20, window.innerHeight - 108),
       };
     }
-    return { x: 200, y: 400 };
+    return { x: 300, y: 500 };
   });
 
   // Mascot animation & real-fire states
@@ -138,18 +138,32 @@ export const DraggableFlameMascot: React.FC<DraggableFlameMascotProps> = ({
   // Track drag vs click threshold
   const dragDistanceRef = useRef(0);
 
-  // Handle window resize boundary safety
+  // Ensure default bottom-right position on initial mount & adjust on window resize
   useEffect(() => {
     const handleResize = () => {
       setPosition((prev) => {
-        const maxX = Math.max(20, window.innerWidth - 90);
-        const maxY = Math.max(20, window.innerHeight - 110);
+        const maxX = Math.max(20, window.innerWidth - 88);
+        const maxY = Math.max(20, window.innerHeight - 108);
         return {
           x: Math.min(Math.max(20, prev.x), maxX),
           y: Math.min(Math.max(20, prev.y), maxY),
         };
       });
     };
+
+    // If no custom dragged position exists, lock firmly to bottom-right corner
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (!saved && typeof window !== "undefined") {
+        setPosition({
+          x: Math.max(20, window.innerWidth - 88),
+          y: Math.max(20, window.innerHeight - 108),
+        });
+      }
+    } catch {
+      // Ignore storage errors
+    }
+
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
@@ -161,11 +175,11 @@ export const DraggableFlameMascot: React.FC<DraggableFlameMascotProps> = ({
   ) => {
     const newX = Math.min(
       Math.max(20, position.x + info.offset.x),
-      window.innerWidth - 90,
+      window.innerWidth - 88,
     );
     const newY = Math.min(
       Math.max(20, position.y + info.offset.y),
-      window.innerHeight - 110,
+      window.innerHeight - 108,
     );
     setPosition({ x: newX, y: newY });
     try {

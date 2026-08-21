@@ -6,7 +6,6 @@ import { useCommunityDecks } from "../hooks/useCommunityDecks";
 import { PageTransition } from "../../../common/components/layout/PageTransition";
 import { DashboardNavbar } from "../../dashboard/components/DashboardNavbar";
 import { SettingsModal } from "../../user-profile/components/SettingsModal";
-import { FlameNurtureModal } from "../../dashboard/components/FlameNurtureModal";
 import { CategoryFilterBar } from "../components/CategoryFilterBar";
 import { CommunityDeckCard } from "../components/CommunityDeckCard";
 import { CommunityDeckPreviewModal } from "../components/CommunityDeckPreviewModal";
@@ -49,7 +48,6 @@ export const CommunityDecksPage: React.FC = () => {
   } = useCommunityDecks();
 
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
-  const [isFlameNurtureOpen, setIsFlameNurtureOpen] = useState(false);
   const [settingsTab, setSettingsTab] = useState<
     "profile" | "avatar" | "security" | "gamification"
   >("profile");
@@ -109,7 +107,6 @@ export const CommunityDecksPage: React.FC = () => {
             flameTier={flameTier}
             isActiveToday={isActiveToday}
             onOpenSettings={openSettings}
-            onOpenFlameNurture={() => setIsFlameNurtureOpen(true)}
             onLogout={handleLogout}
           />
 
@@ -332,16 +329,11 @@ export const CommunityDecksPage: React.FC = () => {
           onSuccess={() => void refetch()}
         />
 
-        {/* Global Settings & Flame Modals */}
+        {/* Global Settings Modal */}
         <SettingsModal
           isOpen={isSettingsOpen}
           onClose={() => setIsSettingsOpen(false)}
           initialTab={settingsTab}
-        />
-
-        <FlameNurtureModal
-          isOpen={isFlameNurtureOpen}
-          onClose={() => setIsFlameNurtureOpen(false)}
         />
       </div>
     </PageTransition>
