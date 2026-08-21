@@ -2,12 +2,24 @@ import {
   Injectable,
   NotFoundException,
   ForbiddenException,
+  BadRequestException,
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateDeckDto } from './dto/create-deck.dto';
 import { UpdateDeckDto } from './dto/update-deck.dto';
 import { QueryDecksDto } from './dto/query-decks.dto';
-import type { DeckResponse, DeckStats } from '@wordstreak/shared-types';
+import { BulkImportCardsDto } from './dto/bulk-import.dto';
+import { DeckExportQueryDto } from './dto/export-deck.dto';
+import type {
+  DeckResponse,
+  DeckStats,
+  BulkImportCardsResult,
+  ConflictStrategy,
+  BulkImportErrorItem,
+  DeckExportCardItem,
+  DeckExportDataResponse,
+  ExportMasteryFilter,
+} from '@wordstreak/shared-types';
 
 interface DeckWithCards {
   id: string;
@@ -300,6 +312,342 @@ export class DecksService {
     };
   }
 
+  async bulkImportCards(
+    userId: string,
+    deckId: string,
+    dto: BulkImportCardsDto,
+  ): Promise<BulkImportCardsResult> {
+    if (!dto.cards || !Array.isArray(dto.cards) || dto.cards.length === 0) {
+      throw new BadRequestException('Danh sách thẻ không được để trống');
+    }
+    if (dto.cards.length > 2000) {
+      throw new BadRequestException(
+        'Số lượng thẻ vượt quá giới hạn tối đa (2000 thẻ)',
+      );
+    }
+
+    let targetDeckId = deckId;
+    if (dto.createAsNewDeck) {
+      const createdDeck = await this.prisma.deck.create({
+        data: {
+          userId,
+          title: dto.newDeckTitle?.trim() || 'Imported Deck',
+        },
+      });
+      targetDeckId = createdDeck.id;
+    } else {
+      await this.verifyOwnership(userId, targetDeckId);
+    }
+
+    return this.prisma.$transaction(
+      async (tx) => {
+        const existingCards = await tx.card.findMany({
+          where: { deckId: targetDeckId },
+        });
+        const existingCardsMap = new Map<string, (typeof existingCards)[0]>();
+        for (const card of existingCards) {
+          existingCardsMap.set(card.word.trim().toLowerCase(), card);
+        }
+
+        let imported = 0;
+        let skipped = 0;
+        let overwritten = 0;
+        const errors: BulkImportErrorItem[] = [];
+
+        for (let i = 0; i < dto.cards.length; i++) {
+          const item = dto.cards[i];
+          const rawWord = item.word?.trim();
+          const rawMeaning = item.meaning?.trim();
+
+          if (!rawWord || !rawMeaning) {
+            errors.push({
+              index: i + 1,
+              word: rawWord || '',
+              reason: 'Từ vựng và ý nghĩa không được để trống',
+            });
+            continue;
+          }
+
+          const word = this.sanitizeFormula(rawWord) || rawWord;
+          const meaning = this.sanitizeFormula(rawMeaning) || rawMeaning;
+          const normalizedWord = word.trim().toLowerCase();
+
+          const cardData = {
+            word,
+            meaning,
+            phonetic: this.sanitizeFormula(item.phonetic),
+            exampleSentence: this.sanitizeFormula(item.exampleSentence),
+            collocations: this.sanitizeFormula(item.collocations),
+            mnemonic: this.sanitizeFormula(item.mnemonic),
+            imageUrl: item.imageUrl?.trim() || null,
+            audioUrl: item.audioUrl?.trim() || null,
+          };
+
+          const existing = existingCardsMap.get(normalizedWord);
+          const action = (
+            item.rowConflictAction && item.rowConflictAction !== 'DEFAULT'
+              ? item.rowConflictAction
+              : item.conflictAction ||
+                dto.conflictStrategy ||
+                dto.defaultStrategy ||
+                'SKIP'
+          ) as ConflictStrategy;
+
+          if (existing && action === 'SKIP') {
+            skipped++;
+            continue;
+          }
+
+          if (existing && action === 'OVERWRITE') {
+            await tx.card.update({
+              where: { id: existing.id },
+              data: cardData,
+            });
+            overwritten++;
+            continue;
+          }
+
+          // action === 'KEEP_BOTH' or not a duplicate
+          const created = await tx.card.create({
+            data: {
+              deckId: targetDeckId,
+              ...cardData,
+            },
+          });
+
+          await tx.userCardProgress.create({
+            data: {
+              userId,
+              cardId: created.id,
+              status: 'NEW',
+              interval: 0,
+              easeFactor: 2.5,
+              repetitions: 0,
+              nextReviewDate: new Date(),
+            },
+          });
+
+          if (!existing) {
+            existingCardsMap.set(normalizedWord, created);
+          }
+          imported++;
+        }
+
+        return {
+          success: true,
+          deckId: targetDeckId,
+          totalSubmitted: dto.cards.length,
+          imported,
+          skipped,
+          overwritten,
+          errors: errors.length > 0 ? errors : undefined,
+          message: `Nhập thành công ${imported} thẻ, cập nhật ${overwritten} thẻ, bỏ qua ${skipped} thẻ.`,
+        };
+      },
+      { timeout: 15000 },
+    );
+  }
+
+  async exportDeck(
+    userId: string,
+    deckId: string,
+    query: DeckExportQueryDto,
+  ): Promise<{
+    deck: DeckExportDataResponse['deck'];
+    cards: DeckExportCardItem[];
+    csvContent: string;
+    content: string;
+    format: string;
+    filename: string;
+  }> {
+    const deck = await this.prisma.deck.findUnique({
+      where: { id: deckId },
+      include: {
+        cards: {
+          include: {
+            progress: {
+              where: { userId },
+              select: {
+                status: true,
+                interval: true,
+                repetitions: true,
+              },
+            },
+          },
+          orderBy: { createdAt: 'asc' },
+        },
+      },
+    });
+
+    if (!deck) {
+      throw new NotFoundException('Không tìm thấy bộ từ vựng');
+    }
+
+    if (deck.userId !== userId && !deck.isPublic) {
+      throw new ForbiddenException(
+        'Bạn không có quyền truy cập bộ từ vựng này',
+      );
+    }
+
+    const filter =
+      query.status || (query as { filter?: ExportMasteryFilter }).filter;
+    const filteredCards = this.filterCardsByStatus(deck.cards, filter);
+
+    const cardItems: DeckExportCardItem[] = filteredCards.map((c) => ({
+      id: c.id,
+      word: c.word,
+      meaning: c.meaning,
+      phonetic: c.phonetic,
+      exampleSentence: c.exampleSentence,
+      collocations: c.collocations,
+      mnemonic: c.mnemonic,
+      imageUrl: c.imageUrl,
+      audioUrl: c.audioUrl,
+      status: c.progress?.[0]?.status ?? 'NEW',
+    }));
+
+    const csvContent = this.buildCsvContent(cardItems);
+    const safeTitle =
+      deck.title.replace(/[^a-zA-Z0-9_\u00C0-\u1EF9-]/g, '_') || 'deck';
+    const filename = `deck-${safeTitle}.csv`;
+
+    return {
+      deck: {
+        id: deck.id,
+        title: deck.title,
+        description: deck.description,
+        tags: this.parseTags(deck.tags),
+        isPublic: deck.isPublic,
+        totalCards: cardItems.length,
+      },
+      cards: cardItems,
+      csvContent,
+      content: csvContent,
+      format: (query.format || 'CSV').toLowerCase(),
+      filename,
+    };
+  }
+
+  private sanitizeFormula(val?: string | null): string | null {
+    if (!val) return val ?? null;
+    const trimmed = val.trim();
+    if (/^[=+\-@\t\r]/.test(trimmed)) {
+      return trimmed.replace(/^[=+\-@\t\r]+/, '').trim();
+    }
+    return trimmed;
+  }
+
+  private escapeCsvCell(val?: string | null): string {
+    if (val === null || val === undefined) return '';
+    let str = String(val);
+    if (/^[=+\-@\t\r]/.test(str)) {
+      str = "'" + str;
+    }
+    if (/[",\n\r]/.test(str)) {
+      return `"${str.replace(/"/g, '""')}"`;
+    }
+    return str;
+  }
+
+  private buildCsvContent(cards: DeckExportCardItem[]): string {
+    const headers = [
+      'Word',
+      'Meaning',
+      'Phonetic',
+      'Example Sentence',
+      'Collocations',
+      'Mnemonic',
+      'Image URL',
+      'Audio URL',
+      'Status',
+    ];
+
+    const rows = cards.map((card) =>
+      [
+        this.escapeCsvCell(card.word),
+        this.escapeCsvCell(card.meaning),
+        this.escapeCsvCell(card.phonetic),
+        this.escapeCsvCell(card.exampleSentence),
+        this.escapeCsvCell(card.collocations),
+        this.escapeCsvCell(card.mnemonic),
+        this.escapeCsvCell(card.imageUrl),
+        this.escapeCsvCell(card.audioUrl),
+        this.escapeCsvCell(card.status),
+      ].join(','),
+    );
+
+    return '\uFEFF' + [headers.join(','), ...rows].join('\r\n');
+  }
+
+  private filterCardsByStatus(
+    cards: Array<{
+      id: string;
+      word: string;
+      meaning: string;
+      phonetic: string | null;
+      audioUrl: string | null;
+      exampleSentence: string | null;
+      collocations: string | null;
+      mnemonic: string | null;
+      imageUrl: string | null;
+      progress?: Array<{
+        status: string;
+        interval: number;
+        repetitions: number;
+      }>;
+    }>,
+    status?: ExportMasteryFilter,
+  ) {
+    if (!status || status === 'ALL') {
+      return cards;
+    }
+    if (status === 'MASTERED') {
+      return cards.filter((c) => {
+        const p = c.progress?.[0];
+        return (
+          p &&
+          (p.status === 'MASTERED' || p.interval >= 21 || p.repetitions >= 5)
+        );
+      });
+    }
+    if (status === 'LEARNING') {
+      return cards.filter((c) => {
+        const p = c.progress?.[0];
+        return (
+          p &&
+          (p.status === 'LEARNING' ||
+            p.status === 'REVIEW' ||
+            (p.status !== 'NEW' &&
+              p.status !== 'MASTERED' &&
+              p.interval < 21 &&
+              p.repetitions < 5))
+        );
+      });
+    }
+    if (status === 'NEW') {
+      return cards.filter((c) => {
+        const p = c.progress?.[0];
+        return !p || p.status === 'NEW';
+      });
+    }
+    return cards;
+  }
+
+  private parseTags(tags: string | null): string[] | null {
+    if (!tags) return null;
+    try {
+      const parsed = JSON.parse(tags) as unknown;
+      if (Array.isArray(parsed)) {
+        return parsed.filter(
+          (item): item is string => typeof item === 'string',
+        );
+      }
+      return tags.split(',').map((t) => t.trim());
+    } catch {
+      return tags.split(',').map((t) => t.trim());
+    }
+  }
+
   private async verifyOwnership(userId: string, deckId: string) {
     const deck = await this.prisma.deck.findUnique({
       where: { id: deckId },
@@ -354,21 +702,7 @@ export class DecksService {
   }
 
   private mapToResponse(deck: DeckWithCards, stats?: DeckStats): DeckResponse {
-    let parsedTags: string[] | null = null;
-    if (deck.tags) {
-      try {
-        const parsed = JSON.parse(deck.tags) as unknown;
-        if (Array.isArray(parsed)) {
-          parsedTags = parsed.filter(
-            (item): item is string => typeof item === 'string',
-          );
-        } else {
-          parsedTags = deck.tags.split(',').map((t) => t.trim());
-        }
-      } catch {
-        parsedTags = deck.tags.split(',').map((t) => t.trim());
-      }
-    }
+    const parsedTags = this.parseTags(deck.tags);
 
     return {
       id: deck.id,

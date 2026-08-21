@@ -10,14 +10,22 @@ import {
   UseGuards,
   HttpCode,
   HttpStatus,
+  Res,
 } from '@nestjs/common';
+import type { Response } from 'express';
 import { DecksService } from './decks.service';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import { CreateDeckDto } from './dto/create-deck.dto';
 import { UpdateDeckDto } from './dto/update-deck.dto';
 import { QueryDecksDto } from './dto/query-decks.dto';
-import type { JwtPayload, DeckResponse } from '@wordstreak/shared-types';
+import { BulkImportCardsDto } from './dto/bulk-import.dto';
+import { DeckExportQueryDto } from './dto/export-deck.dto';
+import type {
+  JwtPayload,
+  DeckResponse,
+  BulkImportCardsResult,
+} from '@wordstreak/shared-types';
 
 @Controller('decks')
 @UseGuards(JwtAuthGuard)
@@ -71,6 +79,54 @@ export class DecksController {
     @Param('id') id: string,
   ): Promise<DeckResponse> {
     return this.decksService.restore(user.sub, id);
+  }
+
+  @Post(':id/cards/bulk')
+  async bulkImport(
+    @CurrentUser() user: JwtPayload,
+    @Param('id') id: string,
+    @Body() dto: BulkImportCardsDto,
+  ): Promise<BulkImportCardsResult> {
+    return this.decksService.bulkImportCards(user.sub, id, dto);
+  }
+
+  @Get(':id/export')
+  async exportDeck(
+    @CurrentUser() user: JwtPayload,
+    @Param('id') id: string,
+    @Query() query: DeckExportQueryDto,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    const result = await this.decksService.exportDeck(user.sub, id, query);
+    const format = (query.format || 'CSV').toUpperCase();
+
+    if (format === 'CSV') {
+      const sanitizedTitle = (result.deck.title || 'deck')
+        .toLowerCase()
+        .replace(/[^a-z0-9]/g, '-');
+      const filename = `deck-${sanitizedTitle}.csv`;
+
+      if (typeof res?.set === 'function') {
+        res.set({
+          'Content-Type': 'text/csv; charset=utf-8',
+          'Content-Disposition': `attachment; filename="${filename}"`,
+        });
+      } else if (typeof res?.setHeader === 'function') {
+        res.setHeader('Content-Type', 'text/csv; charset=utf-8');
+        res.setHeader(
+          'Content-Disposition',
+          `attachment; filename="${filename}"`,
+        );
+      }
+      return result.csvContent ?? result.content ?? '';
+    }
+
+    return {
+      data: {
+        deck: result.deck,
+        cards: result.cards,
+      },
+    };
   }
 
   @Delete(':id')
