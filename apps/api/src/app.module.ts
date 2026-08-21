@@ -13,6 +13,7 @@ import { StreakModule } from './modules/streaks/streak.module';
 import { AiVocabularyModule } from './modules/ai-vocabulary/ai-vocabulary.module';
 import { AnalyticsModule } from './modules/analytics/analytics.module';
 import { GamificationModule } from './modules/gamification/gamification.module';
+import { CommunityModule } from './modules/community/community.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { GamificationModule } from './modules/gamification/gamification.module';
     AiVocabularyModule,
     AnalyticsModule,
     GamificationModule,
+    CommunityModule,
   ],
   controllers: [AppController],
   providers: [AppService],

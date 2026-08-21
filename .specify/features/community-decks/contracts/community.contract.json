@@ -1,0 +1,57 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "CommunityDecksApiContracts",
+  "description": "API Contracts for WordStreak Community Decks Marketplace (US-ECO-02)",
+  "endpoints": {
+    "getCommunityDecks": {
+      "method": "GET",
+      "path": "/api/v1/community/decks",
+      "access": "Public / Optional Auth",
+      "queryParams": {
+        "search": { "type": "string", "required": false },
+        "category": { "type": "string", "required": false },
+        "tag": { "type": "string", "required": false },
+        "sort": {
+          "type": "string",
+          "enum": ["POPULAR", "TOP_RATED", "NEWEST"],
+          "default": "POPULAR"
+        },
+        "page": { "type": "integer", "minimum": 1, "default": 1 },
+        "limit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 50,
+          "default": 12
+        }
+      },
+      "responseStatus": 200
+    },
+    "getCommunityDeckDetail": {
+      "method": "GET",
+      "path": "/api/v1/community/decks/:id",
+      "access": "Public / Optional Auth",
+      "responseStatus": 200
+    },
+    "cloneCommunityDeck": {
+      "method": "POST",
+      "path": "/api/v1/community/decks/:id/clone",
+      "access": "Authenticated",
+      "responseStatus": 201
+    },
+    "rateCommunityDeck": {
+      "method": "POST",
+      "path": "/api/v1/community/decks/:id/rate",
+      "access": "Authenticated",
+      "body": {
+        "rating": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 5,
+          "required": true
+        },
+        "comment": { "type": "string", "maxLength": 500, "required": false }
+      },
+      "responseStatus": 200
+    }
+  }
+}
