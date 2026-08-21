@@ -138,7 +138,7 @@ export const DraggableFlameMascot: React.FC<DraggableFlameMascotProps> = ({
   // Track drag vs click threshold
   const dragDistanceRef = useRef(0);
 
-  // Ensure default bottom-right position on initial mount & adjust on window resize
+  // Adjust mascot boundaries on window resize
   useEffect(() => {
     const handleResize = () => {
       setPosition((prev) => {
@@ -150,19 +150,6 @@ export const DraggableFlameMascot: React.FC<DraggableFlameMascotProps> = ({
         };
       });
     };
-
-    // If no custom dragged position exists, lock firmly to bottom-right corner
-    try {
-      const saved = localStorage.getItem(STORAGE_KEY);
-      if (!saved && typeof window !== "undefined") {
-        setPosition({
-          x: Math.max(20, window.innerWidth - 88),
-          y: Math.max(20, window.innerHeight - 108),
-        });
-      }
-    } catch {
-      // Ignore storage errors
-    }
 
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
