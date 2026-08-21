@@ -1,17 +1,22 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import type {
   SubmitQuizDto,
   QuizResultResponseDto,
   MissedCardDto,
+  SubmitMatchingQuizDto,
+  MatchingQuizResultDto,
+  MatchingMissedCardDto,
 } from '@wordstreak/shared-types';
 
 @Injectable()
 export class PracticeService {
+  private readonly logger = new Logger(PracticeService.name);
+
   constructor(private readonly prisma: PrismaService) {}
 
   /**
-   * Evaluates quiz submission, computes score/combos/XP, and fetches missed cards.
+   * Evaluates standard/listening quiz submissions, calculates XP and fetches missed cards.
    */
   async submitQuiz(
     userId: string,
@@ -69,6 +74,276 @@ export class PracticeService {
       maxCombo,
       missedCards,
     };
+  }
+
+  /**
+   * Evaluates word matching game submissions, computes XP/combos/bonuses, and applies anti-abuse guards.
+   */
+  async submitMatchingQuiz(
+    userId: string,
+    dto: SubmitMatchingQuizDto,
+  ): Promise<MatchingQuizResultDto> {
+    const answers = dto.answers ?? [];
+    const totalPairs = dto.totalPairs || answers.length;
+    const { totalTimeMs } = dto;
+
+    const {
+      matchedCount,
+      maxCombo,
+      comboBonusSum,
+      hasFastPair,
+      missedCardIds,
+      cardErrorMap,
+    } = this.processMatchingAnswers(answers);
+
+    const finalMaxCombo = Math.max(maxCombo, dto.maxCombo ?? 0);
+    const accuracyPercentage =
+      totalPairs > 0 ? Math.round((matchedCount / totalPairs) * 100) : 0;
+    const totalRounds = Math.max(1, Math.floor(totalPairs / 5));
+    const hasZeroErrors =
+      missedCardIds.length === 0 && matchedCount === totalPairs;
+
+    const isBotFlagged = this.validateMatchingVelocity(
+      totalPairs,
+      totalTimeMs,
+      totalRounds,
+      hasFastPair,
+    );
+
+    if (isBotFlagged) {
+      this.logger.warn(
+        `[Anti-Abuse] Flagged suspicious bot velocity matching submission from user ${userId}`,
+      );
+    }
+
+    const { baseXp, comboBonusXp, speedBonusXp, perfectBonusXp, totalXp } =
+      this.calculateMatchingXp({
+        matchedCount,
+        totalRounds,
+        comboBonusSum,
+        totalTimeMs,
+        hasZeroErrors,
+        isBotFlagged,
+      });
+
+    const { finalXp, isDailyCapped } = await this.enforceDailyPracticeCap(
+      userId,
+      totalXp,
+    );
+
+    const missedCards = await this.fetchMatchingMissedCards(
+      missedCardIds,
+      cardErrorMap,
+    );
+
+    return {
+      submissionId: `wm_sub_${Date.now()}`,
+      score: matchedCount,
+      accuracy: accuracyPercentage,
+      totalPairs,
+      matchedCount,
+      accuracyPercentage,
+      maxCombo: finalMaxCombo,
+      totalTimeMs,
+      totalXpEarned: finalXp,
+      totalXp: finalXp,
+      isBotFlagged,
+      xpBreakdown: {
+        baseXp,
+        comboBonusXp,
+        speedBonusXp,
+        perfectBonusXp,
+        totalXp: finalXp,
+        isDailyCapped,
+        isBotDetected: isBotFlagged,
+        isBotFlagged,
+      },
+      missedCards,
+    };
+  }
+
+  /**
+   * Processes matching game answers to compute streak, combo bonuses, error counts and missed card IDs.
+   */
+  private processMatchingAnswers(
+    answers: NonNullable<SubmitMatchingQuizDto['answers']>,
+  ): {
+    matchedCount: number;
+    maxCombo: number;
+    comboBonusSum: number;
+    hasFastPair: boolean;
+    missedCardIds: string[];
+    cardErrorMap: Record<string, number>;
+  } {
+    let matchedCount = 0;
+    let currentStreak = 0;
+    let maxCombo = 0;
+    let comboBonusSum = 0;
+    let hasFastPair = false;
+    const missedCardIds: string[] = [];
+    const cardErrorMap: Record<string, number> = {};
+
+    for (const ans of answers) {
+      if (
+        (ans.matchedInMs !== undefined && ans.matchedInMs < 200) ||
+        (ans.responseTimeMs !== undefined && ans.responseTimeMs < 200)
+      ) {
+        hasFastPair = true;
+      }
+
+      const isCorrect = ans.isCorrect !== false;
+      const isFirstTry =
+        ans.isCorrectFirstTry ??
+        (ans.attempts === undefined || ans.attempts === 1);
+
+      if (isCorrect) {
+        matchedCount++;
+        if (isFirstTry) {
+          currentStreak++;
+          if (currentStreak > maxCombo) {
+            maxCombo = currentStreak;
+          }
+          const multiplier =
+            currentStreak >= 10
+              ? 2.0
+              : currentStreak >= 5
+                ? 1.5
+                : currentStreak >= 3
+                  ? 1.2
+                  : 1.0;
+          comboBonusSum += 2 * (multiplier - 1.0);
+        } else {
+          currentStreak = 0;
+          if (ans.cardId && !missedCardIds.includes(ans.cardId)) {
+            missedCardIds.push(ans.cardId);
+          }
+          cardErrorMap[ans.cardId] =
+            (ans.attempts ?? 2) - (ans.isCorrect !== false ? 1 : 0) || 1;
+        }
+      } else {
+        currentStreak = 0;
+        if (ans.cardId && !missedCardIds.includes(ans.cardId)) {
+          missedCardIds.push(ans.cardId);
+        }
+        cardErrorMap[ans.cardId] = ans.attempts ?? 1;
+      }
+    }
+
+    return {
+      matchedCount,
+      maxCombo,
+      comboBonusSum,
+      hasFastPair,
+      missedCardIds,
+      cardErrorMap,
+    };
+  }
+
+  /**
+   * Evaluates if submission velocity triggers anti-abuse bot detection.
+   */
+  private validateMatchingVelocity(
+    totalPairs: number,
+    totalTimeMs: number,
+    totalRounds: number,
+    hasFastPair: boolean,
+  ): boolean {
+    if (totalPairs >= 5 && totalTimeMs < 1500) {
+      return true;
+    }
+    if (totalPairs >= 5 && totalTimeMs < 1500 * totalRounds) {
+      return true;
+    }
+    return hasFastPair;
+  }
+
+  /**
+   * Calculates base XP, combo bonus, speed bonus, and perfect bonuses.
+   */
+  private calculateMatchingXp(params: {
+    matchedCount: number;
+    totalRounds: number;
+    comboBonusSum: number;
+    totalTimeMs: number;
+    hasZeroErrors: boolean;
+    isBotFlagged: boolean;
+  }): {
+    baseXp: number;
+    comboBonusXp: number;
+    speedBonusXp: number;
+    perfectBonusXp: number;
+    totalXp: number;
+  } {
+    const {
+      matchedCount,
+      totalRounds,
+      comboBonusSum,
+      totalTimeMs,
+      hasZeroErrors,
+      isBotFlagged,
+    } = params;
+
+    if (isBotFlagged) {
+      return {
+        baseXp: 0,
+        comboBonusXp: 0,
+        speedBonusXp: 0,
+        perfectBonusXp: 0,
+        totalXp: 0,
+      };
+    }
+
+    const baseXp = matchedCount * 2;
+    const comboBonusXp = Math.round(comboBonusSum);
+    const speedBonusXp =
+      hasZeroErrors && totalTimeMs <= totalRounds * 15000
+        ? 10 * totalRounds
+        : 0;
+    const perfectBonusXp = hasZeroErrors ? 5 * totalRounds : 0;
+    const totalXp = baseXp + comboBonusXp + speedBonusXp + perfectBonusXp;
+
+    return {
+      baseXp,
+      comboBonusXp,
+      speedBonusXp,
+      perfectBonusXp,
+      totalXp,
+    };
+  }
+
+  /**
+   * Applies daily 500 XP cap for non-SRS practice modes.
+   */
+  private async enforceDailyPracticeCap(
+    userId: string,
+    prospectiveXp: number,
+  ): Promise<{ finalXp: number; isDailyCapped: boolean }> {
+    if (!this.prisma.userActivityLog || prospectiveXp <= 0) {
+      return { finalXp: prospectiveXp, isDailyCapped: false };
+    }
+
+    const todayStart = new Date();
+    todayStart.setUTCHours(0, 0, 0, 0);
+    const todayEnd = new Date();
+    todayEnd.setUTCHours(23, 59, 59, 999);
+
+    const agg = await this.prisma.userActivityLog.aggregate({
+      where: {
+        userId,
+        createdAt: { gte: todayStart, lte: todayEnd },
+      },
+      _sum: { xpEarned: true },
+    });
+
+    const todayXp = agg._sum?.xpEarned ?? 0;
+    if (todayXp >= 500) {
+      return { finalXp: 0, isDailyCapped: true };
+    }
+    if (todayXp + prospectiveXp > 500) {
+      return { finalXp: 500 - todayXp, isDailyCapped: true };
+    }
+
+    return { finalXp: prospectiveXp, isDailyCapped: false };
   }
 
   /**
@@ -149,6 +424,40 @@ export class PracticeService {
       meaning: c.meaning,
       phonetic: c.phonetic,
       audioUrl: c.audioUrl,
+    }));
+  }
+
+  /**
+   * Fetches missed cards with error attempts for matching game review.
+   */
+  private async fetchMatchingMissedCards(
+    missedCardIds: string[],
+    cardErrorMap: Record<string, number>,
+  ): Promise<MatchingMissedCardDto[]> {
+    if (missedCardIds.length === 0) {
+      return [];
+    }
+
+    const cards = await this.prisma.card.findMany({
+      where: {
+        id: { in: missedCardIds },
+      },
+      select: {
+        id: true,
+        word: true,
+        meaning: true,
+        phonetic: true,
+        audioUrl: true,
+      },
+    });
+
+    return cards.map((c) => ({
+      cardId: c.id,
+      word: c.word,
+      meaning: c.meaning,
+      phonetic: c.phonetic,
+      audioUrl: c.audioUrl,
+      errorAttempts: cardErrorMap[c.id] ?? 1,
     }));
   }
 }

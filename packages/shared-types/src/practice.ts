@@ -120,3 +120,114 @@ export interface DiffSpan {
   char: string;
   type: DiffSpanType;
 }
+
+// Word Matching Game Types (US-QUIZ-04)
+export type MatchingTileType = "WORD" | "MEANING" | "term" | "definition";
+
+export type MatchingTileState =
+  | "NEUTRAL"
+  | "SELECTED"
+  | "MATCHED"
+  | "MISMATCH"
+  | "idle"
+  | "selected"
+  | "matched"
+  | "error";
+
+export interface MatchingCardItemDto {
+  id: string;
+  cardId: string;
+  text: string;
+  type: MatchingTileType;
+  phonetic?: string | null;
+  audioUrl?: string | null;
+}
+
+export type MatchingPairDto = MatchingCardItemDto;
+
+export interface MatchingRoundDto {
+  roundIndex: number;
+  totalRounds: number;
+  wordTiles: MatchingCardItemDto[];
+  meaningTiles: MatchingCardItemDto[];
+  columnA?: MatchingCardItemDto[];
+  columnB?: MatchingCardItemDto[];
+}
+
+export interface GetMatchingQuizQueryDto {
+  deckId: string;
+  limit?: number;
+  roundsCount?: number;
+}
+
+export type GetMatchingQuestionsQueryDto = GetMatchingQuizQueryDto;
+
+export interface MatchingQuizResponseDto {
+  deckId: string;
+  deckTitle?: string;
+  totalCards: number;
+  totalRounds: number;
+  rounds: MatchingRoundDto[];
+}
+
+export interface MatchingAnswerSubmissionDto {
+  cardId: string;
+  matchedInMs?: number;
+  responseTimeMs?: number;
+  attempts?: number;
+  isCorrectFirstTry?: boolean;
+  termCardId?: string;
+  definitionCardId?: string;
+  isCorrect?: boolean;
+}
+
+export interface SubmitMatchingQuizDto {
+  deckId: string;
+  mode?: "MATCHING" | string;
+  quizType?: "matching" | string;
+  roundsCompleted?: number;
+  totalPairs: number;
+  correctPairs?: number;
+  maxCombo?: number;
+  totalTimeMs: number;
+  answers?: MatchingAnswerSubmissionDto[];
+  roundDetails?: unknown;
+}
+
+export type MatchingSubmitQuizDto = SubmitMatchingQuizDto;
+
+export interface MatchingMissedCardDto {
+  cardId: string;
+  word: string;
+  meaning: string;
+  phonetic?: string | null;
+  audioUrl?: string | null;
+  errorAttempts?: number;
+}
+
+export interface MatchingXpBreakdownDto {
+  baseXp: number;
+  comboBonusXp: number;
+  speedBonusXp: number;
+  perfectBonusXp: number;
+  totalXp: number;
+  isDailyCapped?: boolean;
+  isBotDetected?: boolean;
+  isBotFlagged?: boolean;
+}
+
+export interface MatchingQuizResultDto {
+  submissionId?: string;
+  score?: number;
+  accuracy?: number;
+  totalPairs: number;
+  matchedCount: number;
+  accuracyPercentage: number;
+  maxCombo: number;
+  totalTimeMs: number;
+  totalXpEarned: number;
+  totalXp?: number;
+  isBotFlagged?: boolean;
+  xpBreakdown: MatchingXpBreakdownDto;
+  missedCards: MatchingMissedCardDto[];
+}

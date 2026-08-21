@@ -7,10 +7,11 @@ import {
   Sparkles,
   AlertCircle,
   Headphones,
+  Layers,
 } from "lucide-react";
 
 export type PracticeMode =
-  "multiple-choice" | "fill-in-the-blank" | "listening";
+  "multiple-choice" | "fill-in-the-blank" | "listening" | "matching";
 
 interface QuizSetupModalProps {
   isOpen: boolean;
@@ -53,8 +54,12 @@ export const QuizSetupModal: React.FC<QuizSetupModalProps> = ({
   const isFillBlankEmpty =
     selectedMode === "fill-in-the-blank" && totalCards < 1;
   const isListeningEmpty = selectedMode === "listening" && totalCards < 1;
+  const isMatchingTooSmall = selectedMode === "matching" && totalCards < 5;
   const isTooSmall =
-    isMultipleChoiceTooSmall || isFillBlankEmpty || isListeningEmpty;
+    isMultipleChoiceTooSmall ||
+    isFillBlankEmpty ||
+    isListeningEmpty ||
+    isMatchingTooSmall;
 
   const handleStart = () => {
     onStart({
@@ -112,7 +117,7 @@ export const QuizSetupModal: React.FC<QuizSetupModalProps> = ({
               <span className="text-xs font-mono text-[#737373] uppercase tracking-wider block mb-2">
                 Chế độ ôn luyện (Practice Mode)
               </span>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
                 <button
                   type="button"
                   onClick={() => setSelectedMode("multiple-choice")}
@@ -184,6 +189,32 @@ export const QuizSetupModal: React.FC<QuizSetupModalProps> = ({
                     Audio & Typing
                   </span>
                 </button>
+
+                <button
+                  type="button"
+                  onClick={() => setSelectedMode("matching")}
+                  className={`p-3 rounded-2xl border text-left transition-all ${
+                    selectedMode === "matching"
+                      ? "bg-[#000000] text-white border-[#000000] shadow-sm"
+                      : "bg-[#fafafa] text-[#000000] border-[#e5e5e5] hover:border-[#d4d4d4]"
+                  }`}
+                >
+                  <div className="flex items-center gap-1.5">
+                    <span className="block text-sm font-semibold leading-tight">
+                      Nối từ
+                    </span>
+                    <Layers className="w-3.5 h-3.5 shrink-0 opacity-80" />
+                  </div>
+                  <span
+                    className={`block text-[11px] font-mono mt-1 ${
+                      selectedMode === "matching"
+                        ? "text-white/70"
+                        : "text-[#737373]"
+                    }`}
+                  >
+                    Matching
+                  </span>
+                </button>
               </div>
             </div>
 
@@ -207,9 +238,11 @@ export const QuizSetupModal: React.FC<QuizSetupModalProps> = ({
                   </span>
                   {selectedMode === "multiple-choice"
                     ? `This deck has only ${totalCards} cards. Multiple choice quizzes require at least 4 cards across your account to generate options.`
-                    : selectedMode === "listening"
-                      ? "This deck has no cards. Add cards to start listening & typing practice."
-                      : "This deck has no cards. Add cards to start fill-in-the-blank practice."}
+                    : selectedMode === "matching"
+                      ? `Bộ thẻ chỉ có ${totalCards} thẻ. Chế độ nối từ yêu cầu tối thiểu 5 thẻ từ vựng.`
+                      : selectedMode === "listening"
+                        ? "This deck has no cards. Add cards to start listening & typing practice."
+                        : "This deck has no cards. Add cards to start fill-in-the-blank practice."}
                 </div>
               </div>
             ) : (
@@ -221,8 +254,23 @@ export const QuizSetupModal: React.FC<QuizSetupModalProps> = ({
                   </span>
                   <div className="grid grid-cols-3 gap-2.5">
                     {[
-                      { label: "10 Cards", count: 10, sub: "~2 min" },
-                      { label: "20 Cards", count: 20, sub: "~5 min" },
+                      {
+                        label:
+                          selectedMode === "matching"
+                            ? "5 Thẻ (1 Vòng)"
+                            : "10 Cards",
+                        count: selectedMode === "matching" ? 5 : 10,
+                        sub: selectedMode === "matching" ? "1 Round" : "~2 min",
+                      },
+                      {
+                        label:
+                          selectedMode === "matching"
+                            ? "10 Thẻ (2 Vòng)"
+                            : "20 Cards",
+                        count: selectedMode === "matching" ? 10 : 20,
+                        sub:
+                          selectedMode === "matching" ? "2 Rounds" : "~5 min",
+                      },
                       {
                         label: "All Cards",
                         count: totalCards,
