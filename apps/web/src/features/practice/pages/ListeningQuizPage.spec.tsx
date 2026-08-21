@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
+import type { DeckResponse } from "@wordstreak/shared-types";
 import { ListeningQuizPage } from "./ListeningQuizPage";
 import { practiceService } from "../services/practiceService";
 import { decksService } from "../../decks/services/decksService";
@@ -89,7 +90,7 @@ describe("ListeningQuizPage Component", () => {
       description: "",
       totalCards: 2,
       createdAt: new Date(),
-    } as any);
+    } as unknown as DeckResponse);
 
     vi.mocked(practiceService.getListeningQuiz).mockResolvedValue(
       mockQuestions,
@@ -121,7 +122,7 @@ describe("ListeningQuizPage Component", () => {
       description: "",
       totalCards: 2,
       createdAt: new Date(),
-    } as any);
+    } as unknown as DeckResponse);
 
     vi.mocked(practiceService.getListeningQuiz).mockResolvedValue(
       mockQuestions,

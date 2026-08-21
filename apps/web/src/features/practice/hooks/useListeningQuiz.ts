@@ -64,8 +64,9 @@ export function useListeningQuiz({
   const [result, setResult] = useState<QuizResultResponseDto | null>(null);
 
   const answersRef = useRef<ListeningAnswerSubmissionDto[]>([]);
-  const questionStartTimeRef = useRef<number>(Date.now());
+  const questionStartTimeRef = useRef<number>(0);
   const advanceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const timerIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const audioPlayer = useAudioPlayer();
 
   const currentQuestion = questions[currentIndex] || null;
@@ -77,43 +78,7 @@ export function useListeningQuiz({
       questionStartTimeRef.current = Date.now();
       audioPlayer.playAudio(currentQuestion.word, currentQuestion.audioUrl);
     }
-  }, [currentIndex, currentQuestion, isCompleted]);
-
-  // Countdown timer in standard mode
-  useEffect(() => {
-    if (
-      isZenMode ||
-      feedbackState !== "IDLE" ||
-      isCompleted ||
-      totalQuestions === 0
-    ) {
-      return;
-    }
-
-    const timer = setInterval(() => {
-      setTimerSeconds((prev) => {
-        if (prev <= 1) {
-          clearInterval(timer);
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
-
-    return () => clearInterval(timer);
-  }, [isZenMode, feedbackState, isCompleted, totalQuestions, currentIndex]);
-
-  // Auto-submit on timer expiry
-  useEffect(() => {
-    if (
-      !isZenMode &&
-      timerSeconds === 0 &&
-      feedbackState === "IDLE" &&
-      currentQuestion
-    ) {
-      handleAnswerEvaluation("");
-    }
-  }, [timerSeconds, isZenMode, feedbackState, currentQuestion]);
+  }, [currentIndex, currentQuestion, isCompleted, audioPlayer]);
 
   const advanceQuestion = useCallback(async () => {
     if (advanceTimerRef.current) {
@@ -228,6 +193,41 @@ export function useListeningQuiz({
       advanceQuestion,
     ],
   );
+
+  // Countdown timer in standard mode
+  useEffect(() => {
+    if (
+      isZenMode ||
+      feedbackState !== "IDLE" ||
+      isCompleted ||
+      totalQuestions === 0
+    ) {
+      if (timerIntervalRef.current) clearInterval(timerIntervalRef.current);
+      return;
+    }
+
+    timerIntervalRef.current = setInterval(() => {
+      setTimerSeconds((prev) => {
+        if (prev <= 1) {
+          if (timerIntervalRef.current) clearInterval(timerIntervalRef.current);
+          handleAnswerEvaluation("");
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    return () => {
+      if (timerIntervalRef.current) clearInterval(timerIntervalRef.current);
+    };
+  }, [
+    isZenMode,
+    feedbackState,
+    isCompleted,
+    totalQuestions,
+    currentIndex,
+    handleAnswerEvaluation,
+  ]);
 
   const submitAnswer = useCallback(
     async (overrideAnswer?: string) => {
