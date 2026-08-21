@@ -186,6 +186,17 @@ export class ReviewsService {
       },
     });
 
+    // 5. Log immutable review event for analytics
+    await this.prisma.reviewLog.create({
+      data: {
+        userId,
+        cardId,
+        rating,
+        interval: sm2Result.interval,
+        reviewedAt: new Date(),
+      },
+    });
+
     const streakResult = await this.streakService.recordActivity(userId);
 
     return {

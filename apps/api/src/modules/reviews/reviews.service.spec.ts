@@ -48,6 +48,16 @@ describe('ReviewsService', () => {
         update: jest.fn(),
         count: jest.fn(),
       },
+      reviewLog: {
+        create: jest.fn().mockResolvedValue({
+          id: 'log-1',
+          userId: mockUserId,
+          cardId: mockCardId,
+          rating: 3,
+          interval: 1,
+          reviewedAt: new Date(),
+        }),
+      },
     };
 
     const module: TestingModule = await Test.createTestingModule({
