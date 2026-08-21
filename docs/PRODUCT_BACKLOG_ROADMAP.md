@@ -234,11 +234,11 @@ _Mục tiêu: Duy trì động lực học tập liên tục hàng ngày, biến
     - [x] Database: Thêm trường `streakFreezes Int @default(1)`, `lastFreezeDate DateTime?`, `totalFreezesUsed Int @default(0)` vào bảng `UserStreak`.
     - [x] Backend: Lazy evaluation tính toán khoảng cách ngày theo múi giờ IANA, tự động trừ khiên và giữ nguyên `currentStreak`, trao thưởng khiên tại mốc 7/30 ngày.
     - [x] Frontend: Huy hiệu khiên băng tuyết (Streak Freeze) hiển thị `1/2 🧊` trên Dashboard, modal thông báo cứu chuỗi `StreakSavedModal` và hiệu ứng vinh danh `StreakCelebrationModal`.
-- [ ] **US-GAME-03: Hệ thống Điểm kinh nghiệm (XP) & Cấp độ người học (Levels)**
+- [x] **US-GAME-03: Hệ thống Điểm kinh nghiệm (XP) & Cấp độ người học (Levels)**
   - **AC:** Mỗi từ ôn đúng +10 XP, hoàn thành Daily Goal +50 XP, duy trì Streak 7 ngày +100 XP. Cấp bậc: Bronze -> Silver -> Gold -> Diamond -> Master.
   - **Tasks:**
-    - [ ] Backend: Logic cộng XP và log bảng `UserActivityLog`.
-    - [ ] Frontend: Thanh tiến độ Level và Popup thăng hạng với hiệu ứng confetti.
+    - [x] Backend: Logic cộng XP và log bảng `UserActivityLog`.
+    - [x] Frontend: Thanh tiến độ Level và Popup thăng hạng với hiệu ứng confetti.
 
 ---
 

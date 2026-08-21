@@ -16,6 +16,7 @@ Tập hợp tất cả các tài liệu hướng dẫn sử dụng trực quan, 
 |  6  | **Khiên Đóng Băng Chuỗi Ngày Học (Streak Freeze)**            |   `US-GAME-02`   | [streak-freeze.md](./streak-freeze.md)                     |      ✅ Có       |
 |  7  | **Tạo Thẻ Từ Vựng Thông Minh Với AI & Tra Cứu Tự Động**       |  `US-AI-01..02`  | [ai-vocabulary-generator.md](./ai-vocabulary-generator.md) |      ✅ Có       |
 |  8  | **Báo cáo & Thống kê học tập (Learning Analytics Hub)**       | `US-STAT-01..03` | [learning-analytics.md](./learning-analytics.md)           |      ✅ Có       |
+|  9  | **Hệ thống Cấp độ & Điểm Kinh Nghiệm (XP & Learner Levels)**  |   `US-GAME-03`   | [gamification-xp-levels.md](./gamification-xp-levels.md)   |      ✅ Có       |
 
 ---
 
