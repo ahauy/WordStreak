@@ -58,8 +58,15 @@ Before starting analysis or code, ensure the working environment is synced with 
 
 - **MANDATORY AUTOMATIC SUBAGENT DELEGATION**:
   - The Orchestrator MUST NEVER run BA stages directly on the primary context.
-  - Dispatch `business-analyst` via `invoke_subagent` (`claude-opus-4.6` / `inherit`) to execute the 8-stage BA Pipeline (`intake-classifier`, `elicitation-interview`, `gap-analysis`, `domain-modeling`, `risk-contradiction-scanner`, `spec-writer`, `spec-validator`, `handover`).
-  - The subagent creates `.specify/features/<slug>/` and drafts `baseline.md`.
+  - **Step 1 (Intake)**: Dispatch `business-analyst` via `invoke_subagent` (`claude-opus-4.6` / `inherit`) to run `intake-classifier` and create `.specify/features/<slug>/`.
+
+- **🛑 INTERACTIVE ELICITATION INTERVIEW GATE (Stage 2 — MANDATORY CUSTOMER INTERVIEW)**:
+  - The AI **MUST PAUSE** before domain modeling, gap analysis, or spec writing.
+  - AI MUST present 2–3 targeted clarification questions directly to the user (via chat or `ask_question`) covering business goals, key state machine transitions, business rules/formulas, and edge cases.
+  - **Strict Zero-Hallucination Policy**: AI is strictly prohibited from inventing business rules or silently making assumptions. Anything ambiguous or unspecified must be asked and confirmed by the user.
+
+- **Step 2 (Domain Modeling & Spec Generation — Stages 3–8)**:
+  - Once the user answers the elicitation questions, dispatch `business-analyst` to execute Stages 3–8 (`gap-analysis`, `domain-modeling`, `risk-contradiction-scanner`, `spec-writer`, `spec-validator`, `handover`) and compile `baseline.md`.
 
 - **🛑 CONFIRMATION GATE 1 — Spec Sign-Off (MANDATORY)**:
   After `business-analyst` completes and `baseline.md` is drafted, the Orchestrator **MUST STOP** and present a structured summary of the Domain Baseline to the user for review. The AI may **not** proceed to Speckit or any implementation work until the user gives explicit approval.

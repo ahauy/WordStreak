@@ -97,9 +97,9 @@ graph TD
 
 1. **`intake-classifier`** — Classifies complexity using measurable signals (entity count, DB schema change, screens touched, roles affected, cross-cutting concern). Creates `.specify/features/<slug>/` folder with `00-intake.md`, `baseline.md`, `CHANGELOG.md`.
 
-2. **`elicitation-interview`** — Reads `00-intake.md` for protocol depth. Batched 2–3 questions per turn in structured format (Context + Options + Recommendation). Covers 6 pillars: RBAC, State Machine, Business Rules, Workflows/Edge Cases, Data/Privacy, UX/NFRs. Records every decision and assumption (`ASM-<SLUG>-###`) to `01-elicitation.md`.
+2. **`elicitation-interview`** — **🛑 MANDATORY INTERACTIVE CUSTOMER INTERVIEW GATE**: Reads `00-intake.md` for protocol depth. AI pauses and conducts a live interview with the user (2–3 questions per batch, probing Problem/Pain points, 6 Pillars: RBAC, State Machine, Business Rules/Formulas, Workflows/Edge Cases, Data/Privacy, UX/NFRs) using direct chat turns or `ask_question`. **Zero Hallucination Policy**: Never invent or silently assume business logic; all ambiguities must be asked and confirmed by the customer. Records every confirmed decision and assumption (`ASM-<SLUG>-###`) to `01-elicitation.md`.
 
-3. **`gap-analysis`** _(Full Feature only)_ — Self-inspects existing code/schema (does not just ask user). Documents AS-IS, TO-BE, and 4 gap categories: Functional, Data, User Impact, **Transition Requirements** (migration scripts, dual-run, rollback, feature flags).
+3. **`gap-analysis`** — (Full Feature only) Self-inspects existing codebase, schema, and current behavior. Documents AS-IS, TO-BE, and 4 gap categories (functional, data/schema, user impact, transition/migration).
 
 4. **`domain-modeling`** — Produces RBAC matrix, Mermaid `stateDiagram-v2` state machines, `BR-<SLUG>-###` business rules (mandatory **anti-abuse pass** for any rule affecting streaks/XP/rewards), Mermaid `erDiagram`, deletion policy, i18n, WCAG accessibility target, observability/alerting plan.
 

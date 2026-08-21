@@ -60,11 +60,14 @@ graph TD
 - **MANDATORY**: Start every new feature or significant change with `intake-classifier`. This is the entry point to the BA pipeline — never skip straight to elicitation, spec, or code.
 - **Protocol routing by complexity** (decided by `intake-classifier`):
   - **Spike**: Research note only. No feature folder, no downstream stages.
-  - **Bounded Task**: Stages 1 → 2 (short) → 4 (light) → 5 (light) → 6 (user-stories only) → 7 → 8. Stage 3 skipped.
-  - **Full Feature / Epic**: All 8 stages at full depth.
+  - **Bounded Task**: Stages 1 → 2 (interactive, 2–3 questions) → 4 (light) → 5 (light) → 6 (user-stories only) → 7 → 8. Stage 3 skipped.
+  - **Full Feature / Epic**: All 8 stages at full depth with interactive interview at Stage 2.
 - **Stage descriptions**:
   1. `intake-classifier` — classifies complexity with measurable signals; creates `.specify/features/<slug>/` folder.
-  2. `elicitation-interview` — batched 6-pillar interview (RBAC, State Machine, Business Rules, Workflows/Edge Cases, Data/Privacy, UX/NFRs). Records all answers and `ASM-` IDs to `01-elicitation.md`.
+  2. `elicitation-interview` — **🛑 MANDATORY INTERACTIVE CUSTOMER INTERVIEW GATE**:
+     - The AI / BA subagent **MUST PAUSE** and conduct a live, interactive interview with the User (2–3 questions per batch regarding Problem/Pain points and the 6 Domain Pillars: RBAC, State Machine, Business Rules/Formulas, Workflows/Edge Cases, Data/Privacy, UX/NFRs) using direct chat or `ask_question`.
+     - **Strict Zero-Hallucination & Zero-Silent-Assumption Policy**: AI is STRICTLY FORBIDDEN from inventing or hallucinating business rules, default configurations, or edge-case behaviors. If something is unknown or ambiguous, AI MUST ask the customer directly. Never proceed autonomously to Stages 3–8 without the user answering the elicitation interview.
+     - Records confirmed answers and explicit `ASM-` IDs to `01-elicitation.md`.
   3. `gap-analysis` — (Full Feature only) self-inspects existing code/schema; documents AS-IS, TO-BE, and 4 gap categories including transition/migration requirements.
   4. `domain-modeling` — produces RBAC matrix, Mermaid state diagrams, numbered `BR-<SLUG>-###` business rules (with mandatory anti-abuse pass for streak/XP rules), ERD, i18n/a11y/observability NFRs.
   5. `risk-contradiction-scanner` — analytical scan for logic contradictions, state deadlocks, backward-compatibility breaks; builds `RISK-` register; consolidates all `ASM-` entries; locks scope with MoSCoW (must include explicit Won't-Have).
