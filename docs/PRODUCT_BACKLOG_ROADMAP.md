@@ -271,22 +271,22 @@ _Mục tiêu: Trực quan hóa toàn bộ quá trình tiến bộ của người
 
 _Mục tiêu: Tiết kiệm 90% thời gian tạo thẻ cho người dùng, tối ưu 95% chi phí API AI nhờ cơ chế lưu bộ nhớ đệm dùng chung._
 
-- [ ] **US-AI-01: Tự động điền dữ liệu từ vựng bằng AI/Từ điển (Auto-fill Card Data)**
-  - **AC:** Người dùng chỉ cần nhập từ tiếng Anh (ví dụ: `serendipity`), nhấn "AI Fill" -> Hệ thống tự động điền:
+- [x] **US-AI-01: Tự động điền dữ liệu từ vựng bằng AI/Từ điển (Auto-fill Card Data)**
+  - **AC:** Người dùng chỉ cần nhập từ tiếng Anh (ví dụ: `serendipity`), nhấn "Tự động điền AI" -> Hệ thống tự động điền:
     - Nghĩa tiếng Việt chuẩn ngữ cảnh.
     - Phiên âm IPA chuẩn quốc tế.
     - Câu ví dụ tiếng Anh kèm dịch nghĩa tiếng Việt.
     - Danh sách Collocations thông dụng.
     - Mẹo nhớ từ (Mnemonic) sinh động.
   - **Tasks:**
-    - [ ] Backend: Service tích hợp OpenAI / Gemini API / Free Dictionary API với structured JSON prompt.
-    - [ ] Backend: Thêm Rate Limiting (chống spam request).
-    - [ ] Frontend: Nút "Auto Fill with AI" với hiệu ứng loading sparkle, cho phép người dùng xem lại và chỉnh sửa trước khi lưu.
-- [ ] **US-AI-02: Cơ sở dữ liệu Caching từ vựng toàn hệ thống (Shared Word Dictionary Cache)**
+    - [x] Backend: Service tích hợp Gemini API / Free Dictionary API với structured JSON prompt.
+    - [x] Backend: Thêm Rate Limiting (30/ngày quota, 5 req/phút burst).
+    - [x] Frontend: Nút "Tự động điền AI" với hiệu ứng loading sparkle, cho phép người dùng xem lại và chỉnh sửa trước khi lưu.
+- [x] **US-AI-02: Cơ sở dữ liệu Caching từ vựng toàn hệ thống (Shared Word Dictionary Cache)**
   - **AC:** Khi 1 người dùng đã yêu cầu AI tạo từ `ubiquitous`, kết quả được lưu vào bảng `GlobalDictionaryCache`. Người dùng thứ 2 thêm từ này sẽ được trả kết quả từ DB ngay lập tức (< 50ms, chi phí API = 0$).
   - **Tasks:**
-    - [ ] Database: Tạo bảng `global_dictionary_cache` (`word`, `data_json`, `hit_count`, `created_at`).
-    - [ ] Backend: Logic Check Cache trước khi gọi LLM API.
+    - [x] Database: Tạo bảng `global_dictionary_cache` (`word`, `meaningVi`, `phonetic`, `collocations`, `mnemonic`, `source`, `hitCount`, `timestamps`).
+    - [x] Backend: Logic Check Cache trước khi gọi LLM API và tăng hitCount tự động.
 
 ---
 
