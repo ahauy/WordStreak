@@ -2,6 +2,32 @@ import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { AiGeneratedCardData } from '@wordstreak/shared-types';
 
+interface GeminiCandidatePart {
+  text?: string;
+}
+
+interface GeminiCandidate {
+  content?: {
+    parts?: GeminiCandidatePart[];
+  };
+}
+
+interface GeminiApiResponse {
+  candidates?: GeminiCandidate[];
+}
+
+interface RawGeneratedCardJson {
+  word?: string;
+  partOfSpeech?: string;
+  phonetic?: string;
+  meaningVi?: string;
+  meaningEn?: string;
+  exampleSentence?: string;
+  exampleTranslation?: string;
+  collocations?: unknown;
+  mnemonic?: string;
+}
+
 @Injectable()
 export class GeminiProvider {
   private readonly logger = new Logger(GeminiProvider.name);
@@ -73,7 +99,7 @@ Respond strictly with a single valid JSON object. Do not include markdown code b
         return null;
       }
 
-      const data = await response.json();
+      const data = (await response.json()) as GeminiApiResponse;
       const rawText = data?.candidates?.[0]?.content?.parts?.[0]?.text;
 
       if (!rawText) {
@@ -85,16 +111,15 @@ Respond strictly with a single valid JSON object. Do not include markdown code b
         .trim()
         .replace(/^```json\s*/i, '')
         .replace(/\s*```$/i, '');
-      const parsed = JSON.parse(cleanedText);
+      const parsed = JSON.parse(cleanedText) as RawGeneratedCardJson;
 
       return this.validateAndNormalize(parsed, word);
-    } catch (err: any) {
-      if (err.name === 'AbortError') {
+    } catch (err: unknown) {
+      if (err instanceof Error && err.name === 'AbortError') {
         this.logger.warn(`Gemini generation timed out for word: ${word}`);
       } else {
-        this.logger.warn(
-          `Gemini generation error for "${word}": ${err.message}`,
-        );
+        const errorMsg = err instanceof Error ? err.message : String(err);
+        this.logger.warn(`Gemini generation error for "${word}": ${errorMsg}`);
       }
       return null;
     } finally {
@@ -103,7 +128,7 @@ Respond strictly with a single valid JSON object. Do not include markdown code b
   }
 
   private validateAndNormalize(
-    parsed: any,
+    parsed: RawGeneratedCardJson | null,
     originalWord: string,
   ): AiGeneratedCardData | null {
     if (!parsed || typeof parsed !== 'object') {
@@ -119,8 +144,8 @@ Respond strictly with a single valid JSON object. Do not include markdown code b
 
     let collocations: string[] = [];
     if (Array.isArray(parsed.collocations)) {
-      collocations = parsed.collocations
-        .map((c: any) => String(c).trim())
+      collocations = (parsed.collocations as unknown[])
+        .map((c) => String(c).trim())
         .filter(Boolean);
     }
 

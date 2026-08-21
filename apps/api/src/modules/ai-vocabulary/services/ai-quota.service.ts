@@ -57,7 +57,8 @@ export class AiQuotaService {
       throw new HttpException(
         {
           statusCode: HttpStatus.TOO_MANY_REQUESTS,
-          message: 'Bạn đã thực hiện quá nhiều yêu cầu tạo AI. Vui lòng chờ 1 phút.',
+          message:
+            'Bạn đã thực hiện quá nhiều yêu cầu tạo AI. Vui lòng chờ 1 phút.',
           error: 'AI_RATE_LIMITED',
         },
         HttpStatus.TOO_MANY_REQUESTS,
@@ -69,7 +70,8 @@ export class AiQuotaService {
       throw new HttpException(
         {
           statusCode: HttpStatus.TOO_MANY_REQUESTS,
-          message: 'Bạn đã dùng hết 30 lượt tạo AI hôm nay. Các từ đã lưu trong bộ nhớ đệm vẫn hoàn toàn miễn phí!',
+          message:
+            'Bạn đã dùng hết 30 lượt tạo AI hôm nay. Các từ đã lưu trong bộ nhớ đệm vẫn hoàn toàn miễn phí!',
           error: 'AI_DAILY_QUOTA_EXCEEDED',
         },
         HttpStatus.TOO_MANY_REQUESTS,

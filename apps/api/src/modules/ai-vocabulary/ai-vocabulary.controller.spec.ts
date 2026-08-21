@@ -2,11 +2,13 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { AiVocabularyController } from './ai-vocabulary.controller';
 import { AiVocabularyService } from './ai-vocabulary.service';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
-import { GenerateCardResponseDto } from '@wordstreak/shared-types';
+import { GenerateCardResponseDto, JwtPayload } from '@wordstreak/shared-types';
 
 describe('AiVocabularyController', () => {
   let controller: AiVocabularyController;
-  let service: jest.Mocked<AiVocabularyService>;
+  let service: {
+    generateCard: jest.Mock;
+  };
 
   const mockResponse: GenerateCardResponseDto = {
     card: {
@@ -16,7 +18,8 @@ describe('AiVocabularyController', () => {
       meaningVi: 'có tài hùng biện, lưu loát',
       meaningEn: 'fluent or persuasive in speaking or writing',
       exampleSentence: 'An eloquent speech moved the audience to tears.',
-      exampleTranslation: 'Một bài phát biểu hùng biện đã khiến khán giả xúc động rơi nước mắt.',
+      exampleTranslation:
+        'Một bài phát biểu hùng biện đã khiến khán giả xúc động rơi nước mắt.',
       collocations: ['eloquent speech', 'eloquent speaker'],
       mnemonic: 'E (ra ngoài) + loqu (nói) -> nói lưu loát truyền cảm hứng.',
       audioUrl: null,
@@ -30,7 +33,7 @@ describe('AiVocabularyController', () => {
   beforeEach(async () => {
     service = {
       generateCard: jest.fn().mockResolvedValue(mockResponse),
-    } as any;
+    };
 
     const module: TestingModule = await Test.createTestingModule({
       controllers: [AiVocabularyController],
@@ -45,7 +48,11 @@ describe('AiVocabularyController', () => {
 
   // TC-010
   it('TC-010: should call service.generateCard with user ID and return GenerateCardResponseDto', async () => {
-    const user = { sub: 'user-123', email: 'test@example.com' } as any;
+    const user: JwtPayload = {
+      sub: 'user-123',
+      email: 'test@example.com',
+      sessionId: 'sess-1',
+    };
     const dto = { word: 'eloquent' };
 
     const result = await controller.generateCard(user, dto);

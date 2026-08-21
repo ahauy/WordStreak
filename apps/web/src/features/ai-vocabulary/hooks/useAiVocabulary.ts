@@ -33,16 +33,18 @@ export function useAiVocabulary(): UseAiVocabularyReturn {
       const result = await aiVocabularyService.generateCard({ word: trimmed });
       setLastResult(result);
       return result;
-    } catch (err: any) {
-      const errorResponse = err.response?.data;
-      const message =
-        errorResponse?.message ||
-        (err.response?.status === 404
-          ? 'Không tìm thấy thông tin từ vựng cho từ này. Bạn có thể nhập thông tin thủ công.'
-          : err.response?.status === 429
-          ? 'Bạn đã đạt giới hạn tạo AI hôm nay. Các từ trong bộ nhớ đệm vẫn dùng được.'
-          : 'Không thể kết nối dịch vụ AI. Vui lòng thử lại sau.');
-      
+    } catch (err: unknown) {
+      let message = 'Không thể kết nối dịch vụ AI. Vui lòng thử lại sau.';
+      if (err && typeof err === 'object' && 'response' in err) {
+        const response = (err as { response?: { status?: number; data?: { message?: string } } }).response;
+        if (response?.data?.message) {
+          message = response.data.message;
+        } else if (response?.status === 404) {
+          message = 'Không tìm thấy thông tin từ vựng cho từ này. Bạn có thể nhập thông tin thủ công.';
+        } else if (response?.status === 429) {
+          message = 'Bạn đã đạt giới hạn tạo AI hôm nay. Các từ trong bộ nhớ đệm vẫn dùng được.';
+        }
+      }
       setError(message);
       return null;
     } finally {

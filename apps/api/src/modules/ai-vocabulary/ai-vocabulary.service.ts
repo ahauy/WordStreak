@@ -77,8 +77,9 @@ export class AiVocabularyService {
 
     try {
       cardData = await this.geminiProvider.generate(rawWord);
-    } catch (err: any) {
-      this.logger.warn(`Gemini generation exception: ${err.message}`);
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : String(err);
+      this.logger.warn(`Gemini generation exception: ${msg}`);
     }
 
     if (!cardData) {
@@ -88,15 +89,17 @@ export class AiVocabularyService {
         if (cardData) {
           source = 'FREE_DICTIONARY';
         }
-      } catch (err: any) {
-        this.logger.warn(`Free Dictionary API exception: ${err.message}`);
+      } catch (err: unknown) {
+        const msg = err instanceof Error ? err.message : String(err);
+        this.logger.warn(`Free Dictionary API exception: ${msg}`);
       }
     }
 
     if (!cardData) {
       throw new NotFoundException({
         statusCode: 404,
-        message: 'Không tìm thấy dữ liệu từ điển cho từ này. Bạn có thể tự nhập thông tin thủ công.',
+        message:
+          'Không tìm thấy dữ liệu từ điển cho từ này. Bạn có thể tự nhập thông tin thủ công.',
         error: 'AI_WORD_NOT_FOUND',
       });
     }
@@ -108,8 +111,9 @@ export class AiVocabularyService {
         word: normalizedWord,
         source,
       });
-    } catch (err: any) {
-      this.logger.error(`Failed to cache word "${normalizedWord}": ${err.message}`);
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : String(err);
+      this.logger.error(`Failed to cache word "${normalizedWord}": ${msg}`);
     }
 
     return {

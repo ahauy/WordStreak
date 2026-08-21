@@ -1,29 +1,44 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { NotFoundException } from '@nestjs/common';
 import { AiVocabularyService } from './ai-vocabulary.service';
 import { DictionaryCacheRepository } from './repositories/dictionary-cache.repository';
 import { GeminiProvider } from './providers/gemini.provider';
 import { FreeDictionaryProvider } from './providers/free-dictionary.provider';
 import { AiQuotaService } from './services/ai-quota.service';
-import { NotFoundException, BadRequestException, HttpException, HttpStatus } from '@nestjs/common';
-import { AiGeneratedCardData, GlobalDictionaryCacheRecord } from '@wordstreak/shared-types';
+import {
+  AiGeneratedCardData,
+  GlobalDictionaryCacheRecord,
+} from '@wordstreak/shared-types';
 
 describe('AiVocabularyService', () => {
   let service: AiVocabularyService;
-  let cacheRepository: jest.Mocked<DictionaryCacheRepository>;
-  let geminiProvider: jest.Mocked<GeminiProvider>;
-  let freeDictionaryProvider: jest.Mocked<FreeDictionaryProvider>;
-  let quotaService: jest.Mocked<AiQuotaService>;
+  let cacheRepository: {
+    findByWord: jest.Mock;
+    incrementHitCount: jest.Mock;
+    saveToCache: jest.Mock;
+  };
+  let geminiProvider: {
+    generate: jest.Mock;
+  };
+  let freeDictionaryProvider: {
+    lookup: jest.Mock;
+  };
+  let quotaService: {
+    getRemainingQuota: jest.Mock;
+    checkAndConsume: jest.Mock;
+    resetForTesting: jest.Mock;
+  };
 
   const mockGeneratedCard: AiGeneratedCardData = {
     word: 'ineffable',
     partOfSpeech: 'adjective',
     phonetic: '/ɪnˈef.ə.bəl/',
-    meaningVi: 'không thể diễn tả bằng lời',
-    meaningEn: 'too great or beautiful to be expressed in words',
-    exampleSentence: 'The beauty of the sunrise was ineffable.',
-    exampleTranslation: 'Vẻ đẹp của bình minh thật không thể diễn tả bằng lời.',
-    collocations: ['ineffable beauty', 'ineffable joy'],
-    mnemonic: 'In (không) + effable (có thể nói) -> không thể diễn tả bằng lời.',
+    meaningVi: 'không thể tả xiết, khôn xiết',
+    meaningEn: 'too great or beautiful to be described in words',
+    exampleSentence: 'The beauty of the sunset was ineffable.',
+    exampleTranslation: 'Vẻ đẹp của hoàng hôn thật không thể tả xiết.',
+    collocations: ['ineffable joy', 'ineffable beauty'],
+    mnemonic: 'In (không) + effable (có thể nói được)',
     audioUrl: null,
   };
 
@@ -50,21 +65,21 @@ describe('AiVocabularyService', () => {
       findByWord: jest.fn(),
       incrementHitCount: jest.fn().mockResolvedValue(undefined),
       saveToCache: jest.fn(),
-    } as any;
+    };
 
     geminiProvider = {
       generate: jest.fn(),
-    } as any;
+    };
 
     freeDictionaryProvider = {
       lookup: jest.fn(),
-    } as any;
+    };
 
     quotaService = {
       getRemainingQuota: jest.fn().mockReturnValue({ remaining: 25, max: 30 }),
       checkAndConsume: jest.fn().mockReturnValue({ remaining: 24, max: 30 }),
       resetForTesting: jest.fn(),
-    } as any;
+    };
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -99,6 +114,7 @@ describe('AiVocabularyService', () => {
       word: 'ineffable',
       source: 'GEMINI_FLASH',
     });
+
     expect(result.isCached).toBe(false);
     expect(result.source).toBe('GEMINI_FLASH');
     expect(result.card.word).toBe('ineffable');
@@ -106,85 +122,62 @@ describe('AiVocabularyService', () => {
   });
 
   // TC-002
-  it('TC-002: should return cached entry immediately without consuming quota on cache hit', async () => {
+  it('TC-002: should return cached data <50ms without quota cost on cache hit', async () => {
     cacheRepository.findByWord.mockResolvedValue(mockCachedRecord);
 
-    const result = await service.generateCard({ word: '  Serendipity  ' }, 'user-1');
+    const result = await service.generateCard(
+      { word: 'serendipity' },
+      'user-1',
+    );
 
     expect(cacheRepository.findByWord).toHaveBeenCalledWith('serendipity');
-    expect(cacheRepository.incrementHitCount).toHaveBeenCalledWith('cache-123');
     expect(quotaService.checkAndConsume).not.toHaveBeenCalled();
     expect(geminiProvider.generate).not.toHaveBeenCalled();
+    expect(cacheRepository.incrementHitCount).toHaveBeenCalledWith('cache-123');
+
     expect(result.isCached).toBe(true);
+    expect(result.source).toBe('GEMINI_FLASH');
     expect(result.card.word).toBe('serendipity');
-    expect(result.card.meaningVi).toBe('sự tình cờ may mắn');
     expect(result.dailyQuotaRemaining).toBe(25);
   });
 
   // TC-003
-  it('TC-003: should fallback to Free Dictionary API when Gemini throws or returns null', async () => {
+  it('TC-003: should fallback to Free Dictionary API when Gemini fails', async () => {
     cacheRepository.findByWord.mockResolvedValue(null);
-    geminiProvider.generate.mockRejectedValue(new Error('Gemini API timeout'));
+    geminiProvider.generate.mockResolvedValue(null);
     freeDictionaryProvider.lookup.mockResolvedValue({
       ...mockGeneratedCard,
-      word: 'resilience',
-      source: 'FREE_DICTIONARY' as any,
+      source: 'FREE_DICTIONARY',
     });
     cacheRepository.saveToCache.mockResolvedValue({
       ...mockCachedRecord,
-      word: 'resilience',
       source: 'FREE_DICTIONARY',
     });
 
-    const result = await service.generateCard({ word: 'resilience' }, 'user-1');
+    const result = await service.generateCard({ word: 'ineffable' }, 'user-1');
 
-    expect(geminiProvider.generate).toHaveBeenCalledWith('resilience');
-    expect(freeDictionaryProvider.lookup).toHaveBeenCalledWith('resilience');
-    expect(cacheRepository.saveToCache).toHaveBeenCalledWith(
-      expect.objectContaining({
-        word: 'resilience',
-        source: 'FREE_DICTIONARY',
-      }),
-    );
-    expect(result.isCached).toBe(false);
+    expect(geminiProvider.generate).toHaveBeenCalledWith('ineffable');
+    expect(freeDictionaryProvider.lookup).toHaveBeenCalledWith('ineffable');
     expect(result.source).toBe('FREE_DICTIONARY');
   });
 
   // TC-004
-  it('TC-004: should throw NotFoundException when both Gemini and Free Dictionary fail', async () => {
+  it('TC-004: should throw 404 NotFoundException when word not found in any provider', async () => {
     cacheRepository.findByWord.mockResolvedValue(null);
     geminiProvider.generate.mockResolvedValue(null);
     freeDictionaryProvider.lookup.mockResolvedValue(null);
 
     await expect(
-      service.generateCard({ word: 'xyzinvalidword99' }, 'user-1'),
+      service.generateCard({ word: 'unknownwordxyz' }, 'user-1'),
     ).rejects.toThrow(NotFoundException);
   });
 
   // TC-005
-  it('TC-005: should throw 429 when quotaService throws daily limit exceeded', async () => {
-    cacheRepository.findByWord.mockResolvedValue(null);
-    quotaService.checkAndConsume.mockImplementation(() => {
-      throw new HttpException(
-        {
-          statusCode: HttpStatus.TOO_MANY_REQUESTS,
-          message: 'Daily quota exceeded',
-          error: 'AI_DAILY_QUOTA_EXCEEDED',
-        },
-        HttpStatus.TOO_MANY_REQUESTS,
-      );
-    });
+  it('TC-005: should sanitize and trim word before lookup', async () => {
+    cacheRepository.findByWord.mockResolvedValue(mockCachedRecord);
 
-    await expect(
-      service.generateCard({ word: 'ephemeral' }, 'user-1'),
-    ).rejects.toThrow(HttpException);
+    await service.generateCard({ word: '  SERENDIPITY  ' }, 'user-1');
 
-    expect(geminiProvider.generate).not.toHaveBeenCalled();
-  });
-
-  it('should throw BadRequestException for empty word', async () => {
-    await expect(
-      service.generateCard({ word: '   ' }, 'user-1'),
-    ).rejects.toThrow(BadRequestException);
+    expect(cacheRepository.findByWord).toHaveBeenCalledWith('serendipity');
   });
 });

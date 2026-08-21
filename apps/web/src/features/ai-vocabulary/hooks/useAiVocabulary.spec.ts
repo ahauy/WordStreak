@@ -44,7 +44,7 @@ describe('useAiVocabulary Hook', () => {
   it('should return error when word is empty string', async () => {
     const { result } = renderHook(() => useAiVocabulary());
 
-    let res: any;
+    let res: GenerateCardResponseDto | null = null;
     await act(async () => {
       res = await result.current.generateCard('   ');
     });
@@ -59,7 +59,7 @@ describe('useAiVocabulary Hook', () => {
 
     const { result } = renderHook(() => useAiVocabulary());
 
-    let res: any;
+    let res: GenerateCardResponseDto | null = null;
     await act(async () => {
       res = await result.current.generateCard('ineffable');
     });
@@ -77,7 +77,7 @@ describe('useAiVocabulary Hook', () => {
 
     const { result } = renderHook(() => useAiVocabulary());
 
-    let res: any;
+    let res: GenerateCardResponseDto | null = null;
     await act(async () => {
       res = await result.current.generateCard('xyzfake123');
     });
@@ -97,7 +97,7 @@ describe('useAiVocabulary Hook', () => {
 
     const { result } = renderHook(() => useAiVocabulary());
 
-    let res: any;
+    let res: GenerateCardResponseDto | null = null;
     await act(async () => {
       res = await result.current.generateCard('ephemeral');
     });

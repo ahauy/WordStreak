@@ -1,6 +1,29 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { AiGeneratedCardData } from '@wordstreak/shared-types';
 
+interface FreeDictionaryPhonetic {
+  text?: string;
+  audio?: string;
+}
+
+interface FreeDictionaryDefinition {
+  definition?: string;
+  example?: string;
+}
+
+interface FreeDictionaryMeaning {
+  partOfSpeech?: string;
+  definitions?: FreeDictionaryDefinition[];
+  synonyms?: string[];
+}
+
+interface FreeDictionaryEntry {
+  word?: string;
+  phonetic?: string;
+  phonetics?: FreeDictionaryPhonetic[];
+  meanings?: FreeDictionaryMeaning[];
+}
+
 @Injectable()
 export class FreeDictionaryProvider {
   private readonly logger = new Logger(FreeDictionaryProvider.name);
@@ -17,14 +40,20 @@ export class FreeDictionaryProvider {
         return null;
       }
 
-      const data = await response.json();
+      const data = (await response.json()) as unknown;
       if (!Array.isArray(data) || data.length === 0) {
         return null;
       }
 
-      const entry = data[0];
-      const phonetic = entry.phonetic || entry.phonetics?.find((p: any) => p.text)?.text || '';
-      const audioUrl = entry.phonetics?.find((p: any) => p.audio && p.audio.endsWith('.mp3'))?.audio || null;
+      const entry = data[0] as FreeDictionaryEntry;
+      const phonetic =
+        entry.phonetic ||
+        entry.phonetics?.find((p) => Boolean(p.text))?.text ||
+        '';
+      const audioUrl =
+        entry.phonetics?.find((p) =>
+          Boolean(p.audio && p.audio.endsWith('.mp3')),
+        )?.audio || null;
 
       const firstMeaning = entry.meanings?.[0];
       const partOfSpeech = firstMeaning?.partOfSpeech || 'word';
@@ -43,7 +72,7 @@ export class FreeDictionaryProvider {
         word: entry.word || word,
         partOfSpeech,
         phonetic,
-        meaningVi: definition, // Free dictionary provides English definitions
+        meaningVi: definition,
         meaningEn: definition,
         exampleSentence: example,
         exampleTranslation: '',
@@ -51,11 +80,14 @@ export class FreeDictionaryProvider {
         mnemonic: '',
         audioUrl,
       };
-    } catch (err: any) {
-      if (err.name === 'AbortError') {
+    } catch (err: unknown) {
+      if (err instanceof Error && err.name === 'AbortError') {
         this.logger.warn(`Free Dictionary API timed out for word: ${word}`);
       } else {
-        this.logger.debug(`Free Dictionary API lookup failed for "${word}": ${err.message}`);
+        const errorMsg = err instanceof Error ? err.message : String(err);
+        this.logger.debug(
+          `Free Dictionary API lookup failed for "${word}": ${errorMsg}`,
+        );
       }
       return null;
     } finally {

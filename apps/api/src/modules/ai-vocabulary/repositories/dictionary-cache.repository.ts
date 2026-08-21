@@ -1,6 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
-import { GlobalDictionaryCacheRecord, AiCardSource } from '@wordstreak/shared-types';
+import type { GlobalDictionaryCache } from '@prisma/client';
+import {
+  GlobalDictionaryCacheRecord,
+  AiCardSource,
+} from '@wordstreak/shared-types';
 
 export interface SaveDictionaryCacheDto {
   word: string;
@@ -20,7 +24,9 @@ export interface SaveDictionaryCacheDto {
 export class DictionaryCacheRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  async findByWord(normalizedWord: string): Promise<GlobalDictionaryCacheRecord | null> {
+  async findByWord(
+    normalizedWord: string,
+  ): Promise<GlobalDictionaryCacheRecord | null> {
     const record = await this.prisma.globalDictionaryCache.findUnique({
       where: { word: normalizedWord },
     });
@@ -45,8 +51,12 @@ export class DictionaryCacheRepository {
     }
   }
 
-  async saveToCache(dto: SaveDictionaryCacheDto): Promise<GlobalDictionaryCacheRecord> {
-    const serializedCollocations = dto.collocations ? JSON.stringify(dto.collocations) : null;
+  async saveToCache(
+    dto: SaveDictionaryCacheDto,
+  ): Promise<GlobalDictionaryCacheRecord> {
+    const serializedCollocations = dto.collocations
+      ? JSON.stringify(dto.collocations)
+      : null;
 
     const record = await this.prisma.globalDictionaryCache.upsert({
       where: { word: dto.word },
@@ -81,13 +91,21 @@ export class DictionaryCacheRepository {
     return this.mapToRecord(record);
   }
 
-  private mapToRecord(record: any): GlobalDictionaryCacheRecord {
+  private mapToRecord(
+    record: GlobalDictionaryCache,
+  ): GlobalDictionaryCacheRecord {
     let collocations: string[] = [];
     if (record.collocations) {
       try {
-        collocations = JSON.parse(record.collocations);
+        const parsed = JSON.parse(record.collocations) as unknown;
+        if (Array.isArray(parsed)) {
+          collocations = parsed.map((s) => String(s).trim()).filter(Boolean);
+        }
       } catch {
-        collocations = record.collocations.split(',').map((s: string) => s.trim());
+        collocations = record.collocations
+          .split(',')
+          .map((s: string) => s.trim())
+          .filter(Boolean);
       }
     }
 
