@@ -30,7 +30,12 @@ describe("TierBadgeIcon", () => {
   });
 
   it("falls back to Bronze when invalid tier is provided", () => {
-    render(<TierBadgeIcon tier={"UNKNOWN_TIER" as any} size="sm" />);
+    render(
+      <TierBadgeIcon
+        tier={"UNKNOWN_TIER" as unknown as MasteryTier}
+        size="sm"
+      />,
+    );
     const badge = screen.getByTestId("tier-badge-unknown_tier");
     expect(badge).toBeDefined();
   });

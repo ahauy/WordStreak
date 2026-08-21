@@ -58,15 +58,47 @@ export function useXpHistory(options: UseXpHistoryOptions = {}) {
   }, [enabled, page, limit, activityType]);
 
   useEffect(() => {
-    fetchHistory();
-  }, [fetchHistory]);
+    if (!enabled) return;
+
+    let ignore = false;
+    void (async () => {
+      try {
+        const response = await xpApi.getXpHistory({
+          page,
+          limit,
+          activityType,
+        });
+        if (!ignore) {
+          setLogs(response.data);
+          setMeta(response.meta);
+          setError(null);
+        }
+      } catch (err: unknown) {
+        if (!ignore) {
+          const msg =
+            err instanceof Error ? err.message : "Failed to load XP history";
+          setError(msg);
+        }
+      } finally {
+        if (!ignore) {
+          setIsLoading(false);
+        }
+      }
+    })();
+
+    return () => {
+      ignore = true;
+    };
+  }, [enabled, page, limit, activityType]);
 
   const handleSetPage = useCallback((newPage: number) => {
+    setIsLoading(true);
     setPage(newPage);
   }, []);
 
   const handleSetActivityType = useCallback(
     (newType: XpActionType | undefined) => {
+      setIsLoading(true);
       setActivityType(newType);
       setPage(1); // Reset to page 1 on filter change
     },
@@ -75,12 +107,14 @@ export function useXpHistory(options: UseXpHistoryOptions = {}) {
 
   const nextPage = useCallback(() => {
     if (page < meta.totalPages) {
+      setIsLoading(true);
       setPage((prev) => prev + 1);
     }
   }, [page, meta.totalPages]);
 
   const prevPage = useCallback(() => {
     if (page > 1) {
+      setIsLoading(true);
       setPage((prev) => prev - 1);
     }
   }, [page]);
