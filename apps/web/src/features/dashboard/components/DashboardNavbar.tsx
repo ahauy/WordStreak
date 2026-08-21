@@ -4,6 +4,7 @@ import { LogOut, Layers, Home, BarChart2 } from "lucide-react";
 import { UserAvatar } from "../../user-profile/components/UserAvatar";
 import { SettingsModal } from "../../user-profile/components/SettingsModal";
 import { StreakFlame } from "./StreakFlame";
+import { TopbarLevelWidget } from "../../gamification/components/TopbarLevelWidget";
 import { getFlameTier } from "../config/flameTiers";
 import { useAuthStore } from "../../../store/useAuthStore";
 import { useStreak } from "../hooks/useStreak";
@@ -14,8 +15,11 @@ interface DashboardNavbarProps {
   currentStreak?: number;
   flameTier?: number;
   isActiveToday?: boolean;
-  onOpenSettings?: (tab?: "profile" | "avatar" | "security") => void;
+  onOpenSettings?: (
+    tab?: "profile" | "avatar" | "security" | "gamification",
+  ) => void;
   onOpenFlameNurture?: () => void;
+  onOpenXpHistory?: () => void;
   onLogout?: () => void;
 }
 
@@ -26,6 +30,7 @@ export const DashboardNavbar: React.FC<DashboardNavbarProps> = ({
   isActiveToday: propIsActiveToday,
   onOpenSettings: propOpenSettings,
   onOpenFlameNurture,
+  onOpenXpHistory: propOpenXpHistory,
   onLogout: propLogout,
 }) => {
   const { user: storeUser, logout: storeLogout } = useAuthStore();
@@ -37,7 +42,7 @@ export const DashboardNavbar: React.FC<DashboardNavbarProps> = ({
 
   const [isInternalSettingsOpen, setIsInternalSettingsOpen] = useState(false);
   const [internalSettingsTab, setInternalSettingsTab] = useState<
-    "profile" | "avatar" | "security"
+    "profile" | "avatar" | "security" | "gamification"
   >("profile");
 
   const user = propUser !== undefined ? propUser : storeUser;
@@ -54,7 +59,7 @@ export const DashboardNavbar: React.FC<DashboardNavbarProps> = ({
   const tierInfo = getFlameTier(currentStreak);
 
   const handleOpenSettings = (
-    tab: "profile" | "avatar" | "security" = "profile",
+    tab: "profile" | "avatar" | "security" | "gamification" = "profile",
   ) => {
     if (propOpenSettings) {
       propOpenSettings(tab);
@@ -156,6 +161,19 @@ export const DashboardNavbar: React.FC<DashboardNavbarProps> = ({
 
           {/* Right Nav & User Actions */}
           <div className="flex items-center gap-2 sm:gap-3">
+            {/* Learner Level & XP Widget */}
+            <TopbarLevelWidget
+              onOpenHistory={() => {
+                if (propOpenSettings) {
+                  propOpenSettings("gamification");
+                } else if (propOpenXpHistory) {
+                  propOpenXpHistory();
+                } else {
+                  handleOpenSettings("gamification");
+                }
+              }}
+            />
+
             {/* Dynamic Multi-Tier Streak Flame Pill (Interactive Nuôi Lửa trigger) */}
             <button
               type="button"

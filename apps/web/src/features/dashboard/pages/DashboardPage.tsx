@@ -40,7 +40,7 @@ export const DashboardPage: React.FC = () => {
     wordCount: number;
   } | null>(null);
   const [settingsTab, setSettingsTab] = useState<
-    "profile" | "avatar" | "security"
+    "profile" | "avatar" | "security" | "gamification"
   >("profile");
 
   const longestStreak = bestStreak;
@@ -52,7 +52,9 @@ export const DashboardPage: React.FC = () => {
     navigate("/login", { replace: true });
   };
 
-  const openSettings = (tab: "profile" | "avatar" | "security" = "profile") => {
+  const openSettings = (
+    tab: "profile" | "avatar" | "security" | "gamification" = "profile",
+  ) => {
     setSettingsTab(tab);
     setIsSettingsOpen(true);
   };

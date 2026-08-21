@@ -26,6 +26,9 @@ export const ENDPOINTS = {
   GAMIFICATION: {
     STREAK: "/gamification/streak",
     DAILY_GOALS: "/gamification/daily-goals",
+    XP_SUMMARY: "/gamification/xp/summary",
+    XP_HISTORY: "/gamification/xp/history",
+    XP_PRACTICE: "/gamification/xp/practice",
   },
   ANALYTICS: {
     OVERVIEW: "/analytics/overview",

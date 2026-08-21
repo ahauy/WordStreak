@@ -30,7 +30,7 @@ export const AnalyticsPage: React.FC = () => {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isFlameNurtureOpen, setIsFlameNurtureOpen] = useState(false);
   const [settingsTab, setSettingsTab] = useState<
-    "profile" | "avatar" | "security"
+    "profile" | "avatar" | "security" | "gamification"
   >("profile");
 
   const handleLogout = async () => {
@@ -38,7 +38,9 @@ export const AnalyticsPage: React.FC = () => {
     navigate("/login", { replace: true });
   };
 
-  const openSettings = (tab: "profile" | "avatar" | "security" = "profile") => {
+  const openSettings = (
+    tab: "profile" | "avatar" | "security" | "gamification" = "profile",
+  ) => {
     setSettingsTab(tab);
     setIsSettingsOpen(true);
   };

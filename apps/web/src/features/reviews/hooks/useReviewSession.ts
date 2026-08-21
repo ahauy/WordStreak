@@ -1,6 +1,12 @@
 import { useState, useEffect, useCallback } from "react";
 import { reviewsService } from "../services/reviewsService";
-import type { DueCardItem, SrsRating } from "@wordstreak/shared-types";
+import { dispatchXpUpdated } from "../../gamification/api/xpApi";
+import type {
+  DueCardItem,
+  SrsRating,
+  XpReviewRewardDto,
+  LevelUpEventDto,
+} from "@wordstreak/shared-types";
 
 export interface ReviewHistoryEntry {
   cardId: string;
@@ -27,6 +33,10 @@ export function useReviewSession(deckId?: string) {
   const [error, setError] = useState<string | null>(null);
   const [history, setHistory] = useState<ReviewHistoryEntry[]>([]);
   const [sessionStartTime, setSessionStartTime] = useState<number>(0);
+  const [lastXpReward, setLastXpReward] = useState<XpReviewRewardDto | null>(
+    null,
+  );
+  const [levelUpData, setLevelUpData] = useState<LevelUpEventDto | null>(null);
 
   const fetchQueue = useCallback(async () => {
     setIsLoading(true);
@@ -89,10 +99,18 @@ export function useReviewSession(deckId?: string) {
 
       setIsSubmitting(true);
       try {
-        await reviewsService.submitReview({
+        const response = await reviewsService.submitReview({
           cardId: currentCard.cardId,
           rating,
         });
+
+        if (response?.xp) {
+          setLastXpReward(response.xp);
+          dispatchXpUpdated();
+          if (response.xp.levelUp?.isLevelUp) {
+            setLevelUpData(response.xp.levelUp);
+          }
+        }
 
         // Record rating in history
         setHistory((prev) => [
@@ -160,6 +178,14 @@ export function useReviewSession(deckId?: string) {
         : 0,
   };
 
+  const clearXpReward = useCallback(() => {
+    setLastXpReward(null);
+  }, []);
+
+  const clearLevelUpData = useCallback(() => {
+    setLevelUpData(null);
+  }, []);
+
   return {
     queue,
     currentCard,
@@ -171,6 +197,10 @@ export function useReviewSession(deckId?: string) {
     isCompleted,
     error,
     sessionStats,
+    lastXpReward,
+    levelUpData,
+    clearXpReward,
+    clearLevelUpData,
     flip,
     rateCard,
     restartSession: fetchQueue,

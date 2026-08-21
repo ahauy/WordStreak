@@ -24,9 +24,19 @@ export const reviewsService = {
     };
   },
 
-  async submitReview(dto: SubmitReviewDto): Promise<unknown> {
+  async submitReview(dto: SubmitReviewDto): Promise<{
+    cardId: string;
+    status: string;
+    interval: number;
+    repetitions: number;
+    easeFactor: number;
+    lastReviewedAt: string;
+    nextReviewDate: string;
+    streak?: unknown;
+    xp?: import("@wordstreak/shared-types").XpReviewRewardDto;
+  }> {
     const response = await apiClient.post<ApiResponse>("/reviews/submit", dto);
-    return response.data.data;
+    return response.data.data as any;
   },
 
   async getReviewStats(): Promise<ReviewStatsResponse> {
