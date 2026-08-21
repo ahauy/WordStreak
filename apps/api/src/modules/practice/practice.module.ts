@@ -4,6 +4,7 @@ import { PracticeService } from './practice.service';
 import { QuizGeneratorService } from './quiz-generator.service';
 import { FillBlankGeneratorService } from './fill-blank-generator.service';
 import { ListeningGeneratorService } from './listening-generator.service';
+import { MatchingGeneratorService } from './matching-generator.service';
 import { PrismaModule } from '../prisma/prisma.module';
 
 @Module({
@@ -14,12 +15,14 @@ import { PrismaModule } from '../prisma/prisma.module';
     QuizGeneratorService,
     FillBlankGeneratorService,
     ListeningGeneratorService,
+    MatchingGeneratorService,
   ],
   exports: [
     PracticeService,
     QuizGeneratorService,
     FillBlankGeneratorService,
     ListeningGeneratorService,
+    MatchingGeneratorService,
   ],
 })
 export class PracticeModule {}
