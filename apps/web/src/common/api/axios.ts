@@ -2,8 +2,10 @@ import axios, { AxiosError } from "axios";
 import type { InternalAxiosRequestConfig } from "axios";
 import type { TokenRefreshResponse } from "@wordstreak/shared-types";
 
-const API_BASE_URL =
-  import.meta.env.VITE_API_URL || "http://localhost:3000/api";
+const rawApiUrl = import.meta.env.VITE_API_URL || "http://localhost:3000/api";
+const API_BASE_URL = rawApiUrl.endsWith("/api")
+  ? rawApiUrl
+  : `${rawApiUrl.replace(/\/+$/, "")}/api`;
 
 export const apiClient = axios.create({
   baseURL: API_BASE_URL,
