@@ -9,6 +9,7 @@ export * from "./streaks.js";
 export * from "./ai-vocabulary.js";
 export * from "./analytics.js";
 export * from "./gamification-xp.js";
+export * from "./community.js";
 
 export interface User {
   id: string;
