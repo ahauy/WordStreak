@@ -25,15 +25,20 @@ export interface GetQuizQuestionsQueryDto {
 }
 
 export interface QuizAnswerSubmissionDto {
-  questionId: string;
+  questionId?: string;
   cardId: string;
-  selectedOptionId: string | null;
+  selectedOptionId?: string | null;
+  submittedWord?: string;
   isCorrect: boolean;
-  timeSpentMs: number;
+  timeSpentMs?: number;
+  hintsUsed?: number;
+  replayCount?: number;
+  audioSpeedUsed?: number;
 }
 
 export interface SubmitQuizDto {
   deckId: string;
+  mode?: string;
   totalQuestions?: number;
   answers: QuizAnswerSubmissionDto[];
 }
@@ -73,4 +78,45 @@ export interface FillBlankQuestionDto {
 export interface GetFillBlankQuestionsQueryDto {
   deckId: string;
   limit?: number;
+}
+
+// Listening Quiz Types (US-QUIZ-03)
+export interface ListeningQuestionDto {
+  id: string;
+  cardId: string;
+  word: string;
+  phonetic?: string | null;
+  meaning: string;
+  audioUrl?: string | null;
+  wordLength: number;
+  firstLetterHint: string;
+}
+
+export interface GetListeningQuestionsQueryDto {
+  deckId: string;
+  limit?: number; // default 10, min 1, max 100
+}
+
+export interface ListeningAnswerSubmissionDto {
+  cardId: string;
+  submittedWord?: string;
+  isCorrect: boolean;
+  timeSpentMs: number;
+  hintsUsed?: number; // 0, 1, 2, 3
+  replayCount?: number;
+  audioSpeedUsed?: number; // 1.0 or 0.75
+}
+
+export interface SubmitListeningQuizDto {
+  deckId: string;
+  mode?: string;
+  totalQuestions?: number;
+  answers: ListeningAnswerSubmissionDto[];
+}
+
+export type DiffSpanType = "MATCH" | "MISSING" | "EXTRA" | "WRONG";
+
+export interface DiffSpan {
+  char: string;
+  type: DiffSpanType;
 }
