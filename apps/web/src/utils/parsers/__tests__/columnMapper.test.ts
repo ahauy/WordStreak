@@ -2,7 +2,6 @@ import { describe, it, expect } from "vitest";
 import {
   detectFieldForHeader,
   autoMapColumns,
-  rowToCardData,
   validateAllRows,
   buildCardBatch,
 } from "../columnMapper";

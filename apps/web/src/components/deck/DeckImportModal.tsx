@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import {
   X,
   Upload,
@@ -87,38 +87,50 @@ export const DeckImportModal: React.FC<DeckImportModalProps> = ({
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Reset modal state on open
-  useEffect(() => {
-    if (isOpen && activeDeckId) {
-      setStep(1);
-      setIsDragging(false);
-      setIsParsing(false);
-      setParseError(null);
-      setFileName("");
-      setHeaders([]);
-      setRows([]);
-      setMapping({});
-      setConflictStrategy("SKIP");
-      setIsSubmitting(false);
-      setImportResult(null);
+  const handleClose = useCallback(() => {
+    if (isSubmitting) return;
+    setStep(1);
+    setIsDragging(false);
+    setIsParsing(false);
+    setParseError(null);
+    setFileName("");
+    setHeaders([]);
+    setRows([]);
+    setMapping({});
+    setConflictStrategy("SKIP");
+    setIsSubmitting(false);
+    setImportResult(null);
+    onClose();
+  }, [isSubmitting, onClose]);
 
-      cardsService
-        .getAllDeckCards(activeDeckId)
-        .then((cards) => setExistingCards(cards))
-        .catch(() => setExistingCards([]));
-    }
+  // Fetch existing cards for duplicate detection on modal open
+  useEffect(() => {
+    if (!isOpen || !activeDeckId) return;
+    let ignore = false;
+    cardsService
+      .getAllDeckCards(activeDeckId)
+      .then((cards) => {
+        if (!ignore) setExistingCards(cards);
+      })
+      .catch(() => {
+        if (!ignore) setExistingCards([]);
+      });
+
+    return () => {
+      ignore = true;
+    };
   }, [isOpen, activeDeckId]);
 
   // Handle ESC key close
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape" && isOpen && !isSubmitting) {
-        onClose();
+        handleClose();
       }
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [isOpen, isSubmitting, onClose]);
+  }, [isOpen, isSubmitting, handleClose]);
 
   if (!isOpen) return null;
 
@@ -279,7 +291,7 @@ export const DeckImportModal: React.FC<DeckImportModalProps> = ({
 
           <button
             type="button"
-            onClick={onClose}
+            onClick={handleClose}
             disabled={isSubmitting}
             aria-label="Đóng cửa sổ"
             className="p-1.5 rounded-full hover:bg-[#f5f5f5] text-[#737373] hover:text-black transition-colors cursor-pointer disabled:opacity-30"
@@ -491,7 +503,7 @@ export const DeckImportModal: React.FC<DeckImportModalProps> = ({
                 onMappingChange={handleMappingChange}
                 validatedRows={validatedRows}
                 onCellEdit={handleCellEdit}
-                onToggleRowIncluded={(_idx) => {}}
+                onToggleRowIncluded={() => {}}
               />
             </div>
           )}
@@ -691,7 +703,7 @@ export const DeckImportModal: React.FC<DeckImportModalProps> = ({
                   type="button"
                   onClick={() => {
                     if (onSuccess) onSuccess();
-                    onClose();
+                    handleClose();
                   }}
                   className="h-9 px-5 rounded-full bg-black text-white hover:bg-[#171717] text-xs font-semibold transition-all cursor-pointer"
                 >
@@ -701,7 +713,7 @@ export const DeckImportModal: React.FC<DeckImportModalProps> = ({
                   <button
                     type="button"
                     onClick={() => {
-                      onClose();
+                      handleClose();
                       onStartReview(activeDeckId);
                     }}
                     className="h-9 px-5 rounded-full bg-[#f3e8ff] text-[#7e22ce] hover:bg-[#e9d5ff] border border-[#d8b4fe] text-xs font-semibold inline-flex items-center gap-1.5 transition-all cursor-pointer"

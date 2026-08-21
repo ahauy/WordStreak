@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   X,
   Download,
@@ -55,31 +55,41 @@ export const DeckExportModal: React.FC<DeckExportModalProps> = ({
 
   // Fetch all cards when modal opens if needed
   useEffect(() => {
-    if (isOpen) {
-      setExportedInfo(null);
-      if (initialCardsList.length > 0) {
-        setAllCards(initialCardsList);
-      } else if (activeDeckId) {
-        setIsLoadingCards(true);
-        cardsService
-          .getAllDeckCards(activeDeckId)
-          .then((cards) => setAllCards(cards))
-          .catch(() => setAllCards([]))
-          .finally(() => setIsLoadingCards(false));
-      }
-    }
-  }, [isOpen, activeDeckId, initialCardsList]);
+    if (!isOpen || !activeDeckId || initialCardsList.length > 0) return;
+    let ignore = false;
+    cardsService
+      .getAllDeckCards(activeDeckId)
+      .then((cards) => {
+        if (!ignore) setAllCards(cards);
+      })
+      .catch(() => {
+        if (!ignore) setAllCards([]);
+      })
+      .finally(() => {
+        if (!ignore) setIsLoadingCards(false);
+      });
+
+    return () => {
+      ignore = true;
+    };
+  }, [isOpen, activeDeckId, initialCardsList.length]);
+
+  const handleClose = useCallback(() => {
+    if (isExporting) return;
+    setExportedInfo(null);
+    onClose();
+  }, [isExporting, onClose]);
 
   // Handle ESC key close
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape" && isOpen && !isExporting) {
-        onClose();
+        handleClose();
       }
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [isOpen, isExporting, onClose]);
+  }, [isOpen, isExporting, handleClose]);
 
   if (!isOpen) return null;
 
@@ -128,7 +138,7 @@ export const DeckExportModal: React.FC<DeckExportModalProps> = ({
 
           <button
             type="button"
-            onClick={onClose}
+            onClick={handleClose}
             aria-label="Đóng cửa sổ"
             className="p-1.5 rounded-full hover:bg-[#f5f5f5] text-[#737373] hover:text-black transition-colors cursor-pointer"
           >
@@ -283,7 +293,7 @@ export const DeckExportModal: React.FC<DeckExportModalProps> = ({
         <div className="px-6 py-4 bg-[#fafafa] border-t border-[#e5e5e5] flex items-center justify-end gap-2">
           <button
             type="button"
-            onClick={onClose}
+            onClick={handleClose}
             className="h-9 px-4 rounded-full border border-[#e5e5e5] bg-white hover:bg-[#f5f5f5] text-xs font-semibold text-black transition-colors cursor-pointer"
           >
             Đóng

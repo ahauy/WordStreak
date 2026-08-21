@@ -31,7 +31,7 @@ export function sanitizeAnkiHtml(html: string): string {
   text = text.replace(/\{\{c\d+::(.*?)\}\}/g, "$1");
 
   // 3. Convert line breaks and structural block elements to newlines
-  text = text.replace(/<br\s*[\/]?>/gi, "\n");
+  text = text.replace(/<br\s*\/?>/gi, "\n");
   text = text.replace(/<\/p>/gi, "\n");
   text = text.replace(/<\/div>/gi, "\n");
   text = text.replace(/<p[^>]*>/gi, "");
@@ -74,6 +74,7 @@ export function extractNotesFromBuffer(buffer: Uint8Array): string[][] {
 
   // Regex to extract sequences of text with unit separators
   // Matches valid field strings inside the SQLite binary page structures
+  // eslint-disable-next-line no-control-regex
   const fieldRegex = /([^\x00\r\n]{1,500}(?:\x1f[^\x00\r\n]{0,500}){1,10})/g;
   let match: RegExpExecArray | null;
 
