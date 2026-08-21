@@ -26,23 +26,23 @@ export interface CardResponse {
 export interface CreateCardDto {
   word: string;
   meaning: string;
-  phonetic?: string;
-  audioUrl?: string;
-  exampleSentence?: string;
-  collocations?: string;
-  mnemonic?: string;
-  imageUrl?: string;
+  phonetic?: string | null;
+  audioUrl?: string | null;
+  exampleSentence?: string | null;
+  collocations?: string | null;
+  mnemonic?: string | null;
+  imageUrl?: string | null;
 }
 
 export interface UpdateCardDto {
   word?: string;
   meaning?: string;
-  phonetic?: string;
-  audioUrl?: string;
-  exampleSentence?: string;
-  collocations?: string;
-  mnemonic?: string;
-  imageUrl?: string;
+  phonetic?: string | null;
+  audioUrl?: string | null;
+  exampleSentence?: string | null;
+  collocations?: string | null;
+  mnemonic?: string | null;
+  imageUrl?: string | null;
 }
 
 export type CardStatusFilter = "ALL" | "NEW" | "LEARNING" | "MASTERED";
@@ -82,3 +82,64 @@ export interface BulkCardActionResult {
   affectedCount: number;
   message: string;
 }
+
+export type ConflictStrategy = "SKIP" | "OVERWRITE" | "KEEP_BOTH";
+export type RowConflictAction = "DEFAULT" | "SKIP" | "OVERWRITE" | "KEEP_BOTH";
+
+export interface CardBatchItemDto {
+  word: string;
+  meaning: string;
+  phonetic?: string | null;
+  audioUrl?: string | null;
+  exampleSentence?: string | null;
+  collocations?: string | null;
+  mnemonic?: string | null;
+  imageUrl?: string | null;
+  conflictStrategy?: ConflictStrategy;
+  conflictAction?: ConflictStrategy;
+  rowConflictAction?: RowConflictAction;
+}
+
+export interface BulkImportCardsDto {
+  cards: CardBatchItemDto[];
+  defaultConflictStrategy?: ConflictStrategy;
+  conflictStrategy?: ConflictStrategy;
+  defaultStrategy?: ConflictStrategy;
+  createAsNewDeck?: boolean;
+  newDeckTitle?: string;
+}
+
+export interface BulkImportErrorItem {
+  index: number;
+  word: string;
+  reason: string;
+}
+
+export interface BulkImportCardsResult {
+  success: boolean;
+  deckId: string;
+  totalSubmitted: number;
+  imported: number;
+  skipped: number;
+  overwritten: number;
+  errors?: BulkImportErrorItem[];
+  message: string;
+}
+
+export interface ImportBatchResult {
+  totalSubmitted: number;
+  imported: number;
+  overwritten: number;
+  skipped: number;
+  errors?: string[];
+}
+
+export type StandardCardField =
+  | "word"
+  | "meaning"
+  | "phonetic"
+  | "exampleSentence"
+  | "collocations"
+  | "mnemonic"
+  | "imageUrl"
+  | "audioUrl";
