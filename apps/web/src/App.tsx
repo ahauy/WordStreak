@@ -15,6 +15,7 @@ import { DeckDetailPage } from "./features/decks/pages/DeckDetailPage";
 import { ReviewSessionPage } from "./features/reviews/pages/ReviewSessionPage";
 import { MultipleChoiceQuizPage } from "./features/practice/pages/MultipleChoiceQuizPage";
 import { FillInTheBlankQuizPage } from "./features/practice/pages/FillInTheBlankQuizPage";
+import { ListeningQuizPage } from "./features/practice/pages/ListeningQuizPage";
 import { LandingPage } from "./features/landing/pages/LandingPage";
 import { AnalyticsPage } from "./features/analytics/pages/AnalyticsPage";
 import { ProtectedRoute } from "./features/auth/components/ProtectedRoute";
@@ -90,6 +91,15 @@ function AnimatedRoutes() {
         />
 
         <Route
+          path="/decks/:id/practice/listening"
+          element={
+            <ProtectedRoute>
+              <ListeningQuizPage />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
           path="/practice/quiz"
           element={
             <ProtectedRoute>
@@ -103,6 +113,15 @@ function AnimatedRoutes() {
           element={
             <ProtectedRoute>
               <FillInTheBlankQuizPage />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/practice/listening"
+          element={
+            <ProtectedRoute>
+              <ListeningQuizPage />
             </ProtectedRoute>
           }
         />
