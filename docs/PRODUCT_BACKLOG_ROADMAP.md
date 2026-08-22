@@ -416,11 +416,11 @@ _Mục tiêu: Xóa bỏ rào cản ngôn ngữ, hỗ trợ song ngữ toàn di�
 
 [ Sprint 8 - Production Hardening & Go-Live ]  ──► [ P0 NEXT 🚀 ]
   ├── US-DEPLOY-01: Hoàn thiện US-I18N-03 (language sync to DB) ✅
-  ├── US-DEPLOY-02: Security hardening (secrets, CORS, JWT)
+  ├── US-DEPLOY-02: Security hardening (secrets, CORS, JWT)     ✅
   ├── US-DEPLOY-03: Neon DB setup & prisma migrate deploy
   ├── US-DEPLOY-04: Koyeb API deployment (Dockerfile.api)
   ├── US-DEPLOY-05: Vercel frontend deployment
-  ├── US-DEPLOY-06: Nginx SPA routing fix
+  ├── US-DEPLOY-06: Nginx SPA routing fix                      ✅
   └── US-DEPLOY-07: E2E smoke test on production URL
 
 [ Sprint 7 - Ecosystem & Platform Expansion ]  ──► [ P3 FUTURE 🧩 ]
@@ -546,11 +546,11 @@ Thứ tự thực hiện đề xuất:
 
 #### 🔴 Critical — Blockers tuyệt đối
 
-- [ ] **SEC-01**: Xóa hardcoded credentials trong `docker-compose.yml` (POSTGRES_PASSWORD, DATABASE_URL). Chuyển sang biến môi trường.
-- [ ] **SEC-02**: Generate `JWT_SECRET` mạnh: `openssl rand -hex 64` (≥ 64 ký tự, không phải placeholder).
-- [ ] **SEC-03**: Generate `JWT_REFRESH_SECRET` mạnh tương tự.
-- [ ] **SEC-04**: `GEMINI_API_KEY` thực tế (không phải placeholder) — tính năng AI auto-fill phụ thuộc vào đây.
-- [ ] **SEC-05**: `CORS_ORIGINS` chỉ cho phép domain Vercel thực tế (không dùng `*`).
+- [x] **SEC-01**: Xóa hardcoded credentials trong `docker-compose.yml` (POSTGRES_PASSWORD, DATABASE_URL). Chuyển sang biến môi trường.
+- [x] **SEC-02**: Generate `JWT_SECRET` mạnh: `openssl rand -hex 64` (≥ 64 ký tự, không phải placeholder).
+- [x] **SEC-03**: Generate `JWT_REFRESH_SECRET` mạnh tương tự.
+- [x] **SEC-04**: `GEMINI_API_KEY` thực tế (không phải placeholder) — tính năng AI auto-fill phụ thuộc vào đây.
+- [x] **SEC-05**: `CORS_ORIGINS` chỉ cho phép domain Vercel thực tế (không dùng `*`).
 
 #### 🟡 Important — Cần làm trước ngày launch
 
@@ -559,7 +559,7 @@ Thứ tự thực hiện đề xuất:
 - [x] **DB-03**: Verify Prisma schema có migration `US-I18N-03` (thêm cột `preferredLanguage` vào `User`).
 - [ ] **API-01**: Deploy `apps/api` lên Koyeb từ `Dockerfile.api` — verify health endpoint trả về 200.
 - [ ] **WEB-01**: Deploy `apps/web` lên Vercel — set `VITE_API_URL=https://<koyeb-domain>`.
-- [ ] **WEB-02**: Verify `Dockerfile.web` có Nginx config hỗ trợ SPA routing (fallback `index.html` cho client-side routes).
+- [x] **WEB-02**: Verify `Dockerfile.web` có Nginx config hỗ trợ SPA routing (fallback `index.html` cho client-side routes).
 - [ ] **TEST-01**: Smoke test toàn bộ happy path: Đăng ký → Tạo deck → Thêm từ → Ôn tập → Kiểm tra Streak.
 
 #### 🟢 Nice-to-have — Sau khi go-live
@@ -601,7 +601,7 @@ _Mục tiêu: Đưa WordStreak lên production ổn định, sẵn sàng tiếp 
   - **AC:** Thêm cột `preferredLanguage` vào DB, sync qua API, tích hợp vào `SettingsModal`.
   - **Ưu tiên:** P0 — hoàn tất 100% trước khi triển khai production.
 
-- [ ] **US-DEPLOY-02: Security Hardening (Pre-Deploy)**
+- [x] **US-DEPLOY-02: Security Hardening (Pre-Deploy)**
   - **AC:** Toàn bộ checklist SEC-01 đến SEC-05 ở mục 7.4 được đánh dấu hoàn thành.
 
 - [ ] **US-DEPLOY-03: Neon Database Setup & Migration**
@@ -613,7 +613,7 @@ _Mục tiêu: Đưa WordStreak lên production ổn định, sẵn sàng tiếp 
 - [ ] **US-DEPLOY-05: Vercel Frontend Deployment**
   - **AC:** `apps/web` build thành công trên Vercel, SPA routing hoạt động (refresh `/decks/123` không trả về 404), kết nối được với Koyeb API.
 
-- [ ] **US-DEPLOY-06: Nginx SPA Routing Fix (Dockerfile.web)**
+- [x] **US-DEPLOY-06: Nginx SPA Routing Fix (Dockerfile.web)**
   - **AC:** Thêm `nginx.conf` tùy chỉnh vào `Dockerfile.web` để fallback về `index.html` cho tất cả routes — ngăn lỗi 404 khi refresh trang React Router.
 
 - [ ] **US-DEPLOY-07: End-to-End Smoke Test Production**
@@ -622,10 +622,10 @@ _Mục tiêu: Đưa WordStreak lên production ổn định, sẵn sàng tiếp 
 ```
 [ Sprint 8 - Production Hardening & Go-Live ]  ──► [ P0 NEXT 🚀 ]
   ├── US-DEPLOY-01: Hoàn thiện US-I18N-03 (language sync to DB) ✅
-  ├── US-DEPLOY-02: Security hardening (secrets, CORS, JWT)
+  ├── US-DEPLOY-02: Security hardening (secrets, CORS, JWT)     ✅
   ├── US-DEPLOY-03: Neon DB setup & prisma migrate deploy
   ├── US-DEPLOY-04: Koyeb API deployment (Dockerfile.api)
   ├── US-DEPLOY-05: Vercel frontend deployment
-  ├── US-DEPLOY-06: Nginx SPA routing fix
+  ├── US-DEPLOY-06: Nginx SPA routing fix                      ✅
   └── US-DEPLOY-07: E2E smoke test on production URL
 ```
