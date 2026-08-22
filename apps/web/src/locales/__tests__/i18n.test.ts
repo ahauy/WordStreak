@@ -1,6 +1,5 @@
-import { describe, it, expect, beforeEach, vi } from "vitest";
+import { describe, it, expect, beforeEach } from "vitest";
 import i18n from "../i18n";
-import { STORAGE_KEY } from "../constants";
 
 describe("i18n Initialization & Language Switching", () => {
   beforeEach(async () => {
