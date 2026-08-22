@@ -3,6 +3,7 @@ import { useParams, useNavigate, useSearchParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Loader2, AlertCircle, ArrowLeft } from "lucide-react";
 import type {
+  QuizOption,
   QuizQuestionDto,
   StreakActivityResponseDto,
 } from "@wordstreak/shared-types";
@@ -252,18 +253,20 @@ export const MultipleChoiceQuizPage: React.FC = () => {
 
             {/* 4 Options Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full">
-              {currentQuestion.options.map((option, idx) => (
-                <QuizOptionButton
-                  key={option.id}
-                  option={option}
-                  index={idx}
-                  hotkey={hotkeys[idx] || `${idx + 1}`}
-                  isSelected={selectedOptionId === option.id}
-                  feedbackState={feedbackState}
-                  disabled={feedbackState !== "IDLE"}
-                  onClick={() => selectOption(option.id)}
-                />
-              ))}
+              {currentQuestion.options.map(
+                (option: QuizOption, idx: number) => (
+                  <QuizOptionButton
+                    key={option.id}
+                    option={option}
+                    index={idx}
+                    hotkey={hotkeys[idx] || `${idx + 1}`}
+                    isSelected={selectedOptionId === option.id}
+                    feedbackState={feedbackState}
+                    disabled={feedbackState !== "IDLE"}
+                    onClick={() => selectOption(option.id)}
+                  />
+                ),
+              )}
             </div>
 
             {/* Hotkey hint bar */}

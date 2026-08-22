@@ -8,6 +8,8 @@ export interface QuizOptionDto {
   isCorrect: boolean;
 }
 
+export type QuizOption = QuizOptionDto;
+
 export interface QuizQuestionDto {
   id: string;
   cardId: string;
