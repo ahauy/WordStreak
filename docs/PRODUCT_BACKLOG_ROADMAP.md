@@ -345,12 +345,12 @@ _Mục tiêu: Giúp người dùng dễ dàng chuyển đổi dữ liệu và m�
 
 _Mục tiêu: Xóa bỏ rào cản ngôn ngữ, hỗ trợ song ngữ toàn diện (Tiếng Anh ⇄ Tiếng Việt) giúp cả người mới bắt đầu lẫn người học nâng cao tối ưu hóa trải nghiệm học tập._
 
-- [ ] **US-I18N-01: Hạ tầng i18n Core & Nút chuyển đổi ngôn ngữ tức thì (Instant Language Switcher)**
+- [x] **US-I18N-01: Hạ tầng i18n Core & Nút chuyển đổi ngôn ngữ tức thì (Instant Language Switcher)**
   - **AC:** Cài đặt bộ thư viện chuẩn `i18next` + `react-i18next` + `i18next-browser-languagedetector`. Chuyển đổi ngôn ngữ tức thì giữa Tiếng Việt (`vi`) và Tiếng Anh (`en`) mà không tải lại trang. Tự động nhận diện ngôn ngữ trình duyệt cho khách vãng lai và lưu vào `localStorage`. Phân tách file dịch theo Namespaces chuyên biệt (`common`, `auth`, `dashboard`, `decks`, `study`, `practice`, `community`, `analytics`, `settings`). Nút chuyển ngữ Obsidian Pill tối giản hiển thị cờ/mã ngôn ngữ trên Header, DashboardNavbar và LandingPage.
   - **Tasks:**
-    - [ ] Frontend: Khởi tạo module `apps/web/src/locales/` với cấu hình `i18n.ts` và hệ thống namespace type-safe.
-    - [ ] Frontend: Xây dựng các file dịch cơ bản `common.json`, `auth.json`, `dashboard.json`, `settings.json` cho cả 2 locale `en` và `vi`.
-    - [ ] Frontend: Component `LanguageSwitcher` (Obsidian Pill geometry, click/dropdown toggle, không giật hover) gắn trên Header, Navbar và Landing Page.
+    - [x] Frontend: Khởi tạo module `apps/web/src/locales/` với cấu hình `i18n.ts` và hệ thống namespace type-safe.
+    - [x] Frontend: Xây dựng các file dịch cơ bản `common.json`, `auth.json`, `dashboard.json`, `settings.json` cho cả 2 locale `en` và `vi`.
+    - [x] Frontend: Component `LanguageSwitcher` (Obsidian Pill geometry, click/dropdown toggle, không giật hover) gắn trên Header, Navbar và Landing Page.
 - [ ] **US-I18N-02: Bản địa hóa toàn bộ màn hình & Thông báo lỗi (Complete UI Localization & Error Mapping)**
   - **AC:** Thay thế 100% hardcoded strings trên tất cả các màn hình (Landing, Auth, Dashboard, Decks, Flashcard Review, 4 Quiz Modes, Community Marketplace, Analytics, Settings Modals) sang `t('key')`. Hỗ trợ interpolation (truyền biến `{{count}} words`, `{{streak}} days`) và pluralization (số ít/số nhiều tiếng Anh). Ánh xạ các mã lỗi API backend (ví dụ `ERR_DECK_NOT_FOUND`, `ERR_UNAUTHORIZED`) thành câu thông báo toast chuẩn theo ngôn ngữ hiện hành. Giữ nguyên nội dung thẻ từ vựng của người dùng (không can thiệp dịch nội dung thẻ).
   - **Tasks:**
