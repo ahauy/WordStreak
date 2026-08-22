@@ -88,5 +88,39 @@
     "tryAgain": "Try Again",
     "backToPractice": "Back to Practice",
     "viewAnswers": "Review Answers"
+  },
+  "setup": {
+    "title": "Practice & Quizzes",
+    "subtitle": "Select practice mode and configure your session",
+    "modeLabel": "Practice Mode",
+    "deckLabel": "Current Deck",
+    "questionCount": "Question Count",
+    "cardsCount": "{{count}} Cards",
+    "matchingCards": "{{count}} Cards ({{round}} Round)",
+    "matchingCards_other": "{{count}} Cards ({{round}} Rounds)",
+    "approxMin": "~{{min}} min",
+    "rounds": "{{count}} Round",
+    "rounds_other": "{{count}} Rounds",
+    "allCards": "All Cards",
+    "allCardsCount": "{{count}} cards",
+    "zenMode": "Zen Mode",
+    "zenModeDesc": "Disable 15s timer for stress-free practice",
+    "startBtn": "Start Practice Session",
+    "notEnoughCards": "Not enough cards",
+    "minCardsMultipleChoice": "This deck has only {{count}} cards. Multiple choice quizzes require at least 4 cards.",
+    "minCardsMatching": "This deck has only {{count}} cards. Matching game requires at least 5 cards.",
+    "noCards": "This deck has no cards. Add cards to begin practice.",
+    "modes": {
+      "multipleChoice": "Multiple Choice",
+      "multipleChoiceSub": "4 options",
+      "fillInBlank": "Fill in Blank",
+      "fillInBlankSub": "Type target",
+      "listening": "Listening",
+      "listeningSub": "Audio & type",
+      "matching": "Matching",
+      "matchingSub": "Pair tiles",
+      "pronunciation": "Pronunciation",
+      "pronunciationSub": "AI scoring"
+    }
   }
 }

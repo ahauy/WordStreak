@@ -1,6 +1,8 @@
 import { render, screen, fireEvent } from "@testing-library/react";
-import { describe, it, expect, vi } from "vitest";
+import { describe, it, expect, vi, beforeEach } from "vitest";
 import { BrowserRouter } from "react-router-dom";
+import { I18nextProvider } from "react-i18next";
+import i18n from "../../../locales/i18n";
 import { DecksPreviewSection } from "./DecksPreviewSection";
 import type { DeckResponse } from "@wordstreak/shared-types";
 
@@ -31,16 +33,22 @@ const mockDecks: DeckResponse[] = [
 ];
 
 describe("DecksPreviewSection Component", () => {
+  beforeEach(async () => {
+    await i18n.changeLanguage("vi");
+  });
+
   it("renders Empty State when decks list is empty for a new user", () => {
     const handleCreateDeck = vi.fn();
     render(
-      <BrowserRouter>
-        <DecksPreviewSection
-          decks={[]}
-          isLoading={false}
-          onCreateDeck={handleCreateDeck}
-        />
-      </BrowserRouter>,
+      <I18nextProvider i18n={i18n}>
+        <BrowserRouter>
+          <DecksPreviewSection
+            decks={[]}
+            isLoading={false}
+            onCreateDeck={handleCreateDeck}
+          />
+        </BrowserRouter>
+      </I18nextProvider>,
     );
 
     expect(screen.getByText("Chưa có bộ từ vựng nào")).toBeDefined();
@@ -66,13 +74,15 @@ describe("DecksPreviewSection Component", () => {
   it("renders real user decks when decks are provided", () => {
     const handleStartPractice = vi.fn();
     render(
-      <BrowserRouter>
-        <DecksPreviewSection
-          decks={mockDecks}
-          isLoading={false}
-          onStartPractice={handleStartPractice}
-        />
-      </BrowserRouter>,
+      <I18nextProvider i18n={i18n}>
+        <BrowserRouter>
+          <DecksPreviewSection
+            decks={mockDecks}
+            isLoading={false}
+            onStartPractice={handleStartPractice}
+          />
+        </BrowserRouter>
+      </I18nextProvider>,
     );
 
     expect(screen.getByText("IELTS Core Vocabulary")).toBeDefined();

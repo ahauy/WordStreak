@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from "react";
 import { TrendingUp, Award } from "lucide-react";
 import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 import { PurpleStreakFlame } from "../../landing/components/PurpleStreakFlame";
 import type { ActivityHeatmapResponseDto } from "@wordstreak/shared-types";
 
@@ -24,6 +25,7 @@ export const StreakHeatmapTracker: React.FC<StreakHeatmapTrackerProps> = ({
   isLoading = false,
   currentStreak = 0,
 }) => {
+  const { t, i18n } = useTranslation(["dashboard", "common"]);
   const [activeCell, setActiveCell] = useState<HeatmapCell | null>(null);
 
   const totalWeeks = 18;
@@ -62,11 +64,14 @@ export const StreakHeatmapTracker: React.FC<StreakHeatmapTrackerProps> = ({
         const level = realDay ? realDay.level : 0;
         const reviews = realDay ? realDay.count : 0;
 
-        const dateStr = cellDate.toLocaleDateString("vi-VN", {
-          weekday: "short",
-          month: "numeric",
-          day: "numeric",
-        });
+        const dateStr = cellDate.toLocaleDateString(
+          i18n.language === "vi" ? "vi-VN" : "en-US",
+          {
+            weekday: "short",
+            month: "numeric",
+            day: "numeric",
+          },
+        );
 
         week.push({
           week: w,
@@ -84,7 +89,7 @@ export const StreakHeatmapTracker: React.FC<StreakHeatmapTrackerProps> = ({
       totalReviews: heatmapData?.totalReviews || 0,
       activeDaysCount: heatmapData?.activeDaysCount || 0,
     };
-  }, [heatmapData, totalWeeks, daysPerWeek]);
+  }, [heatmapData, totalWeeks, daysPerWeek, i18n.language]);
 
   const getCellColor = (level: number, isHovered: boolean) => {
     if (isHovered) {
@@ -124,18 +129,20 @@ export const StreakHeatmapTracker: React.FC<StreakHeatmapTrackerProps> = ({
               className="w-3.5 h-3.5"
             />
             <span className="text-[11px] font-bold uppercase tracking-wider font-mono">
-              Streak & Habit Tracker
+              {t("heatmap.badge", "Streak & Habit Tracker")}
             </span>
           </div>
           <h2
             className="text-xl sm:text-2xl font-bold text-black tracking-tight"
             style={{ fontFamily: "var(--font-display)" }}
           >
-            Nhật ký duy trì Streak & Ôn tập
+            {t("heatmap.title", "Streak & Review Activity Log")}
           </h2>
           <p className="text-xs sm:text-sm text-[#737373] mt-0.5">
-            Theo dõi mật độ học và chuỗi ngày rèn luyện trí nhớ không ngắt
-            quãng.
+            {t(
+              "heatmap.subtitle",
+              "Track your daily study consistency and spaced repetition retention momentum.",
+            )}
           </p>
         </div>
 
@@ -145,9 +152,11 @@ export const StreakHeatmapTracker: React.FC<StreakHeatmapTrackerProps> = ({
             <Award className="w-5 h-5" />
           </div>
           <div>
-            <div className="text-[11px] text-[#737373]">Mục tiêu tiếp theo</div>
+            <div className="text-[11px] text-[#737373]">
+              {t("heatmap.nextMilestone", "Next Milestone")}
+            </div>
             <div className="text-xs font-bold text-black flex items-center gap-1">
-              <span>Huy hiệu 7 ngày</span>
+              <span>{t("heatmap.milestoneBadge", "7-Day Streak Badge")}</span>
               <span className="text-[#7e22ce] font-mono">
                 ({currentStreak}/7d)
               </span>
@@ -180,8 +189,11 @@ export const StreakHeatmapTracker: React.FC<StreakHeatmapTrackerProps> = ({
                       )}`}
                       title={`${cell.dateStr}: ${
                         cell.reviews === 0
-                          ? "Chưa có lượt ôn tập"
-                          : `${cell.reviews} thẻ ôn tập`
+                          ? t("heatmap.emptyReviews", "No reviews")
+                          : t("heatmap.cardReviews", {
+                              count: cell.reviews,
+                              defaultValue: `${cell.reviews} reviews`,
+                            })
                       }`}
                     />
                   );
@@ -202,34 +214,40 @@ export const StreakHeatmapTracker: React.FC<StreakHeatmapTrackerProps> = ({
               {activeCell.dateStr}:{" "}
               <strong className="text-[#7e22ce]">
                 {activeCell.reviews === 0
-                  ? "Chưa có lượt ôn tập"
-                  : `${activeCell.reviews} thẻ ôn tập`}
+                  ? t("heatmap.emptyReviews", "No reviews")
+                  : t("heatmap.cardReviews", {
+                      count: activeCell.reviews,
+                      defaultValue: `${activeCell.reviews} reviews`,
+                    })}
               </strong>
             </span>
           ) : totalReviews === 0 ? (
             <span className="text-neutral-500 font-medium">
-              Chưa có lượt ôn tập nào. Bắt đầu phiên học đầu tiên để ghi nhận
-              chuỗi hoạt động!
+              {t(
+                "heatmap.emptyHistory",
+                "No reviews recorded yet. Start your first session to log activity!",
+              )}
             </span>
           ) : (
             <span className="text-black font-medium">
-              Đã hoàn thành{" "}
-              <strong className="text-[#7e22ce]">{totalReviews} thẻ</strong> qua{" "}
-              <strong className="text-black">{activeDaysCount} ngày</strong> ôn
-              tập
+              {t("heatmap.completedSummary", {
+                total: totalReviews,
+                days: activeDaysCount,
+                defaultValue: `Completed ${totalReviews} cards across ${activeDaysCount} active days`,
+              })}
             </span>
           )}
         </div>
 
         {/* Legend */}
         <div className="flex items-center gap-2 text-[11px]">
-          <span>Ít hơn</span>
+          <span>{t("heatmap.less", "Less")}</span>
           <div className="w-3.5 h-3.5 rounded-xs bg-[#fafafa] border border-[#e5e5e5]" />
           <div className="w-3.5 h-3.5 rounded-xs bg-[#f3e8ff] border border-[#e9d5ff]" />
           <div className="w-3.5 h-3.5 rounded-xs bg-[#d8b4fe]" />
           <div className="w-3.5 h-3.5 rounded-xs bg-[#a855f7]" />
           <div className="w-3.5 h-3.5 rounded-xs bg-[#7e22ce]" />
-          <span>Nhiều hơn</span>
+          <span>{t("heatmap.more", "More")}</span>
         </div>
       </div>
     </motion.div>

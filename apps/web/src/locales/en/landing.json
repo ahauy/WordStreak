@@ -1,0 +1,255 @@
+{
+  "hero": {
+    "badge": "Keep your daily English streak burning · 100% Free",
+    "title": "Master English vocabulary.",
+    "titleHighlight": "Never forget a word.",
+    "subtitle": "SM-2 spaced repetition, native audio IPA flashcards, and daily streak protection — built for learners who want permanent memory.",
+    "instantLookup": "Instant Word Lookup",
+    "playPronunciation": "Play pronunciation",
+    "trySandbox": "Try Interactive Sandbox ↓",
+    "trustFree": "100% Free Forever",
+    "trustNoAds": "No Ads / Paywall",
+    "trustExport": "Anki (.apkg) & CSV Export"
+  },
+  "sandbox": {
+    "tag": "Interactive Learning Sandbox",
+    "title": "Experience WordStreak in Action",
+    "subtitle": "Test the SM-2 algorithm, quiz formats, and daily streak loop right in your browser.",
+    "liveHeader": "wordstreak-app — live interactive sandbox",
+    "tabSrs": "SM-2 Flashcard",
+    "tabQuiz": "Active Quiz",
+    "tabStreak": "Streak & Heatmap",
+    "cardHeader": "Card #{{current}} of {{total}} · Contextual Memory Hook",
+    "rateRecall": "Rate Recall:",
+    "rateHard": "Hard (+1d)",
+    "rateGood": "Good (+{{days}}d)",
+    "rateEasy": "Easy (+{{days}}d)",
+    "feedbackSuccess": "Recorded \"{{grade}}\" — SM-2 schedule recalculated!",
+    "telemetryTitle": "SM-2 SCHEDULER",
+    "telemetryOptimal": "OPTIMAL",
+    "telemetryRepetition": "Repetition Count:",
+    "telemetryInterval": "Current Interval:",
+    "telemetryIntervalDays": "{{count}} days",
+    "telemetryEaseFactor": "Ease Factor (EF):",
+    "telemetryNextReview": "Next Review:",
+    "telemetryNextDays": "in {{count}} days",
+    "telemetrySelectWord": "SELECT WORD:",
+    "quizTag": "QUIZ MODE · FILL-IN-THE-BLANK",
+    "quizPrompt": "Complete the sentence with the correct vocabulary word:",
+    "quizSentence": "“Smartphones and cloud storage have made digital dictionaries {{blank}} in modern education.”",
+    "quizCorrect": "Correct! “Ubiquitous” = present everywhere.",
+    "quizIncorrect": "Try again! The correct answer is B. ubiquitous.",
+    "quizReset": "Reset Quiz",
+    "streakTitle": "{{count}} Days Streak",
+    "streakCompleted": "{{count}} daily reviews completed today",
+    "streakFreezeActive": "Streak Freeze: ACTIVE",
+    "streakFreezeOff": "Streak Freeze: OFF",
+    "heatmapTitle": "CONSISTENCY HEATMAP (PAST 16 WEEKS)",
+    "heatmapConsistency": "100% Habit Consistency",
+    "heatmapLess": "Less",
+    "heatmapMore": "More Reviews"
+  },
+  "features": {
+    "tag": "Core Features",
+    "title": "Engineered for permanent retention.",
+    "subtitle": "Every feature is built around the science of human memory decay and habit formation.",
+    "items": {
+      "srs": {
+        "title": "SM-2 Spaced Repetition",
+        "tag": "Core Algorithm",
+        "desc": "Calculates the exact moment you are about to forget a word, scheduling reviews right before memory decay."
+      },
+      "cards": {
+        "title": "Contextual Flashcards",
+        "tag": "Multi-Sensory",
+        "desc": "Study with crystal-clear IPA audio (US/UK), natural example sentences, collocations, and mnemonics."
+      },
+      "quiz": {
+        "title": "Varied Quiz Formats",
+        "tag": "Active Recall",
+        "desc": "Practice with multiple-choice, listening drills, cloze fill-in-the-blanks, and definition matching."
+      },
+      "streak": {
+        "title": "Streaks & Freezes",
+        "tag": "Habit Loop",
+        "desc": "Build an unbroken habit with daily goals and earned streak freezes that protect progress on busy days."
+      },
+      "ai": {
+        "title": "Instant AI Word Lookup",
+        "tag": "Time Saver",
+        "desc": "Enter any English word — AI instantly gathers phonetic IPA, definitions, real examples, and synonyms."
+      },
+      "metrics": {
+        "title": "Retention Heatmaps",
+        "tag": "Visual Analytics",
+        "desc": "Track consistency with GitHub-style heatmaps, retention curves, and Mastered vs. Learning breakdowns."
+      }
+    }
+  },
+  "howItWorks": {
+    "tag": "How It Works",
+    "title": "Three simple steps to fluency.",
+    "subtitle": "Built on cognitive science to turn short daily practice into lifelong vocabulary retention.",
+    "step1": {
+      "title": "Add your vocabulary",
+      "tag": "Capture",
+      "desc": "Type any word you encounter while reading or studying. Our AI auto-populates phonetic IPA, audio, and contextual examples in milliseconds."
+    },
+    "step2": {
+      "title": "Review on smart intervals",
+      "tag": "SM-2 Algorithm",
+      "desc": "Spend just 5–10 minutes daily. The SM-2 algorithm calculates the exact threshold of forgetting to lock words permanently into long-term memory."
+    },
+    "step3": {
+      "title": "Build streaks & fluency",
+      "tag": "Mastery Loop",
+      "desc": "Watch your vocabulary count soar. Keep your daily streak burning, protect it with streak freezes, and transition from learner to fluent speaker."
+    }
+  },
+  "pathways": {
+    "tag": "Adaptive Learning Paths",
+    "title": "Built for every learning goal.",
+    "subtitle": "Select your focus area — WordStreak automatically adapts the spaced repetition schedule and quiz modalities for your target.",
+    "curriculumLabel": "Included Curriculum Modules:",
+    "startPath": "Start This Learning Path",
+    "exploreDecks": "Explore Public Decks",
+    "metricsTitle": "PATH METRICS",
+    "sm2Tuned": "SM-2 TUNED",
+    "dailyCommitment": "Daily Commitment:",
+    "deckScope": "Deck Scope:",
+    "retentionTarget": "Retention Target:",
+    "sampleWords": "Sample Flashcard Words in Deck:",
+    "noCreditCard": "100% Free · No Credit Card Required",
+    "ielts": {
+      "name": "IELTS & TOEFL Mastery",
+      "badge": "Target Band 7.5+",
+      "headline": "High-Frequency Academic Vocabulary & Collocations",
+      "desc": "Engineered specifically for academic test takers. Focus on nuanced lexical resource, academic collocations, and varied fill-in-the-blank writing recall.",
+      "m1": "Academic Word List (AWL) Sublists 1–10",
+      "m2": "Formal writing collocations & idioms",
+      "m3": "Listening audio recall & spelling drills",
+      "m4": "Contextual sentence fill-in-the-blanks"
+    },
+    "conversation": {
+      "name": "Spoken & Daily Fluency",
+      "badge": "Natural English",
+      "headline": "Everyday Idioms, Phrasal Verbs & Slang",
+      "desc": "Designed for learners who want to understand movies, podcasts, and speak naturally with native speakers without freezing or translating.",
+      "m1": "Top 100 essential phrasal verbs in context",
+      "m2": "Native IPA audio pronunciation comparisons",
+      "m3": "Natural movie & podcast sentence examples",
+      "m4": "Active voice recognition & listening quizzes"
+    },
+    "business": {
+      "name": "Business & Tech English",
+      "badge": "Career Growth",
+      "headline": "Executive Phrasing, Negotiations & Tech Jargon",
+      "desc": "Tailored for working professionals, engineers, and founders communicating in multinational environments, emails, and client pitches.",
+      "m1": "Executive meeting & negotiation vocabulary",
+      "m2": "Professional email & pitch deck phrasing",
+      "m3": "Tech industry & product management terms",
+      "m4": "Nuance & politeness calibration drills"
+    },
+    "polyglot": {
+      "name": "Custom Decks & Reading",
+      "badge": "Free-Range Reader",
+      "headline": "AI-Powered Card Capture From Anything You Read",
+      "desc": "For book lovers and independent polyglots who want to capture vocabulary from novels, research papers, or news articles in seconds.",
+      "m1": "Instant 1-click AI definition & IPA generator",
+      "m2": "Custom personal mnemonic note attachments",
+      "m3": "Full Anki (.apkg), CSV, and JSON import/export",
+      "m4": "Multi-device local-first offline synchronization"
+    }
+  },
+  "privacy": {
+    "tag": "Open & Local-First",
+    "title": "Your data belongs to you.",
+    "subtitle": "Full ownership of your vocabulary, seamless export, and offline study capabilities.",
+    "export": {
+      "title": "Universal Deck Export",
+      "tag": "Anki / CSV / JSON",
+      "desc": "Export all your flashcards, tags, and SM-2 repetition logs to standard Anki (.apkg) or CSV files anytime in one click."
+    },
+    "offline": {
+      "title": "Local-First Offline Sync",
+      "tag": "No Internet Needed",
+      "desc": "Review your vocabulary during commutes or flights without internet. Reviews sync seamlessly the moment you reconnect."
+    },
+    "noLockIn": {
+      "title": "Zero Vendor Lock-In",
+      "tag": "100% Free Forever",
+      "desc": "No paywalls on words you created. Your vocabulary data, mnemonics, and study progress belong completely to you."
+    }
+  },
+  "faq": {
+    "tag": "Questions",
+    "title": "Frequently asked questions.",
+    "subtitle": "Everything you need to know about spaced repetition, streaks, and WordStreak.",
+    "items": [
+      {
+        "question": "Is WordStreak completely free to use?",
+        "answer": "Yes! WordStreak is 100% free for all learners. There are no paid subscriptions, no paywalled features, and no credit card required. You get full access to the SM-2 algorithm, unlimited flashcards, AI lookup, and streak tracking."
+      },
+      {
+        "question": "How does the SM-2 Spaced Repetition algorithm work?",
+        "answer": "SM-2 calculates optimal review intervals based on how easily you recall each word. Words rated 'Easy' get scheduled further into the future (+7 to +30 days), while words rated 'Hard' are reviewed sooner (+1 to +3 days) to reinforce memory pathways right before you forget them."
+      },
+      {
+        "question": "Can I import my existing vocabulary decks from Anki or Quizlet?",
+        "answer": "Yes. WordStreak supports importing CSV, JSON, and standard Anki deck files (.apkg). Our AI parser automatically maps terms, phonetic spellings, definitions, and contextual examples into your new decks."
+      },
+      {
+        "question": "How do streak freezes work?",
+        "answer": "Streak freezes automatically protect your daily streak when life gets busy. Every account receives streak freeze protection. If you miss a day, the freeze activates seamlessly without breaking your habit loop."
+      },
+      {
+        "question": "Is WordStreak available offline?",
+        "answer": "Yes. WordStreak uses a local-first caching architecture. You can review flashcards, practice quizzes, and learn new words offline. Everything syncs to the cloud the next time you connect to the internet."
+      }
+    ]
+  },
+  "cta": {
+    "badge": "100% Free Forever",
+    "title": "Ready to remember English words permanently?",
+    "subtitle": "Join language learners who turn just 5 minutes a day into an unstoppable vocabulary habit. Completely free to start.",
+    "createAccount": "Create Free Account",
+    "signIn": "Sign In to Account"
+  },
+  "footer": {
+    "manifesto": "Open-source, spaced repetition English vocabulary platform. Designed to help language learners achieve permanent memory retention without paywalls.",
+    "status": "All Systems Operational · 100% Free",
+    "engineTitle": "Learning Engine",
+    "srsEngine": "SM-2 Spaced Repetition",
+    "contextCards": "Contextual Flashcards",
+    "audioIpa": "Audio IPA Pronunciation",
+    "activeRecall": "Active Recall Quizzes",
+    "streakFreeze": "Streak Freeze Protection",
+    "pathwaysTitle": "Study Pathways",
+    "pathIelts": "IELTS & TOEFL Prep",
+    "pathConvo": "Conversational Fluency",
+    "pathBusiness": "Business & Tech English",
+    "pathCustom": "Custom Reading Decks",
+    "aiLookup": "Instant AI Card Lookup",
+    "openTitle": "Open & Local-First",
+    "ankiExport": "Anki (.apkg) Export",
+    "csvExport": "CSV & JSON Export",
+    "offlineStorage": "Offline Local Storage",
+    "signIn": "Sign In to Account",
+    "createFree": "Create Free Account →",
+    "copyright": "© {{year}} WordStreak. Built with",
+    "copyrightSuffix": "for language learners worldwide."
+  },
+  "stats": {
+    "tag": "Proven Results",
+    "title": "Backed by science.",
+    "titleHighlight": "Loved by learners.",
+    "wordsLabel": "Words Mastered",
+    "wordsSublabel": "Across active decks",
+    "retentionLabel": "Recall Retention",
+    "retentionSublabel": "Tested after 30 days",
+    "streakLabel": "Average Streak",
+    "streakSublabel": "Active daily habit",
+    "ratingLabel": "Learner Rating",
+    "ratingSublabel": "From 1,200+ reviews"
+  }
+}

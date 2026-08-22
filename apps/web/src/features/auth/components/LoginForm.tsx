@@ -18,12 +18,10 @@ import { useAuthStore } from "../../../store/useAuthStore";
 import { PurpleStreakFlame } from "../../landing/components/PurpleStreakFlame";
 import { useTranslation } from "react-i18next";
 
-const loginSchema = z.object({
-  identifier: z.string().min(1, "Email or username is required"),
-  password: z.string().min(1, "Password is required"),
-});
-
-type LoginFormData = z.infer<typeof loginSchema>;
+interface LoginFormData {
+  identifier: string;
+  password: string;
+}
 
 interface LoginFormProps {
   onSuccess?: () => void;
@@ -38,6 +36,28 @@ export const LoginForm: React.FC<LoginFormProps> = ({
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(true);
   const { login, isLoading, error, clearError } = useAuthStore();
+
+  const loginSchema = React.useMemo(
+    () =>
+      z.object({
+        identifier: z
+          .string()
+          .min(
+            1,
+            t(
+              "auth:validation.identifierRequired",
+              "Email or username is required",
+            ),
+          ),
+        password: z
+          .string()
+          .min(
+            1,
+            t("auth:validation.passwordRequired", "Password is required"),
+          ),
+      }),
+    [t],
+  );
 
   const {
     register,

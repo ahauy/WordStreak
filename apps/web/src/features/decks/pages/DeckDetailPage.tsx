@@ -746,7 +746,6 @@ export const DeckDetailPage: React.FC = () => {
       <DeckExportModal
         isOpen={isExportOpen}
         deck={deck}
-        cards={cards}
         onClose={() => setIsExportOpen(false)}
       />
     </div>

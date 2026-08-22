@@ -22,9 +22,14 @@
     "creationDate": "Ngày tạo"
   },
   "emptyState": {
-    "title": "Chưa có bộ từ nào",
-    "description": "Tạo bộ thẻ flashcard đầu tiên hoặc nhập tệp CSV/Anki sẵn có để bắt đầu ôn tập.",
-    "action": "Tạo bộ từ đầu tiên"
+    "title": "Bắt đầu hành trình từ vựng của bạn",
+    "description": "Tạo bộ từ vựng đầu tiên theo chủ đề mong muốn (IELTS, TOEIC, Giao tiếp) để bắt đầu chu kỳ Spaced Repetition (SM-2) khoa học.",
+    "action": "Tạo bộ từ vựng đầu tiên",
+    "searchTitle": "Không tìm thấy bộ từ vựng nào",
+    "searchDescription": "Không có kết quả nào khớp với từ khóa \"{{query}}\".",
+    "clearSearch": "Xóa bộ lọc tìm kiếm",
+    "archivedTitle": "Chưa có bộ từ nào trong danh sách lưu trữ",
+    "archivedDescription": "Khi bạn tạm thời không học một bộ từ, hãy chọn 'Lưu trữ' để giữ danh sách học chính luôn gọn gàng."
   },
   "modal": {
     "createTitle": "Tạo bộ từ mới",

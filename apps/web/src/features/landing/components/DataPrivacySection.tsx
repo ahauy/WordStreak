@@ -1,8 +1,42 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useMemo } from "react";
 import { Lock, Download, ShieldCheck, HardDrive } from "lucide-react";
 import { motion, useScroll, useTransform, MotionValue } from "framer-motion";
+import { useTranslation } from "react-i18next";
 
-interface PrivacyData {
+interface PrivacyConfig {
+  id: "export" | "offline" | "noLockIn";
+  icon: React.ElementType;
+  angle: number;
+  fannedX: number;
+  fannedY: number;
+}
+
+const privacyConfigs: PrivacyConfig[] = [
+  {
+    id: "export",
+    icon: Download,
+    angle: -11,
+    fannedX: -270,
+    fannedY: 14,
+  },
+  {
+    id: "offline",
+    icon: HardDrive,
+    angle: 0,
+    fannedX: 0,
+    fannedY: -28, // Elevated center apex
+  },
+  {
+    id: "noLockIn",
+    icon: ShieldCheck,
+    angle: 11,
+    fannedX: 270,
+    fannedY: 14,
+  },
+];
+
+interface PrivacyItem {
+  id: string;
   icon: React.ElementType;
   title: string;
   tag: string;
@@ -12,38 +46,8 @@ interface PrivacyData {
   fannedY: number;
 }
 
-const privacyCards: PrivacyData[] = [
-  {
-    icon: Download,
-    title: "Universal Deck Export",
-    tag: "Anki / CSV / JSON",
-    desc: "Export all your flashcards, tags, and SM-2 repetition logs to standard Anki (.apkg) or CSV files anytime in one click.",
-    angle: -11,
-    fannedX: -270,
-    fannedY: 14,
-  },
-  {
-    icon: HardDrive,
-    title: "Local-First Offline Sync",
-    tag: "No Internet Needed",
-    desc: "Review your vocabulary during commutes or flights without internet. Reviews sync seamlessly the moment you reconnect.",
-    angle: 0,
-    fannedX: 0,
-    fannedY: -28, // Elevated center apex
-  },
-  {
-    icon: ShieldCheck,
-    title: "Zero Vendor Lock-In",
-    tag: "100% Free Forever",
-    desc: "No paywalls on words you created. Your vocabulary data, mnemonics, and study progress belong completely to you.",
-    angle: 11,
-    fannedX: 270,
-    fannedY: 14,
-  },
-];
-
 interface PrivacyCardItemProps {
-  item: PrivacyData;
+  item: PrivacyItem;
   idx: number;
   fanProgress: MotionValue<number>;
   hoveredIdx: number | null;
@@ -141,8 +145,18 @@ function PrivacyCardItem({
 }
 
 export function DataPrivacySection() {
+  const { t } = useTranslation("landing");
   const sectionRef = useRef<HTMLDivElement>(null);
   const [hoveredIdx, setHoveredIdx] = useState<number | null>(null);
+
+  const privacyCards: PrivacyItem[] = useMemo(() => {
+    return privacyConfigs.map((cfg) => ({
+      ...cfg,
+      title: t(`privacy.${cfg.id}.title`, ""),
+      tag: t(`privacy.${cfg.id}.tag`, ""),
+      desc: t(`privacy.${cfg.id}.desc`, ""),
+    }));
+  }, [t]);
 
   const { scrollYProgress } = useScroll({
     target: sectionRef,
@@ -179,7 +193,7 @@ export function DataPrivacySection() {
           transition={{ duration: 0.4, delay: 0.08 }}
           className="display-lg max-w-xl mx-auto"
         >
-          Your words and memory data stay yours.
+          {t("privacy.title", "Your words and memory data stay yours.")}
         </motion.h2>
 
         <motion.p
@@ -189,9 +203,10 @@ export function DataPrivacySection() {
           transition={{ duration: 0.4, delay: 0.16 }}
           className="body-md mt-3 max-w-lg mx-auto"
         >
-          We believe language learners should never be trapped in proprietary
-          systems. Your decks, custom mnemonics, and mastery curves are always
-          100% exportable.
+          {t(
+            "privacy.subtitle",
+            "Full ownership of your vocabulary, seamless export, and offline study capabilities.",
+          )}
         </motion.p>
 
         {/* Desktop: Scroll-driven Progressive Fan Deck */}
@@ -199,7 +214,7 @@ export function DataPrivacySection() {
           <div className="relative flex justify-center items-center w-full max-w-2xl text-left">
             {privacyCards.map((item, idx) => (
               <PrivacyCardItem
-                key={item.title}
+                key={item.id}
                 item={item}
                 idx={idx}
                 fanProgress={fanProgress}
@@ -216,7 +231,7 @@ export function DataPrivacySection() {
             const Icon = item.icon;
             return (
               <div
-                key={item.title}
+                key={item.id}
                 className="rounded-xl border border-[#e5e5e5] bg-[#fafafa] p-5"
               >
                 <div className="flex items-center justify-between mb-3">

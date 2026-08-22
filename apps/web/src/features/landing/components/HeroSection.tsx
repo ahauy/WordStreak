@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { ArrowRight, Volume2, Sparkles, Check } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useTranslation } from "react-i18next";
 import { PurpleStreakFlame } from "./PurpleStreakFlame";
 
 const sampleWordsData: {
@@ -37,6 +38,7 @@ const sampleWordsData: {
 };
 
 export function HeroSection() {
+  const { t } = useTranslation(["landing", "common"]);
   const [selectedWord, setSelectedWord] = useState("serendipity");
   const [isPlayingAudio, setIsPlayingAudio] = useState(false);
 
@@ -77,7 +79,12 @@ export function HeroSection() {
           className="mb-4 inline-flex items-center gap-1.5 rounded-full border border-[#e5e5e5] bg-[#fafafa] px-3.5 py-1 text-xs font-mono text-black shadow-xs"
         >
           <span className="h-2 w-2 rounded-full bg-[#9333ea] animate-ping" />
-          <span>Keep your daily English streak burning · 100% Free</span>
+          <span>
+            {t(
+              "hero.badge",
+              "Keep your daily English streak burning · 100% Free",
+            )}
+          </span>
         </motion.div>
 
         {/* Concise Display XL Headline */}
@@ -87,8 +94,10 @@ export function HeroSection() {
           transition={{ duration: 0.5, delay: 0.15 }}
           className="display-xl max-w-xl mx-auto tracking-tight"
         >
-          Master English vocabulary.
-          <span className="block text-[#000000]">Never forget a word.</span>
+          {t("hero.title", "Master English vocabulary.")}{" "}
+          <span className="block text-[#000000]">
+            {t("hero.titleHighlight", "Never forget a word.")}
+          </span>
         </motion.h1>
 
         {/* Punchy Subtitle */}
@@ -98,8 +107,10 @@ export function HeroSection() {
           transition={{ duration: 0.5, delay: 0.2 }}
           className="body-md mt-3 max-w-lg mx-auto"
         >
-          SM-2 spaced repetition, native audio IPA flashcards, and daily streak
-          protection — built for learners who want permanent memory.
+          {t(
+            "hero.subtitle",
+            "SM-2 spaced repetition, native audio IPA flashcards, and daily streak protection — built for learners who want permanent memory.",
+          )}
         </motion.p>
 
         {/* Compact Interactive Word Lookup Pill */}
@@ -110,11 +121,11 @@ export function HeroSection() {
           className="mt-6 w-full max-w-md"
         >
           <div className="rounded-xl border border-[#e5e5e5] bg-[#fafafa] p-3.5 text-left shadow-xs transition-colors hover:border-[#d4d4d4]">
-            <div className="flex items-center justify-between border-b border-[#e5e5e5] pb-2 mb-2.5">
-              <span className="text-[11px] font-mono text-[#737373] uppercase tracking-wider">
-                Instant Word Lookup
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-[#e5e5e5] pb-2 mb-2.5 gap-2">
+              <span className="text-[11px] font-mono text-[#737373] uppercase tracking-wider shrink-0">
+                {t("hero.instantLookup", "Instant Word Lookup")}
               </span>
-              <div className="flex gap-1">
+              <div className="flex flex-wrap gap-1">
                 {Object.keys(sampleWordsData).map((w) => (
                   <button
                     key={w}
@@ -160,7 +171,7 @@ export function HeroSection() {
                     type="button"
                     onClick={() => handlePlayAudio(selectedWord)}
                     className="flex h-7 w-7 items-center justify-center rounded-full border border-[#e5e5e5] bg-white text-black hover:border-black transition-colors cursor-pointer"
-                    title="Play pronunciation"
+                    title={t("hero.playPronunciation", "Play pronunciation")}
                   >
                     {isPlayingAudio ? (
                       <div className="flex items-center gap-0.5 h-2.5">
@@ -196,7 +207,9 @@ export function HeroSection() {
           <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
             <Link to="/register" className="btn-primary">
               <Sparkles className="mr-1.5 h-3.5 w-3.5" />
-              <span>Start Learning Free</span>
+              <span>
+                {t("common:actions.startLearning", "Start Learning Free")}
+              </span>
               <ArrowRight className="ml-1.5 h-3.5 w-3.5" />
             </Link>
           </motion.div>
@@ -210,7 +223,7 @@ export function HeroSection() {
             }
             className="btn-secondary"
           >
-            Try Interactive Sandbox ↓
+            {t("hero.trySandbox", "Try Interactive Sandbox ↓")}
           </motion.button>
         </motion.div>
 
@@ -222,15 +235,18 @@ export function HeroSection() {
           className="mt-4 flex flex-wrap items-center justify-center gap-3 text-xs text-[#a3a3a3]"
         >
           <span className="flex items-center gap-1">
-            <Check className="h-3 w-3 text-black" /> 100% Free Forever
+            <Check className="h-3 w-3 text-black" />{" "}
+            {t("hero.trustFree", "100% Free Forever")}
           </span>
           <span>·</span>
           <span className="flex items-center gap-1">
-            <Check className="h-3 w-3 text-black" /> No Ads / Paywall
+            <Check className="h-3 w-3 text-black" />{" "}
+            {t("hero.trustNoAds", "No Ads / Paywall")}
           </span>
           <span>·</span>
           <span className="flex items-center gap-1">
-            <Check className="h-3 w-3 text-black" /> Anki (.apkg) & CSV Export
+            <Check className="h-3 w-3 text-black" />{" "}
+            {t("hero.trustExport", "Anki (.apkg) & CSV Export")}
           </span>
         </motion.div>
       </div>

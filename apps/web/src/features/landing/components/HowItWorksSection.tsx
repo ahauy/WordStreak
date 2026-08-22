@@ -1,8 +1,45 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useMemo } from "react";
 import { PlusCircle, RotateCw, Trophy } from "lucide-react";
 import { motion, useScroll, useTransform, MotionValue } from "framer-motion";
+import { useTranslation } from "react-i18next";
 
-interface StepData {
+interface StepConfig {
+  number: string;
+  icon: React.ElementType;
+  key: "step1" | "step2" | "step3";
+  angle: number;
+  fannedX: number;
+  fannedY: number;
+}
+
+const stepConfigs: StepConfig[] = [
+  {
+    number: "01",
+    icon: PlusCircle,
+    key: "step1",
+    angle: -11,
+    fannedX: -270,
+    fannedY: 14,
+  },
+  {
+    number: "02",
+    icon: RotateCw,
+    key: "step2",
+    angle: 0,
+    fannedX: 0,
+    fannedY: -28, // Elevated center apex
+  },
+  {
+    number: "03",
+    icon: Trophy,
+    key: "step3",
+    angle: 11,
+    fannedX: 270,
+    fannedY: 14,
+  },
+];
+
+interface StepItem {
   number: string;
   icon: React.ElementType;
   title: string;
@@ -13,44 +50,8 @@ interface StepData {
   fannedY: number;
 }
 
-const steps: StepData[] = [
-  {
-    number: "01",
-    icon: PlusCircle,
-    title: "Add your vocabulary",
-    tag: "Capture",
-    description:
-      "Type any word you encounter while reading or studying. Our AI auto-populates phonetic IPA, audio, and contextual examples in milliseconds.",
-    angle: -11,
-    fannedX: -270,
-    fannedY: 14,
-  },
-  {
-    number: "02",
-    icon: RotateCw,
-    title: "Review on smart intervals",
-    tag: "SM-2 Algorithm",
-    description:
-      "Spend just 5–10 minutes daily. The SM-2 algorithm calculates the exact threshold of forgetting to lock words permanently into long-term memory.",
-    angle: 0,
-    fannedX: 0,
-    fannedY: -28, // Elevated center apex
-  },
-  {
-    number: "03",
-    icon: Trophy,
-    title: "Build streaks & fluency",
-    tag: "Mastery Loop",
-    description:
-      "Watch your vocabulary count soar. Keep your daily streak burning, protect it with streak freezes, and transition from learner to fluent speaker.",
-    angle: 11,
-    fannedX: 270,
-    fannedY: 14,
-  },
-];
-
 interface StepCardItemProps {
-  step: StepData;
+  step: StepItem;
   idx: number;
   fanProgress: MotionValue<number>;
   hoveredIdx: number | null;
@@ -153,8 +154,18 @@ function StepCardItem({
 }
 
 export function HowItWorksSection() {
+  const { t } = useTranslation("landing");
   const sectionRef = useRef<HTMLDivElement>(null);
   const [hoveredIdx, setHoveredIdx] = useState<number | null>(null);
+
+  const steps: StepItem[] = useMemo(() => {
+    return stepConfigs.map((cfg) => ({
+      ...cfg,
+      title: t(`howItWorks.${cfg.key}.title`, ""),
+      tag: t(`howItWorks.${cfg.key}.tag`, ""),
+      description: t(`howItWorks.${cfg.key}.desc`, ""),
+    }));
+  }, [t]);
 
   const { scrollYProgress } = useScroll({
     target: sectionRef,
@@ -182,11 +193,17 @@ export function HowItWorksSection() {
           transition={{ duration: 0.4 }}
           className="text-center max-w-xl mx-auto mb-6"
         >
-          <span className="command-tag-chip mb-3">Scroll-Driven Deck</span>
-          <h2 className="display-lg">How WordStreak builds retention.</h2>
+          <span className="command-tag-chip mb-3">
+            {t("howItWorks.tag", "How It Works")}
+          </span>
+          <h2 className="display-lg">
+            {t("howItWorks.title", "Three simple steps to fluency.")}
+          </h2>
           <p className="body-md mt-2">
-            Cards fan out as you scroll to the center and gather back as you
-            scroll past. Hover to draw any card instantly.
+            {t(
+              "howItWorks.subtitle",
+              "Built on cognitive science to turn short daily practice into lifelong vocabulary retention.",
+            )}
           </p>
         </motion.div>
 

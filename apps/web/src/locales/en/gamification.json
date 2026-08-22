@@ -5,6 +5,7 @@
     "streakProtected": "Your streak is protected today!",
     "freezeActive": "Streak Freeze is Active",
     "useFreeze": "Use Streak Freeze",
+    "freezeRemaining": "{{count}} freeze shields remaining",
     "freezeRemaining_one": "{{count}} freeze shield remaining",
     "freezeRemaining_other": "{{count}} freeze shields remaining",
     "streakLostTitle": "Streak Lost!",
@@ -47,5 +48,17 @@
     "flameStateHungry": "Your flame is hungry. Complete a review session to fuel it!",
     "flameStateSleeping": "Resting peacefully for tomorrow's challenge.",
     "flameEvolved": "Your flame has evolved to the next stage!"
+  },
+  "widget": {
+    "loading": "Loading level data...",
+    "retry": "Retry",
+    "today": "Today",
+    "levelProgress": "Level Progress",
+    "remainingToNext": "{{remaining}} XP remaining to Lv. {{next}}",
+    "nextTierUnlock": "Unlock Tier {{tier}} at Lv. {{level}} ({{remaining}} levels left).",
+    "totalXp": "Total XP",
+    "viewHistory": "View History",
+    "levelLabel": "Level {{level}}",
+    "tierRank": "Tier {{tier}}"
   }
 }

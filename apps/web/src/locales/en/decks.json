@@ -21,9 +21,14 @@
     "creationDate": "Date Created"
   },
   "emptyState": {
-    "title": "No decks found",
-    "description": "Create your first flashcard deck or import an existing CSV/Anki package to start studying.",
-    "action": "Create First Deck"
+    "title": "Start your vocabulary journey",
+    "description": "Create your first vocabulary deck by topic (IELTS, TOEIC, Conversation) to begin the scientific Spaced Repetition (SM-2) cycle.",
+    "action": "Create First Deck",
+    "searchTitle": "No vocabulary decks found",
+    "searchDescription": "No results match the keyword \"{{query}}\".",
+    "clearSearch": "Clear search filter",
+    "archivedTitle": "No decks in archive",
+    "archivedDescription": "When you temporarily pause a deck, choose 'Archive' to keep your main study list organized."
   },
   "modal": {
     "createTitle": "Create New Deck",

@@ -53,32 +53,39 @@ export const DeckExportModal: React.FC<DeckExportModalProps> = ({
     filename: string;
   } | null>(null);
 
-  // Fetch all cards when modal opens if needed
+  // Fetch all cards when modal opens to ensure complete export of all cards in the deck
   useEffect(() => {
-    if (!isOpen || !activeDeckId || initialCardsList.length > 0) return;
+    if (!isOpen || !activeDeckId) {
+      return;
+    }
+
     let ignore = false;
     cardsService
       .getAllDeckCards(activeDeckId)
       .then((cards) => {
-        if (!ignore) setAllCards(cards);
+        if (!ignore) {
+          setAllCards(cards);
+          setIsLoadingCards(false);
+        }
       })
       .catch(() => {
-        if (!ignore) setAllCards([]);
-      })
-      .finally(() => {
-        if (!ignore) setIsLoadingCards(false);
+        if (!ignore) {
+          setAllCards(initialCardsList);
+          setIsLoadingCards(false);
+        }
       });
 
     return () => {
       ignore = true;
     };
-  }, [isOpen, activeDeckId, initialCardsList.length]);
+  }, [isOpen, activeDeckId, initialCardsList]);
 
   const handleClose = useCallback(() => {
     if (isExporting) return;
     setExportedInfo(null);
+    setAllCards(initialCardsList);
     onClose();
-  }, [isExporting, onClose]);
+  }, [isExporting, onClose, initialCardsList]);
 
   // Handle ESC key close
   useEffect(() => {

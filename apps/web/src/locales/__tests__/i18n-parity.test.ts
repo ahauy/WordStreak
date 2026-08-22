@@ -29,7 +29,7 @@ function extractInterpolationTokens(str: string): string[] {
 describe("i18n Locale Dictionaries Parity & Integrity (BR-I18N-007, BR-I18N-006)", () => {
   const namespaces = Object.keys(resources.en) as (keyof typeof resources.en)[];
 
-  it("registers all 13 expected namespaces in both locales", () => {
+  it("registers all 14 expected namespaces in both locales", () => {
     const expectedNamespaces = [
       "common",
       "auth",
@@ -44,6 +44,7 @@ describe("i18n Locale Dictionaries Parity & Integrity (BR-I18N-007, BR-I18N-006)
       "gamification",
       "ai_vocabulary",
       "errors",
+      "landing",
     ];
 
     expect(Object.keys(resources.en).sort()).toEqual(expectedNamespaces.sort());

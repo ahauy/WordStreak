@@ -5,8 +5,10 @@ import { AuthShowcase } from "../components/AuthShowcase";
 import { PageTransition } from "../../../common/components/layout/PageTransition";
 import { ArrowLeft, Globe } from "lucide-react";
 import { PurpleStreakFlame } from "../../landing/components/PurpleStreakFlame";
+import { useTranslation } from "react-i18next";
 
 export const RegisterPage: React.FC = () => {
+  const { t, i18n } = useTranslation(["auth", "common"]);
   const navigate = useNavigate();
 
   return (
@@ -33,7 +35,7 @@ export const RegisterPage: React.FC = () => {
               className="inline-flex items-center gap-1.5 rounded-full border border-[#e5e5e5] bg-[#fafafa] hover:bg-[#f0f0f0] hover:border-[#d4d4d4] px-4 py-2 text-xs font-medium text-black transition-all cursor-pointer apple-tap-active"
             >
               <ArrowLeft className="w-3.5 h-3.5" />
-              <span>Back to Home</span>
+              <span>{t("common:actions.backToHome", "Back to Home")}</span>
             </Link>
           </header>
 
@@ -64,14 +66,14 @@ export const RegisterPage: React.FC = () => {
                 onClick={(e) => e.preventDefault()}
                 className="hover:text-black transition-colors"
               >
-                Privacy Policy
+                {t("auth:register.privacyLink", "Privacy Policy")}
               </a>
               <a
                 href="#"
                 onClick={(e) => e.preventDefault()}
                 className="hover:text-black transition-colors"
               >
-                Terms of Service
+                {t("auth:register.termsLink", "Terms of Service")}
               </a>
               <a
                 href="https://github.com"
@@ -83,7 +85,7 @@ export const RegisterPage: React.FC = () => {
               </a>
               <span className="flex items-center gap-1 text-[#737373]">
                 <Globe className="w-3.5 h-3.5" />
-                <span>EN (US)</span>
+                <span>{i18n.language === "vi" ? "VI (VN)" : "EN (US)"}</span>
               </span>
             </div>
           </footer>

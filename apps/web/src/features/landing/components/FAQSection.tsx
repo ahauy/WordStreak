@@ -1,13 +1,14 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Plus, Minus } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useTranslation } from "react-i18next";
 
-interface FAQItem {
+interface FaqItem {
   question: string;
   answer: string;
 }
 
-const faqs: FAQItem[] = [
+const defaultFaqs: FaqItem[] = [
   {
     question: "Is WordStreak completely free to use?",
     answer:
@@ -36,7 +37,20 @@ const faqs: FAQItem[] = [
 ];
 
 export function FAQSection() {
+  const { t } = useTranslation("landing");
   const [openIndices, setOpenIndices] = useState<number[]>([0, 1]);
+
+  const faqs = useMemo<FaqItem[]>(() => {
+    const items = t("faq.items", { returnObjects: true });
+    if (
+      Array.isArray(items) &&
+      items.length > 0 &&
+      typeof items[0] === "object"
+    ) {
+      return items as FaqItem[];
+    }
+    return defaultFaqs;
+  }, [t]);
 
   const toggleFAQ = (idx: number) => {
     setOpenIndices((prev) =>
@@ -55,11 +69,17 @@ export function FAQSection() {
           transition={{ duration: 0.4 }}
           className="text-center max-w-xl mx-auto mb-12"
         >
-          <span className="command-tag-chip mb-3">Questions</span>
-          <h2 className="display-lg">Frequently asked questions.</h2>
+          <span className="command-tag-chip mb-3">
+            {t("faq.tag", "Questions")}
+          </span>
+          <h2 className="display-lg">
+            {t("faq.title", "Frequently asked questions.")}
+          </h2>
           <p className="body-md mt-2">
-            Everything you need to know about spaced repetition, streaks, and
-            WordStreak.
+            {t(
+              "faq.subtitle",
+              "Everything you need to know about spaced repetition, streaks, and WordStreak.",
+            )}
           </p>
         </motion.div>
 
@@ -69,7 +89,7 @@ export function FAQSection() {
             const isOpen = openIndices.includes(idx);
             return (
               <motion.div
-                key={faq.question}
+                key={faq.question || idx}
                 initial={{ opacity: 0, y: 8 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}

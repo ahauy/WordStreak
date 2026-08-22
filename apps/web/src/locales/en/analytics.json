@@ -15,6 +15,7 @@
   "heatmap": {
     "less": "Less",
     "more": "More",
+    "contributionsCount": "{{count}} reviews on {{date}}",
     "contributionsCount_one": "{{count}} review on {{date}}",
     "contributionsCount_other": "{{count}} reviews on {{date}}",
     "tooltipDate": "{{date}}: {{count}} reviews"
@@ -31,5 +32,24 @@
     "totalCardsColumn": "Total Cards",
     "masteryRateColumn": "Mastery Rate",
     "nextReviewColumn": "Next Scheduled Review"
+  },
+  "widget": {
+    "title": "Learning & Memory Stats",
+    "viewDetails": "View Details",
+    "mastered": "Mastered ({{pct}}%)",
+    "learning": "Learning ({{pct}}%)",
+    "newCards": "New Words ({{pct}}%)",
+    "emptyCards": "No cards yet. Start studying to record data.",
+    "retention30Days": "30-Day Retention:",
+    "noData": "None yet",
+    "sm2Engine": "SM-2 Engine"
+  },
+  "header": {
+    "backToDashboard": "Back to Dashboard",
+    "title": "Learning Analytics & Reports",
+    "subtitle": "Visualize your SuperMemo-2 retention curve, vocabulary velocity, and study consistency.",
+    "refresh": "Refresh",
+    "errorLoading": "Error loading analytics: {{error}}",
+    "retry": "Retry"
   }
 }

@@ -14,6 +14,7 @@ export interface FlameTierInfo {
   pillText: string;
   pillBorder: string;
   descriptionVi: string;
+  descriptionEn?: string;
 }
 
 export const FLAME_TIERS: FlameTierInfo[] = [
@@ -34,6 +35,8 @@ export const FLAME_TIERS: FlameTierInfo[] = [
     pillBorder: "border-[#e5e5e5]",
     descriptionVi:
       "Ngọn lửa đang ngủ say. Hãy hoàn thành 1 bài ôn tập để nhen nhóm lại tia lửa đầu tiên!",
+    descriptionEn:
+      "The flame is dormant. Complete a review session to kindle the first spark!",
   },
   {
     tier: 1,
@@ -52,6 +55,8 @@ export const FLAME_TIERS: FlameTierInfo[] = [
     pillBorder: "border-[#e9d5ff]",
     descriptionVi:
       "Tia lửa tím dịu êm khởi đầu cho thói quen rèn luyện trí nhớ.",
+    descriptionEn:
+      "A gentle violet spark marking the beginning of your daily memory habit.",
   },
   {
     tier: 2,
@@ -70,6 +75,8 @@ export const FLAME_TIERS: FlameTierInfo[] = [
     pillBorder: "border-[#bae6fd]",
     descriptionVi:
       "Vượt mốc 1 tuần! Năng lượng plasma xanh lam bùng cháy bền vững.",
+    descriptionEn:
+      "Passed 1 week! Blue plasma energy burning steadily with persistence.",
   },
   {
     tier: 3,
@@ -88,6 +95,8 @@ export const FLAME_TIERS: FlameTierInfo[] = [
     pillBorder: "border-[#a7f3d0]",
     descriptionVi:
       "Nửa tháng liên tục! Trí nhớ trung hạn bắt đầu được củng cố vững chắc.",
+    descriptionEn:
+      "Two unbroken weeks! Intermediate memory consolidation is taking root.",
   },
   {
     tier: 4,
@@ -106,6 +115,8 @@ export const FLAME_TIERS: FlameTierInfo[] = [
     pillBorder: "border-[#d8b4fe]",
     descriptionVi:
       "Linh vật WordStreak signature! Hào quang tím hoàng gia sau 1 tháng kiên định.",
+    descriptionEn:
+      "Signature WordStreak mascot! Majestic royal violet glow after 1 month of consistency.",
   },
   {
     tier: 5,
@@ -124,6 +135,8 @@ export const FLAME_TIERS: FlameTierInfo[] = [
     pillBorder: "border-[#fef08a]",
     descriptionVi:
       "Hơn 2 tháng kiên trì! Ánh sáng thái dương hoàng kim rực rỡ.",
+    descriptionEn:
+      "Over 2 months unbroken! Golden solar radiance illuminating your recall.",
   },
   {
     tier: 6,
@@ -142,6 +155,8 @@ export const FLAME_TIERS: FlameTierInfo[] = [
     pillBorder: "border-[#fecdd3]",
     descriptionVi:
       "Cột mốc 100 ngày phi thường! Ngọn lửa hồng ngọc siêu tân tinh bừng cháy.",
+    descriptionEn:
+      "Phenomenal 100-day milestone! A supernova crimson blaze radiating pure mastery.",
   },
   {
     tier: 7,
@@ -160,6 +175,8 @@ export const FLAME_TIERS: FlameTierInfo[] = [
     pillBorder: "border-[#c7d2fe]",
     descriptionVi:
       "Hơn nửa năm không gián đoạn! Năng lượng tinh vân vũ trụ huyền ảo.",
+    descriptionEn:
+      "Over half a year unbroken! Cosmic nebula energy pulsing with infinite retention.",
   },
   {
     tier: 8,
@@ -178,6 +195,8 @@ export const FLAME_TIERS: FlameTierInfo[] = [
     pillBorder: "border-[#e0e7ff]",
     descriptionVi:
       "Kỷ lục 1 năm trở lên! Ngọn lửa bất tử tỏa hào quang kim cương đa sắc.",
+    descriptionEn:
+      "Legendary 1+ year record! Immortal diamond flame shining prismatic brilliance.",
   },
 ];
 
@@ -198,6 +217,8 @@ export const REAL_FIRE_TIER: FlameTierInfo = {
   pillBorder: "border-[#ffedd5]",
   descriptionVi:
     "Ngọn lửa củi đỏ cam tự nhiên bùng cháy dữ dội khi hấp thụ củi gỗ!",
+  descriptionEn:
+    "Natural fiery amber blaze burning intensely with freshly fed wood logs!",
 };
 
 export const getFlameTier = (streakDays: number): FlameTierInfo => {

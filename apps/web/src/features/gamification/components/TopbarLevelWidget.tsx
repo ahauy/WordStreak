@@ -7,6 +7,7 @@ import {
   ChevronRight,
   Award,
 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { useXpSummary } from "../hooks/useXpSummary";
 import { TierBadgeIcon } from "./TierBadgeIcon";
 import { XpProgressBar } from "./XpProgressBar";
@@ -20,6 +21,7 @@ export const TopbarLevelWidget: React.FC<TopbarLevelWidgetProps> = ({
   onOpenHistory,
   className = "",
 }) => {
+  const { t, i18n } = useTranslation(["gamification", "common"]);
   const {
     summary,
     level,
@@ -86,7 +88,7 @@ export const TopbarLevelWidget: React.FC<TopbarLevelWidgetProps> = ({
         className={`h-9 px-3 rounded-full border border-[#e5e5e5] bg-[#fafafa] animate-pulse flex items-center gap-2 ${className}`}
         data-testid="topbar-level-loading"
         aria-busy="true"
-        aria-label="Đang tải dữ liệu cấp độ..."
+        aria-label={t("widget.loading", "Loading level data...")}
       >
         <div className="w-4 h-4 rounded-full bg-[#e5e5e5]" />
         <div className="w-10 h-3 rounded-full bg-[#e5e5e5]" />
@@ -106,13 +108,15 @@ export const TopbarLevelWidget: React.FC<TopbarLevelWidgetProps> = ({
         data-testid="topbar-level-error"
       >
         <Award className="w-3.5 h-3.5" />
-        <span>Thử lại</span>
+        <span>{t("widget.retry", "Retry")}</span>
       </button>
     );
   }
 
-  const tierNameVi = tierMetadata?.nameVi || "Đồng";
-  const tierNameEn = tierMetadata?.nameEn || "Bronze";
+  const isVi = i18n.language === "vi";
+  const tierName = isVi
+    ? tierMetadata?.nameVi || "Đồng"
+    : tierMetadata?.nameEn || "Bronze";
   const xpRemaining = Math.max(0, nextLevelRequiredXp - currentLevelXp);
 
   return (
@@ -128,7 +132,7 @@ export const TopbarLevelWidget: React.FC<TopbarLevelWidgetProps> = ({
         onClick={() => setIsOpen((prev) => !prev)}
         aria-haspopup="dialog"
         aria-expanded={isOpen}
-        aria-label={`Cấp độ ${level}, Hạng ${tierNameVi}, ${totalXp} XP`}
+        aria-label={`${t("widget.levelLabel", { level, defaultValue: `Level ${level}` })}, ${t("widget.tierRank", { tier: tierName, defaultValue: `Tier ${tierName}` })}, ${totalXp} XP`}
         data-testid="topbar-level-pill"
         className="h-9 px-2.5 sm:px-3 rounded-full border border-[#e5e5e5] bg-white hover:bg-[#fafafa] hover:border-[#d4d4d4] transition-all flex items-center gap-2 cursor-pointer shadow-2xs focus:outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 apple-tap-active"
       >
@@ -164,7 +168,7 @@ export const TopbarLevelWidget: React.FC<TopbarLevelWidgetProps> = ({
             transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
             className="absolute right-0 mt-2 w-80 rounded-2xl bg-white border border-[#e5e5e5] shadow-xl p-4 z-50 text-black text-left focus:outline-none"
             role="dialog"
-            aria-label="Chi tiết cấp độ và tiến trình XP"
+            aria-label={t("widget.levelProgress", "Level Progress")}
             data-testid="topbar-level-popover"
           >
             {/* Popover Header */}
@@ -177,14 +181,17 @@ export const TopbarLevelWidget: React.FC<TopbarLevelWidgetProps> = ({
                       className="text-sm font-extrabold text-black"
                       style={{ fontFamily: "var(--font-display)" }}
                     >
-                      Hạng {tierNameVi}
+                      {t("widget.tierRank", {
+                        tier: tierName,
+                        defaultValue: `Tier ${tierName}`,
+                      })}
                     </h4>
-                    <span className="text-[10px] text-[#737373] uppercase tracking-wider font-mono">
-                      ({tierNameEn})
-                    </span>
                   </div>
                   <p className="text-xs font-semibold text-[#7e22ce]">
-                    Cấp độ {level}
+                    {t("widget.levelLabel", {
+                      level,
+                      defaultValue: `Level ${level}`,
+                    })}
                   </p>
                 </div>
               </div>
@@ -192,7 +199,7 @@ export const TopbarLevelWidget: React.FC<TopbarLevelWidgetProps> = ({
               {/* Today's XP badge */}
               <div className="text-right">
                 <span className="text-[10px] font-medium text-[#737373] block">
-                  Hôm nay
+                  {t("widget.today", "Today")}
                 </span>
                 <span className="text-xs font-bold text-[#16a34a] font-mono">
                   +{todayXp} XP
@@ -205,7 +212,7 @@ export const TopbarLevelWidget: React.FC<TopbarLevelWidgetProps> = ({
               <div className="flex items-center justify-between text-xs">
                 <span className="text-[#737373] font-medium flex items-center gap-1">
                   <TrendingUp className="w-3.5 h-3.5 text-[#9333ea]" />
-                  <span>Tiến trình cấp độ</span>
+                  <span>{t("widget.levelProgress", "Level Progress")}</span>
                 </span>
                 <span className="font-mono font-bold text-black text-xs">
                   {currentLevelXp} / {nextLevelRequiredXp} XP
@@ -221,7 +228,11 @@ export const TopbarLevelWidget: React.FC<TopbarLevelWidgetProps> = ({
 
               <p className="text-[11px] text-[#737373] flex items-center justify-between">
                 <span>
-                  Còn {xpRemaining} XP để lên Lv. {level + 1}
+                  {t("widget.remainingToNext", {
+                    remaining: xpRemaining,
+                    next: level + 1,
+                    defaultValue: `${xpRemaining} XP remaining to Lv. ${level + 1}`,
+                  })}
                 </span>
                 <span className="font-mono font-semibold text-black">
                   {Math.round(progressPercent)}%
@@ -234,9 +245,12 @@ export const TopbarLevelWidget: React.FC<TopbarLevelWidgetProps> = ({
               <div className="p-2.5 rounded-xl bg-[#fafafa] border border-[#e5e5e5] flex items-center gap-2 text-xs text-[#525252] mb-3">
                 <Sparkles className="w-3.5 h-3.5 text-[#d97706] shrink-0" />
                 <span className="leading-tight">
-                  Mở khóa <strong>Hạng {nextTier}</strong> tại{" "}
-                  <strong>Lv. {nextTierLevel}</strong> (còn{" "}
-                  {nextTierLevel - level} cấp).
+                  {t("widget.nextTierUnlock", {
+                    tier: nextTier,
+                    level: nextTierLevel,
+                    remaining: nextTierLevel - level,
+                    defaultValue: `Unlock Tier ${nextTier} at Lv. ${nextTierLevel} (${nextTierLevel - level} levels left).`,
+                  })}
                 </span>
               </div>
             )}
@@ -245,7 +259,7 @@ export const TopbarLevelWidget: React.FC<TopbarLevelWidgetProps> = ({
             <div className="pt-2 border-t border-[#f0f0f0] flex items-center justify-between">
               <div>
                 <span className="text-[10px] text-[#737373] block uppercase tracking-wider">
-                  Tổng điểm XP
+                  {t("widget.totalXp", "Total XP")}
                 </span>
                 <span className="text-sm font-extrabold text-black font-mono">
                   {totalXp.toLocaleString()} XP
@@ -262,7 +276,7 @@ export const TopbarLevelWidget: React.FC<TopbarLevelWidgetProps> = ({
                   className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold text-black hover:bg-[#fafafa] border border-[#e5e5e5] hover:border-[#d4d4d4] transition-all cursor-pointer"
                 >
                   <History className="w-3 h-3 text-[#7e22ce]" />
-                  <span>Xem lịch sử</span>
+                  <span>{t("widget.viewHistory", "View History")}</span>
                   <ChevronRight className="w-3 h-3" />
                 </button>
               )}

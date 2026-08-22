@@ -1,6 +1,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { Layers, Plus, Search, Archive } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 interface DeckEmptyStateProps {
   statusTab: "active" | "archived";
@@ -15,6 +16,8 @@ export const DeckEmptyState: React.FC<DeckEmptyStateProps> = ({
   onCreateDeck,
   onClearSearch,
 }) => {
+  const { t } = useTranslation("decks");
+
   if (searchQuery) {
     return (
       <motion.div
@@ -29,14 +32,14 @@ export const DeckEmptyState: React.FC<DeckEmptyStateProps> = ({
           className="text-base font-bold text-black"
           style={{ fontFamily: "var(--font-display)" }}
         >
-          Không tìm thấy bộ từ vựng nào
+          {t("emptyState.searchTitle", "No vocabulary decks found")}
         </h3>
         <p className="text-xs text-[#737373] mt-1 max-w-sm mx-auto">
-          Không có kết quả nào khớp với từ khóa{" "}
-          <span className="font-mono text-black font-semibold">
-            "{searchQuery}"
-          </span>
-          .
+          {t(
+            "emptyState.searchDescription",
+            'No results match the keyword "{{query}}".',
+            { query: searchQuery },
+          )}
         </p>
         {onClearSearch && (
           <button
@@ -44,7 +47,7 @@ export const DeckEmptyState: React.FC<DeckEmptyStateProps> = ({
             onClick={onClearSearch}
             className="btn-secondary h-8 px-4 text-xs font-semibold mt-4 cursor-pointer"
           >
-            Xóa bộ lọc tìm kiếm
+            {t("emptyState.clearSearch", "Clear search filter")}
           </button>
         )}
       </motion.div>
@@ -65,11 +68,13 @@ export const DeckEmptyState: React.FC<DeckEmptyStateProps> = ({
           className="text-base font-bold text-black"
           style={{ fontFamily: "var(--font-display)" }}
         >
-          Chưa có bộ từ nào trong danh sách lưu trữ
+          {t("emptyState.archivedTitle", "No decks in archive")}
         </h3>
         <p className="text-xs text-[#737373] mt-1 max-w-sm mx-auto">
-          Khi bạn tạm thời không học một bộ từ, hãy chọn "Lưu trữ" để giữ danh
-          sách học chính luôn gọn gàng.
+          {t(
+            "emptyState.archivedDescription",
+            "When you temporarily pause a deck, choose 'Archive' to keep your main study list organized.",
+          )}
         </p>
       </motion.div>
     );
@@ -89,12 +94,14 @@ export const DeckEmptyState: React.FC<DeckEmptyStateProps> = ({
         className="text-lg font-bold text-black tracking-tight"
         style={{ fontFamily: "var(--font-display)" }}
       >
-        Bắt đầu hành trình từ vựng của bạn
+        {t("emptyState.title", "Start your vocabulary journey")}
       </h3>
 
       <p className="text-xs sm:text-sm text-[#737373] mt-1.5 max-w-md mx-auto leading-relaxed">
-        Tạo bộ từ vựng đầu tiên theo chủ đề mong muốn (IELTS, TOEIC, Giao tiếp)
-        để bắt đầu chu kỳ Spaced Repetition (SM-2) khoa học.
+        {t(
+          "emptyState.description",
+          "Create your first vocabulary deck by topic (IELTS, TOEIC, Conversation) to begin the scientific Spaced Repetition (SM-2) cycle.",
+        )}
       </p>
 
       {onCreateDeck && (
@@ -105,7 +112,7 @@ export const DeckEmptyState: React.FC<DeckEmptyStateProps> = ({
             className="btn-primary h-10 px-5 text-xs font-semibold gap-2 cursor-pointer inline-flex items-center"
           >
             <Plus className="w-4 h-4" />
-            <span>Tạo bộ từ vựng đầu tiên</span>
+            <span>{t("emptyState.action", "Create First Deck")}</span>
           </button>
         </div>
       )}

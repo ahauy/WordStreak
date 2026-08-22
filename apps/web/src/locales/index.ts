@@ -11,6 +11,7 @@ import settingsEn from "./en/settings.json";
 import gamificationEn from "./en/gamification.json";
 import aiVocabularyEn from "./en/ai_vocabulary.json";
 import errorsEn from "./en/errors.json";
+import landingEn from "./en/landing.json";
 
 import commonVi from "./vi/common.json";
 import authVi from "./vi/auth.json";
@@ -25,6 +26,7 @@ import settingsVi from "./vi/settings.json";
 import gamificationVi from "./vi/gamification.json";
 import aiVocabularyVi from "./vi/ai_vocabulary.json";
 import errorsVi from "./vi/errors.json";
+import landingVi from "./vi/landing.json";
 
 export const resources = {
   en: {
@@ -41,6 +43,7 @@ export const resources = {
     gamification: gamificationEn,
     ai_vocabulary: aiVocabularyEn,
     errors: errorsEn,
+    landing: landingEn,
   },
   vi: {
     common: commonVi,
@@ -56,6 +59,7 @@ export const resources = {
     gamification: gamificationVi,
     ai_vocabulary: aiVocabularyVi,
     errors: errorsVi,
+    landing: landingVi,
   },
 } as const;
 

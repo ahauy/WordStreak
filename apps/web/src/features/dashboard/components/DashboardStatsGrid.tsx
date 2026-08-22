@@ -10,6 +10,7 @@ import {
   Plus,
 } from "lucide-react";
 import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 import { StreakFlame } from "./StreakFlame";
 import { getFlameTier } from "../config/flameTiers";
 
@@ -38,7 +39,9 @@ export const DashboardStatsGrid: React.FC<DashboardStatsGridProps> = ({
   onOpenFlameNurture,
   onCreateDeck,
 }) => {
+  const { t, i18n } = useTranslation(["dashboard", "common"]);
   const tierInfo = getFlameTier(currentStreak);
+  const tierTitle = i18n.language === "vi" ? tierInfo.titleVi : tierInfo.name;
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
@@ -48,11 +51,14 @@ export const DashboardStatsGrid: React.FC<DashboardStatsGridProps> = ({
         transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
         onClick={onOpenFlameNurture}
         className="relative overflow-hidden rounded-2xl border border-[#e5e5e5] bg-white p-5 sm:p-6 shadow-xs group cursor-pointer hover:border-black transition-colors"
-        title="Nhấn để mở Khu Vườn Nuôi Lửa & Tiến Hóa"
+        title={t(
+          "grid.openGardenTooltip",
+          "Nhấn để mở Khu Vườn Nuôi Lửa & Tiến Hóa",
+        )}
       >
         <div className="flex items-center justify-between mb-3">
           <span className="text-xs font-semibold uppercase tracking-wider text-[#737373] group-hover:text-black transition-colors">
-            Current Streak
+            {t("grid.currentStreak", "Current Streak")}
           </span>
           <div
             className={`w-9 h-9 rounded-xl flex items-center justify-center border ${tierInfo.pillBg} ${tierInfo.pillBorder}`}
@@ -72,22 +78,31 @@ export const DashboardStatsGrid: React.FC<DashboardStatsGridProps> = ({
           >
             {currentStreak}
           </span>
-          <span className="text-xs font-medium text-[#737373]">Days</span>
+          <span className="text-xs font-medium text-[#737373]">
+            {t("grid.days", "Days")}
+          </span>
           <span
             className={`text-[10px] font-semibold px-2 py-0.5 rounded-full border ${tierInfo.pillBg} ${tierInfo.pillText} ${tierInfo.pillBorder}`}
           >
-            {tierInfo.titleVi}
+            {tierTitle}
           </span>
         </div>
 
         <div className="mt-3 pt-3 border-t border-[#f0f0f0] flex items-center justify-between text-xs text-[#737373]">
           <span className="flex items-center gap-1">
-            <Clock className="w-3.5 h-3.5 text-[#9333ea]" /> Best:{" "}
-            {longestStreak}d
+            <Clock className="w-3.5 h-3.5 text-[#9333ea]" />{" "}
+            {t("grid.bestDays", {
+              count: longestStreak,
+              defaultValue: `Best: ${longestStreak}d`,
+            })}
           </span>
           <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-cyan-700 bg-cyan-50 px-2 py-0.5 rounded-full border border-cyan-200">
-            <Shield className="w-2.5 h-2.5 text-cyan-600" /> Freeze:{" "}
-            {streakFreezes}/{maxStreakFreezes}
+            <Shield className="w-2.5 h-2.5 text-cyan-600" />{" "}
+            {t("grid.freezeCount", {
+              current: streakFreezes,
+              max: maxStreakFreezes,
+              defaultValue: `Freeze: ${streakFreezes}/${maxStreakFreezes}`,
+            })}
           </span>
         </div>
       </motion.div>
@@ -98,11 +113,14 @@ export const DashboardStatsGrid: React.FC<DashboardStatsGridProps> = ({
         transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
         onClick={onOpenGoalSettings}
         className="relative overflow-hidden rounded-2xl border border-[#e5e5e5] bg-white p-5 sm:p-6 shadow-xs group cursor-pointer hover:border-black transition-colors"
-        title="Nhấn để tùy chỉnh mục tiêu hàng ngày"
+        title={t(
+          "grid.openGoalTooltip",
+          "Nhấn để tùy chỉnh mục tiêu hàng ngày",
+        )}
       >
         <div className="flex items-center justify-between mb-3">
           <span className="text-xs font-semibold uppercase tracking-wider text-[#737373] group-hover:text-black transition-colors flex items-center gap-1.5">
-            Daily Goal
+            {t("grid.dailyGoal", "Daily Goal")}
             <Sliders className="w-3.5 h-3.5 text-[#a3a3a3] group-hover:text-black transition-colors" />
           </span>
           <div className="w-9 h-9 rounded-xl bg-[#fafafa] border border-[#e5e5e5] text-black flex items-center justify-center">
@@ -117,14 +135,16 @@ export const DashboardStatsGrid: React.FC<DashboardStatsGridProps> = ({
           >
             {dailyGoal}
           </span>
-          <span className="text-xs font-medium text-[#737373]">Cards/day</span>
+          <span className="text-xs font-medium text-[#737373]">
+            {t("grid.cardsPerDay", "Cards/day")}
+          </span>
         </div>
 
         <div className="mt-3 pt-3 border-t border-[#f0f0f0] flex items-center justify-between text-xs">
           <span className="text-[#737373] group-hover:text-black transition-colors flex items-center gap-1">
             <TrendingUp className="w-3.5 h-3.5 text-[#9333ea]" />
             <span className="group-hover:underline font-medium">
-              Đổi mục tiêu
+              {t("grid.changeGoal", "Change goal")}
             </span>
           </span>
           <span className="text-[11px] font-mono text-[#737373]">
@@ -141,7 +161,7 @@ export const DashboardStatsGrid: React.FC<DashboardStatsGridProps> = ({
       >
         <div className="flex items-center justify-between mb-3">
           <span className="text-xs font-semibold uppercase tracking-wider text-[#737373]">
-            Due Today
+            {t("grid.dueToday", "Due Today")}
           </span>
           <div className="w-9 h-9 rounded-xl bg-[#f0fdf4] text-[#15803d] border border-[#bbf7d0] flex items-center justify-center">
             <BookOpen className="w-4 h-4" />
@@ -155,16 +175,20 @@ export const DashboardStatsGrid: React.FC<DashboardStatsGridProps> = ({
           >
             {cardsDueToday}
           </span>
-          <span className="text-xs font-medium text-[#737373]">Cards</span>
+          <span className="text-xs font-medium text-[#737373]">
+            {t("grid.cards", "Cards")}
+          </span>
         </div>
 
         <div className="mt-3 pt-3 border-t border-[#f0f0f0] flex items-center justify-between text-xs text-[#15803d]">
           <span className="flex items-center gap-1 font-medium">
             ✓{" "}
-            {cardsDueToday === 0 ? "All reviews complete!" : "Ready to review"}
+            {cardsDueToday === 0
+              ? t("grid.allComplete", "All reviews complete!")
+              : t("grid.readyToReview", "Ready to review")}
           </span>
           <span className="text-[10px] font-mono text-[#737373]">
-            SM-2 Active
+            {t("grid.sm2Active", "SM-2 Active")}
           </span>
         </div>
       </motion.div>
@@ -175,11 +199,11 @@ export const DashboardStatsGrid: React.FC<DashboardStatsGridProps> = ({
         transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
         onClick={onCreateDeck}
         className="relative overflow-hidden rounded-2xl border border-[#e5e5e5] bg-white p-5 sm:p-6 shadow-xs group cursor-pointer hover:border-black transition-colors"
-        title="Tạo bộ thẻ mới"
+        title={t("grid.addNewDeck", "Thêm bộ từ mới")}
       >
         <div className="flex items-center justify-between mb-3">
           <span className="text-xs font-semibold uppercase tracking-wider text-[#737373] group-hover:text-black transition-colors">
-            Vocabulary Decks
+            {t("grid.vocabDecks", "Vocabulary Decks")}
           </span>
           <div className="w-9 h-9 rounded-xl bg-[#f3e8ff] text-[#7e22ce] border border-[#e9d5ff] flex items-center justify-center">
             <Layers className="w-4 h-4" />
@@ -193,16 +217,18 @@ export const DashboardStatsGrid: React.FC<DashboardStatsGridProps> = ({
           >
             {totalDecks}
           </span>
-          <span className="text-xs font-medium text-[#737373]">Decks</span>
+          <span className="text-xs font-medium text-[#737373]">
+            {t("grid.decks", "Decks")}
+          </span>
         </div>
 
         <div className="mt-3 pt-3 border-t border-[#f0f0f0] flex items-center justify-between text-xs text-[#737373]">
           <span className="group-hover:text-black transition-colors flex items-center gap-1 font-medium">
             <Plus className="w-3.5 h-3.5 text-[#9333ea]" />
-            <span>Thêm bộ từ mới</span>
+            <span>{t("grid.addNewDeck", "Add new deck")}</span>
           </span>
           <span className="text-[10px] font-mono text-[#7e22ce] font-bold bg-[#f3e8ff] px-2 py-0.5 rounded-full border border-[#e9d5ff]">
-            + New
+            {t("grid.newBadge", "+ New")}
           </span>
         </div>
       </motion.div>

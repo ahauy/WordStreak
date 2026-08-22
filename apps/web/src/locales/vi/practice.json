@@ -88,5 +88,39 @@
     "tryAgain": "Luyện tập lại",
     "backToPractice": "Quay lại danh mục",
     "viewAnswers": "Xem lại câu trả lời"
+  },
+  "setup": {
+    "title": "Luyện tập & Trắc nghiệm",
+    "subtitle": "Chọn chế độ ôn tập và cấu hình phiên học",
+    "modeLabel": "Chế độ ôn luyện",
+    "deckLabel": "Bộ từ đang chọn",
+    "questionCount": "Số lượng câu hỏi",
+    "cardsCount": "{{count}} Thẻ",
+    "matchingCards": "{{count}} Thẻ ({{round}} Vòng)",
+    "matchingCards_other": "{{count}} Thẻ ({{round}} Vòng)",
+    "approxMin": "~{{min}} phút",
+    "rounds": "{{count}} Vòng",
+    "rounds_other": "{{count}} Vòng",
+    "allCards": "Tất cả thẻ",
+    "allCardsCount": "{{count}} thẻ",
+    "zenMode": "Chế độ Thư giãn (Zen Mode)",
+    "zenModeDesc": "Tắt đếm ngược 15s để luyện tập thoải mái, không áp lực",
+    "startBtn": "Bắt đầu Luyện tập",
+    "notEnoughCards": "Chưa đủ số lượng thẻ",
+    "minCardsMultipleChoice": "Bộ thẻ chỉ có {{count}} thẻ. Trắc nghiệm cần tối thiểu 4 thẻ từ vựng.",
+    "minCardsMatching": "Bộ thẻ chỉ có {{count}} thẻ. Trò chơi nối từ cần tối thiểu 5 thẻ từ vựng.",
+    "noCards": "Bộ thẻ chưa có thẻ nào. Vui lòng thêm từ vựng để bắt đầu luyện tập.",
+    "modes": {
+      "multipleChoice": "Trắc nghiệm",
+      "multipleChoiceSub": "4 lựa chọn",
+      "fillInBlank": "Điền từ",
+      "fillInBlankSub": "Gõ từ đúng",
+      "listening": "Luyện nghe",
+      "listeningSub": "Nghe & gõ",
+      "matching": "Nối từ",
+      "matchingSub": "Ghép cặp thẻ",
+      "pronunciation": "Phát âm",
+      "pronunciationSub": "Chấm điểm AI"
+    }
   }
 }

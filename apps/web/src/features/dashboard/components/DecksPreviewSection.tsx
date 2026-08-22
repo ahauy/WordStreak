@@ -10,6 +10,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 import type { DeckResponse } from "@wordstreak/shared-types";
 
 interface DecksPreviewSectionProps {
@@ -25,6 +26,8 @@ export const DecksPreviewSection: React.FC<DecksPreviewSectionProps> = ({
   onStartPractice,
   onCreateDeck,
 }) => {
+  const { t } = useTranslation(["dashboard", "common"]);
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 12 }}
@@ -38,17 +41,20 @@ export const DecksPreviewSection: React.FC<DecksPreviewSectionProps> = ({
           <div className="inline-flex items-center gap-1.5 rounded-full border border-[#e9d5ff] bg-[#f3e8ff] px-3 py-1 mb-2 text-[#7e22ce]">
             <Layers className="w-3.5 h-3.5" />
             <span className="text-[11px] font-bold uppercase tracking-wider font-mono">
-              Bộ thẻ từ vựng
+              {t("decksSection.badge", "Vocabulary Decks")}
             </span>
           </div>
           <h2
             className="text-xl sm:text-2xl font-bold text-black tracking-tight"
             style={{ fontFamily: "var(--font-display)" }}
           >
-            Bộ từ vựng của bạn
+            {t("decksSection.title", "Your Vocabulary Decks")}
           </h2>
           <p className="text-xs sm:text-sm text-[#737373] mt-0.5">
-            Các bộ từ được lập lịch Spaced Repetition (SM-2) khoa học.
+            {t(
+              "decksSection.subtitle",
+              "Decks scheduled with scientific Spaced Repetition (SM-2).",
+            )}
           </p>
         </div>
 
@@ -58,7 +64,7 @@ export const DecksPreviewSection: React.FC<DecksPreviewSectionProps> = ({
             className="btn-secondary h-10 px-4 text-xs font-semibold gap-1.5 cursor-pointer inline-flex items-center"
           >
             <Layers className="w-3.5 h-3.5 text-[#525252]" />
-            <span>Quản lý tất cả</span>
+            <span>{t("decksSection.manageAll", "Manage All")}</span>
           </Link>
 
           <button
@@ -67,7 +73,7 @@ export const DecksPreviewSection: React.FC<DecksPreviewSectionProps> = ({
             className="btn-primary h-10 px-4 text-xs font-semibold gap-1.5 cursor-pointer inline-flex items-center"
           >
             <Plus className="w-3.5 h-3.5 text-white" />
-            <span>Tạo bộ thẻ mới</span>
+            <span>{t("decksSection.createNew", "Create Deck")}</span>
           </button>
         </div>
       </div>
@@ -100,12 +106,14 @@ export const DecksPreviewSection: React.FC<DecksPreviewSectionProps> = ({
             className="text-lg sm:text-xl font-bold text-black tracking-tight mb-2"
             style={{ fontFamily: "var(--font-display)" }}
           >
-            Chưa có bộ từ vựng nào
+            {t("decksSection.emptyTitle", "No Vocabulary Decks Yet")}
           </h3>
 
           <p className="text-xs sm:text-sm text-[#737373] max-w-md mb-6 leading-relaxed">
-            Bắt đầu hành trình học từ vựng bằng cách tạo bộ thẻ đầu tiên của bạn
-            hoặc khám phá các bộ thẻ chất lượng cao được chia sẻ bởi cộng đồng.
+            {t(
+              "decksSection.emptyDesc",
+              "Start your vocabulary journey by creating your first deck or explore high-quality community decks.",
+            )}
           </p>
 
           <div className="flex flex-wrap items-center justify-center gap-3">
@@ -115,7 +123,7 @@ export const DecksPreviewSection: React.FC<DecksPreviewSectionProps> = ({
               className="btn-primary h-10 px-5 text-xs font-semibold gap-2 shadow-xs cursor-pointer inline-flex items-center"
             >
               <Plus className="w-4 h-4 text-white" />
-              <span>Tạo bộ thẻ đầu tiên</span>
+              <span>{t("decksSection.createFirst", "Create First Deck")}</span>
             </button>
 
             <Link
@@ -123,7 +131,9 @@ export const DecksPreviewSection: React.FC<DecksPreviewSectionProps> = ({
               className="btn-secondary h-10 px-5 text-xs font-semibold gap-2 cursor-pointer inline-flex items-center"
             >
               <Globe className="w-4 h-4 text-[#525252]" />
-              <span>Khám phá bộ thẻ cộng đồng</span>
+              <span>
+                {t("decksSection.exploreCommunity", "Explore Community Decks")}
+              </span>
             </Link>
           </div>
         </div>
@@ -139,7 +149,8 @@ export const DecksPreviewSection: React.FC<DecksPreviewSectionProps> = ({
                 ? Math.round((masteredCards / totalCards) * 100)
                 : 0;
             const hasDue = dueCards > 0;
-            const tag = deck.tags?.[0] || "Bộ từ vựng";
+            const tag =
+              deck.tags?.[0] || t("decksSection.defaultTag", "Vocabulary Deck");
 
             return (
               <motion.div
@@ -156,16 +167,21 @@ export const DecksPreviewSection: React.FC<DecksPreviewSectionProps> = ({
                     </span>
                     {hasDue ? (
                       <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-[#7e22ce] bg-[#f3e8ff] px-2.5 py-0.5 rounded-full border border-[#e9d5ff]">
-                        <Zap className="w-3 h-3 fill-current" /> {dueCards} cần
-                        ôn
+                        <Zap className="w-3 h-3 fill-current" />{" "}
+                        {t("decksSection.dueBadge", {
+                          count: dueCards,
+                          defaultValue: `${dueCards} due`,
+                        })}
                       </span>
                     ) : totalCards === 0 ? (
                       <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-[#737373] bg-[#fafafa] px-2.5 py-0.5 rounded-full border border-[#e5e5e5]">
-                        <Sparkles className="w-3 h-3" /> Chưa có thẻ
+                        <Sparkles className="w-3 h-3" />{" "}
+                        {t("decksSection.noCards", "No cards")}
                       </span>
                     ) : (
                       <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-[#16a34a] bg-[#f0fdf4] px-2.5 py-0.5 rounded-full border border-[#bbf7d0]">
-                        <CheckCircle2 className="w-3 h-3" /> Đã hoàn thành
+                        <CheckCircle2 className="w-3 h-3" />{" "}
+                        {t("decksSection.completed", "Completed")}
                       </span>
                     )}
                   </div>
@@ -178,21 +194,25 @@ export const DecksPreviewSection: React.FC<DecksPreviewSectionProps> = ({
                     {deck.title}
                   </h3>
                   <p className="text-xs text-[#737373] mt-1.5 line-clamp-2 leading-relaxed">
-                    {deck.description || "Chưa có mô tả chi tiết."}
+                    {deck.description ||
+                      t("decksSection.noDesc", "No description provided.")}
                   </p>
                 </div>
 
                 {/* Deck Stats & Action */}
                 <div className="mt-6 pt-4 border-t border-[#f0f0f0] flex items-center justify-between">
                   <div className="text-xs text-[#737373]">
-                    <span className="text-black font-semibold">
-                      {totalCards}
-                    </span>{" "}
-                    thẻ ·{" "}
+                    {t("decksSection.cardsCount", {
+                      count: totalCards,
+                      defaultValue: `${totalCards} cards`,
+                    })}{" "}
+                    ·{" "}
                     <span className="text-[#16a34a] font-semibold">
-                      {retentionRate}%
-                    </span>{" "}
-                    nhớ
+                      {t("decksSection.retentionRate", {
+                        rate: retentionRate,
+                        defaultValue: `${retentionRate}% retained`,
+                      })}
+                    </span>
                   </div>
 
                   <button
@@ -202,10 +222,10 @@ export const DecksPreviewSection: React.FC<DecksPreviewSectionProps> = ({
                   >
                     <span>
                       {hasDue
-                        ? "Ôn tập ngay"
+                        ? t("decksSection.studyNow", "Study Now")
                         : totalCards === 0
-                          ? "Xem chi tiết"
-                          : "Luyện tập"}
+                          ? t("decksSection.viewDetails", "View Details")
+                          : t("decksSection.practice", "Practice")}
                     </span>
                     <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
                   </button>

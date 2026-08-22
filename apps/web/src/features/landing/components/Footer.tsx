@@ -1,8 +1,11 @@
 import { Link } from "react-router-dom";
 import { PurpleStreakFlame } from "./PurpleStreakFlame";
 import { Globe, Heart } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 export function Footer() {
+  const { t, i18n } = useTranslation("landing");
+
   return (
     <footer className="border-t border-[#e5e5e5] bg-white py-14 px-4 sm:px-6">
       <div className="mx-auto max-w-6xl">
@@ -21,22 +24,25 @@ export function Footer() {
             </div>
 
             <p className="body-sm text-[#737373] max-w-sm leading-relaxed">
-              Open-source, spaced repetition English vocabulary platform.
-              Designed to help language learners achieve permanent memory
-              retention without paywalls.
+              {t(
+                "footer.manifesto",
+                "Open-source, spaced repetition English vocabulary platform. Designed to help language learners achieve permanent memory retention without paywalls.",
+              )}
             </p>
 
             {/* Live Operational Status Pill */}
             <div className="inline-flex items-center gap-2 rounded-full border border-[#e5e5e5] bg-[#fafafa] px-3 py-1 text-xs font-mono text-[#525252]">
               <span className="flex h-2 w-2 rounded-full bg-[#27c93f] animate-pulse" />
-              <span>All Systems Operational · 100% Free</span>
+              <span>
+                {t("footer.status", "All Systems Operational · 100% Free")}
+              </span>
             </div>
           </div>
 
           {/* Column 2: Core Learning Engine */}
           <div className="space-y-3">
             <p className="text-xs font-mono font-semibold uppercase tracking-wider text-black">
-              Learning Engine
+              {t("footer.engineTitle", "Learning Engine")}
             </p>
             <ul className="space-y-2 text-xs text-[#737373]">
               <li>
@@ -44,7 +50,7 @@ export function Footer() {
                   href="#interactive-demo"
                   className="hover:text-black transition-colors"
                 >
-                  SM-2 Spaced Repetition
+                  {t("footer.srsEngine", "SM-2 Spaced Repetition")}
                 </a>
               </li>
               <li>
@@ -52,7 +58,7 @@ export function Footer() {
                   href="#interactive-demo"
                   className="hover:text-black transition-colors"
                 >
-                  Contextual Flashcards
+                  {t("footer.contextCards", "Contextual Flashcards")}
                 </a>
               </li>
               <li>
@@ -60,7 +66,7 @@ export function Footer() {
                   href="#interactive-demo"
                   className="hover:text-black transition-colors"
                 >
-                  Audio IPA Pronunciation
+                  {t("footer.audioIpa", "Audio IPA Pronunciation")}
                 </a>
               </li>
               <li>
@@ -68,7 +74,7 @@ export function Footer() {
                   href="#features"
                   className="hover:text-black transition-colors"
                 >
-                  Active Recall Quizzes
+                  {t("footer.activeRecall", "Active Recall Quizzes")}
                 </a>
               </li>
               <li>
@@ -76,7 +82,7 @@ export function Footer() {
                   href="#features"
                   className="hover:text-black transition-colors"
                 >
-                  Streak Freeze Protection
+                  {t("footer.streakFreeze", "Streak Freeze Protection")}
                 </a>
               </li>
             </ul>
@@ -85,7 +91,7 @@ export function Footer() {
           {/* Column 3: Study Pathways */}
           <div className="space-y-3">
             <p className="text-xs font-mono font-semibold uppercase tracking-wider text-black">
-              Study Pathways
+              {t("footer.pathwaysTitle", "Study Pathways")}
             </p>
             <ul className="space-y-2 text-xs text-[#737373]">
               <li>
@@ -93,7 +99,7 @@ export function Footer() {
                   href="#study-modes"
                   className="hover:text-black transition-colors"
                 >
-                  IELTS & TOEFL Prep
+                  {t("footer.pathIelts", "IELTS & TOEFL Prep")}
                 </a>
               </li>
               <li>
@@ -101,7 +107,7 @@ export function Footer() {
                   href="#study-modes"
                   className="hover:text-black transition-colors"
                 >
-                  Conversational Fluency
+                  {t("footer.pathConvo", "Conversational Fluency")}
                 </a>
               </li>
               <li>
@@ -109,7 +115,7 @@ export function Footer() {
                   href="#study-modes"
                   className="hover:text-black transition-colors"
                 >
-                  Business & Tech English
+                  {t("footer.pathBusiness", "Business & Tech English")}
                 </a>
               </li>
               <li>
@@ -117,7 +123,7 @@ export function Footer() {
                   href="#study-modes"
                   className="hover:text-black transition-colors"
                 >
-                  Custom Reading Decks
+                  {t("footer.pathCustom", "Custom Reading Decks")}
                 </a>
               </li>
               <li>
@@ -125,7 +131,7 @@ export function Footer() {
                   href="#features"
                   className="hover:text-black transition-colors"
                 >
-                  Instant AI Card Lookup
+                  {t("footer.aiLookup", "Instant AI Card Lookup")}
                 </a>
               </li>
             </ul>
@@ -134,22 +140,22 @@ export function Footer() {
           {/* Column 4: Open & Data Ownership */}
           <div className="space-y-3">
             <p className="text-xs font-mono font-semibold uppercase tracking-wider text-black">
-              Open & Local-First
+              {t("footer.openTitle", "Open & Local-First")}
             </p>
             <ul className="space-y-2 text-xs text-[#737373]">
               <li>
                 <span className="text-[#525252] font-medium">
-                  Anki (.apkg) Export
+                  {t("footer.ankiExport", "Anki (.apkg) Export")}
                 </span>
               </li>
               <li>
                 <span className="text-[#525252] font-medium">
-                  CSV & JSON Export
+                  {t("footer.csvExport", "CSV & JSON Export")}
                 </span>
               </li>
               <li>
                 <span className="text-[#525252] font-medium">
-                  Offline Local Storage
+                  {t("footer.offlineStorage", "Offline Local Storage")}
                 </span>
               </li>
               <li>
@@ -157,7 +163,7 @@ export function Footer() {
                   to="/login"
                   className="hover:text-black transition-colors"
                 >
-                  Sign In to Account
+                  {t("footer.signIn", "Sign In to Account")}
                 </Link>
               </li>
               <li>
@@ -165,7 +171,7 @@ export function Footer() {
                   to="/register"
                   className="hover:text-black transition-colors font-semibold text-black"
                 >
-                  Create Free Account →
+                  {t("footer.createFree", "Create Free Account →")}
                 </Link>
               </li>
             </ul>
@@ -174,10 +180,15 @@ export function Footer() {
 
         {/* Bottom Bar */}
         <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-[#a3a3a3]">
-          <p className="flex items-center gap-1.5">
-            <span>© {new Date().getFullYear()} WordStreak. Built with</span>
-            <Heart className="h-3.5 w-3.5 fill-[#9333ea] text-[#9333ea]" />
-            <span>for language learners worldwide.</span>
+          <p className="flex flex-wrap items-center justify-center gap-1.5 text-center">
+            <span>
+              © {new Date().getFullYear()} WordStreak.{" "}
+              {t("footer.copyright", "Built with")}
+            </span>
+            <Heart className="h-3.5 w-3.5 fill-[#9333ea] text-[#9333ea] shrink-0" />
+            <span>
+              {t("footer.copyrightSuffix", "for language learners worldwide.")}
+            </span>
           </p>
 
           <div className="flex items-center gap-5">
@@ -198,7 +209,7 @@ export function Footer() {
             </a>
             <span className="hover:text-black transition-colors flex items-center gap-1">
               <Globe className="h-3.5 w-3.5" />
-              <span>EN (US)</span>
+              <span>{i18n.language === "vi" ? "VI (VN)" : "EN (US)"}</span>
             </span>
           </div>
         </div>

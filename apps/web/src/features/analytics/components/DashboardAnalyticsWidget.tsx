@@ -2,6 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import type { AnalyticsOverviewDto } from "@wordstreak/shared-types";
 import { BarChart3, ArrowRight, Award, Target } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 interface DashboardAnalyticsWidgetProps {
   overview: AnalyticsOverviewDto | null;
@@ -11,6 +12,8 @@ interface DashboardAnalyticsWidgetProps {
 export const DashboardAnalyticsWidget: React.FC<
   DashboardAnalyticsWidgetProps
 > = ({ overview, isLoading = false }) => {
+  const { t } = useTranslation(["analytics", "common"]);
+
   if (isLoading) {
     return (
       <div className="bg-white border border-[#e5e5e5] rounded-3xl p-6 shadow-sm animate-pulse">
@@ -41,14 +44,14 @@ export const DashboardAnalyticsWidget: React.FC<
           <div className="flex items-center gap-2">
             <BarChart3 className="w-5 h-5 text-neutral-800" />
             <h3 className="font-bold text-lg font-['Nunito'] text-black">
-              Thống kê học tập & Trí nhớ
+              {t("widget.title", "Learning & Memory Analytics")}
             </h3>
           </div>
           <Link
             to="/analytics"
             className="inline-flex items-center gap-1 text-xs font-semibold text-purple-600 hover:text-purple-700 font-['Inter'] group"
           >
-            <span>Xem chi tiết</span>
+            <span>{t("widget.viewDetails", "View Details")}</span>
             <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5" />
           </Link>
         </div>
@@ -86,7 +89,7 @@ export const DashboardAnalyticsWidget: React.FC<
                   {mastered}
                 </div>
                 <div className="text-[10px] text-emerald-600 font-['Inter']">
-                  Thành thạo ({masteredPct}%)
+                  {t("widget.mastered", "Mastered")} ({masteredPct}%)
                 </div>
               </div>
 
@@ -95,7 +98,7 @@ export const DashboardAnalyticsWidget: React.FC<
                   {learning}
                 </div>
                 <div className="text-[10px] text-indigo-600 font-['Inter']">
-                  Đang học ({learningPct}%)
+                  {t("widget.learning", "Learning")} ({learningPct}%)
                 </div>
               </div>
 
@@ -104,14 +107,17 @@ export const DashboardAnalyticsWidget: React.FC<
                   {newCards}
                 </div>
                 <div className="text-[10px] text-slate-500 font-['Inter']">
-                  Từ mới ({newPct}%)
+                  {t("widget.new", "New")} ({newPct}%)
                 </div>
               </div>
             </div>
           </div>
         ) : (
           <div className="py-4 text-center text-xs text-neutral-400 font-['Inter']">
-            Chưa có thẻ từ vựng. Bắt đầu học để ghi nhận số liệu.
+            {t(
+              "widget.noCards",
+              "No vocabulary cards yet. Start studying to record analytics.",
+            )}
           </div>
         )}
       </div>
@@ -121,17 +127,17 @@ export const DashboardAnalyticsWidget: React.FC<
         <div className="flex items-center gap-1.5">
           <Target className="w-3.5 h-3.5 text-purple-600" />
           <span>
-            Tỷ lệ nhớ 30 ngày:{" "}
+            {t("widget.retention30Days", "30-Day Retention:")}{" "}
             <strong className="text-black font-['JetBrains_Mono']">
               {retention !== null && retention !== undefined
                 ? `${retention}%`
-                : "Chưa có"}
+                : t("widget.noData", "None yet")}
             </strong>
           </span>
         </div>
         <div className="flex items-center gap-1 text-neutral-400">
           <Award className="w-3.5 h-3.5" />
-          <span>SM-2 Engine</span>
+          <span>{t("widget.sm2Engine", "SM-2 Engine")}</span>
         </div>
       </div>
     </div>

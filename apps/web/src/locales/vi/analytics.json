@@ -32,5 +32,24 @@
     "totalCardsColumn": "Tổng số thẻ",
     "masteryRateColumn": "Tỷ lệ thành thạo",
     "nextReviewColumn": "Lịch ôn tiếp theo"
+  },
+  "widget": {
+    "title": "Thống kê học tập & Trí nhớ",
+    "viewDetails": "Xem chi tiết",
+    "mastered": "Thành thạo ({{pct}}%)",
+    "learning": "Đang học ({{pct}}%)",
+    "newCards": "Từ mới ({{pct}}%)",
+    "emptyCards": "Chưa có thẻ từ vựng. Bắt đầu học để ghi nhận số liệu.",
+    "retention30Days": "Tỷ lệ nhớ 30 ngày:",
+    "noData": "Chưa có",
+    "sm2Engine": "Động cơ SM-2"
+  },
+  "header": {
+    "backToDashboard": "Quay lại Tổng quan (Dashboard)",
+    "title": "Báo cáo & Thống kê học tập",
+    "subtitle": "Trực quan hóa đường cong trí nhớ SuperMemo-2, tiến độ từ vựng và tính kỷ luật học tập.",
+    "refresh": "Làm mới",
+    "errorLoading": "Lỗi tải dữ liệu: {{error}}",
+    "retry": "Thử lại"
   }
 }

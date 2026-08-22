@@ -1,12 +1,15 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
+import { I18nextProvider } from "react-i18next";
+import i18n from "../../../locales/i18n";
 import { TopbarLevelWidget } from "./TopbarLevelWidget";
 import * as useXpSummaryModule from "../hooks/useXpSummary";
 import { MasteryTier } from "@wordstreak/shared-types";
 
 describe("TopbarLevelWidget", () => {
-  beforeEach(() => {
+  beforeEach(async () => {
     vi.restoreAllMocks();
+    await i18n.changeLanguage("vi");
   });
 
   it("renders loading skeleton when loading", () => {
@@ -29,7 +32,11 @@ describe("TopbarLevelWidget", () => {
       setSummary: vi.fn(),
     });
 
-    render(<TopbarLevelWidget />);
+    render(
+      <I18nextProvider i18n={i18n}>
+        <TopbarLevelWidget />
+      </I18nextProvider>,
+    );
     expect(screen.getByTestId("topbar-level-loading")).toBeDefined();
   });
 
@@ -82,7 +89,11 @@ describe("TopbarLevelWidget", () => {
       setSummary: vi.fn(),
     });
 
-    render(<TopbarLevelWidget />);
+    render(
+      <I18nextProvider i18n={i18n}>
+        <TopbarLevelWidget />
+      </I18nextProvider>,
+    );
     const pill = screen.getByTestId("topbar-level-pill");
     expect(pill).toBeDefined();
     expect(screen.getByText("Lv. 4")).toBeDefined();
@@ -139,7 +150,11 @@ describe("TopbarLevelWidget", () => {
       setSummary: vi.fn(),
     });
 
-    render(<TopbarLevelWidget onOpenHistory={onOpenHistory} />);
+    render(
+      <I18nextProvider i18n={i18n}>
+        <TopbarLevelWidget onOpenHistory={onOpenHistory} />
+      </I18nextProvider>,
+    );
     const pill = screen.getByTestId("topbar-level-pill");
 
     fireEvent.click(pill);
