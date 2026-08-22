@@ -16,6 +16,7 @@ import {
   Award,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useTranslation } from "react-i18next";
 import { Button } from "../../../common/components/Button";
 import { useAuthStore } from "../../../store/useAuthStore";
 import { userService } from "../services/userService";
@@ -30,11 +31,11 @@ interface SettingsModalProps {
 }
 
 const GOAL_PRESETS = [
-  { value: 5, label: "5 từ", desc: "Nhẹ nhàng" },
-  { value: 10, label: "10 từ", desc: "Tiêu chuẩn" },
-  { value: 20, label: "20 từ", desc: "Nâng cao" },
-  { value: 30, label: "30 từ", desc: "Chuyên sâu" },
-  { value: 50, label: "50 từ", desc: "Đột phá" },
+  { value: 5, label: "5" },
+  { value: 10, label: "10" },
+  { value: 20, label: "20" },
+  { value: 30, label: "30" },
+  { value: 50, label: "50" },
 ];
 
 const SettingsModalContent: React.FC<SettingsModalProps> = ({
@@ -42,6 +43,12 @@ const SettingsModalContent: React.FC<SettingsModalProps> = ({
   onClose,
   initialTab = "profile",
 }) => {
+  const { t } = useTranslation([
+    "settings",
+    "dashboard",
+    "common",
+    "gamification",
+  ]);
   const { user, updateUser } = useAuthStore();
   const [activeTab, setActiveTab] = useState<
     "profile" | "avatar" | "security" | "gamification"
@@ -275,7 +282,7 @@ const SettingsModalContent: React.FC<SettingsModalProps> = ({
                   className="text-base font-bold text-black tracking-tight"
                   style={{ fontFamily: "var(--font-display)" }}
                 >
-                  Cài đặt tài khoản & Mục tiêu
+                  {t("settings:title", "Settings & Goals")}
                 </h2>
                 <p className="text-xs text-[#737373]">
                   {user?.username} • {user?.email}
@@ -286,7 +293,7 @@ const SettingsModalContent: React.FC<SettingsModalProps> = ({
             <button
               onClick={onClose}
               className="p-1.5 text-[#737373] hover:text-black rounded-full hover:bg-black/5 transition-colors cursor-pointer"
-              aria-label="Đóng cài đặt"
+              aria-label={t("common:actions.close", "Close")}
             >
               <X className="w-5 h-5" />
             </button>
@@ -303,7 +310,7 @@ const SettingsModalContent: React.FC<SettingsModalProps> = ({
               }`}
             >
               <Target className="w-4 h-4" />
-              <span>Hồ sơ & Mục tiêu</span>
+              <span>{t("settings:tabs.profile", "Profile & Goals")}</span>
             </button>
 
             <button
@@ -315,7 +322,7 @@ const SettingsModalContent: React.FC<SettingsModalProps> = ({
               }`}
             >
               <Sparkles className="w-4 h-4" />
-              <span>Chọn Avatar</span>
+              <span>{t("settings:tabs.avatar", "Avatar")}</span>
             </button>
 
             <button
@@ -327,7 +334,7 @@ const SettingsModalContent: React.FC<SettingsModalProps> = ({
               }`}
             >
               <Shield className="w-4 h-4" />
-              <span>Bảo mật</span>
+              <span>{t("settings:tabs.security", "Security")}</span>
             </button>
 
             <button
@@ -339,7 +346,7 @@ const SettingsModalContent: React.FC<SettingsModalProps> = ({
               }`}
             >
               <Award className="w-4 h-4" />
-              <span>Cấp độ & XP</span>
+              <span>{t("settings:tabs.gamification", "Level & XP")}</span>
             </button>
           </div>
 
@@ -373,14 +380,16 @@ const SettingsModalContent: React.FC<SettingsModalProps> = ({
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div className="p-3.5 rounded-2xl bg-[#fafafa] border border-[#e5e5e5] space-y-1">
                     <div className="flex items-center gap-2 text-xs text-[#737373] font-medium">
-                      <UserIcon className="w-3.5 h-3.5" /> Tên người dùng
+                      <UserIcon className="w-3.5 h-3.5" />{" "}
+                      {t("settings:profile.usernameLabel", "Username")}
                     </div>
                     <p className="font-semibold text-black">{user?.username}</p>
                   </div>
 
                   <div className="p-3.5 rounded-2xl bg-[#fafafa] border border-[#e5e5e5] space-y-1">
                     <div className="flex items-center gap-2 text-xs text-[#737373] font-medium">
-                      <Mail className="w-3.5 h-3.5" /> Email đăng ký
+                      <Mail className="w-3.5 h-3.5" />{" "}
+                      {t("settings:profile.emailLabel", "Email Address")}
                     </div>
                     <p className="font-semibold text-black truncate">
                       {user?.email}
@@ -393,11 +402,16 @@ const SettingsModalContent: React.FC<SettingsModalProps> = ({
                   <div>
                     <h3 className="font-bold text-black flex items-center gap-2 text-sm sm:text-base">
                       <TrendingUp className="w-4 h-4 text-[#9333ea]" />
-                      Mục tiêu ôn tập hàng ngày (Daily Goal)
+                      {t(
+                        "settings:profile.dailyGoalTitle",
+                        "Daily Review Goal",
+                      )}
                     </h3>
                     <p className="text-xs text-[#737373] mt-0.5">
-                      Số lượng thẻ từ vựng mới và đến hạn ôn tập mỗi ngày để giữ
-                      ngọn lửa Streak.
+                      {t(
+                        "settings:profile.dailyGoalDesc",
+                        "Number of new and due flashcards to review each day to keep your Streak alive.",
+                      )}
                     </p>
                   </div>
 
@@ -422,10 +436,10 @@ const SettingsModalContent: React.FC<SettingsModalProps> = ({
                           }`}
                         >
                           <span className="text-sm font-bold text-black">
-                            {preset.label}
-                          </span>
-                          <span className="text-[11px] text-[#737373] font-medium">
-                            {preset.desc}
+                            {t("dashboard:stats.cardsCount", {
+                              count: preset.value,
+                              defaultValue: `${preset.value} cards`,
+                            })}
                           </span>
                         </button>
                       );
@@ -446,7 +460,10 @@ const SettingsModalContent: React.FC<SettingsModalProps> = ({
                         htmlFor="customGoalCheck"
                         className="text-xs text-[#525252] cursor-pointer select-none font-medium"
                       >
-                        Tùy chỉnh số thẻ khác (1 - 100 thẻ/ngày)
+                        {t(
+                          "settings:profile.customGoalCheck",
+                          "Customize daily target (1 - 100 cards/day)",
+                        )}
                       </label>
                     </div>
 
@@ -462,7 +479,7 @@ const SettingsModalContent: React.FC<SettingsModalProps> = ({
                           placeholder="10"
                         />
                         <span className="text-xs text-[#737373]">
-                          thẻ mỗi ngày
+                          {t("settings:profile.cardsPerDay", "cards per day")}
                         </span>
                       </div>
                     )}
@@ -500,11 +517,13 @@ const SettingsModalContent: React.FC<SettingsModalProps> = ({
                   />
                   <div>
                     <h4 className="font-bold text-sm text-black">
-                      Xem trước Avatar
+                      {t("settings:avatar.title", "Avatar Preview")}
                     </h4>
                     <p className="text-xs text-[#737373]">
-                      Avatar này sẽ hiển thị trên Header, Bảng xếp hạng và Thống
-                      kê học tập.
+                      {t(
+                        "settings:avatar.desc",
+                        "This avatar will appear on your Header, Leaderboards, and Learning Statistics.",
+                      )}
                     </p>
                   </div>
                 </div>
@@ -512,7 +531,10 @@ const SettingsModalContent: React.FC<SettingsModalProps> = ({
                 {/* Cosmos Presets Gallery */}
                 <div className="space-y-2">
                   <h4 className="font-semibold text-xs text-[#737373] uppercase tracking-wider">
-                    Bộ sưu tập Avatar Presets
+                    {t(
+                      "settings:avatar.presetGallery",
+                      "Avatar Presets Gallery",
+                    )}
                   </h4>
                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
                     {AVATAR_PRESETS.map((preset) => {
@@ -549,7 +571,10 @@ const SettingsModalContent: React.FC<SettingsModalProps> = ({
                 {/* Custom Image URL Input */}
                 <div className="space-y-1.5 pt-1">
                   <label className="text-xs font-semibold text-[#737373] uppercase tracking-wider block">
-                    Hoặc sử dụng URL ảnh ngoài
+                    {t(
+                      "settings:avatar.customUrlLabel",
+                      "Or use an external image URL",
+                    )}
                   </label>
                   <input
                     type="url"
@@ -559,8 +584,10 @@ const SettingsModalContent: React.FC<SettingsModalProps> = ({
                     className="w-full px-3.5 py-2 bg-[#fafafa] border border-[#e5e5e5] rounded-xl text-black text-xs focus:outline-none focus:border-[#9333ea] focus:bg-white"
                   />
                   <p className="text-[11px] text-[#737373]">
-                    Hỗ trợ link ảnh trực tiếp dạng JPG, PNG hoặc SVG từ
-                    Unsplash, DiceBear, v.v.
+                    {t(
+                      "settings:avatar.customUrlHint",
+                      "Supports direct image links in JPG, PNG, or SVG format from Unsplash, DiceBear, etc.",
+                    )}
                   </p>
                 </div>
               </div>
@@ -593,7 +620,7 @@ const SettingsModalContent: React.FC<SettingsModalProps> = ({
                 {/* Current Password */}
                 <div className="space-y-1">
                   <label className="text-xs font-semibold text-black">
-                    Mật khẩu hiện tại
+                    {t("settings:security.currentPassword", "Current Password")}
                   </label>
                   <div className="relative">
                     <input
@@ -621,7 +648,7 @@ const SettingsModalContent: React.FC<SettingsModalProps> = ({
                 {/* New Password */}
                 <div className="space-y-1">
                   <label className="text-xs font-semibold text-black">
-                    Mật khẩu mới
+                    {t("settings:security.newPassword", "New Password")}
                   </label>
                   <div className="relative">
                     <input
@@ -629,7 +656,10 @@ const SettingsModalContent: React.FC<SettingsModalProps> = ({
                       value={newPassword}
                       onChange={(e) => setNewPassword(e.target.value)}
                       required
-                      placeholder="Tối thiểu 8 ký tự, 1 chữ hoa, 1 số"
+                      placeholder={t(
+                        "settings:security.passwordReqs",
+                        "Minimum 8 characters, 1 uppercase, 1 number",
+                      )}
                       className="w-full px-3.5 py-2 bg-[#fafafa] border border-[#e5e5e5] rounded-xl text-black text-sm focus:outline-none focus:border-[#9333ea] focus:bg-white pr-10"
                     />
                     <button
@@ -649,7 +679,10 @@ const SettingsModalContent: React.FC<SettingsModalProps> = ({
                 {/* Confirm Password */}
                 <div className="space-y-1">
                   <label className="text-xs font-semibold text-black">
-                    Xác nhận mật khẩu mới
+                    {t(
+                      "settings:security.confirmNewPassword",
+                      "Confirm New Password",
+                    )}
                   </label>
                   <input
                     type="password"
@@ -665,9 +698,16 @@ const SettingsModalContent: React.FC<SettingsModalProps> = ({
                 <div className="p-3 rounded-2xl bg-[#f3e8ff] border border-[#e9d5ff] text-xs text-[#7e22ce] flex items-start gap-2.5">
                   <Lock className="w-4 h-4 flex-shrink-0 text-[#9333ea] mt-0.5" />
                   <span>
-                    <strong>Chính sách bảo mật:</strong> Khi đổi mật khẩu thành
-                    công, toàn bộ các phiên đăng nhập khác của bạn sẽ được tự
-                    động đăng xuất để bảo vệ an toàn tài khoản.
+                    <strong>
+                      {t(
+                        "settings:security.policyNoticeTitle",
+                        "Security Policy:",
+                      )}
+                    </strong>{" "}
+                    {t(
+                      "settings:security.policyNotice",
+                      "When password is changed successfully, all other active sessions will be automatically logged out for your security.",
+                    )}
                   </span>
                 </div>
               </form>
@@ -680,17 +720,22 @@ const SettingsModalContent: React.FC<SettingsModalProps> = ({
           {/* Sticky Modal Action Footer */}
           <div className="flex items-center justify-between px-6 py-3.5 border-t border-[#f0f0f0] bg-[#fafafa] shrink-0 rounded-b-3xl">
             <div className="text-xs text-[#737373] hidden sm:block">
-              {activeTab === "profile" && "Cập nhật mục tiêu học tập hàng ngày"}
-              {activeTab === "avatar" && "Chọn ảnh đại diện và lưu thay đổi"}
+              {activeTab === "profile" &&
+                t(
+                  "settings:profile.dailyGoalDesc",
+                  "Update daily review goals",
+                )}
+              {activeTab === "avatar" &&
+                t("settings:avatar.title", "Choose avatar")}
               {activeTab === "security" &&
-                "Mật khẩu bảo mật tài khoản WordStreak"}
+                t("settings:security.password", "Account security password")}
               {activeTab === "gamification" &&
-                "Theo dõi tiến trình cấp độ và lịch sử điểm thưởng XP"}
+                t("settings:tabs.gamification", "Gamification & XP History")}
             </div>
 
             <div className="flex items-center gap-2.5 w-full sm:w-auto justify-end">
               <Button type="button" variant="ghost" size="md" onClick={onClose}>
-                Đóng
+                {t("common:actions.close", "Close")}
               </Button>
 
               {activeTab === "profile" && (
@@ -701,7 +746,7 @@ const SettingsModalContent: React.FC<SettingsModalProps> = ({
                   size="md"
                   isLoading={isSavingGoal}
                 >
-                  Lưu mục tiêu
+                  {t("settings:profile.saveGoal", "Save Goal")}
                 </Button>
               )}
 
@@ -713,7 +758,7 @@ const SettingsModalContent: React.FC<SettingsModalProps> = ({
                   onClick={handleSaveAvatar}
                   isLoading={isSavingAvatar}
                 >
-                  Lưu Avatar
+                  {t("settings:avatar.save", "Save Avatar")}
                 </Button>
               )}
 
@@ -725,7 +770,7 @@ const SettingsModalContent: React.FC<SettingsModalProps> = ({
                   size="md"
                   isLoading={isSavingPassword}
                 >
-                  Cập nhật mật khẩu
+                  {t("settings:security.updatePassword", "Update Password")}
                 </Button>
               )}
             </div>

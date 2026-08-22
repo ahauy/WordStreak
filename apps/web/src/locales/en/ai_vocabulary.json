@@ -1,0 +1,37 @@
+{
+  "title": "AI Vocabulary Generator",
+  "subtitle": "Instantly generate rich flashcard context with AI",
+  "promptLabel": "Topic, Context, or Target Word",
+  "promptPlaceholder": "e.g., Business negotiations, Cambridge C1 verbs, Medical terminology",
+  "cefrLevel": "CEFR Proficiency Level",
+  "levels": {
+    "a1": "A1 - Beginner",
+    "a2": "A2 - Elementary",
+    "b1": "B1 - Intermediate",
+    "b2": "B2 - Upper Intermediate",
+    "c1": "C1 - Advanced",
+    "c2": "C2 - Mastery",
+    "allLevels": "All Proficiency Levels"
+  },
+  "cardCount": "Number of Cards to Generate",
+  "generateButton": "Generate Vocabulary Cards",
+  "generating": "Generating smart flashcards with AI...",
+  "quota": {
+    "dailyRemaining": "{{remaining}} of {{total}} AI generations left today",
+    "unlimitedCached": "Cached dictionary lookups are always unlimited and instant."
+  },
+  "preview": {
+    "generatedCardsTitle": "Generated Flashcards Preview",
+    "importToDeck": "Add to Deck",
+    "saveAllCards": "Save All {{count}} Cards",
+    "regenerate": "Regenerate"
+  },
+  "fields": {
+    "term": "Vocabulary Word",
+    "phonetic": "IPA Transcription",
+    "definition": "Definition & Meaning",
+    "example": "Example Sentence",
+    "collocations": "Common Collocations",
+    "mnemonic": "Memory Mnemonic"
+  }
+}

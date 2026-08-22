@@ -1,19 +1,65 @@
 {
+  "title": "SRS Study Session",
   "session": {
     "cardOf": "Card {{current}} of {{total}}",
     "flipPrompt": "Tap card or press Space to flip",
-    "flipHint": "Show Answer"
+    "flipHint": "Show Answer",
+    "showAnswer": "Show Answer",
+    "hideAnswer": "Hide Answer",
+    "keyboardHints": "Keyboard shortcuts: [Space] Flip · [1] Again · [2] Hard · [3] Good · [4] Easy",
+    "flipSpaceHint": "Press [Space] to flip",
+    "shortcutsHint": "Shortcuts: 1-4 for ratings",
+    "exitStudy": "Exit Session"
   },
   "rating": {
     "again": "Again",
     "hard": "Hard",
     "good": "Good",
-    "easy": "Easy"
+    "easy": "Easy",
+    "againDesc": "Complete blackout, reset interval",
+    "hardDesc": "Recalled with significant hesitation",
+    "goodDesc": "Correct recall after normal delay",
+    "easyDesc": "Instant and effortless recall",
+    "intervalShort": "< 10m",
+    "intervalOneDay": "1d",
+    "intervalFourDays": "4d",
+    "intervalTenDays": "10d"
+  },
+  "progress": {
+    "reviewed": "Reviewed",
+    "remaining": "Remaining",
+    "dueCount": "{{count}} cards due"
   },
   "complete": {
     "title": "Session Complete! 🎉",
     "subtitle": "You've reviewed all scheduled flashcards for today.",
     "backToDashboard": "Back to Dashboard",
-    "studyAgain": "Study Again"
+    "studyAgain": "Study Again",
+    "cardsReviewed": "Cards Reviewed",
+    "retentionRate": "Retention Rate",
+    "xpEarned": "XP Earned",
+    "viewDeck": "View Deck",
+    "streakMaintained": "Streak maintained!"
+  },
+  "summary": {
+    "title": "Session Complete! 🎉",
+    "subtitle": "You've reviewed your due cards and kept your memory sharp with SuperMemo-2.",
+    "cardsReviewed": "Cards Reviewed",
+    "accuracy": "Retention Rate",
+    "timeSpent": "Time Spent",
+    "goodEasy": "Remembered (Good / Easy)",
+    "againHard": "Forgot (Again / Hard)",
+    "streakEarned": "Streak Maintained",
+    "xpEarned": "XP Earned",
+    "reviewAgain": "Review Again",
+    "backToDashboard": "Go to Dashboard",
+    "viewDecks": "All Decks",
+    "congratulations": "Congratulations on completing your daily review!"
+  },
+  "empty": {
+    "noCardsTitle": "No Cards Due for Review",
+    "noCardsDesc": "All flashcards in this deck are up to date. You can practice active quizzes or review early.",
+    "returnToDecks": "Return to Decks",
+    "practiceInstead": "Practice Quizzes"
   }
 }

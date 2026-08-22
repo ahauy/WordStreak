@@ -8,11 +8,12 @@ import {
   Download,
   ShieldCheck,
 } from "lucide-react";
-
+import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
 import { PurpleStreakFlame } from "../../landing/components/PurpleStreakFlame";
 
 export const AuthShowcase: React.FC = () => {
+  const { t } = useTranslation(["auth", "common"]);
   const [isPlayingAudio, setIsPlayingAudio] = useState(false);
   const [cardMastered, setCardMastered] = useState(false);
 
@@ -40,18 +41,25 @@ export const AuthShowcase: React.FC = () => {
       <div className="space-y-3">
         <div className="inline-flex items-center gap-2 rounded-full border border-[#e5e5e5] bg-[#fafafa] px-3 py-1 text-xs font-mono text-[#525252]">
           <span className="flex h-2 w-2 rounded-full bg-[#27c93f] animate-pulse" />
-          <span>100% Free Forever · No Paywalls</span>
+          <span>
+            {t("auth:showcase.freeForever", "100% Free Forever · No Paywalls")}
+          </span>
         </div>
 
         <h1
           className="text-4xl xl:text-[42px] font-bold text-black leading-[1.12] tracking-tight"
           style={{ fontFamily: "var(--font-display)" }}
         >
-          Master words that <span className="text-[#9333ea]">stick.</span>
+          {t("auth:showcase.headlineStick", "Master words that")}{" "}
+          <span className="text-[#9333ea]">
+            {t("auth:showcase.headlineStickHighlight", "stick.")}
+          </span>
         </h1>
         <p className="text-[15px] text-[#737373] leading-relaxed">
-          Algorithmic spaced repetition and active recall engineered into a
-          calm, habit-forming daily loop.
+          {t(
+            "auth:showcase.subheadline",
+            "Algorithmic spaced repetition and active recall engineered into a calm, habit-forming daily loop.",
+          )}
         </p>
       </div>
 
@@ -144,7 +152,9 @@ export const AuthShowcase: React.FC = () => {
               }`}
             >
               <CheckCircle2 className="w-3.5 h-3.5" />
-              {cardMastered ? "Remembered" : "Mark Remembered"}
+              {cardMastered
+                ? t("auth:showcase.remembered", "Remembered")
+                : t("auth:showcase.markRemembered", "Mark Remembered")}
             </button>
           </div>
         </motion.div>
@@ -155,20 +165,25 @@ export const AuthShowcase: React.FC = () => {
         <div className="space-y-1">
           <p className="font-semibold text-xs text-black flex items-center gap-1.5">
             <ShieldCheck className="w-3.5 h-3.5 text-[#9333ea]" />
-            SM-2 Spaced Algorithm
+            {t("auth:showcase.sm2Title", "SM-2 Spaced Algorithm")}
           </p>
           <p className="text-[#737373] leading-normal text-[11px]">
-            Review intervals precisely tuned to defeat your forgetting curve.
+            {t(
+              "auth:showcase.sm2Desc",
+              "Review intervals precisely tuned to defeat your forgetting curve.",
+            )}
           </p>
         </div>
         <div className="space-y-1">
           <p className="font-semibold text-xs text-black flex items-center gap-1.5">
             <Download className="w-3.5 h-3.5 text-[#9333ea]" />
-            Exportable to Anki
+            {t("auth:showcase.ankiExportTitle", "Exportable to Anki")}
           </p>
           <p className="text-[#737373] leading-normal text-[11px]">
-            Your data stays yours. One-click export to Anki (.apkg) and CSV
-            anytime.
+            {t(
+              "auth:showcase.ankiExportDesc",
+              "Your data stays yours. One-click export to Anki (.apkg) and CSV anytime.",
+            )}
           </p>
         </div>
       </div>

@@ -1,6 +1,8 @@
 import React from "react";
 import { Trophy, RotateCcw, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import { useLocaleFormat } from "../../../locales/hooks/useLocaleFormat";
 import type { SessionStats } from "../hooks/useReviewSession";
 
 interface ReviewSummaryModalProps {
@@ -12,6 +14,9 @@ export const ReviewSummaryModal: React.FC<ReviewSummaryModalProps> = ({
   stats,
   onRestart,
 }) => {
+  const { t } = useTranslation(["study", "dashboard", "decks", "common"]);
+  const { formatNumber, formatPercent } = useLocaleFormat();
+
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
@@ -33,12 +38,14 @@ export const ReviewSummaryModal: React.FC<ReviewSummaryModalProps> = ({
       </div>
 
       <h2 className="text-2xl sm:text-3xl font-semibold text-[#000000] font-display mb-2">
-        Session Complete! 🎉
+        {t("study:summary.title", "Session Complete! 🎉")}
       </h2>
 
       <p className="text-sm text-[#737373] mb-8">
-        You've reviewed your due cards and kept your memory sharp with
-        SuperMemo-2.
+        {t(
+          "study:summary.subtitle",
+          "You've reviewed your due cards and kept your memory sharp with SuperMemo-2.",
+        )}
       </p>
 
       {/* Grid of Key Metrics */}
@@ -46,17 +53,21 @@ export const ReviewSummaryModal: React.FC<ReviewSummaryModalProps> = ({
         {/* Total Reviewed */}
         <div className="p-4 rounded-xl bg-[#fafafa] border border-[#e5e5e5] flex flex-col items-center">
           <span className="text-2xl font-bold text-[#000000] font-display">
-            {stats.totalReviewed}
+            {formatNumber(stats.totalReviewed)}
           </span>
-          <span className="text-xs text-[#737373] mt-1">Cards Reviewed</span>
+          <span className="text-xs text-[#737373] mt-1">
+            {t("study:summary.cardsReviewed", "Cards Reviewed")}
+          </span>
         </div>
 
         {/* Accuracy */}
         <div className="p-4 rounded-xl bg-[#fafafa] border border-[#e5e5e5] flex flex-col items-center">
           <span className="text-2xl font-bold text-[#27c93f] font-display">
-            {stats.accuracyPercentage}%
+            {formatPercent(stats.accuracyPercentage)}
           </span>
-          <span className="text-xs text-[#737373] mt-1">Retention Rate</span>
+          <span className="text-xs text-[#737373] mt-1">
+            {t("study:summary.accuracy", "Retention Rate")}
+          </span>
         </div>
 
         {/* Time Spent */}
@@ -64,7 +75,9 @@ export const ReviewSummaryModal: React.FC<ReviewSummaryModalProps> = ({
           <span className="text-2xl font-bold text-[#000000] font-display">
             {formatTime(stats.durationSeconds)}
           </span>
-          <span className="text-xs text-[#737373] mt-1">Time Spent</span>
+          <span className="text-xs text-[#737373] mt-1">
+            {t("study:summary.timeSpent", "Time Spent")}
+          </span>
         </div>
       </div>
 
@@ -72,12 +85,16 @@ export const ReviewSummaryModal: React.FC<ReviewSummaryModalProps> = ({
       <div className="p-4 rounded-xl bg-[#fafafa] border border-[#e5e5e5] text-left mb-8">
         <div className="flex justify-between text-xs font-medium text-[#525252] mb-2">
           <span>
-            Remembered (Good / Easy):{" "}
-            <strong className="text-[#27c93f]">{stats.goodEasyCount}</strong>
+            {t("study:summary.goodEasy", "Remembered (Good / Easy)")}:{" "}
+            <strong className="text-[#27c93f]">
+              {formatNumber(stats.goodEasyCount)}
+            </strong>
           </span>
           <span>
-            Forgot (Again / Hard):{" "}
-            <strong className="text-[#ff5f56]">{stats.againHardCount}</strong>
+            {t("study:summary.againHard", "Forgot (Again / Hard)")}:{" "}
+            <strong className="text-[#ff5f56]">
+              {formatNumber(stats.againHardCount)}
+            </strong>
           </span>
         </div>
         <div className="w-full h-2 bg-[#e5e5e5] rounded-full overflow-hidden flex">
@@ -102,24 +119,24 @@ export const ReviewSummaryModal: React.FC<ReviewSummaryModalProps> = ({
           <button
             type="button"
             onClick={onRestart}
-            className="w-full sm:w-auto px-5 py-3 rounded-full bg-[#fafafa] border border-[#e5e5e5] text-[#525252] font-medium text-xs hover:bg-[#f5f5f5] hover:text-[#000000] transition-all inline-flex items-center justify-center gap-1.5"
+            className="w-full sm:w-auto px-5 py-3 rounded-full bg-[#fafafa] border border-[#e5e5e5] text-[#525252] font-medium text-xs hover:bg-[#f5f5f5] hover:text-[#000000] transition-all inline-flex items-center justify-center gap-1.5 cursor-pointer"
           >
             <RotateCcw className="w-3.5 h-3.5" />
-            <span>Review Again</span>
+            <span>{t("study:summary.reviewAgain", "Review Again")}</span>
           </button>
         )}
         <Link
           to="/dashboard"
-          className="w-full sm:w-auto px-6 py-3 rounded-full bg-[#000000] text-[#ffffff] font-medium text-xs hover:bg-[#090909] transition-all inline-flex items-center justify-center gap-2"
+          className="w-full sm:w-auto px-6 py-3 rounded-full bg-[#000000] text-[#ffffff] font-medium text-xs hover:bg-[#090909] transition-all inline-flex items-center justify-center gap-2 cursor-pointer"
         >
-          <span>Go to Dashboard</span>
+          <span>{t("study:summary.backToDashboard", "Go to Dashboard")}</span>
           <ArrowRight className="w-3.5 h-3.5" />
         </Link>
         <Link
           to="/decks"
-          className="w-full sm:w-auto px-6 py-3 rounded-full bg-[#fafafa] border border-[#e5e5e5] text-[#525252] font-medium text-xs hover:bg-[#f5f5f5] hover:text-[#000000] transition-all inline-flex items-center justify-center"
+          className="w-full sm:w-auto px-6 py-3 rounded-full bg-[#fafafa] border border-[#e5e5e5] text-[#525252] font-medium text-xs hover:bg-[#f5f5f5] hover:text-[#000000] transition-all inline-flex items-center justify-center cursor-pointer"
         >
-          All Decks
+          {t("study:summary.viewDecks", "All Decks")}
         </Link>
       </div>
     </div>

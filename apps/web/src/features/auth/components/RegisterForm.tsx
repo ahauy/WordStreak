@@ -18,6 +18,7 @@ import { Input } from "../../../common/components/Input";
 import { Button } from "../../../common/components/Button";
 import { useAuthStore } from "../../../store/useAuthStore";
 import { PurpleStreakFlame } from "../../landing/components/PurpleStreakFlame";
+import { useTranslation } from "react-i18next";
 
 const registerSchema = z
   .object({
@@ -58,6 +59,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
   onSuccess,
   onNavigateToLogin,
 }) => {
+  const { t } = useTranslation(["auth", "common"]);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const {
@@ -133,10 +135,13 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
           className="text-3xl sm:text-[32px] font-bold text-black mb-1.5 tracking-tight"
           style={{ fontFamily: "var(--font-display)" }}
         >
-          Create Free Account
+          {t("auth:register.title", "Create Your Account")}
         </h2>
         <p className="text-sm text-[#737373]">
-          Start building permanent vocabulary in 5 minutes a day
+          {t(
+            "auth:register.subtitle",
+            "Start mastering English vocabulary with Spaced Repetition",
+          )}
         </p>
       </div>
 
@@ -159,10 +164,10 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
       >
         <Input
           id="register-email"
-          label="Email Address"
+          label={t("auth:register.emailLabel", "Email Address")}
           type="email"
           autoComplete="email"
-          placeholder="you@wordstreak.app"
+          placeholder={t("auth:register.emailPlaceholder", "you@example.com")}
           required
           leftIcon={<Mail className="w-4 h-4" />}
           error={errors.email?.message}
@@ -171,10 +176,10 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
 
         <Input
           id="register-username"
-          label="Username"
+          label={t("auth:register.usernameLabel", "Username")}
           type="text"
           autoComplete="username"
-          placeholder="streakmaster"
+          placeholder={t("auth:register.usernamePlaceholder", "wordmaster")}
           required
           leftIcon={<User className="w-4 h-4" />}
           error={errors.username?.message}
@@ -183,10 +188,10 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
 
         <Input
           id="register-password"
-          label="Password"
+          label={t("auth:register.passwordLabel", "Password")}
           type={showPassword ? "text" : "password"}
           autoComplete="new-password"
-          placeholder="••••••••"
+          placeholder={t("auth:register.passwordPlaceholder", "••••••••")}
           required
           leftIcon={<Lock className="w-4 h-4" />}
           rightIcon={
@@ -215,7 +220,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
             className="p-3 bg-[#fafafa] rounded-xl border border-[#e5e5e5] space-y-1.5 text-xs"
           >
             <p className="font-semibold text-black mb-1">
-              Password requirements:
+              {t("auth:register.requirementsTitle", "Password requirements:")}
             </p>
             <div className="flex items-center gap-2">
               <CheckCircle2
@@ -228,7 +233,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
                   hasMinLength ? "text-black font-medium" : "text-[#737373]"
                 }
               >
-                At least 8 characters
+                {t("auth:register.reqLength", "At least 8 characters")}
               </span>
             </div>
             <div className="flex items-center gap-2">
@@ -242,7 +247,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
                   hasUppercase ? "text-black font-medium" : "text-[#737373]"
                 }
               >
-                1 uppercase letter (A-Z)
+                {t("auth:register.reqUpper", "1 uppercase letter (A-Z)")}
               </span>
             </div>
             <div className="flex items-center gap-2">
@@ -256,7 +261,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
                   hasNumber ? "text-black font-medium" : "text-[#737373]"
                 }
               >
-                1 number (0-9)
+                {t("auth:register.reqNumber", "1 number (0-9)")}
               </span>
             </div>
           </motion.div>
@@ -264,7 +269,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
 
         <Input
           id="register-confirm-password"
-          label="Confirm Password"
+          label={t("auth:register.confirmPasswordLabel", "Confirm Password")}
           type={showConfirmPassword ? "text" : "password"}
           autoComplete="new-password"
           placeholder="••••••••"
@@ -288,7 +293,9 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
           }
           error={errors.confirmPassword?.message}
           helperText={
-            isMatch && !errors.confirmPassword ? "✓ Passwords match" : undefined
+            isMatch && !errors.confirmPassword
+              ? `✓ ${t("auth:register.passwordsMatch", "Passwords match")}`
+              : undefined
           }
           {...register("confirmPassword")}
         />
@@ -302,20 +309,22 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
           leftIcon={<UserPlus className="w-4 h-4" />}
           rightIcon={<ArrowRight className="w-4 h-4" />}
         >
-          Create Free Account
+          {isLoading
+            ? t("auth:register.creatingAccount", "Creating account...")
+            : t("auth:register.submitButton", "Start Learning Free")}
         </Button>
       </form>
 
       {onNavigateToLogin && (
         <div className="text-center mt-6 pt-5 border-t border-[#e5e5e5]">
           <p className="text-xs text-[#737373]">
-            Already have an account?{" "}
+            {t("auth:register.hasAccount", "Already have an account?")}{" "}
             <button
               type="button"
               onClick={onNavigateToLogin}
               className="font-semibold text-black hover:text-[#7e22ce] hover:underline transition-colors focus:outline-none cursor-pointer"
             >
-              Sign in
+              {t("auth:register.signInLink", "Sign in")}
             </button>
           </p>
         </div>

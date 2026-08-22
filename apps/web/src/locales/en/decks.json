@@ -6,9 +6,99 @@
   "exportDeck": "Export Deck",
   "cardCount_one": "{{count}} card",
   "cardCount_other": "{{count}} cards",
+  "searchPlaceholder": "Search decks by title or tag...",
+  "filter": {
+    "all": "All Decks",
+    "favorites": "Favorites",
+    "recent": "Recently Studied",
+    "learning": "In Progress",
+    "mastered": "Mastered"
+  },
+  "sort": {
+    "recentlyStudied": "Recently Studied",
+    "cardCount": "Card Count",
+    "alphabetical": "Alphabetical (A-Z)",
+    "creationDate": "Date Created"
+  },
   "emptyState": {
     "title": "No decks found",
     "description": "Create your first flashcard deck or import an existing CSV/Anki package to start studying.",
     "action": "Create First Deck"
+  },
+  "modal": {
+    "createTitle": "Create New Deck",
+    "editTitle": "Edit Deck",
+    "titleLabel": "Deck Title",
+    "titlePlaceholder": "e.g., Oxford 3000 Essential Words",
+    "descLabel": "Description",
+    "descPlaceholder": "Brief description of the vocabulary deck...",
+    "tagsLabel": "Tags",
+    "tagsPlaceholder": "e.g., english, ielts, business (comma separated)",
+    "visibilityLabel": "Deck Visibility",
+    "public": "Public (Share with community)",
+    "private": "Private (Only for you)",
+    "createSubmit": "Create Deck",
+    "editSubmit": "Save Changes"
+  },
+  "deleteModal": {
+    "title": "Delete Deck",
+    "description": "Are you sure you want to delete \"{{title}}\"? All cards and learning progress inside this deck will be permanently removed.",
+    "confirmButton": "Delete Deck",
+    "cancelButton": "Cancel"
+  },
+  "detail": {
+    "cardsTab": "Flashcards",
+    "statsTab": "Learning Stats",
+    "settingsTab": "Deck Settings",
+    "studyButton": "Study Deck",
+    "practiceButton": "Practice Quizzes",
+    "addCard": "Add Card",
+    "totalCards": "Total Cards",
+    "dueToday": "Due Today",
+    "mastered": "Mastered",
+    "learning": "Learning",
+    "newCards": "New Cards",
+    "backToDecks": "Back to Decks",
+    "cardsList": "Vocabulary Cards",
+    "gridView": "3D Grid View",
+    "tableView": "List Table View",
+    "searchPlaceholder": "Search term, meaning, example...",
+    "emptyTitle": "No cards in this deck yet",
+    "emptyDesc": "Start adding flashcards or import in bulk from CSV, Excel, or Anki to study with Spaced Repetition (SM-2).",
+    "importCards": "Import from file",
+    "emptyFilter": "No cards match the current filter criteria.",
+    "clearFilter": "Clear filters & search"
+  },
+  "errors": {
+    "loadFailed": "Unable to load deck details",
+    "notFoundTitle": "Deck Not Found",
+    "notFoundDesc": "This deck does not exist or you do not have permission to access it."
+  },
+  "importModal": {
+    "title": "Import Vocabulary Deck",
+    "subtitle": "Upload CSV, TSV, or Anki (.apkg) files to import cards into this deck",
+    "dropzonePrompt": "Drag and drop your file here, or click to browse",
+    "dropzoneHint": "Supported formats: .csv, .tsv, .apkg (max 10MB)",
+    "selectFile": "Select File",
+    "previewTitle": "File Preview & Column Mapping",
+    "columnMappingTitle": "Map File Columns to Card Fields",
+    "termColumn": "Word / Term Column",
+    "defColumn": "Meaning / Definition Column",
+    "ipaColumn": "Phonetic / IPA Column (Optional)",
+    "exampleColumn": "Example Sentence Column (Optional)",
+    "notesColumn": "Notes Column (Optional)",
+    "importSubmit": "Import {{count}} Cards",
+    "importSuccess": "Successfully imported {{count}} cards!",
+    "importError": "Failed to import file. Please check format."
+  },
+  "exportModal": {
+    "title": "Export Deck",
+    "formatLabel": "Export Format",
+    "ankiApkg": "Anki Package (.apkg)",
+    "csvFile": "Comma Separated Values (.csv)",
+    "jsonFile": "WordStreak JSON (.json)",
+    "includeStats": "Include SRS review history and intervals",
+    "includeMedia": "Include audio and media links",
+    "exportSubmit": "Download Export File"
   }
 }

@@ -1,14 +1,65 @@
 {
-  "title": "Account Settings",
+  "title": "Account Settings & Goals",
   "tabs": {
-    "profile": "Profile",
+    "profile": "Profile & Goals",
     "avatar": "Avatar",
     "security": "Security",
-    "gamification": "Gamification & Audio"
+    "gamification": "Level & XP",
+    "language": "Language & Region"
+  },
+  "profile": {
+    "usernameLabel": "Username",
+    "emailLabel": "Email Address",
+    "bioLabel": "Bio / About You",
+    "saveChanges": "Save Profile Changes",
+    "avatarUpload": "Upload Profile Avatar",
+    "dailyGoalTitle": "Daily Review Goal",
+    "dailyGoalDesc": "Number of new and due flashcards to review each day to keep your Streak alive.",
+    "customGoalCheck": "Customize daily target (1 - 100 cards/day)",
+    "cardsPerDay": "cards per day",
+    "saveGoal": "Save Goal",
+    "casual": "Casual",
+    "regular": "Regular",
+    "serious": "Serious",
+    "intensive": "Intensive",
+    "breakthrough": "Breakthrough"
+  },
+  "avatar": {
+    "title": "Avatar Preview",
+    "desc": "This avatar will appear on your Header, Leaderboards, and Learning Statistics.",
+    "presetGallery": "Avatar Presets Gallery",
+    "customUrlLabel": "Or use an external image URL",
+    "customUrlHint": "Supports direct image links in JPG, PNG, or SVG format from Unsplash, DiceBear, etc.",
+    "save": "Save Avatar"
+  },
+  "security": {
+    "password": "Password & Account Security",
+    "changePassword": "Change Password",
+    "currentPassword": "Current Password",
+    "newPassword": "New Password",
+    "confirmNewPassword": "Confirm New Password",
+    "passwordReqs": "Minimum 8 characters, 1 uppercase, 1 number",
+    "policyNoticeTitle": "Security Policy:",
+    "policyNotice": "When password is changed successfully, all other active sessions will be automatically logged out for your security.",
+    "updatePassword": "Update Password"
   },
   "language": {
     "title": "Language & Region",
     "description": "Choose your preferred interface language for WordStreak.",
-    "selectLabel": "Interface Language"
+    "selectLabel": "Interface Language",
+    "vietnamese": "Tiếng Việt (Vietnamese)",
+    "english": "English (US)",
+    "appliedImmediately": "Language changes are applied immediately across the entire application."
+  },
+  "audio": {
+    "soundEffects": "Sound Effects & Celebration Chimes",
+    "voiceAccent": "Default Pronunciation Voice Accent",
+    "autoPlayAudio": "Automatically play pronunciation audio on review",
+    "ttsSpeed": "Text-to-Speech Playback Speed"
+  },
+  "gamification": {
+    "streakReminders": "Daily Streak Email & Notification Reminders",
+    "dailyGoalTarget": "Daily Card Target Goal",
+    "showFlameMascot": "Show Floating Streak Flame Mascot"
   }
 }

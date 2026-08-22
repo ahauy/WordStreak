@@ -3,14 +3,90 @@
   "subtitle": "Strengthen memory recall with active quiz challenges",
   "modes": {
     "multipleChoice": "Multiple Choice",
+    "multipleChoiceDesc": "Choose the correct definition from 4 options",
     "fillInBlank": "Fill in the Blank",
+    "fillInBlankDesc": "Type the missing letters or target word",
     "wordMatching": "Word Matching",
-    "pronunciation": "Pronunciation Practice"
+    "wordMatchingDesc": "Match vocabulary terms with their definitions",
+    "listening": "Listening Quiz",
+    "listeningDesc": "Listen to native audio and spell the word",
+    "pronunciation": "Pronunciation Practice",
+    "pronunciationDesc": "Speak the word and receive instant IPA feedback"
   },
   "quiz": {
     "questionOf": "Question {{current}} of {{total}}",
     "submit": "Submit Answer",
     "nextQuestion": "Next Question",
-    "score": "Your Score: {{score}}%"
+    "score": "Your Score: {{score}}%",
+    "correct": "Correct! Well done.",
+    "incorrect": "Not quite right.",
+    "streakBonus": "+{{xp}} XP Streak Bonus!",
+    "checkAnswer": "Check Answer",
+    "selectAnswer": "Select the best answer",
+    "typeAnswerPrompt": "Type your answer below",
+    "listenPrompt": "Click the speaker icon to listen to the audio",
+    "replayAudio": "Replay Audio",
+    "revealedAnswer": "Correct Answer: {{answer}}"
+  },
+  "matching": {
+    "findPairsPrompt": "Tap matching pairs of words and definitions",
+    "matchedCount": "Matched: {{matched}} / {{total}}",
+    "movesCount": "Moves: {{moves}}",
+    "timeElapsed": "Time: {{time}}",
+    "congratulations": "All pairs matched successfully!",
+    "matchSuccess": "Match!",
+    "matchFail": "Try again"
+  },
+  "fillBlank": {
+    "typeMissingLetters": "Fill in the missing word",
+    "hint": "Hint",
+    "showHint": "Show Hint",
+    "progressiveHint": "Letter hint: {{hint}}"
+  },
+  "listening": {
+    "typeWhatYouHear": "Type what you hear",
+    "speedNormal": "Normal Speed (1.0x)",
+    "speedSlow": "Slow Speed (0.75x)",
+    "listenAgain": "Listen Again"
+  },
+  "voice": {
+    "speakWordPrompt": "Press the microphone and pronounce the word clearly",
+    "listeningStatus": "Listening...",
+    "tapToSpeak": "Tap to Speak",
+    "stopListening": "Stop Listening",
+    "accuracyScore": "Accuracy Score",
+    "pronunciationFeedback": "Phonetic Breakdown & Feedback",
+    "accentSelector": "Accent Voice",
+    "usAccent": "American English (US)",
+    "ukAccent": "British English (UK)",
+    "audioNotSupported": "Speech recognition is not supported in this browser",
+    "micPermissionRequired": "Microphone permission is required for voice practice",
+    "grantMicPermission": "Allow Microphone"
+  },
+  "speech": {
+    "startRecording": "Start recording pronunciation",
+    "stopRecording": "Stop Speaking",
+    "processing": "Evaluating pronunciation...",
+    "tapToSpeak": "Tap to speak or press Space",
+    "listening": "Microphone is recording. Speak the target word now.",
+    "tryAgain": "Try Again",
+    "excellent": "Excellent",
+    "good": "Good",
+    "needsPractice": "Needs Practice",
+    "scoreLabel": "Accuracy Score",
+    "evaluatedStatus": "Pronunciation evaluated: {{score}}% score. Tier: {{tier}}.",
+    "permissionDenied": "Microphone access was denied. Please allow microphone permissions in your browser settings.",
+    "unsupported": "Speech recognition is not supported in this browser."
+  },
+  "summary": {
+    "title": "Quiz Completed! 🎉",
+    "subtitle": "You have completed this practice challenge.",
+    "finalScore": "Final Score",
+    "accuracy": "Accuracy",
+    "xpEarned": "XP Earned",
+    "timeTaken": "Time Taken",
+    "tryAgain": "Try Again",
+    "backToPractice": "Back to Practice",
+    "viewAnswers": "Review Answers"
   }
 }

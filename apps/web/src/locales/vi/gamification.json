@@ -1,0 +1,52 @@
+{
+  "streak": {
+    "title": "Bảo vệ chuỗi học tập",
+    "daysCount": "Chuỗi {{count}} ngày",
+    "streakProtected": "Chuỗi học tập của bạn hôm nay đã được bảo vệ!",
+    "freezeActive": "Đang kích hoạt Đóng băng chuỗi",
+    "useFreeze": "Sử dụng Đóng băng chuỗi",
+    "freezeRemaining": "Còn {{count}} lượt khiên bảo vệ",
+    "freezeRemaining_one": "Còn {{count}} lượt khiên bảo vệ",
+    "freezeRemaining_other": "Còn {{count}} lượt khiên bảo vệ",
+    "streakLostTitle": "Đã mất chuỗi học tập!",
+    "streakLostDesc": "Bạn đã bỏ lỡ phiên ôn tập ngày hôm qua. Dùng Đóng băng chuỗi hoặc bắt đầu chuỗi mới ngay hôm nay!",
+    "streakSavedTitle": "Đã cứu chuỗi thành công! 🔥",
+    "streakSavedDesc": "Khiên Đóng băng chuỗi đã bảo vệ thành công chuỗi {{count}} ngày của bạn.",
+    "flameKindled": "Ngọn lửa đã bừng sáng!"
+  },
+  "xp": {
+    "earned": "+{{xp}} XP",
+    "bonus": "+{{xp}} XP Thưởng",
+    "totalXp": "{{xp}} XP",
+    "historyTitle": "Lịch sử điểm XP & Hoạt động",
+    "dailyXpGoal": "Mục tiêu hôm nay: {{current}} / {{target}} XP",
+    "xpGainedToast": "Bạn nhận được +{{xp}} XP!"
+  },
+  "level": {
+    "levelUpTitle": "Lên cấp mới! 🎉",
+    "levelUpSubtitle": "Chúc mừng! Bạn đã thăng hạng lên Cấp {{level}}.",
+    "reachedLevel": "Đạt Cấp độ {{level}}",
+    "unlockedRewards": "Huy hiệu mới đã mở khóa và hào quang ngọn lửa rực sáng hơn!",
+    "continueJourney": "Tiếp tục hành trình học",
+    "currentRank": "Thứ hạng: {{rank}}"
+  },
+  "badges": {
+    "title": "Thành tựu & Huy hiệu",
+    "streakMaster": "Bậc thầy chuỗi ngày (30 Ngày liên tục)",
+    "vocabScholar": "Học giả từ vựng (500 Từ vựng)",
+    "speedDemon": "Phản xạ thần tốc (100% trong 60 giây)",
+    "perfectScore": "Trí nhớ siêu phàm (100% Chính xác)",
+    "quizChampion": "Nhà vô địch trắc nghiệm (50 Bài tập)",
+    "earlyBird": "Chim sớm chăm chỉ (Học trước 8h sáng)",
+    "nightOwl": "Cú đêm cần mẫn (Học sau 10h đêm)"
+  },
+  "flame": {
+    "nurtureGardenTitle": "Vườn nuôi dưỡng Ngọn lửa",
+    "nurtureGardenDesc": "Tiếp nhiên liệu cho ngọn lửa bằng các buổi ôn tập hàng ngày để kích hoạt tiến hóa ấn tượng.",
+    "feedFlameAction": "Nuôi dưỡng Ngọn lửa (+50 XP)",
+    "flameStateHappy": "Ngọn lửa của bạn đang tỏa ra năng lượng tím rực rỡ!",
+    "flameStateHungry": "Ngọn lửa đang đói. Hoàn thành một buổi ôn tập để tiếp năng lượng!",
+    "flameStateSleeping": "Đang nghỉ ngơi chuẩn bị cho thử thách ngày mai.",
+    "flameEvolved": "Ngọn lửa của bạn đã tiến hóa lên cấp bậc mới!"
+  }
+}

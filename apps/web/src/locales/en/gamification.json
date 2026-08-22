@@ -1,0 +1,51 @@
+{
+  "streak": {
+    "title": "Streak Protection",
+    "daysCount": "{{count}} Day Streak",
+    "streakProtected": "Your streak is protected today!",
+    "freezeActive": "Streak Freeze is Active",
+    "useFreeze": "Use Streak Freeze",
+    "freezeRemaining_one": "{{count}} freeze shield remaining",
+    "freezeRemaining_other": "{{count}} freeze shields remaining",
+    "streakLostTitle": "Streak Lost!",
+    "streakLostDesc": "You missed your daily review yesterday. Use a Streak Freeze or start a new streak today!",
+    "streakSavedTitle": "Streak Saved! 🔥",
+    "streakSavedDesc": "Your Streak Freeze shield successfully protected your {{count}}-day streak.",
+    "flameKindled": "Flame Kindled!"
+  },
+  "xp": {
+    "earned": "+{{xp}} XP",
+    "bonus": "+{{xp}} Bonus XP",
+    "totalXp": "{{xp}} XP",
+    "historyTitle": "XP History & Activity",
+    "dailyXpGoal": "Daily Goal: {{current}} / {{target}} XP",
+    "xpGainedToast": "You earned +{{xp}} XP!"
+  },
+  "level": {
+    "levelUpTitle": "Level Up! 🎉",
+    "levelUpSubtitle": "Congratulations! You've advanced to Level {{level}}.",
+    "reachedLevel": "Reached Level {{level}}",
+    "unlockedRewards": "New badge unlocked and flame aura enhanced!",
+    "continueJourney": "Continue Learning",
+    "currentRank": "Rank: {{rank}}"
+  },
+  "badges": {
+    "title": "Achievements & Badges",
+    "streakMaster": "Streak Master (30 Days)",
+    "vocabScholar": "Vocabulary Scholar (500 Words)",
+    "speedDemon": "Speed Recall (100% in 60s)",
+    "perfectScore": "Flawless Memory (100% Accuracy)",
+    "quizChampion": "Quiz Champion (50 Quizzes)",
+    "earlyBird": "Early Bird (Study before 8 AM)",
+    "nightOwl": "Night Owl (Study after 10 PM)"
+  },
+  "flame": {
+    "nurtureGardenTitle": "Flame Nurture Garden",
+    "nurtureGardenDesc": "Feed your flame with daily study sessions to trigger spectacular evolutions.",
+    "feedFlameAction": "Feed Flame (+50 XP)",
+    "flameStateHappy": "Your flame is radiating strong violet energy!",
+    "flameStateHungry": "Your flame is hungry. Complete a review session to fuel it!",
+    "flameStateSleeping": "Resting peacefully for tomorrow's challenge.",
+    "flameEvolved": "Your flame has evolved to the next stage!"
+  }
+}

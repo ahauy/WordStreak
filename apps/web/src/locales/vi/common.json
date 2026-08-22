@@ -10,11 +10,14 @@
     "community": "Khám phá",
     "analytics": "Thống kê",
     "searchPlaceholder": "Tìm kiếm từ vựng...",
-    "interactiveDemo": "Dùng thử tính năng",
+    "interactiveDemo": "Trải nghiệm thử",
     "features": "Tính năng",
     "howItWorks": "Cách hoạt động",
     "studyGoals": "Mục tiêu học",
-    "faq": "Hỏi đáp"
+    "faq": "Hỏi đáp",
+    "pricing": "Chi phí",
+    "stats": "Số liệu",
+    "privacy": "Bảo mật dữ liệu"
   },
   "actions": {
     "save": "Lưu",
@@ -22,22 +25,76 @@
     "delete": "Xóa",
     "edit": "Chỉnh sửa",
     "back": "Quay lại",
-    "next": "Tiếp tục",
+    "next": "Tiếp theo",
     "close": "Đóng",
     "confirm": "Xác nhận",
     "startLearning": "Bắt đầu học miễn phí",
     "signIn": "Đăng nhập",
     "signUp": "Bắt đầu miễn phí",
-    "signOut": "Đăng xuất"
+    "signOut": "Đăng xuất",
+    "continue": "Tiếp tục",
+    "submit": "Gửi",
+    "done": "Hoàn tất",
+    "retry": "Thử lại",
+    "viewAll": "Xem tất cả",
+    "search": "Tìm kiếm",
+    "filter": "Lọc",
+    "sort": "Sắp xếp",
+    "export": "Xuất dữ liệu",
+    "import": "Nhập dữ liệu",
+    "create": "Tạo mới",
+    "clone": "Sao chép",
+    "reset": "Đặt lại",
+    "refresh": "Làm mới",
+    "copy": "Sao chép",
+    "copied": "Đã sao chép!",
+    "share": "Chia sẻ",
+    "deselectAll": "Bỏ chọn tất cả",
+    "selectAllOnPage": "Chọn tất cả trên trang"
+  },
+  "view": {
+    "grid": "Lưới",
+    "table": "Bảng"
+  },
+  "filters": {
+    "all": "Tất cả",
+    "filterLabel": "Lọc:",
+    "clear": "Xóa bộ lọc"
   },
   "switcher": {
     "toggleAriaVi": "Chuyển sang Tiếng Việt",
-    "toggleAriaEn": "Switch to English"
+    "toggleAriaEn": "Switch to English",
+    "languageLabel": "Ngôn ngữ"
   },
   "status": {
     "loading": "Đang tải...",
     "error": "Đã có lỗi xảy ra",
     "success": "Thành công",
-    "empty": "Không có dữ liệu"
+    "empty": "Không có dữ liệu",
+    "saved": "Đã lưu thành công",
+    "saving": "Đang lưu...",
+    "completed": "Đã hoàn thành",
+    "failed": "Thất bại"
+  },
+  "time": {
+    "today": "Hôm nay",
+    "yesterday": "Hôm qua",
+    "daysAgo": "{{count}} ngày trước",
+    "hoursAgo": "{{count}} giờ trước",
+    "minutesAgo": "{{count}} phút trước",
+    "justNow": "Vừa xong",
+    "days": "ngày",
+    "hours": "giờ",
+    "minutes": "phút",
+    "seconds": "giây"
+  },
+  "pagination": {
+    "previous": "Trước",
+    "prev": "Trước",
+    "next": "Sau",
+    "page": "trang",
+    "perPage": "Số lượng:",
+    "showingPage": "Hiển thị trang",
+    "pageOf": "Trang {{current}} / {{total}}"
   }
 }

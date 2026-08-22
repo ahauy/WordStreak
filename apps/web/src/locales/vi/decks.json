@@ -1,14 +1,105 @@
 {
   "title": "Bộ từ vựng",
   "subtitle": "Quản lý, sắp xếp và nhập các bộ thẻ flashcard của bạn",
-  "createDeck": "Tạo bộ từ mới",
+  "createDeck": "Tạo bộ từ",
   "importDeck": "Nhập bộ từ",
   "exportDeck": "Xuất bộ từ",
+  "cardCount": "{{count}} thẻ",
   "cardCount_one": "{{count}} thẻ",
   "cardCount_other": "{{count}} thẻ",
+  "searchPlaceholder": "Tìm kiếm bộ từ theo tên hoặc thẻ tag...",
+  "filter": {
+    "all": "Tất cả bộ từ",
+    "favorites": "Yêu thích",
+    "recent": "Vừa học gần đây",
+    "learning": "Đang học",
+    "mastered": "Đã thành thạo"
+  },
+  "sort": {
+    "recentlyStudied": "Ôn tập gần đây",
+    "cardCount": "Số lượng thẻ",
+    "alphabetical": "Theo bảng chữ cái (A-Z)",
+    "creationDate": "Ngày tạo"
+  },
   "emptyState": {
-    "title": "Chưa có bộ từ vựng nào",
+    "title": "Chưa có bộ từ nào",
     "description": "Tạo bộ thẻ flashcard đầu tiên hoặc nhập tệp CSV/Anki sẵn có để bắt đầu ôn tập.",
     "action": "Tạo bộ từ đầu tiên"
+  },
+  "modal": {
+    "createTitle": "Tạo bộ từ mới",
+    "editTitle": "Chỉnh sửa bộ từ",
+    "titleLabel": "Tên bộ từ",
+    "titlePlaceholder": "Ví dụ: 3000 từ vựng Oxford thiết yếu",
+    "descLabel": "Mô tả",
+    "descPlaceholder": "Mô tả ngắn gọn về bộ từ vựng...",
+    "tagsLabel": "Thẻ phân loại",
+    "tagsPlaceholder": "Ví dụ: english, ielts, business (cách nhau bởi dấu phẩy)",
+    "visibilityLabel": "Chế độ hiển thị",
+    "public": "Công khai (Chia sẻ với cộng đồng)",
+    "private": "Riêng tư (Chỉ dành cho bạn)",
+    "createSubmit": "Tạo bộ từ",
+    "editSubmit": "Lưu thay đổi"
+  },
+  "deleteModal": {
+    "title": "Xóa bộ từ",
+    "description": "Bạn có chắc chắn muốn xóa \"{{title}}\"? Toàn bộ thẻ và tiến trình học tập trong bộ từ này sẽ bị xóa vĩnh viễn.",
+    "confirmButton": "Xóa bộ từ",
+    "cancelButton": "Hủy"
+  },
+  "detail": {
+    "cardsTab": "Danh sách thẻ",
+    "statsTab": "Thống kê học tập",
+    "settingsTab": "Cài đặt bộ từ",
+    "studyButton": "Ôn tập bộ từ",
+    "practiceButton": "Luyện tập trắc nghiệm",
+    "addCard": "Thêm thẻ mới",
+    "totalCards": "Tổng số thẻ",
+    "dueToday": "Cần ôn hôm nay",
+    "mastered": "Đã thành thạo",
+    "learning": "Đang học",
+    "newCards": "Thẻ mới",
+    "backToDecks": "Quay lại danh sách bộ từ",
+    "cardsList": "Danh sách thẻ từ vựng",
+    "gridView": "Chế độ lưới thẻ 3D",
+    "tableView": "Chế độ bảng danh sách",
+    "searchPlaceholder": "Tìm từ, nghĩa, ví dụ...",
+    "emptyTitle": "Bộ từ này chưa có thẻ từ vựng nào",
+    "emptyDesc": "Bắt đầu thêm thẻ từ hoặc nhập hàng loạt từ file CSV, Excel, Anki để ôn tập với Spaced Repetition (SM-2).",
+    "importCards": "Nhập từ từ file",
+    "emptyFilter": "Không tìm thấy từ vựng nào khớp với bộ lọc hiện tại.",
+    "clearFilter": "Xóa bộ lọc & tìm kiếm"
+  },
+  "errors": {
+    "loadFailed": "Không thể tải thông tin bộ từ",
+    "notFoundTitle": "Không thể tìm thấy bộ từ vựng",
+    "notFoundDesc": "Bộ từ này không tồn tại hoặc bạn không có quyền truy cập."
+  },
+  "importModal": {
+    "title": "Nhập dữ liệu bộ từ",
+    "subtitle": "Tải lên tệp CSV, TSV hoặc Anki (.apkg) để nhập thẻ vào bộ từ này",
+    "dropzonePrompt": "Kéo thả tệp vào đây, hoặc nhấn để duyệt tệp",
+    "dropzoneHint": "Hỗ trợ định dạng: .csv, .tsv, .apkg (tối đa 10MB)",
+    "selectFile": "Chọn tệp",
+    "previewTitle": "Xem trước & Khớp cột dữ liệu",
+    "columnMappingTitle": "Ánh xạ cột tệp vào trường dữ liệu thẻ",
+    "termColumn": "Cột Từ vựng",
+    "defColumn": "Cột Nghĩa / Định nghĩa",
+    "ipaColumn": "Cột Phát âm / IPA (Không bắt buộc)",
+    "exampleColumn": "Cột Câu ví dụ (Không bắt buộc)",
+    "notesColumn": "Cột Ghi chú (Không bắt buộc)",
+    "importSubmit": "Nhập {{count}} thẻ",
+    "importSuccess": "Đã nhập thành công {{count}} thẻ!",
+    "importError": "Nhập tệp thất bại. Vui lòng kiểm tra lại định dạng."
+  },
+  "exportModal": {
+    "title": "Xuất bộ từ",
+    "formatLabel": "Định dạng xuất",
+    "ankiApkg": "Gói Anki (.apkg)",
+    "csvFile": "Tệp bảng tính (.csv)",
+    "jsonFile": "Tệp WordStreak JSON (.json)",
+    "includeStats": "Bao gồm lịch sử ôn tập SRS và chu kỳ lặp lại",
+    "includeMedia": "Bao gồm âm thanh và liên kết phương tiện",
+    "exportSubmit": "Tải xuống tệp dữ liệu"
   }
 }

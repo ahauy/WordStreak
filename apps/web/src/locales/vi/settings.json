@@ -1,14 +1,65 @@
 {
-  "title": "Cài đặt tài khoản",
+  "title": "Cài đặt tài khoản & Mục tiêu",
   "tabs": {
-    "profile": "Hồ sơ",
-    "avatar": "Ảnh đại diện",
+    "profile": "Hồ sơ & Mục tiêu",
+    "avatar": "Chọn Avatar",
     "security": "Bảo mật",
-    "gamification": "Tiến trình & Âm thanh"
+    "gamification": "Cấp độ & XP",
+    "language": "Ngôn ngữ & Khu vực"
+  },
+  "profile": {
+    "usernameLabel": "Tên người dùng",
+    "emailLabel": "Địa chỉ Email",
+    "bioLabel": "Tiểu sử / Giới thiệu",
+    "saveChanges": "Lưu thay đổi hồ sơ",
+    "avatarUpload": "Tải lên ảnh đại diện",
+    "dailyGoalTitle": "Mục tiêu ôn tập hàng ngày (Daily Goal)",
+    "dailyGoalDesc": "Số lượng thẻ từ vựng mới và đến hạn ôn tập mỗi ngày để giữ ngọn lửa Streak.",
+    "customGoalCheck": "Tùy chỉnh số thẻ khác (1 - 100 thẻ/ngày)",
+    "cardsPerDay": "thẻ mỗi ngày",
+    "saveGoal": "Lưu mục tiêu",
+    "casual": "Nhẹ nhàng",
+    "regular": "Tiêu chuẩn",
+    "serious": "Nâng cao",
+    "intensive": "Chuyên sâu",
+    "breakthrough": "Đột phá"
+  },
+  "avatar": {
+    "title": "Xem trước Avatar",
+    "desc": "Avatar này sẽ hiển thị trên Header, Bảng xếp hạng và Thống kê học tập.",
+    "presetGallery": "Bộ sưu tập Avatar Presets",
+    "customUrlLabel": "Hoặc sử dụng URL ảnh ngoài",
+    "customUrlHint": "Hỗ trợ link ảnh trực tiếp dạng JPG, PNG hoặc SVG từ Unsplash, DiceBear, v.v.",
+    "save": "Lưu Avatar"
+  },
+  "security": {
+    "password": "Mật khẩu bảo mật tài khoản WordStreak",
+    "changePassword": "Đổi mật khẩu",
+    "currentPassword": "Mật khẩu hiện tại",
+    "newPassword": "Mật khẩu mới",
+    "confirmNewPassword": "Xác nhận mật khẩu mới",
+    "passwordReqs": "Tối thiểu 8 ký tự, 1 chữ hoa, 1 số",
+    "policyNoticeTitle": "Chính sách bảo mật:",
+    "policyNotice": "Khi đổi mật khẩu thành công, toàn bộ các phiên đăng nhập khác của bạn sẽ được tự động đăng xuất để bảo vệ an toàn tài khoản.",
+    "updatePassword": "Cập nhật mật khẩu"
   },
   "language": {
     "title": "Ngôn ngữ & Khu vực",
-    "description": "Chọn ngôn ngữ giao diện ưa thích cho WordStreak.",
-    "selectLabel": "Ngôn ngữ giao diện"
+    "description": "Chọn ngôn ngữ hiển thị giao diện phù hợp với bạn trên WordStreak.",
+    "selectLabel": "Ngôn ngữ giao diện",
+    "vietnamese": "Tiếng Việt",
+    "english": "English (US)",
+    "appliedImmediately": "Thay đổi ngôn ngữ sẽ được áp dụng ngay lập tức trên toàn bộ ứng dụng."
+  },
+  "audio": {
+    "soundEffects": "Hiệu ứng âm thanh & Chuông chúc mừng",
+    "voiceAccent": "Giọng phát âm mặc định",
+    "autoPlayAudio": "Tự động phát âm thanh khi lật thẻ ôn tập",
+    "ttsSpeed": "Tốc độ đọc giọng nói"
+  },
+  "gamification": {
+    "streakReminders": "Nhắc nhở chuỗi học tập qua email & thông báo",
+    "dailyGoalTarget": "Mục tiêu số thẻ học mỗi ngày",
+    "showFlameMascot": "Hiển thị linh vật Ngọn lửa Streak trôi nổi"
   }
 }

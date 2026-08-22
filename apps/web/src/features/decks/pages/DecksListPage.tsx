@@ -16,9 +16,13 @@ import { EditDeckModal } from "../components/EditDeckModal";
 import { DeleteDeckConfirmModal } from "../components/DeleteDeckConfirmModal";
 import { DeckEmptyState } from "../components/DeckEmptyState";
 import { DashboardNavbar } from "../../dashboard/components/DashboardNavbar";
+import { useTranslation } from "react-i18next";
+import { useLocaleFormat } from "../../../locales/hooks/useLocaleFormat";
 import type { DeckResponse } from "@wordstreak/shared-types";
 
 export const DecksListPage: React.FC = () => {
+  const { t } = useTranslation(["decks", "common"]);
+  const { formatNumber } = useLocaleFormat();
   const navigate = useNavigate();
   const {
     decks,
@@ -58,7 +62,7 @@ export const DecksListPage: React.FC = () => {
             <div className="inline-flex items-center gap-1.5 rounded-full border border-[#e9d5ff] bg-[#f3e8ff] px-3 py-1 mb-2 text-[#7e22ce]">
               <Layers className="w-3.5 h-3.5" />
               <span className="text-[11px] font-bold uppercase tracking-wider font-mono">
-                Quản lý bộ từ vựng
+                {t("decks:title", "Vocabulary Decks")}
               </span>
             </div>
 
@@ -66,15 +70,20 @@ export const DecksListPage: React.FC = () => {
               className="text-2xl sm:text-3xl font-bold text-black tracking-tight flex items-center gap-3"
               style={{ fontFamily: "var(--font-display)" }}
             >
-              <span>Bộ từ vựng của bạn</span>
+              <span>{t("decks:title", "Vocabulary Decks")}</span>
               <span className="text-xs sm:text-sm font-mono font-medium px-2.5 py-0.5 rounded-full bg-[#fafafa] border border-[#e5e5e5] text-[#525252]">
-                {decks.length} bộ từ
+                {t("decks:cardCount", {
+                  count: decks.length,
+                  defaultValue: `${formatNumber(decks.length)} decks`,
+                })}
               </span>
             </h1>
 
             <p className="text-xs sm:text-sm text-[#737373] mt-1 max-w-2xl leading-relaxed">
-              Tạo, phân loại và theo dõi tiến độ thẻ từ vựng với thuật toán
-              Spaced Repetition (SM-2) khoa học.
+              {t(
+                "decks:subtitle",
+                "Manage, organize, and import your flashcard decks",
+              )}
             </p>
           </div>
 
@@ -85,7 +94,7 @@ export const DecksListPage: React.FC = () => {
               className="btn-primary h-10 px-4 text-xs font-semibold gap-2 shadow-sm cursor-pointer"
             >
               <Plus className="w-4 h-4" />
-              <span>Tạo bộ từ mới</span>
+              <span>{t("decks:createDeck", "Create Deck")}</span>
             </button>
           </div>
         </div>
@@ -104,7 +113,7 @@ export const DecksListPage: React.FC = () => {
               }`}
             >
               <BookOpen className="w-3.5 h-3.5" />
-              <span>Đang học</span>
+              <span>{t("decks:filter.learning", "Learning")}</span>
             </button>
 
             <button
@@ -117,7 +126,7 @@ export const DecksListPage: React.FC = () => {
               }`}
             >
               <Archive className="w-3.5 h-3.5 text-[#F59E0B]" />
-              <span>Đã lưu trữ</span>
+              <span>{t("decks:filter.all", "All Decks")}</span>
             </button>
           </div>
 
@@ -130,7 +139,10 @@ export const DecksListPage: React.FC = () => {
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Tìm kiếm bộ từ..."
+                placeholder={t(
+                  "decks:searchPlaceholder",
+                  "Search decks by title or tag...",
+                )}
                 className="w-full h-9 pl-9 pr-3 rounded-full border border-[#e5e5e5] bg-[#fafafa] focus:bg-white text-xs text-black placeholder:text-[#a3a3a3] focus:outline-none focus:border-black transition-all"
               />
             </div>
@@ -146,9 +158,15 @@ export const DecksListPage: React.FC = () => {
                 }
                 className="h-9 pl-3 pr-8 rounded-full border border-[#e5e5e5] bg-[#fafafa] text-xs font-medium text-black focus:outline-none focus:border-black appearance-none cursor-pointer"
               >
-                <option value="createdAt">Mới nhất</option>
-                <option value="title">Tên A-Z</option>
-                <option value="cardCount">Số lượng từ</option>
+                <option value="createdAt">
+                  {t("decks:sort.creationDate", "Date Created")}
+                </option>
+                <option value="title">
+                  {t("decks:sort.alphabetical", "Alphabetical (A-Z)")}
+                </option>
+                <option value="cardCount">
+                  {t("decks:sort.cardCount", "Card Count")}
+                </option>
               </select>
               <ArrowUpDown className="w-3 h-3 text-[#737373] absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
             </div>

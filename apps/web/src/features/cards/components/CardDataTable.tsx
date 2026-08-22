@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Volume2, Edit2, Trash2, Lightbulb, Mic } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { playWordPronunciation } from "../utils/speech";
 import type { CardResponse } from "@wordstreak/shared-types";
 
@@ -24,6 +25,7 @@ export const CardDataTable: React.FC<CardDataTableProps> = ({
   onDelete,
   onVoicePractice,
 }) => {
+  const { t } = useTranslation(["cards", "ai_vocabulary", "common"]);
   const [playingAudioId, setPlayingAudioId] = useState<string | null>(null);
 
   const handlePlayAudio = async (
@@ -45,19 +47,19 @@ export const CardDataTable: React.FC<CardDataTableProps> = ({
     switch (status) {
       case "MASTERED":
         return {
-          label: "Thành thạo",
+          label: t("cards:status.mastered", "Mastered"),
           bg: "bg-[#f0fdf4] text-[#16a34a] border-[#bbf7d0]",
         };
       case "LEARNING":
       case "REVIEW":
         return {
-          label: "Đang học",
+          label: t("cards:status.learning", "Learning"),
           bg: "bg-[#eff6ff] text-[#2563eb] border-[#bfdbfe]",
         };
       case "NEW":
       default:
         return {
-          label: "Thẻ mới",
+          label: t("cards:status.new", "New"),
           bg: "bg-[#f3e8ff] text-[#7e22ce] border-[#e9d5ff]",
         };
     }
@@ -74,24 +76,27 @@ export const CardDataTable: React.FC<CardDataTableProps> = ({
                   type="checkbox"
                   checked={isAllSelected}
                   onChange={onSelectAll}
-                  aria-label="Chọn tất cả thẻ trên trang"
+                  aria-label={t("cards:bulk.selectDeselectAll", "Select All")}
                   className="w-4 h-4 rounded border-[#d4d4d4] text-[#7e22ce] focus:ring-[#7e22ce] cursor-pointer"
                 />
               </th>
               <th className="py-3.5 px-4 font-bold text-black min-w-[180px]">
-                Từ vựng & Phiên âm
+                {t("cards:table.columnTerm", "Term")} &{" "}
+                {t("cards:table.columnPhonetic", "Phonetic")}
               </th>
               <th className="py-3.5 px-4 font-bold text-black min-w-[240px]">
-                Nghĩa & Ví dụ
+                {t("cards:table.columnDefinition", "Meaning")} &{" "}
+                {t("cards:table.columnExample", "Example")}
               </th>
               <th className="py-3.5 px-4 font-bold text-black min-w-[180px]">
-                Mẹo nhớ & Collocations
+                {t("cards:form.notesLabel", "Notes")} &{" "}
+                {t("ai_vocabulary:fields.collocations", "Collocations")}
               </th>
               <th className="py-3.5 px-4 font-bold text-black w-32">
-                Trạng thái SRS
+                {t("cards:table.columnState", "SRS State")}
               </th>
               <th className="py-3.5 px-4 font-bold text-black w-24 text-right">
-                Thao tác
+                {t("cards:table.columnActions", "Actions")}
               </th>
             </tr>
           </thead>
@@ -137,8 +142,11 @@ export const CardDataTable: React.FC<CardDataTableProps> = ({
                               card.audioUrl,
                             )
                           }
-                          aria-label={`Phát âm ${card.word}`}
-                          title="Phát âm"
+                          aria-label={`${t("cards:table.playPronunciation", "Play pronunciation")}: ${card.word}`}
+                          title={t(
+                            "cards:table.playPronunciation",
+                            "Play pronunciation",
+                          )}
                           className={`p-1.5 rounded-full transition-colors cursor-pointer ${
                             isPlaying
                               ? "bg-[#f3e8ff] text-[#7e22ce] animate-pulse"
@@ -154,8 +162,11 @@ export const CardDataTable: React.FC<CardDataTableProps> = ({
                               e.stopPropagation();
                               onVoicePractice(card);
                             }}
-                            aria-label={`Luyện phát âm ${card.word}`}
-                            title="Luyện phát âm"
+                            aria-label={`${t("cards:table.voicePractice", "Voice practice")}: ${card.word}`}
+                            title={t(
+                              "cards:table.voicePractice",
+                              "Voice practice",
+                            )}
                             data-testid={`voice-practice-table-${card.id}`}
                             className="p-1.5 rounded-full text-[#737373] hover:text-[#7e22ce] hover:bg-[#f3e8ff] transition-colors cursor-pointer"
                           >
@@ -211,7 +222,10 @@ export const CardDataTable: React.FC<CardDataTableProps> = ({
                       {statusInfo.label}
                     </span>
                     <span className="block text-[10px] font-mono text-[#a3a3a3] mt-1">
-                      Lặp lại: {card.progress?.repetitions ?? 0}
+                      {t("cards:table.repetitions", {
+                        count: card.progress?.repetitions ?? 0,
+                        defaultValue: `Repetitions: ${card.progress?.repetitions ?? 0}`,
+                      })}
                     </span>
                   </td>
 
@@ -225,8 +239,11 @@ export const CardDataTable: React.FC<CardDataTableProps> = ({
                         <button
                           type="button"
                           onClick={() => onVoicePractice(card)}
-                          aria-label={`Luyện phát âm ${card.word}`}
-                          title="Luyện phát âm"
+                          aria-label={`${t("cards:table.voicePractice", "Voice practice")}: ${card.word}`}
+                          title={t(
+                            "cards:table.voicePractice",
+                            "Voice practice",
+                          )}
                           className="p-1.5 rounded-full text-[#737373] hover:text-[#7e22ce] hover:bg-[#f3e8ff] transition-colors cursor-pointer"
                         >
                           <Mic className="w-3.5 h-3.5" />
@@ -235,8 +252,8 @@ export const CardDataTable: React.FC<CardDataTableProps> = ({
                       <button
                         type="button"
                         onClick={() => onEdit(card)}
-                        aria-label={`Chỉnh sửa ${card.word}`}
-                        title="Sửa thẻ"
+                        aria-label={`${t("cards:table.editCard", "Edit card")}: ${card.word}`}
+                        title={t("cards:table.editCard", "Edit card")}
                         className="p-1.5 rounded-full text-[#737373] hover:text-black hover:bg-[#f0f0f0] transition-colors cursor-pointer"
                       >
                         <Edit2 className="w-3.5 h-3.5" />
@@ -244,8 +261,8 @@ export const CardDataTable: React.FC<CardDataTableProps> = ({
                       <button
                         type="button"
                         onClick={() => onDelete(card)}
-                        aria-label={`Xóa ${card.word}`}
-                        title="Xóa thẻ"
+                        aria-label={`${t("cards:table.deleteCard", "Delete card")}: ${card.word}`}
+                        title={t("cards:table.deleteCard", "Delete card")}
                         className="p-1.5 rounded-full text-[#737373] hover:text-[#ff5f56] hover:bg-[#fff1f2] transition-colors cursor-pointer"
                       >
                         <Trash2 className="w-3.5 h-3.5" />

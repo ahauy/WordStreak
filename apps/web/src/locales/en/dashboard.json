@@ -1,23 +1,57 @@
 {
   "welcome": {
     "greeting": "Welcome back",
-    "subtitle": "Keep your streak going by studying your daily cards."
+    "subtitle": "Keep your streak going by studying your daily cards.",
+    "todayGoal": "Daily Goal",
+    "cardsDue": "{{count}} cards due"
   },
   "streak": {
     "daysLabel": "Day Streak",
+    "daysStreak": "{{count}} Day Streak",
     "flameGardenTooltip": "Click to open Flame Nurture Garden & Evolution",
     "activeToday": "Studied today",
-    "restDay": "Take a rest day"
+    "restDay": "Take a rest day",
+    "streakFrozen": "Streak Frozen",
+    "freezeRemaining": "{{count}} freeze remaining",
+    "currentStreak": "Current Streak",
+    "longestStreak": "Longest Streak",
+    "saveStreak": "Save Your Streak",
+    "streakLost": "Streak Lost",
+    "streakSaved": "Streak Saved!"
   },
   "stats": {
     "cardsStudied": "Cards Studied",
     "accuracy": "Accuracy",
     "timeSpent": "Time Spent",
-    "currentLevel": "Level"
+    "currentLevel": "Level",
+    "totalXp": "Total XP",
+    "retentionRate": "Retention Rate",
+    "masteredWords": "Mastered Words",
+    "learningWords": "Learning Words"
   },
   "quickActions": {
     "startDailyReview": "Start Daily Review",
     "exploreCommunity": "Explore Community Decks",
-    "createNewDeck": "Create New Deck"
+    "createNewDeck": "Create New Deck",
+    "quickPractice": "Quick Practice",
+    "aiGenerate": "AI Vocabulary Generator"
+  },
+  "preview": {
+    "dueDecksTitle": "Decks Due for Review",
+    "viewAllDecks": "View All Decks",
+    "noDueDecksTitle": "All caught up for today!",
+    "noDueDecksDesc": "You have reviewed all scheduled flashcards. Great job!",
+    "studyNow": "Study Now"
+  },
+  "flame": {
+    "evolutionTitle": "Streak Flame Garden",
+    "nurtureGarden": "Nurture Garden",
+    "nurtureButton": "Nurture Flame",
+    "nextStage": "Next Evolution",
+    "flameStageBaby": "Ember Spark",
+    "flameStageYoung": "Violet Flame",
+    "flameStageAdult": "Blazing Core",
+    "flameStageMythic": "Cosmic Supernova",
+    "feedFlame": "Feed Flame"
   }
 }
