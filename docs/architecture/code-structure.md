@@ -40,6 +40,7 @@ apps/api/src/
 ```
 
 ### Quy tắc trong NestJS Modules:
+
 - Mỗi module có thư mục riêng chứa: `<name>.module.ts`, `<name>.controller.ts`, `<name>.service.ts`, `dto/`, và `entities/`.
 - **Controller** chỉ làm nhiệm vụ nhận request và trả response, không chứa business logic.
 - **Service** chứa toàn bộ business logic và tương tác với Database.
@@ -52,13 +53,24 @@ Mã nguồn Frontend tuân theo cấu trúc **Feature-Based Architecture (FBA)**
 
 ```text
 apps/web/src/
-├── main.tsx                     # Render React Root Node
+├── main.tsx                     # Render React Root Node (khởi tạo i18n instance)
 ├── App.tsx                      # Main Layout & Global Providers
 ├── router.tsx                   # Khai báo React Router & Protected Route Guards
 │
 ├── assets/                      # Static Assets (Images, SVG Icons, Global Styles)
 ├── config/                      # Constants, Enums, Environment variables
 ├── store/                       # Global State Management (Zustand / Redux)
+│
+├── locales/                     # 🌐 Hạ tầng Đa ngôn ngữ i18n & 9 Domain Namespaces
+│   ├── i18n.ts                  # Khởi tạo i18next & Browser Language Detector
+│   ├── types.ts                 # TypeScript Module Augmentation (CustomTypeOptions)
+│   ├── constants.ts             # Supported locales metadata (vi, en) & default config
+│   ├── utils/storage.ts         # Wrapper an toàn localStorage ('wordstreak_locale')
+│   ├── vi/                      # 9 tệp từ điển JSON Tiếng Việt (common, auth, dashboard...)
+│   └── en/                      # 9 tệp từ điển JSON Tiếng Anh (Canonical schema)
+│
+├── components/                  # Global UI Components & Feature Components
+│   └── LanguageSwitcher/       # 🔘 Obsidian Pill Language Switcher (vi/en instant toggle)
 │
 ├── common/                      # Components & Utilities dùng chung
 │   ├── api/                     # Axios instance & Endpoints mapping

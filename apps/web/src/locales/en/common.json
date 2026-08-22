@@ -1,0 +1,43 @@
+{
+  "brand": {
+    "name": "WordStreak",
+    "tagline": "100% Free Spaced Repetition",
+    "badgeFree": "100% Free"
+  },
+  "nav": {
+    "dashboard": "Overview",
+    "decks": "Decks",
+    "community": "Explore",
+    "analytics": "Analytics",
+    "searchPlaceholder": "Search vocabulary...",
+    "interactiveDemo": "Interactive Demo",
+    "features": "Features",
+    "howItWorks": "How It Works",
+    "studyGoals": "Study Goals",
+    "faq": "FAQ"
+  },
+  "actions": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "back": "Back",
+    "next": "Next",
+    "close": "Close",
+    "confirm": "Confirm",
+    "startLearning": "Start Learning Free",
+    "signIn": "Sign In",
+    "signUp": "Start Free",
+    "signOut": "Sign Out"
+  },
+  "switcher": {
+    "toggleAriaVi": "Chuyển sang Tiếng Việt",
+    "toggleAriaEn": "Switch to English"
+  },
+  "status": {
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "success": "Success",
+    "empty": "No data found"
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "title": "Bộ từ vựng cộng đồng",
+  "subtitle": "Khám phá và sao chép các bộ thẻ từ vựng chất lượng được tuyển chọn bởi cộng đồng",
+  "searchPlaceholder": "Tìm kiếm bộ từ cộng đồng chia sẻ...",
+  "filters": {
+    "all": "Tất cả",
+    "popular": "Phổ biến nhất",
+    "trending": "Thịnh hành",
+    "recent": "Mới cập nhật"
+  },
+  "actions": {
+    "cloneDeck": "Sao chép bộ từ",
+    "viewDetails": "Xem chi tiết"
+  }
+}

@@ -9,6 +9,8 @@ import { getFlameTier } from "../config/flameTiers";
 import { useAuthStore } from "../../../store/useAuthStore";
 import { useMascotStore } from "../../../store/useMascotStore";
 import { useStreak } from "../hooks/useStreak";
+import { useTranslation } from "react-i18next";
+import { LanguageSwitcher } from "../../../components/LanguageSwitcher";
 import type { AuthUser } from "@wordstreak/shared-types";
 
 interface DashboardNavbarProps {
@@ -34,6 +36,7 @@ export const DashboardNavbar: React.FC<DashboardNavbarProps> = ({
   onOpenXpHistory: propOpenXpHistory,
   onLogout: propLogout,
 }) => {
+  const { t } = useTranslation("common");
   const { user: storeUser, logout: storeLogout } = useAuthStore();
   const hookStreak = useStreak({
     enabled: propCurrentStreak === undefined && !!storeUser,
@@ -87,10 +90,10 @@ export const DashboardNavbar: React.FC<DashboardNavbarProps> = ({
       <header className="sticky top-0 z-30 w-full border-b border-[#e5e5e5] bg-white/95 backdrop-blur-md transition-colors">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           {/* Brand Logo & Nav links */}
-          <div className="flex items-center gap-6 sm:gap-8">
+          <div className="flex items-center gap-4 sm:gap-6 lg:gap-8 shrink-0">
             <Link
               to="/dashboard"
-              className="flex items-center gap-2.5 group focus:outline-none"
+              className="flex items-center gap-2.5 group focus:outline-none shrink-0"
             >
               <StreakFlame
                 streakDays={currentStreak}
@@ -106,7 +109,7 @@ export const DashboardNavbar: React.FC<DashboardNavbarProps> = ({
                 >
                   WordStreak
                 </span>
-                <span className="hidden sm:inline-block text-[10px] uppercase font-mono font-bold tracking-wider text-[#7e22ce] mt-0.5">
+                <span className="hidden sm:inline-block text-[10px] uppercase font-mono font-bold tracking-wider text-[#7e22ce] mt-0.5 whitespace-nowrap">
                   100% Free Spaced Repetition
                 </span>
               </div>
@@ -114,33 +117,33 @@ export const DashboardNavbar: React.FC<DashboardNavbarProps> = ({
 
             {/* Navigation links */}
             <nav
-              className="hidden sm:flex items-center gap-1"
+              className="hidden sm:flex items-center gap-1 shrink-0"
               aria-label="Main Navigation"
             >
               <Link
                 to="/dashboard"
                 aria-current={isDashboardActive ? "page" : undefined}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition-all focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 focus:outline-none ${
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition-all focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 focus:outline-none whitespace-nowrap shrink-0 ${
                   isDashboardActive
                     ? "bg-black text-white"
                     : "text-[#737373] hover:text-black hover:bg-[#fafafa]"
                 }`}
               >
                 <Home className="w-3.5 h-3.5" />
-                <span>Tổng quan</span>
+                <span>{t("nav.dashboard", "Tổng quan")}</span>
               </Link>
 
               <Link
                 to="/decks"
                 aria-current={isDecksActive ? "page" : undefined}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition-all focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 focus:outline-none ${
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition-all focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 focus:outline-none whitespace-nowrap shrink-0 ${
                   isDecksActive
                     ? "bg-black text-white"
                     : "text-[#737373] hover:text-black hover:bg-[#fafafa]"
                 }`}
               >
                 <Layers className="w-3.5 h-3.5" />
-                <span>Bộ từ vựng</span>
+                <span>{t("nav.decks", "Bộ từ vựng")}</span>
               </Link>
 
               <Link
@@ -150,14 +153,14 @@ export const DashboardNavbar: React.FC<DashboardNavbarProps> = ({
                     ? "page"
                     : undefined
                 }
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition-all focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 focus:outline-none ${
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition-all focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 focus:outline-none whitespace-nowrap shrink-0 ${
                   location.pathname.startsWith("/community")
                     ? "bg-black text-white"
                     : "text-[#737373] hover:text-black hover:bg-[#fafafa]"
                 }`}
               >
                 <Globe className="w-3.5 h-3.5" />
-                <span>Khám phá</span>
+                <span>{t("nav.community", "Khám phá")}</span>
               </Link>
 
               <Link
@@ -165,20 +168,20 @@ export const DashboardNavbar: React.FC<DashboardNavbarProps> = ({
                 aria-current={
                   location.pathname === "/analytics" ? "page" : undefined
                 }
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition-all focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 focus:outline-none ${
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition-all focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 focus:outline-none whitespace-nowrap shrink-0 ${
                   location.pathname === "/analytics"
                     ? "bg-black text-white"
                     : "text-[#737373] hover:text-black hover:bg-[#fafafa]"
                 }`}
               >
                 <BarChart2 className="w-3.5 h-3.5" />
-                <span>Thống kê</span>
+                <span>{t("nav.analytics", "Thống kê")}</span>
               </Link>
             </nav>
           </div>
 
           {/* Right Nav & User Actions */}
-          <div className="flex items-center gap-2 sm:gap-3">
+          <div className="flex items-center gap-2 sm:gap-2.5 shrink-0">
             {/* Learner Level & XP Widget */}
             <TopbarLevelWidget
               onOpenHistory={() => {
@@ -199,7 +202,7 @@ export const DashboardNavbar: React.FC<DashboardNavbarProps> = ({
                 onOpenFlameNurture ||
                 (() => useMascotStore.getState().openFlameNurture())
               }
-              className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-xs font-semibold shadow-xs cursor-pointer hover:scale-[1.02] active:scale-[0.98] transition-all focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:ring-offset-2 focus:outline-none ${tierInfo.pillBg} ${tierInfo.pillText} ${tierInfo.pillBorder}`}
+              className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-xs font-semibold shadow-xs cursor-pointer hover:scale-[1.02] active:scale-[0.98] transition-all focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:ring-offset-2 focus:outline-none whitespace-nowrap shrink-0 ${tierInfo.pillBg} ${tierInfo.pillText} ${tierInfo.pillBorder}`}
               title="Nhấn để mở Khu Vườn Nuôi Lửa & Tiến Hóa"
               aria-label="Mở khu vườn nuôi lửa streak và tiến hóa"
             >
@@ -217,11 +220,14 @@ export const DashboardNavbar: React.FC<DashboardNavbarProps> = ({
               </span>
             </button>
 
+            {/* Language Switcher Secondary Utility Pill */}
+            <LanguageSwitcher />
+
             {/* User Profile & Settings Pill Trigger */}
             <button
               type="button"
               onClick={() => handleOpenSettings("profile")}
-              className="flex items-center gap-2 px-1.5 py-1 sm:px-2.5 sm:py-1 rounded-full border border-[#e5e5e5] bg-white hover:bg-[#fafafa] hover:border-[#d4d4d4] transition-all cursor-pointer text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 apple-tap-active"
+              className="flex items-center gap-2 px-1.5 py-1 sm:px-2.5 sm:py-1 rounded-full border border-[#e5e5e5] bg-white hover:bg-[#fafafa] hover:border-[#d4d4d4] transition-all cursor-pointer text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 apple-tap-active whitespace-nowrap shrink-0"
               title="Cài đặt tài khoản & Mục tiêu học"
               aria-label="Cài đặt tài khoản và hồ sơ người dùng"
             >
@@ -240,7 +246,7 @@ export const DashboardNavbar: React.FC<DashboardNavbarProps> = ({
             <button
               type="button"
               onClick={handleLogout}
-              className="w-9 h-9 rounded-full flex items-center justify-center text-[#dc2626] border border-[#ff5f56]/30 bg-[#fff5f5] hover:bg-[#ffebeb] hover:border-[#ff5f56]/50 transition-all cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2 apple-tap-active"
+              className="w-9 h-9 rounded-full flex items-center justify-center text-[#dc2626] border border-[#ff5f56]/30 bg-[#fff5f5] hover:bg-[#ffebeb] hover:border-[#ff5f56]/50 transition-all cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2 apple-tap-active shrink-0"
               aria-label="Đăng xuất khỏi tài khoản"
               title="Đăng xuất khỏi tài khoản"
             >

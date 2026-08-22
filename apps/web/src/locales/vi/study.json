@@ -1,0 +1,19 @@
+{
+  "session": {
+    "cardOf": "Thẻ {{current}} / {{total}}",
+    "flipPrompt": "Chạm vào thẻ hoặc nhấn Phím Cách để lật",
+    "flipHint": "Hiện đáp án"
+  },
+  "rating": {
+    "again": "Học lại",
+    "hard": "Khó",
+    "good": "Tốt",
+    "easy": "Dễ"
+  },
+  "complete": {
+    "title": "Hoàn thành phiên học! 🎉",
+    "subtitle": "Bạn đã ôn tập xong tất cả các thẻ flashcard lên lịch cho hôm nay.",
+    "backToDashboard": "Về bảng tổng quan",
+    "studyAgain": "Ôn tiếp"
+  }
+}

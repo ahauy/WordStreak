@@ -1,0 +1,23 @@
+{
+  "welcome": {
+    "greeting": "Welcome back",
+    "subtitle": "Keep your streak going by studying your daily cards."
+  },
+  "streak": {
+    "daysLabel": "Day Streak",
+    "flameGardenTooltip": "Click to open Flame Nurture Garden & Evolution",
+    "activeToday": "Studied today",
+    "restDay": "Take a rest day"
+  },
+  "stats": {
+    "cardsStudied": "Cards Studied",
+    "accuracy": "Accuracy",
+    "timeSpent": "Time Spent",
+    "currentLevel": "Level"
+  },
+  "quickActions": {
+    "startDailyReview": "Start Daily Review",
+    "exploreCommunity": "Explore Community Decks",
+    "createNewDeck": "Create New Deck"
+  }
+}

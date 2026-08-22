@@ -1,0 +1,14 @@
+{
+  "title": "Account Settings",
+  "tabs": {
+    "profile": "Profile",
+    "avatar": "Avatar",
+    "security": "Security",
+    "gamification": "Gamification & Audio"
+  },
+  "language": {
+    "title": "Language & Region",
+    "description": "Choose your preferred interface language for WordStreak.",
+    "selectLabel": "Interface Language"
+  }
+}
