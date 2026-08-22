@@ -18,6 +18,7 @@ model User {
   totalXp      Int                @default(0)
   level        Int                @default(1)
   tier         String             @default("BRONZE")
+  preferredLanguage String          @default("vi")
   createdAt    DateTime           @default(now())
   updatedAt    DateTime           @updatedAt
   sessions     Session[]

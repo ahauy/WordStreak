@@ -5,7 +5,10 @@ import { PrismaService } from '../prisma/prisma.service';
 import { MailService } from '../mail/mail.service';
 import { JwtService } from '@nestjs/jwt';
 import { ConflictException, UnauthorizedException } from '@nestjs/common';
+import { validate } from 'class-validator';
+import { plainToInstance } from 'class-transformer';
 import { PasswordUtil } from './utils/password.util';
+import { RegisterDto } from './dto/register.dto';
 
 describe('AuthService', () => {
   let service: AuthService;
@@ -34,6 +37,7 @@ describe('AuthService', () => {
     username: 'streakuser',
     passwordHash: '',
     dailyGoal: 10,
+    preferredLanguage: 'en',
     createdAt: new Date(),
     updatedAt: new Date(),
   };
@@ -123,7 +127,7 @@ describe('AuthService', () => {
       ).rejects.toThrow(ConflictException);
     });
 
-    it('should register a new user successfully, send welcome email, and issue tokens', async () => {
+    it('should register a new user successfully with preferredLanguage, send welcome email, and issue tokens', async () => {
       usersService.findByEmail.mockResolvedValue(null);
       usersService.findByUsername.mockResolvedValue(null);
       usersService.create.mockResolvedValue(mockUser);
@@ -132,11 +136,18 @@ describe('AuthService', () => {
         email: 'new@wordstreak.app',
         username: 'newuser',
         password: 'Password123',
+        preferredLanguage: 'en',
       });
 
       expect(result.authResponse.user.email).toBe(mockUser.email);
+      expect(result.authResponse.user.preferredLanguage).toBe('en');
       expect(result.authResponse.accessToken).toBe('mock-jwt-access-token');
       expect(result.refreshToken).toBeDefined();
+      expect(usersService.create).toHaveBeenCalledWith(
+        expect.objectContaining({
+          preferredLanguage: 'en',
+        }),
+      );
       expect(prismaService.session.create).toHaveBeenCalledTimes(1);
       expect(mailService.sendWelcomeEmail).toHaveBeenCalledWith(
         mockUser.email,
@@ -168,7 +179,7 @@ describe('AuthService', () => {
       ).rejects.toThrow(UnauthorizedException);
     });
 
-    it('should successfully log in with username and issue tokens', async () => {
+    it('should successfully log in with username and return preferredLanguage', async () => {
       usersService.findByEmailOrUsername.mockResolvedValue(mockUser);
 
       const result = await service.login({
@@ -177,6 +188,7 @@ describe('AuthService', () => {
       });
 
       expect(result.authResponse.user.id).toBe(mockUser.id);
+      expect(result.authResponse.user.preferredLanguage).toBe('en');
       expect(result.authResponse.accessToken).toBe('mock-jwt-access-token');
       expect(result.refreshToken).toBeDefined();
       expect(usersService.findByEmailOrUsername).toHaveBeenCalledWith(
@@ -193,10 +205,31 @@ describe('AuthService', () => {
       });
 
       expect(result.authResponse.user.id).toBe(mockUser.id);
+      expect(result.authResponse.user.preferredLanguage).toBe('en');
       expect(result.authResponse.accessToken).toBe('mock-jwt-access-token');
       expect(result.refreshToken).toBeDefined();
       expect(usersService.findByEmailOrUsername).toHaveBeenCalledWith(
         'test@wordstreak.app',
+      );
+    });
+  });
+
+  describe('getMe', () => {
+    it('should return user profile including preferredLanguage', async () => {
+      usersService.findById.mockResolvedValue(mockUser);
+
+      const result = await service.getMe('user-uuid-1');
+
+      expect(result.id).toBe(mockUser.id);
+      expect(result.preferredLanguage).toBe('en');
+      expect(usersService.findById).toHaveBeenCalledWith('user-uuid-1');
+    });
+
+    it('should throw UnauthorizedException if user not found', async () => {
+      usersService.findById.mockResolvedValue(null);
+
+      await expect(service.getMe('non-existent')).rejects.toThrow(
+        UnauthorizedException,
       );
     });
   });
@@ -209,6 +242,54 @@ describe('AuthService', () => {
           where: { id: 'session-uuid-1', revokedAt: null },
         }),
       );
+    });
+  });
+
+  describe('RegisterDto validation', () => {
+    it('should validate valid preferredLanguage "vi"', async () => {
+      const dto = plainToInstance(RegisterDto, {
+        email: 'learner@wordstreak.com',
+        username: 'learner_1',
+        password: 'Password123',
+        preferredLanguage: 'vi',
+      });
+      const errors = await validate(dto);
+      expect(errors.length).toBe(0);
+    });
+
+    it('should validate valid preferredLanguage "en"', async () => {
+      const dto = plainToInstance(RegisterDto, {
+        email: 'learner@wordstreak.com',
+        username: 'learner_1',
+        password: 'Password123',
+        preferredLanguage: 'en',
+      });
+      const errors = await validate(dto);
+      expect(errors.length).toBe(0);
+    });
+
+    it('should fail validation for invalid preferredLanguage', async () => {
+      const dto = plainToInstance(RegisterDto, {
+        email: 'learner@wordstreak.com',
+        username: 'learner_1',
+        password: 'Password123',
+        preferredLanguage: 'fr',
+      });
+      const errors = await validate(dto);
+      expect(errors.length).toBeGreaterThan(0);
+      const langError = errors.find((e) => e.property === 'preferredLanguage');
+      expect(langError).toBeDefined();
+      expect(langError?.constraints?.isIn).toContain('vi, en');
+    });
+
+    it('should pass validation when preferredLanguage is omitted', async () => {
+      const dto = plainToInstance(RegisterDto, {
+        email: 'learner@wordstreak.com',
+        username: 'learner_1',
+        password: 'Password123',
+      });
+      const errors = await validate(dto);
+      expect(errors.length).toBe(0);
     });
   });
 });

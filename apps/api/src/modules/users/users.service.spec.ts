@@ -1,8 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { BadRequestException, NotFoundException } from '@nestjs/common';
+import { validate } from 'class-validator';
+import { plainToInstance } from 'class-transformer';
 import { UsersService } from './users.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { PasswordUtil } from '../auth/utils/password.util';
+import { UpdateProfileDto } from './dto/update-profile.dto';
 
 describe('UsersService', () => {
   let service: UsersService;
@@ -14,6 +17,7 @@ describe('UsersService', () => {
     passwordHash: 'argon2_hashed_secret',
     dailyGoal: 10,
     avatarUrl: 'preset:cosmos-1',
+    preferredLanguage: 'vi',
     createdAt: new Date(),
     updatedAt: new Date(),
   };
@@ -46,7 +50,7 @@ describe('UsersService', () => {
   });
 
   describe('getProfile', () => {
-    it('should return sanitized user profile excluding passwordHash', async () => {
+    it('should return sanitized user profile with preferredLanguage excluding passwordHash', async () => {
       mockPrismaService.user.findUnique.mockResolvedValue(mockUser);
 
       const result = await service.getProfile('user-uuid-1');
@@ -57,6 +61,7 @@ describe('UsersService', () => {
         username: mockUser.username,
         dailyGoal: mockUser.dailyGoal,
         avatarUrl: mockUser.avatarUrl,
+        preferredLanguage: 'vi',
         createdAt: mockUser.createdAt,
         updatedAt: mockUser.updatedAt,
       });
@@ -76,27 +81,102 @@ describe('UsersService', () => {
   });
 
   describe('updateProfile', () => {
-    it('should update dailyGoal and avatarUrl and return sanitized profile', async () => {
+    it('should update dailyGoal, avatarUrl, and preferredLanguage and return sanitized profile', async () => {
       const updatedUser = {
         ...mockUser,
         dailyGoal: 20,
         avatarUrl: 'preset:cosmos-2',
+        preferredLanguage: 'en',
       };
       mockPrismaService.user.update.mockResolvedValue(updatedUser);
 
       const result = await service.updateProfile('user-uuid-1', {
         dailyGoal: 20,
         avatarUrl: 'preset:cosmos-2',
+        preferredLanguage: 'en',
       });
 
       expect(result.dailyGoal).toBe(20);
       expect(result.avatarUrl).toBe('preset:cosmos-2');
+      expect(result.preferredLanguage).toBe('en');
       expect(result).not.toHaveProperty('passwordHash');
       expect(mockPrismaService.user.update).toHaveBeenCalledWith({
         where: { id: 'user-uuid-1' },
         data: {
           dailyGoal: 20,
           avatarUrl: 'preset:cosmos-2',
+          preferredLanguage: 'en',
+        },
+      });
+    });
+
+    it('should allow updating only preferredLanguage', async () => {
+      const updatedUser = {
+        ...mockUser,
+        preferredLanguage: 'en',
+      };
+      mockPrismaService.user.update.mockResolvedValue(updatedUser);
+
+      const result = await service.updateProfile('user-uuid-1', {
+        preferredLanguage: 'en',
+      });
+
+      expect(result.preferredLanguage).toBe('en');
+      expect(mockPrismaService.user.update).toHaveBeenCalledWith({
+        where: { id: 'user-uuid-1' },
+        data: {
+          preferredLanguage: 'en',
+        },
+      });
+    });
+  });
+
+  describe('create', () => {
+    it('should create user with explicit preferredLanguage', async () => {
+      const newUser = {
+        ...mockUser,
+        preferredLanguage: 'en',
+      };
+      mockPrismaService.user.create.mockResolvedValue(newUser);
+
+      const result = await service.create({
+        email: 'test@wordstreak.com',
+        username: 'streakmaster',
+        passwordHash: 'hash',
+        preferredLanguage: 'en',
+      });
+
+      expect(result.preferredLanguage).toBe('en');
+      expect(mockPrismaService.user.create).toHaveBeenCalledWith({
+        data: {
+          email: 'test@wordstreak.com',
+          username: 'streakmaster',
+          passwordHash: 'hash',
+          dailyGoal: 10,
+          avatarUrl: undefined,
+          preferredLanguage: 'en',
+        },
+      });
+    });
+
+    it('should default preferredLanguage to "vi" when omitted', async () => {
+      mockPrismaService.user.create.mockResolvedValue(mockUser);
+
+      const result = await service.create({
+        email: 'test@wordstreak.com',
+        username: 'streakmaster',
+        passwordHash: 'hash',
+      });
+
+      expect(result.preferredLanguage).toBe('vi');
+      expect(mockPrismaService.user.create).toHaveBeenCalledWith({
+        data: {
+          email: 'test@wordstreak.com',
+          username: 'streakmaster',
+          passwordHash: 'hash',
+          dailyGoal: 10,
+          avatarUrl: undefined,
+          preferredLanguage: 'vi',
         },
       });
     });
@@ -183,6 +263,42 @@ describe('UsersService', () => {
       );
 
       expect(mockPrismaService.user.update).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('UpdateProfileDto validation', () => {
+    it('should validate valid preferredLanguage "vi"', async () => {
+      const dto = plainToInstance(UpdateProfileDto, {
+        preferredLanguage: 'vi',
+      });
+      const errors = await validate(dto);
+      expect(errors.length).toBe(0);
+    });
+
+    it('should validate valid preferredLanguage "en"', async () => {
+      const dto = plainToInstance(UpdateProfileDto, {
+        preferredLanguage: 'en',
+      });
+      const errors = await validate(dto);
+      expect(errors.length).toBe(0);
+    });
+
+    it('should fail validation for invalid preferredLanguage "fr"', async () => {
+      const dto = plainToInstance(UpdateProfileDto, {
+        preferredLanguage: 'fr',
+      });
+      const errors = await validate(dto);
+      expect(errors.length).toBeGreaterThan(0);
+      expect(errors[0].constraints).toHaveProperty('isIn');
+      expect(errors[0].constraints?.isIn).toContain('vi, en');
+    });
+
+    it('should pass validation when preferredLanguage is undefined', async () => {
+      const dto = plainToInstance(UpdateProfileDto, {
+        dailyGoal: 15,
+      });
+      const errors = await validate(dto);
+      expect(errors.length).toBe(0);
     });
   });
 });

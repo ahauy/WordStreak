@@ -1,5 +1,15 @@
-import { IsEmail, IsString, Length, Matches } from 'class-validator';
-import { RegisterDto as IRegisterDto } from '@wordstreak/shared-types';
+import {
+  IsEmail,
+  IsOptional,
+  IsString,
+  Length,
+  Matches,
+  IsIn,
+} from 'class-validator';
+import type {
+  RegisterDto as IRegisterDto,
+  AppLanguage,
+} from '@wordstreak/shared-types';
 
 export class RegisterDto implements IRegisterDto {
   @IsEmail({}, { message: 'Invalid email address format' })
@@ -19,4 +29,10 @@ export class RegisterDto implements IRegisterDto {
     message: 'Password must contain at least 1 uppercase letter and 1 number',
   })
   password!: string;
+
+  @IsOptional()
+  @IsIn(['vi', 'en'], {
+    message: 'preferredLanguage must be one of the following values: vi, en',
+  })
+  preferredLanguage?: AppLanguage;
 }

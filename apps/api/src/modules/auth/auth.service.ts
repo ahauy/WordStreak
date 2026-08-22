@@ -16,6 +16,7 @@ import {
   AuthUser,
   JwtPayload,
   TokenRefreshResponse,
+  AppLanguage,
 } from '@wordstreak/shared-types';
 
 const ACCESS_TOKEN_EXPIRATION = '15m';
@@ -39,14 +40,20 @@ export class AuthService {
     email: string;
     username: string;
     dailyGoal: number;
+    avatarUrl?: string | null;
+    preferredLanguage?: string;
     createdAt: Date;
+    updatedAt?: Date;
   }): AuthUser {
     return {
       id: user.id,
       email: user.email,
       username: user.username,
       dailyGoal: user.dailyGoal,
+      avatarUrl: user.avatarUrl,
+      preferredLanguage: (user.preferredLanguage as AppLanguage) ?? 'vi',
       createdAt: user.createdAt,
+      updatedAt: user.updatedAt,
     };
   }
 
@@ -98,6 +105,7 @@ export class AuthService {
       email: dto.email,
       username: dto.username,
       passwordHash,
+      preferredLanguage: dto.preferredLanguage,
     });
 
     // Send welcome email asynchronously without blocking registration response
