@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Link } from "react-router-dom";
 import {
   GraduationCap,
@@ -13,30 +13,21 @@ import {
   Layers,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useTranslation } from "react-i18next";
 
-interface Pathway {
-  id: string;
-  name: string;
-  badge: string;
+interface PathwayConfig {
+  id: "ielts" | "conversation" | "business" | "polyglot";
   icon: React.ElementType;
-  headline: string;
-  description: string;
   dailyTime: string;
   recommendedWords: string;
   retentionTarget: string;
   sampleTerms: string[];
-  keyModules: string[];
 }
 
-const pathways: Pathway[] = [
+const pathwayConfigs: PathwayConfig[] = [
   {
     id: "ielts",
-    name: "IELTS & TOEFL Mastery",
-    badge: "Target Band 7.5+",
     icon: GraduationCap,
-    headline: "High-Frequency Academic Vocabulary & Collocations",
-    description:
-      "Engineered specifically for academic test takers. Focus on nuanced lexical resource, academic collocations, and varied fill-in-the-blank writing recall.",
     dailyTime: "10–15 mins/day",
     recommendedWords: "800+ Academic Words",
     retentionTarget: "98% Recall in 30 Days",
@@ -47,21 +38,10 @@ const pathways: Pathway[] = [
       "empirical",
       "substantiate",
     ],
-    keyModules: [
-      "Academic Word List (AWL) Sublists 1–10",
-      "Formal writing collocations & idioms",
-      "Listening audio recall & spelling drills",
-      "Contextual sentence fill-in-the-blanks",
-    ],
   },
   {
     id: "conversation",
-    name: "Spoken & Daily Fluency",
-    badge: "Natural English",
     icon: MessageSquare,
-    headline: "Everyday Idioms, Phrasal Verbs & Slang",
-    description:
-      "Designed for learners who want to understand movies, podcasts, and speak naturally with native speakers without freezing or translating.",
     dailyTime: "5–10 mins/day",
     recommendedWords: "1,200+ Everyday Terms",
     retentionTarget: "Instant Audio Recognition",
@@ -72,21 +52,10 @@ const pathways: Pathway[] = [
       "resilience",
       "bite the bullet",
     ],
-    keyModules: [
-      "Top 100 essential phrasal verbs in context",
-      "Native IPA audio pronunciation comparisons",
-      "Natural movie & podcast sentence examples",
-      "Active voice recognition & listening quizzes",
-    ],
   },
   {
     id: "business",
-    name: "Business & Tech English",
-    badge: "Career Growth",
     icon: Briefcase,
-    headline: "Executive Phrasing, Negotiations & Tech Jargon",
-    description:
-      "Tailored for working professionals, engineers, and founders communicating in multinational environments, emails, and client pitches.",
     dailyTime: "8–12 mins/day",
     recommendedWords: "500+ Corporate Words",
     retentionTarget: "Professional Precision",
@@ -97,21 +66,10 @@ const pathways: Pathway[] = [
       "synergy",
       "paradigm shift",
     ],
-    keyModules: [
-      "Executive meeting & negotiation vocabulary",
-      "Professional email & pitch deck phrasing",
-      "Tech industry & product management terms",
-      "Nuance & politeness calibration drills",
-    ],
   },
   {
     id: "polyglot",
-    name: "Custom Decks & Reading",
-    badge: "Free-Range Reader",
     icon: BookOpen,
-    headline: "AI-Powered Card Capture From Anything You Read",
-    description:
-      "For book lovers and independent polyglots who want to capture vocabulary from novels, research papers, or news articles in seconds.",
     dailyTime: "Your own pace",
     recommendedWords: "Unlimited Custom Words",
     retentionTarget: "Open Anki Synchronization",
@@ -122,17 +80,28 @@ const pathways: Pathway[] = [
       "melancholy",
       "petrichor",
     ],
-    keyModules: [
-      "Instant 1-click AI definition & IPA generator",
-      "Custom personal mnemonic note attachments",
-      "Full Anki (.apkg), CSV, and JSON import/export",
-      "Multi-device local-first offline synchronization",
-    ],
   },
 ];
 
 export function PricingSection() {
+  const { t } = useTranslation("landing");
   const [activePathwayId, setActivePathwayId] = useState<string>("ielts");
+
+  const pathways = useMemo(() => {
+    return pathwayConfigs.map((cfg) => ({
+      ...cfg,
+      name: t(`pathways.${cfg.id}.name`, cfg.id),
+      badge: t(`pathways.${cfg.id}.badge`, ""),
+      headline: t(`pathways.${cfg.id}.headline`, ""),
+      description: t(`pathways.${cfg.id}.desc`, ""),
+      keyModules: [
+        t(`pathways.${cfg.id}.m1`, ""),
+        t(`pathways.${cfg.id}.m2`, ""),
+        t(`pathways.${cfg.id}.m3`, ""),
+        t(`pathways.${cfg.id}.m4`, ""),
+      ],
+    }));
+  }, [t]);
 
   const currentPathway =
     pathways.find((p) => p.id === activePathwayId) || pathways[0];
@@ -154,12 +123,16 @@ export function PricingSection() {
         >
           <span className="command-tag-chip mb-3">
             <Sparkles className="h-3.5 w-3.5 mr-1 text-black" />
-            Adaptive Learning Paths
+            {t("pathways.tag", "Adaptive Learning Paths")}
           </span>
-          <h2 className="display-lg">Built for every learning goal.</h2>
+          <h2 className="display-lg">
+            {t("pathways.title", "Built for every learning goal.")}
+          </h2>
           <p className="body-md mt-2">
-            Select your focus area — WordStreak automatically adapts the spaced
-            repetition schedule and quiz modalities for your target.
+            {t(
+              "pathways.subtitle",
+              "Select your focus area — WordStreak automatically adapts the spaced repetition schedule and quiz modalities for your target.",
+            )}
           </p>
         </motion.div>
 
@@ -229,12 +202,15 @@ export function PricingSection() {
                 {/* Key Modules List */}
                 <div className="space-y-2 pt-2 border-t border-[#e5e5e5]">
                   <p className="text-xs font-mono font-semibold text-black uppercase tracking-wider">
-                    Included Curriculum Modules:
+                    {t(
+                      "pathways.curriculumLabel",
+                      "Included Curriculum Modules:",
+                    )}
                   </p>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                    {currentPathway.keyModules.map((mod) => (
+                    {currentPathway.keyModules.map((mod, i) => (
                       <div
-                        key={mod}
+                        key={i}
                         className="flex items-start gap-2 text-xs text-[#525252]"
                       >
                         <Check className="h-3.5 w-3.5 text-black shrink-0 mt-0.5" />
@@ -246,11 +222,16 @@ export function PricingSection() {
 
                 <div className="pt-3 flex flex-wrap items-center gap-3">
                   <Link to="/register" className="btn-primary">
-                    <span>Start This Learning Path</span>
+                    <span>
+                      {t("pathways.startPath", "Start This Learning Path")}
+                    </span>
                     <ArrowRight className="ml-1.5 h-3.5 w-3.5" />
                   </Link>
                   <span className="text-xs font-mono text-[#737373]">
-                    100% Free · No Credit Card Required
+                    {t(
+                      "pathways.noCreditCard",
+                      "100% Free · No Credit Card Required",
+                    )}
                   </span>
                 </div>
               </div>
@@ -258,16 +239,19 @@ export function PricingSection() {
               {/* Right Column: Path Telemetry & Sample Vocabulary */}
               <div className="lg:col-span-5 rounded-xl border border-[#e5e5e5] bg-[#fafafa] p-5 space-y-4 font-mono text-xs">
                 <div className="flex items-center justify-between border-b border-[#e5e5e5] pb-2.5">
-                  <span className="font-semibold text-black">PATH METRICS</span>
+                  <span className="font-semibold text-black">
+                    {t("pathways.metricsTitle", "PATH METRICS")}
+                  </span>
                   <span className="text-[11px] text-[#27c93f] font-bold">
-                    SM-2 TUNED
+                    {t("pathways.sm2Tuned", "SM-2 TUNED")}
                   </span>
                 </div>
 
                 <div className="space-y-2.5">
                   <div className="flex items-center justify-between">
                     <span className="text-[#737373] flex items-center gap-1.5">
-                      <Clock className="h-3.5 w-3.5" /> Daily Commitment:
+                      <Clock className="h-3.5 w-3.5" />{" "}
+                      {t("pathways.dailyCommitment", "Daily Commitment:")}
                     </span>
                     <span className="text-black font-semibold">
                       {currentPathway.dailyTime}
@@ -276,7 +260,8 @@ export function PricingSection() {
 
                   <div className="flex items-center justify-between">
                     <span className="text-[#737373] flex items-center gap-1.5">
-                      <Target className="h-3.5 w-3.5" /> Deck Scope:
+                      <Target className="h-3.5 w-3.5" />{" "}
+                      {t("pathways.deckScope", "Deck Scope:")}
                     </span>
                     <span className="text-black font-semibold">
                       {currentPathway.recommendedWords}
@@ -285,7 +270,8 @@ export function PricingSection() {
 
                   <div className="flex items-center justify-between">
                     <span className="text-[#737373] flex items-center gap-1.5">
-                      <Layers className="h-3.5 w-3.5" /> Retention Target:
+                      <Layers className="h-3.5 w-3.5" />{" "}
+                      {t("pathways.retentionTarget", "Retention Target:")}
                     </span>
                     <span className="text-black font-semibold">
                       {currentPathway.retentionTarget}
@@ -295,7 +281,10 @@ export function PricingSection() {
 
                 <div className="pt-3 border-t border-[#e5e5e5]">
                   <p className="text-[11px] text-[#737373] uppercase tracking-wider mb-2">
-                    Sample Flashcard Words in Deck:
+                    {t(
+                      "pathways.sampleWords",
+                      "Sample Flashcard Words in Deck:",
+                    )}
                   </p>
                   <div className="flex flex-wrap gap-1.5">
                     {currentPathway.sampleTerms.map((term) => (

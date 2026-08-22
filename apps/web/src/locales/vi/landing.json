@@ -1,0 +1,255 @@
+{
+  "hero": {
+    "badge": "Giữ ngọn lửa chuỗi học tiếng Anh mỗi ngày · 100% Miễn phí",
+    "title": "Làm chủ từ vựng tiếng Anh.",
+    "titleHighlight": "Không bao giờ quên.",
+    "subtitle": "Lặp lại ngắt quãng SM-2, thẻ ghi nhớ phát âm IPA chuẩn bản xứ và bảo vệ chuỗi Streak — dành cho người học muốn ghi nhớ vĩnh viễn.",
+    "instantLookup": "Tra cứu từ vựng tức thì",
+    "playPronunciation": "Nghe phát âm chuẩn",
+    "trySandbox": "Trải nghiệm tương tác ↓",
+    "trustFree": "100% Miễn phí trọn đời",
+    "trustNoAds": "Không quảng cáo / Paywall",
+    "trustExport": "Xuất file Anki (.apkg) & CSV"
+  },
+  "sandbox": {
+    "tag": "Trải nghiệm học tập tương tác",
+    "title": "Trải nghiệm WordStreak trực tiếp",
+    "subtitle": "Trải nghiệm thuật toán SM-2, các dạng trắc nghiệm và chu kỳ streak ngay trên trình duyệt của bạn.",
+    "liveHeader": "wordstreak-app — thử nghiệm tương tác trực tiếp",
+    "tabSrs": "Thẻ ghi nhớ SM-2",
+    "tabQuiz": "Trắc nghiệm tương tác",
+    "tabStreak": "Streak & Bản đồ nhiệt",
+    "cardHeader": "Thẻ #{{current}} trên {{total}} · Ngữ cảnh ghi nhớ",
+    "rateRecall": "Đánh giá mức độ nhớ:",
+    "rateHard": "Khó (+1d)",
+    "rateGood": "Tốt (+{{days}}d)",
+    "rateEasy": "Dễ (+{{days}}d)",
+    "feedbackSuccess": "Đã ghi nhận \"{{grade}}\" — Lịch trình SM-2 đã được tính toán lại!",
+    "telemetryTitle": "BỘ LẬP LỊCH SM-2",
+    "telemetryOptimal": "TỐI ƯU",
+    "telemetryRepetition": "Số lần lặp lại:",
+    "telemetryInterval": "Khoảng cách hiện tại:",
+    "telemetryIntervalDays": "{{count}} ngày",
+    "telemetryEaseFactor": "Hệ số dễ nhớ (EF):",
+    "telemetryNextReview": "Lần ôn tiếp theo:",
+    "telemetryNextDays": "sau {{count}} ngày",
+    "telemetrySelectWord": "CHỌN TỪ MẪU:",
+    "quizTag": "CHẾ ĐỘ TRẮC NGHIỆM · ĐIỀN TỪ",
+    "quizPrompt": "Điền từ vựng chính xác vào câu sau:",
+    "quizSentence": "“Điện thoại thông minh và lưu trữ đám mây đã khiến từ điển số trở nên {{blank}} trong giáo dục hiện đại.”",
+    "quizCorrect": "Chính xác! “Ubiquitous” = có mặt ở khắp mọi nơi.",
+    "quizIncorrect": "Thử lại nào! Đáp án chính xác là B. ubiquitous.",
+    "quizReset": "Làm lại câu đố",
+    "streakTitle": "Chuỗi {{count}} ngày",
+    "streakCompleted": "Đã hoàn thành {{count}} lượt ôn tập hôm nay",
+    "streakFreezeActive": "Đóng băng chuỗi: BẬT",
+    "streakFreezeOff": "Đóng băng chuỗi: TẮT",
+    "heatmapTitle": "BẢN ĐỒ NHIỆT (16 TUẦN GẦN NHẤT)",
+    "heatmapConsistency": "100% Duy trì thói quen",
+    "heatmapLess": "Ít hơn",
+    "heatmapMore": "Nhiều lượt ôn hơn"
+  },
+  "features": {
+    "tag": "Tính năng cốt lõi",
+    "title": "Thiết kế cho khả năng ghi nhớ vĩnh viễn.",
+    "subtitle": "Mọi tính năng đều được xây dựng dựa trên khoa học về đường cong lãng quên và hình thành thói quen.",
+    "items": {
+      "srs": {
+        "title": "Lặp lại ngắt quãng SM-2",
+        "tag": "Thuật toán cốt lõi",
+        "desc": "Tính toán chính xác thời điểm bạn sắp quên từ vựng để lập lịch ôn tập ngay trước khi suy giảm trí nhớ."
+      },
+      "cards": {
+        "title": "Thẻ từ vựng theo ngữ cảnh",
+        "tag": "Đa giác quan",
+        "desc": "Học cùng phát âm IPA chuẩn xác (US/UK), câu ví dụ tự nhiên, cụm từ kết hợp và kỹ thuật ghi nhớ."
+      },
+      "quiz": {
+        "title": "Đa dạng hình thức ôn tập",
+        "tag": "Gợi nhớ chủ động",
+        "desc": "Luyện tập với trắc nghiệm, bài nghe chính tả, điền vào chỗ trống và nối định nghĩa."
+      },
+      "streak": {
+        "title": "Chuỗi ngày & Đóng băng Streak",
+        "tag": "Duy trì thói quen",
+        "desc": "Xây dựng thói quen kiên định với mục tiêu hàng ngày và khiên đóng băng bảo vệ chuỗi ngày bận rộn."
+      },
+      "ai": {
+        "title": "Tra cứu từ vựng AI tức thì",
+        "tag": "Tiết kiệm thời gian",
+        "desc": "Nhập bất kỳ từ tiếng Anh nào — AI tự động tổng hợp phiên âm IPA, định nghĩa, ví dụ thực tế và từ đồng nghĩa."
+      },
+      "metrics": {
+        "title": "Bản đồ nhiệt & Thống kê",
+        "tag": "Phân tích trực quan",
+        "desc": "Theo dõi sự kiên trì qua bản đồ nhiệt kiểu GitHub, biểu đồ giữ nhớ và phân loại Từ thành thạo vs. Đang học."
+      }
+    }
+  },
+  "howItWorks": {
+    "tag": "Cách thức hoạt động",
+    "title": "3 bước đơn giản để thành thạo từ vựng.",
+    "subtitle": "Dựa trên khoa học nhận thức để biến việc luyện tập ngắn mỗi ngày thành vốn từ vựng trọn đời.",
+    "step1": {
+      "title": "Thêm từ vựng mới",
+      "tag": "Ghi nhận",
+      "desc": "Nhập bất kỳ từ nào bạn bắt gặp khi đọc sách hay học tập. AI tự động điền phiên âm IPA, âm thanh và ví dụ ngữ cảnh trong chớp mắt."
+    },
+    "step2": {
+      "title": "Ôn tập theo chu kỳ thông minh",
+      "tag": "Thuật toán SM-2",
+      "desc": "Chỉ cần dành 5–10 phút mỗi ngày. Thuật toán SM-2 tính toán chính xác ngưỡng quên để khắc sâu từ vựng vào trí nhớ dài hạn."
+    },
+    "step3": {
+      "title": "Xây dựng chuỗi & sự lưu loát",
+      "tag": "Vòng lặp thành thạo",
+      "desc": "Chứng kiến vốn từ tăng vọt. Giữ ngọn lửa chuỗi học tập luôn rực cháy, bảo vệ chuỗi bằng khiên đóng băng và tự tin giao tiếp."
+    }
+  },
+  "pathways": {
+    "tag": "Lộ trình học tập thích ứng",
+    "title": "Xây dựng cho mọi mục tiêu ngôn ngữ.",
+    "subtitle": "Chọn trọng tâm của bạn — WordStreak tự động điều chỉnh lịch lặp lại ngắt quãng và các dạng bài ôn tập phù hợp.",
+    "curriculumLabel": "Các học phần đi kèm:",
+    "startPath": "Bắt đầu lộ trình này",
+    "exploreDecks": "Khám phá bộ từ cộng đồng",
+    "metricsTitle": "THÔNG SỐ LỘ TRÌNH",
+    "sm2Tuned": "CHUẨN SM-2",
+    "dailyCommitment": "Thời gian mỗi ngày:",
+    "deckScope": "Quy mô bộ từ:",
+    "retentionTarget": "Mục tiêu giữ nhớ:",
+    "sampleWords": "Từ vựng tiêu biểu trong bộ thẻ:",
+    "noCreditCard": "100% Miễn phí · Không yêu cầu thẻ tín dụng",
+    "ielts": {
+      "name": "Luyện thi IELTS & TOEFL",
+      "badge": "Mục tiêu Band 7.5+",
+      "headline": "Từ vựng học thuật tần suất cao & Cụm từ kết hợp",
+      "desc": "Thiết kế chuyên sâu cho các sĩ tử luyện thi học thuật. Tập trung vào vốn từ phong phú, collocations và phản xạ viết điền từ.",
+      "m1": "Danh sách từ học thuật (AWL) Danh mục 1–10",
+      "m2": "Collocations & thành ngữ trong văn viết trang trọng",
+      "m3": "Luyện nghe âm thanh & bài tập chính tả",
+      "m4": "Điền từ vào câu theo ngữ cảnh học thuật"
+    },
+    "conversation": {
+      "name": "Giao tiếp & Hội thoại tự nhiên",
+      "badge": "Tiếng Anh đời sống",
+      "headline": "Thành ngữ hàng ngày, Cụm động từ & Tiếng lóng",
+      "desc": "Dành cho người học muốn hiểu phim ảnh, podcast và nói chuyện tự nhiên với người bản xứ mà không bị ngập ngừng hay dịch thầm.",
+      "m1": "Top 100 phrasal verbs thiết yếu trong ngữ cảnh",
+      "m2": "So sánh phát âm chuẩn bản xứ với IPA",
+      "m3": "Câu ví dụ thực tế trích từ phim & podcast",
+      "m4": "Nhận diện giọng nói & bài tập nghe chủ động"
+    },
+    "business": {
+      "name": "Tiếng Anh Thương mại & Công nghệ",
+      "badge": "Phát triển sự nghiệp",
+      "headline": "Giao tiếp điều hành, Đàm phán & Thuật ngữ công nghệ",
+      "desc": "Dành cho người đi làm, kỹ sư và nhà sáng lập cần giao tiếp trong môi trường đa quốc gia, soạn email và thuyết trình khách hàng.",
+      "m1": "Từ vựng họp hành & đàm phán thương mại",
+      "m2": "Mẫu câu viết email chuyên nghiệp & pitch deck",
+      "m3": "Thuật ngữ ngành công nghệ & quản lý sản phẩm",
+      "m4": "Luyện tập diễn đạt tinh tế & lịch sự"
+    },
+    "polyglot": {
+      "name": "Tự do đọc sách & Bộ thẻ tùy chỉnh",
+      "badge": "Độc giả tự do",
+      "headline": "Nạp từ vựng bằng AI từ bất kỳ nội dung nào bạn đọc",
+      "desc": "Dành cho người yêu sách và học độc lập muốn ghi nhận từ vựng từ tiểu thuyết, bài báo khoa học hay tin tức chỉ trong vài giây.",
+      "m1": "Tạo định nghĩa & phiên âm IPA bằng AI 1 chạm",
+      "m2": "Đính kèm ghi chú mẹo nhớ cá nhân tùy biến",
+      "m3": "Nhập/Xuất toàn diện Anki (.apkg), CSV và JSON",
+      "m4": "Đồng bộ ngoại tuyến đa thiết bị tiện lợi"
+    }
+  },
+  "privacy": {
+    "tag": "Mở & Ưu tiên dữ liệu cục bộ",
+    "title": "Dữ liệu học tập hoàn toàn thuộc về bạn.",
+    "subtitle": "Toàn quyền sở hữu vốn từ vựng, xuất dữ liệu linh hoạt và khả năng học tập không cần internet.",
+    "export": {
+      "title": "Xuất bộ thẻ linh hoạt",
+      "tag": "Anki / CSV / JSON",
+      "desc": "Xuất toàn bộ thẻ từ vựng, thẻ phân loại và nhật ký ôn tập SM-2 sang file Anki (.apkg) hoặc CSV bất kỳ lúc nào chỉ với 1 cú nhấp."
+    },
+    "offline": {
+      "title": "Đồng bộ ngoại tuyến",
+      "tag": "Không cần internet",
+      "desc": "Ôn tập từ vựng trên xe bus hoặc chuyến bay mà không cần mạng. Dữ liệu sẽ tự động đồng bộ ngay khi bạn kết nối lại."
+    },
+    "noLockIn": {
+      "title": "Không khóa dữ liệu",
+      "tag": "100% Miễn phí trọn đời",
+      "desc": "Không bao giờ thu phí trên vốn từ bạn đã tạo. Toàn bộ từ vựng, ghi chú và tiến trình học tập hoàn toàn thuộc quyền sở hữu của bạn."
+    }
+  },
+  "faq": {
+    "tag": "Hỏi đáp",
+    "title": "Câu hỏi thường gặp.",
+    "subtitle": "Mọi điều bạn cần biết về phương pháp lặp lại ngắt quãng, chuỗi streak và WordStreak.",
+    "items": [
+      {
+        "question": "WordStreak có hoàn toàn miễn phí không?",
+        "answer": "Có! WordStreak miễn phí 100% cho mọi người học. Không có gói trả phí ẩn, không tính năng khóa và không yêu cầu thẻ tín dụng. Bạn được sử dụng đầy đủ thuật toán SM-2, không giới hạn thẻ, tra cứu AI và theo dõi chuỗi học tập."
+      },
+      {
+        "question": "Thuật toán lặp lại ngắt quãng SM-2 hoạt động như thế nào?",
+        "answer": "SM-2 tính toán khoảng cách ôn tập tối ưu dựa trên mức độ dễ nhớ của từng từ. Từ đánh giá 'Dễ' sẽ được dời lịch xa hơn (+7 đến +30 ngày), trong khi từ 'Khó' sẽ được ôn lại sớm hơn (+1 đến +3 ngày) để củng cố liên kết thần kinh ngay trước khi bạn quên."
+      },
+      {
+        "question": "Tôi có thể nhập bộ từ vựng có sẵn từ Anki hoặc Quizlet không?",
+        "answer": "Có. WordStreak hỗ trợ nhập file CSV, JSON và file bộ từ Anki (.apkg). Trình phân tích AI của chúng tôi sẽ tự động ánh xạ từ vựng, phiên âm, định nghĩa và câu ví dụ vào bộ thẻ mới của bạn."
+      },
+      {
+        "question": "Tính năng Đóng băng chuỗi (Streak Freeze) hoạt động ra sao?",
+        "answer": "Khiên đóng băng chuỗi tự động bảo vệ chuỗi ngày học của bạn khi bạn có việc bận đột xuất. Mỗi tài khoản đều nhận được khiên bảo vệ. Nếu bạn lỡ một ngày học, khiên sẽ tự động kích hoạt mà không làm đứt chuỗi thói quen."
+      },
+      {
+        "question": "WordStreak có thể dùng khi không có mạng (offline) không?",
+        "answer": "Có. WordStreak ứng dụng kiến trúc bộ nhớ đệm cục bộ (Local-First). Bạn có thể ôn thẻ, làm trắc nghiệm và học từ mới offline. Mọi dữ liệu sẽ được đồng bộ lên đám mây trong lần kết nối tiếp theo."
+      }
+    ]
+  },
+  "cta": {
+    "badge": "100% Miễn phí trọn đời",
+    "title": "Sẵn sàng ghi nhớ từ vựng tiếng Anh vĩnh viễn?",
+    "subtitle": "Gia nhập cùng những người học biến 5 phút mỗi ngày thành thói quen từ vựng bền vững. Hoàn toàn miễn phí để bắt đầu.",
+    "createAccount": "Tạo tài khoản miễn phí",
+    "signIn": "Đăng nhập tài khoản"
+  },
+  "footer": {
+    "manifesto": "Nền tảng học từ vựng tiếng Anh mã nguồn mở ứng dụng Spaced Repetition. Thiết kế giúp người học ghi nhớ lâu dài không rào cản.",
+    "status": "Hệ thống hoạt động bình thường · 100% Miễn phí",
+    "engineTitle": "Động cơ học tập",
+    "srsEngine": "Lặp lại ngắt quãng SM-2",
+    "contextCards": "Thẻ từ vựng theo ngữ cảnh",
+    "audioIpa": "Phát âm chuẩn âm vị IPA",
+    "activeRecall": "Trắc nghiệm gợi nhớ chủ động",
+    "streakFreeze": "Khiên đóng băng chuỗi Streak",
+    "pathwaysTitle": "Lộ trình học tập",
+    "pathIelts": "Luyện thi IELTS & TOEFL",
+    "pathConvo": "Giao tiếp & Hội thoại tự nhiên",
+    "pathBusiness": "Tiếng Anh Thương mại & Công nghệ",
+    "pathCustom": "Tự do đọc sách & Bộ thẻ tùy chỉnh",
+    "aiLookup": "Tra cứu thẻ tức thì bằng AI",
+    "openTitle": "Mở & Dữ liệu cục bộ",
+    "ankiExport": "Xuất file Anki (.apkg)",
+    "csvExport": "Xuất file CSV & JSON",
+    "offlineStorage": "Lưu trữ cục bộ ngoại tuyến",
+    "signIn": "Đăng nhập tài khoản",
+    "createFree": "Tạo tài khoản miễn phí →",
+    "copyright": "© {{year}} WordStreak. Xây dựng với",
+    "copyrightSuffix": "dành cho người học ngôn ngữ trên toàn thế giới."
+  },
+  "stats": {
+    "tag": "Kết quả đã được chứng minh",
+    "title": "Được bảo chứng bởi khoa học.",
+    "titleHighlight": "Được tin dùng bởi người học.",
+    "wordsLabel": "Từ đã thành thạo",
+    "wordsSublabel": "Trên các bộ từ đang học",
+    "retentionLabel": "Tỷ lệ giữ nhớ",
+    "retentionSublabel": "Kiểm tra sau 30 ngày",
+    "streakLabel": "Chuỗi ngày trung bình",
+    "streakSublabel": "Duy trì thói quen hàng ngày",
+    "ratingLabel": "Đánh giá của học viên",
+    "ratingSublabel": "Từ hơn 1.200+ đánh giá"
+  }
+}

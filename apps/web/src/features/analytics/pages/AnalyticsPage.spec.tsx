@@ -66,7 +66,11 @@ describe("AnalyticsPage Component", () => {
       </BrowserRouter>,
     );
 
-    expect(screen.getByText(/Báo cáo & Thống kê học tập/i)).toBeDefined();
+    expect(
+      screen.getByText(
+        /Learning Analytics & Reports|Báo cáo & Thống kê học tập/i,
+      ),
+    ).toBeDefined();
     expect(screen.getByText("92.5%")).toBeDefined(); // retention rate
     expect(screen.getAllByText("120").length).toBeGreaterThan(0); // total reviews
     expect(screen.getByText("IELTS Band 7.5")).toBeDefined(); // deck progress

@@ -20,35 +20,12 @@ import { useAuthStore } from "../../../store/useAuthStore";
 import { PurpleStreakFlame } from "../../landing/components/PurpleStreakFlame";
 import { useTranslation } from "react-i18next";
 
-const registerSchema = z
-  .object({
-    email: z
-      .string()
-      .min(1, "Email is required")
-      .email("Please enter a valid email address"),
-    username: z
-      .string()
-      .min(3, "Username must be at least 3 characters")
-      .max(30, "Username cannot exceed 30 characters")
-      .regex(
-        /^[a-zA-Z0-9_]+$/,
-        "Username can only contain alphanumeric characters and underscores",
-      ),
-    password: z
-      .string()
-      .min(8, "Password must be at least 8 characters long")
-      .regex(
-        /^(?=.*[A-Z])(?=.*\d)/,
-        "Password must contain at least 1 uppercase letter and 1 number",
-      ),
-    confirmPassword: z.string().min(1, "Please confirm your password"),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords do not match",
-    path: ["confirmPassword"],
-  });
-
-type RegisterFormData = z.infer<typeof registerSchema>;
+interface RegisterFormData {
+  email: string;
+  username: string;
+  password: string;
+  confirmPassword: string;
+}
 
 interface RegisterFormProps {
   onSuccess?: () => void;
@@ -68,6 +45,78 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
     error,
     clearError,
   } = useAuthStore();
+
+  const registerSchema = React.useMemo(
+    () =>
+      z
+        .object({
+          email: z
+            .string()
+            .min(1, t("auth:validation.emailRequired", "Email is required"))
+            .email(
+              t(
+                "auth:validation.emailInvalid",
+                "Please enter a valid email address",
+              ),
+            ),
+          username: z
+            .string()
+            .min(
+              3,
+              t(
+                "auth:validation.usernameRequired",
+                "Username must be at least 3 characters",
+              ),
+            )
+            .max(
+              30,
+              t(
+                "auth:validation.usernameMax",
+                "Username cannot exceed 30 characters",
+              ),
+            )
+            .regex(
+              /^[a-zA-Z0-9_]+$/,
+              t(
+                "auth:validation.usernameAlpha",
+                "Username can only contain alphanumeric characters and underscores",
+              ),
+            ),
+          password: z
+            .string()
+            .min(
+              8,
+              t(
+                "auth:validation.passwordMin",
+                "Password must be at least 8 characters long",
+              ),
+            )
+            .regex(
+              /^(?=.*[A-Z])(?=.*\d)/,
+              t(
+                "auth:validation.passwordRules",
+                "Password must contain at least 1 uppercase letter and 1 number",
+              ),
+            ),
+          confirmPassword: z
+            .string()
+            .min(
+              1,
+              t(
+                "auth:validation.confirmRequired",
+                "Please confirm your password",
+              ),
+            ),
+        })
+        .refine((data) => data.password === data.confirmPassword, {
+          message: t(
+            "auth:validation.passwordsDoNotMatch",
+            "Passwords do not match",
+          ),
+          path: ["confirmPassword"],
+        }),
+    [t],
+  );
 
   const {
     register,

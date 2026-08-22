@@ -11,8 +11,10 @@ import { ActivityHeatmap } from "../components/ActivityHeatmap";
 import { MasteryDistributionCard } from "../components/MasteryDistributionCard";
 import { DeckProgressTable } from "../components/DeckProgressTable";
 import { ArrowLeft, RefreshCw, BarChart2 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 export const AnalyticsPage: React.FC = () => {
+  const { t } = useTranslation(["analytics", "common"]);
   const { user, logout } = useAuthStore();
   const navigate = useNavigate();
   const { currentStreak, flameTier, isActiveToday } = useStreak();
@@ -67,15 +69,19 @@ export const AnalyticsPage: React.FC = () => {
                   className="inline-flex items-center gap-1.5 text-xs font-semibold text-neutral-500 hover:text-black font-['Inter'] mb-2 transition-colors"
                 >
                   <ArrowLeft className="w-4 h-4" />
-                  <span>Quay lại Tổng quan (Dashboard)</span>
+                  <span>
+                    {t("header.backToDashboard", "Back to Dashboard")}
+                  </span>
                 </Link>
                 <h1 className="text-2xl sm:text-3xl font-extrabold font-['Nunito'] text-black tracking-tight flex items-center gap-2.5">
                   <BarChart2 className="w-7 h-7 text-purple-600" />
-                  Báo cáo & Thống kê học tập
+                  {t("header.title", "Learning Analytics & Reports")}
                 </h1>
                 <p className="text-sm text-neutral-500 font-['Inter'] mt-1">
-                  Trực quan hóa đường cong trí nhớ SuperMemo-2, tiến độ từ vựng
-                  và tính kỷ luật học tập.
+                  {t(
+                    "header.subtitle",
+                    "Visualize your SuperMemo-2 retention curve, vocabulary velocity, and study consistency.",
+                  )}
                 </p>
               </div>
 
@@ -84,12 +90,12 @@ export const AnalyticsPage: React.FC = () => {
                   type="button"
                   onClick={() => void refetch()}
                   disabled={isLoading}
-                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full border border-neutral-200 hover:border-neutral-400 bg-white text-xs font-semibold font-['Inter'] text-neutral-700 hover:text-black shadow-sm transition-all disabled:opacity-50"
+                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full border border-neutral-200 hover:border-neutral-400 bg-white text-xs font-semibold font-['Inter'] text-neutral-700 hover:text-black shadow-sm transition-all disabled:opacity-50 cursor-pointer"
                 >
                   <RefreshCw
                     className={`w-3.5 h-3.5 ${isLoading ? "animate-spin" : ""}`}
                   />
-                  <span>Làm mới</span>
+                  <span>{t("header.refresh", "Refresh")}</span>
                 </button>
               </div>
             </div>
@@ -97,13 +103,21 @@ export const AnalyticsPage: React.FC = () => {
             {/* Error Banner */}
             {error && (
               <div className="p-4 rounded-2xl bg-red-50 border border-red-200 text-red-700 text-sm font-['Inter'] flex items-center justify-between">
-                <span>Lỗi tải dữ liệu: {error}</span>
+                <span>
+                  {t(
+                    "header.errorLoading",
+                    "Error loading analytics: {{error}}",
+                    {
+                      error,
+                    },
+                  )}
+                </span>
                 <button
                   type="button"
                   onClick={() => void refetch()}
-                  className="underline font-semibold"
+                  className="underline font-semibold cursor-pointer"
                 >
-                  Thử lại
+                  {t("header.retry", "Retry")}
                 </button>
               </div>
             )}

@@ -39,6 +39,7 @@ i18n
       "gamification",
       "ai_vocabulary",
       "errors",
+      "landing",
     ],
     supportedLngs: ["vi", "en"],
     load: "languageOnly",

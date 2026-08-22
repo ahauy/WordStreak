@@ -48,5 +48,17 @@
     "flameStateHungry": "Ngọn lửa đang đói. Hoàn thành một buổi ôn tập để tiếp năng lượng!",
     "flameStateSleeping": "Đang nghỉ ngơi chuẩn bị cho thử thách ngày mai.",
     "flameEvolved": "Ngọn lửa của bạn đã tiến hóa lên cấp bậc mới!"
+  },
+  "widget": {
+    "loading": "Đang tải dữ liệu cấp độ...",
+    "retry": "Thử lại",
+    "today": "Hôm nay",
+    "levelProgress": "Tiến trình cấp độ",
+    "remainingToNext": "Còn {{remaining}} XP để lên Lv. {{next}}",
+    "nextTierUnlock": "Mở khóa Hạng {{tier}} tại Lv. {{level}} (còn {{remaining}} cấp).",
+    "totalXp": "Tổng điểm XP",
+    "viewHistory": "Xem lịch sử",
+    "levelLabel": "Cấp độ {{level}}",
+    "tierRank": "Hạng {{tier}}"
   }
 }

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { useAuthStore } from "../../../store/useAuthStore";
 import { SettingsModal } from "../../user-profile/components/SettingsModal";
 import { PageTransition } from "../../../common/components/layout/PageTransition";
@@ -17,6 +18,7 @@ import { useMascotStore } from "../../../store/useMascotStore";
 import { Globe } from "lucide-react";
 
 export const DashboardPage: React.FC = () => {
+  const { t, i18n } = useTranslation(["dashboard", "common"]);
   const { user, logout } = useAuthStore();
   const navigate = useNavigate();
   const { openFlameNurture } = useMascotStore();
@@ -144,7 +146,10 @@ export const DashboardPage: React.FC = () => {
           {/* Minimalist Footer */}
           <footer className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 text-xs text-[#737373] border-t border-[#e5e5e5] flex flex-col sm:flex-row items-center justify-between gap-4 mt-10">
             <p>
-              © {new Date().getFullYear()} WordStreak. 100% Free & Open-Source.
+              {t("footer.copyright", {
+                year: new Date().getFullYear(),
+                defaultValue: `© ${new Date().getFullYear()} WordStreak. 100% Free & Open-Source.`,
+              })}
             </p>
             <div className="flex items-center gap-6">
               <button
@@ -152,14 +157,14 @@ export const DashboardPage: React.FC = () => {
                 onClick={() => openSettings("profile")}
                 className="hover:text-black transition-colors cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-black rounded-xs"
               >
-                Cài đặt
+                {t("footer.settings", "Settings")}
               </button>
               <button
                 type="button"
                 onClick={() => openSettings("security")}
                 className="hover:text-black transition-colors cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-black rounded-xs"
               >
-                Bảo mật
+                {t("footer.security", "Security")}
               </button>
               <a
                 href="https://github.com"
@@ -171,7 +176,7 @@ export const DashboardPage: React.FC = () => {
               </a>
               <span className="flex items-center gap-1 text-[#737373]">
                 <Globe className="w-3.5 h-3.5" />
-                <span>EN (US)</span>
+                <span>{i18n.language === "vi" ? "VI (VN)" : "EN (US)"}</span>
               </span>
             </div>
           </footer>

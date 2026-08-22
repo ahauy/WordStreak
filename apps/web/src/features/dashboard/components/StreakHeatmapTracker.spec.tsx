@@ -1,17 +1,25 @@
 import { render, screen } from "@testing-library/react";
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, beforeEach } from "vitest";
+import { I18nextProvider } from "react-i18next";
+import i18n from "../../../locales/i18n";
 import { StreakHeatmapTracker } from "./StreakHeatmapTracker";
 import type { ActivityHeatmapResponseDto } from "@wordstreak/shared-types";
 
 describe("StreakHeatmapTracker Component", () => {
+  beforeEach(async () => {
+    await i18n.changeLanguage("vi");
+  });
+
   it("renders clean zero-data state when user has no reviews yet", () => {
     render(
-      <StreakHeatmapTracker
-        heatmapData={null}
-        isLoading={false}
-        currentStreak={0}
-        longestStreak={0}
-      />,
+      <I18nextProvider i18n={i18n}>
+        <StreakHeatmapTracker
+          heatmapData={null}
+          isLoading={false}
+          currentStreak={0}
+          longestStreak={0}
+        />
+      </I18nextProvider>,
     );
 
     expect(
@@ -19,7 +27,7 @@ describe("StreakHeatmapTracker Component", () => {
         /Chưa có lượt ôn tập nào. Bắt đầu phiên học đầu tiên để ghi nhận chuỗi hoạt động!/i,
       ),
     ).toBeDefined();
-    expect(screen.getByText("Streak & Habit Tracker")).toBeDefined();
+    expect(screen.getByText("Theo dõi Streak & Thói quen")).toBeDefined();
     expect(screen.getByText("(0/7d)")).toBeDefined();
   });
 
@@ -43,12 +51,14 @@ describe("StreakHeatmapTracker Component", () => {
     };
 
     render(
-      <StreakHeatmapTracker
-        heatmapData={mockHeatmapData}
-        isLoading={false}
-        currentStreak={1}
-        longestStreak={1}
-      />,
+      <I18nextProvider i18n={i18n}>
+        <StreakHeatmapTracker
+          heatmapData={mockHeatmapData}
+          isLoading={false}
+          currentStreak={1}
+          longestStreak={1}
+        />
+      </I18nextProvider>,
     );
 
     expect(screen.getByText(/15 thẻ/i)).toBeDefined();

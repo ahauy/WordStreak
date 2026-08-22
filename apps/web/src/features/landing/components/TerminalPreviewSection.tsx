@@ -12,6 +12,7 @@ import {
   XCircle,
 } from "lucide-react";
 import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 
 interface WordItem {
   word: string;
@@ -65,6 +66,7 @@ const sampleWords: WordItem[] = [
 ];
 
 export function TerminalPreviewSection() {
+  const { t } = useTranslation("landing");
   const [activeTab, setActiveTab] = useState<"srs" | "quiz" | "streak">("srs");
   const [selectedWordIdx, setSelectedWordIdx] = useState(0);
   const [isPlayingAudio, setIsPlayingAudio] = useState(false);
@@ -116,12 +118,16 @@ export function TerminalPreviewSection() {
         >
           <span className="command-tag-chip mb-3">
             <Sparkles className="w-3.5 h-3.5 mr-1.5 text-black" />
-            Interactive Learning Sandbox
+            {t("sandbox.tag", "Interactive Learning Sandbox")}
           </span>
-          <h2 className="heading-lg">Experience WordStreak in Action</h2>
+          <h2 className="heading-lg">
+            {t("sandbox.title", "Experience WordStreak in Action")}
+          </h2>
           <p className="body-sm mt-1.5">
-            Test the SM-2 algorithm, quiz formats, and daily streak loop right
-            in your browser.
+            {t(
+              "sandbox.subtitle",
+              "Test the SM-2 algorithm, quiz formats, and daily streak loop right in your browser.",
+            )}
           </p>
         </motion.div>
 
@@ -140,12 +146,15 @@ export function TerminalPreviewSection() {
               <span className="traffic-dot traffic-dot-yellow" />
               <span className="traffic-dot traffic-dot-green" />
               <span className="ml-2 text-xs font-mono text-[#a3a3a3] hidden sm:inline">
-                wordstreak-app — live interactive sandbox
+                {t(
+                  "sandbox.liveHeader",
+                  "wordstreak-app — live interactive sandbox",
+                )}
               </span>
             </div>
 
             {/* Mode Switcher Tabs */}
-            <div className="flex items-center gap-1.5 rounded-full border border-[#e5e5e5] bg-[#fafafa] p-1">
+            <div className="flex items-center gap-1.5 rounded-full border border-[#e5e5e5] bg-[#fafafa] p-1 overflow-x-auto max-w-full">
               <button
                 type="button"
                 onClick={() => setActiveTab("srs")}
@@ -156,7 +165,7 @@ export function TerminalPreviewSection() {
                 }`}
               >
                 <Layers className="h-3 w-3" />
-                <span>SM-2 Flashcard</span>
+                <span>{t("sandbox.tabSrs", "SM-2 Flashcard")}</span>
               </button>
               <button
                 type="button"
@@ -168,7 +177,7 @@ export function TerminalPreviewSection() {
                 }`}
               >
                 <HelpCircle className="h-3 w-3" />
-                <span>Active Quiz</span>
+                <span>{t("sandbox.tabQuiz", "Active Quiz")}</span>
               </button>
               <button
                 type="button"
@@ -180,7 +189,7 @@ export function TerminalPreviewSection() {
                 }`}
               >
                 <BarChart2 className="h-3 w-3" />
-                <span>Streak & Heatmap</span>
+                <span>{t("sandbox.tabStreak", "Streak & Heatmap")}</span>
               </button>
             </div>
           </div>
@@ -193,7 +202,11 @@ export function TerminalPreviewSection() {
                 <div className="flex items-start justify-between">
                   <div>
                     <span className="text-[11px] font-mono uppercase tracking-wider text-[#a3a3a3]">
-                      Card #{selectedWordIdx + 1} of 3 · Contextual Memory Hook
+                      {t("sandbox.cardHeader", {
+                        current: selectedWordIdx + 1,
+                        total: sampleWords.length,
+                        defaultValue: `Card #${selectedWordIdx + 1} of 3 · Contextual Memory Hook`,
+                      })}
                     </span>
                     <h3
                       className="text-2xl font-bold tracking-tight text-black mt-0.5"
@@ -213,7 +226,7 @@ export function TerminalPreviewSection() {
                     type="button"
                     onClick={handlePlayAudio}
                     className="flex h-9 w-9 items-center justify-center rounded-full border border-[#e5e5e5] bg-white text-black hover:border-black transition-colors cursor-pointer"
-                    title="Listen to native pronunciation"
+                    title={t("hero.playPronunciation", "Play pronunciation")}
                   >
                     {isPlayingAudio ? (
                       <div className="flex items-center gap-0.5 h-3">
@@ -238,7 +251,7 @@ export function TerminalPreviewSection() {
                 {/* Self-Rating Interval Action Buttons */}
                 <div className="mt-4 pt-3 border-t border-[#e5e5e5] flex items-center justify-between gap-2">
                   <span className="text-[11px] text-[#a3a3a3] font-mono">
-                    Rate Recall:
+                    {t("sandbox.rateRecall", "Rate Recall:")}
                   </span>
                   <div className="flex gap-1.5">
                     <motion.button
@@ -246,21 +259,27 @@ export function TerminalPreviewSection() {
                       onClick={() => handleGrade("Hard")}
                       className="cursor-pointer rounded-full border border-[#e5e5e5] bg-white px-2.5 py-1 text-[11px] font-medium text-black hover:bg-[#f0f0f0] transition-colors"
                     >
-                      Hard (+1d)
+                      {t("sandbox.rateHard", "Hard (+1d)")}
                     </motion.button>
                     <motion.button
                       whileTap={{ scale: 0.95 }}
                       onClick={() => handleGrade("Good")}
                       className="cursor-pointer rounded-full border border-[#e5e5e5] bg-white px-2.5 py-1 text-[11px] font-medium text-black hover:bg-[#f0f0f0] transition-colors"
                     >
-                      Good (+{currentWord.intervalDays}d)
+                      {t("sandbox.rateGood", {
+                        days: currentWord.intervalDays,
+                        defaultValue: `Good (+${currentWord.intervalDays}d)`,
+                      })}
                     </motion.button>
                     <motion.button
                       whileTap={{ scale: 0.95 }}
                       onClick={() => handleGrade("Easy")}
                       className="cursor-pointer rounded-full bg-black px-2.5 py-1 text-[11px] font-medium text-white hover:bg-[#1a1a1a] transition-colors"
                     >
-                      Easy (+{currentWord.intervalDays * 2}d)
+                      {t("sandbox.rateEasy", {
+                        days: currentWord.intervalDays * 2,
+                        defaultValue: `Easy (+${currentWord.intervalDays * 2}d)`,
+                      })}
                     </motion.button>
                   </div>
                 </div>
@@ -272,8 +291,10 @@ export function TerminalPreviewSection() {
                     className="mt-2 text-center text-xs font-mono text-black font-medium flex items-center justify-center gap-1"
                   >
                     <Check className="w-3.5 h-3.5 text-[#27c93f]" />
-                    Recorded &ldquo;{feedbackGiven}&rdquo; — SM-2 schedule
-                    recalculated!
+                    {t("sandbox.feedbackSuccess", {
+                      grade: feedbackGiven,
+                      defaultValue: `Recorded "${feedbackGiven}" — SM-2 schedule recalculated!`,
+                    })}
                   </motion.div>
                 )}
               </div>
@@ -282,40 +303,54 @@ export function TerminalPreviewSection() {
               <div className="md:col-span-5 flex flex-col justify-between h-full font-mono text-xs text-[#737373]">
                 <div className="space-y-2.5 rounded-xl border border-[#e5e5e5] bg-white p-4">
                   <div className="flex items-center justify-between text-black font-semibold border-b border-[#e5e5e5] pb-2">
-                    <span>SM-2 SCHEDULER</span>
+                    <span>{t("sandbox.telemetryTitle", "SM-2 SCHEDULER")}</span>
                     <span className="text-[11px] text-[#27c93f] font-bold">
-                      OPTIMAL
+                      {t("sandbox.telemetryOptimal", "OPTIMAL")}
                     </span>
                   </div>
                   <div className="flex justify-between py-1">
-                    <span>Repetition Count:</span>
+                    <span>
+                      {t("sandbox.telemetryRepetition", "Repetition Count:")}
+                    </span>
                     <span className="text-black font-medium">
                       {currentWord.repetition}
                     </span>
                   </div>
                   <div className="flex justify-between py-1">
-                    <span>Current Interval:</span>
+                    <span>
+                      {t("sandbox.telemetryInterval", "Current Interval:")}
+                    </span>
                     <span className="text-black font-medium">
-                      {currentWord.intervalDays} days
+                      {t("sandbox.telemetryIntervalDays", {
+                        count: currentWord.intervalDays,
+                        defaultValue: `${currentWord.intervalDays} days`,
+                      })}
                     </span>
                   </div>
                   <div className="flex justify-between py-1">
-                    <span>Ease Factor (EF):</span>
+                    <span>
+                      {t("sandbox.telemetryEaseFactor", "Ease Factor (EF):")}
+                    </span>
                     <span className="text-black font-medium">
                       {currentWord.easeFactor.toFixed(2)}
                     </span>
                   </div>
                   <div className="flex justify-between py-1">
-                    <span>Next Review:</span>
+                    <span>
+                      {t("sandbox.telemetryNextReview", "Next Review:")}
+                    </span>
                     <span className="text-black font-medium">
-                      in {currentWord.intervalDays} days
+                      {t("sandbox.telemetryNextDays", {
+                        count: currentWord.intervalDays,
+                        defaultValue: `in ${currentWord.intervalDays} days`,
+                      })}
                     </span>
                   </div>
                 </div>
 
                 <div className="mt-3 flex items-center justify-between">
                   <span className="text-[11px] text-[#a3a3a3]">
-                    SELECT WORD:
+                    {t("sandbox.telemetrySelectWord", "SELECT WORD:")}
                   </span>
                   <div className="flex gap-1.5">
                     {sampleWords.map((item, idx) => (
@@ -342,23 +377,31 @@ export function TerminalPreviewSection() {
             <div className="p-4 sm:p-6">
               <div className="max-w-xl mx-auto rounded-xl border border-[#e5e5e5] bg-[#fafafa] p-6">
                 <div className="flex items-center justify-between text-xs text-[#737373] font-mono border-b border-[#e5e5e5] pb-3 mb-4">
-                  <span>QUIZ MODE · FILL-IN-THE-BLANK</span>
+                  <span>
+                    {t("sandbox.quizTag", "QUIZ MODE · FILL-IN-THE-BLANK")}
+                  </span>
                   <span className="text-black font-semibold">+10 XP</span>
                 </div>
 
                 <p className="text-sm sm:text-base text-black font-medium leading-relaxed">
-                  Complete the sentence with the correct vocabulary word:
+                  {t(
+                    "sandbox.quizPrompt",
+                    "Complete the sentence with the correct vocabulary word:",
+                  )}
                 </p>
 
                 <div className="my-4 rounded-lg border border-[#e5e5e5] bg-white p-3.5 text-sm sm:text-base text-black font-serif italic">
-                  &ldquo;Smartphones and cloud storage have made digital
-                  dictionaries{" "}
-                  <span className="font-mono font-bold text-black border-b-2 border-black px-2 not-italic">
-                    {quizAnswered && quizSelectedOption === 1
-                      ? "ubiquitous"
-                      : "________"}
-                  </span>{" "}
-                  in modern education.&rdquo;
+                  {t("sandbox.quizSentence", {
+                    blank:
+                      quizAnswered && quizSelectedOption === 1
+                        ? "ubiquitous"
+                        : "________",
+                    defaultValue: `“Smartphones and cloud storage have made digital dictionaries ${
+                      quizAnswered && quizSelectedOption === 1
+                        ? "ubiquitous"
+                        : "________"
+                    } in modern education.”`,
+                  })}
                 </div>
 
                 {/* Quiz Multiple Choice Options */}
@@ -411,12 +454,18 @@ export function TerminalPreviewSection() {
                   >
                     {quizSelectedOption === 1 ? (
                       <span className="text-[#27c93f] font-semibold flex items-center gap-1">
-                        <Check className="h-3.5 w-3.5" /> Correct!
-                        &ldquo;Ubiquitous&rdquo; = present everywhere.
+                        <Check className="h-3.5 w-3.5" />
+                        {t(
+                          "sandbox.quizCorrect",
+                          "Correct! “Ubiquitous” = present everywhere.",
+                        )}
                       </span>
                     ) : (
                       <span className="text-[#ff5f56] font-semibold">
-                        Try again! The correct answer is B. ubiquitous.
+                        {t(
+                          "sandbox.quizIncorrect",
+                          "Try again! The correct answer is B. ubiquitous.",
+                        )}
                       </span>
                     )}
                     <button
@@ -426,7 +475,7 @@ export function TerminalPreviewSection() {
                       }}
                       className="cursor-pointer underline text-[#737373] hover:text-black"
                     >
-                      Reset Quiz
+                      {t("sandbox.quizReset", "Reset Quiz")}
                     </button>
                   </motion.div>
                 )}
@@ -445,10 +494,16 @@ export function TerminalPreviewSection() {
                     </div>
                     <div>
                       <div className="text-xl font-bold text-black font-mono">
-                        18 Days Streak
+                        {t("sandbox.streakTitle", {
+                          count: 18,
+                          defaultValue: "18 Days Streak",
+                        })}
                       </div>
                       <div className="text-xs text-[#737373]">
-                        12 daily reviews completed today
+                        {t("sandbox.streakCompleted", {
+                          count: 12,
+                          defaultValue: "12 daily reviews completed today",
+                        })}
                       </div>
                     </div>
                   </div>
@@ -467,7 +522,12 @@ export function TerminalPreviewSection() {
                       className={`h-3.5 w-3.5 ${streakFreezeActive ? "text-black fill-black" : "text-[#a3a3a3]"}`}
                     />
                     <span>
-                      Streak Freeze: {streakFreezeActive ? "ACTIVE" : "OFF"}
+                      {streakFreezeActive
+                        ? t(
+                            "sandbox.streakFreezeActive",
+                            "Streak Freeze: ACTIVE",
+                          )
+                        : t("sandbox.streakFreezeOff", "Streak Freeze: OFF")}
                     </span>
                   </button>
                 </div>
@@ -475,8 +535,18 @@ export function TerminalPreviewSection() {
                 {/* Heatmap Grid Demo (16 weeks x 7 days) */}
                 <div className="space-y-2">
                   <div className="flex items-center justify-between text-[11px] font-mono text-[#a3a3a3]">
-                    <span>CONSISTENCY HEATMAP (PAST 16 WEEKS)</span>
-                    <span>100% Habit Consistency</span>
+                    <span>
+                      {t(
+                        "sandbox.heatmapTitle",
+                        "CONSISTENCY HEATMAP (PAST 16 WEEKS)",
+                      )}
+                    </span>
+                    <span>
+                      {t(
+                        "sandbox.heatmapConsistency",
+                        "100% Habit Consistency",
+                      )}
+                    </span>
                   </div>
 
                   <div className="overflow-x-auto py-2">
@@ -517,14 +587,14 @@ export function TerminalPreviewSection() {
                   </div>
 
                   <div className="flex items-center justify-between text-[11px] font-mono text-[#737373] pt-2 border-t border-[#e5e5e5]">
-                    <span>Less</span>
+                    <span>{t("sandbox.heatmapLess", "Less")}</span>
                     <div className="flex items-center gap-1">
                       <span className="h-2.5 w-2.5 rounded-xs bg-[#e5e5e5]" />
                       <span className="h-2.5 w-2.5 rounded-xs bg-[#d4d4d4]" />
                       <span className="h-2.5 w-2.5 rounded-xs bg-[#525252]" />
                       <span className="h-2.5 w-2.5 rounded-xs bg-black" />
                     </div>
-                    <span>More Reviews</span>
+                    <span>{t("sandbox.heatmapMore", "More Reviews")}</span>
                   </div>
                 </div>
               </div>

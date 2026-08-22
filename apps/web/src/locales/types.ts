@@ -12,6 +12,7 @@ import settings from "./en/settings.json";
 import gamification from "./en/gamification.json";
 import ai_vocabulary from "./en/ai_vocabulary.json";
 import errors from "./en/errors.json";
+import landing from "./en/landing.json";
 
 export type SupportedLocale = "vi" | "en";
 export type CanonicalLocaleTag = "vi-VN" | "en-US";
@@ -38,7 +39,8 @@ export type DomainNamespace =
   | "settings"
   | "gamification"
   | "ai_vocabulary"
-  | "errors";
+  | "errors"
+  | "landing";
 
 export interface TranslationResources {
   common: typeof common;
@@ -54,6 +56,7 @@ export interface TranslationResources {
   gamification: typeof gamification;
   ai_vocabulary: typeof ai_vocabulary;
   errors: typeof errors;
+  landing: typeof landing;
 }
 
 declare module "i18next" {

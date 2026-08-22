@@ -74,11 +74,14 @@ export const AuthShowcase: React.FC = () => {
           <div className="flex items-center justify-between">
             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-[#f3e8ff] text-[#7e22ce] border border-[#e9d5ff]">
               <Brain className="w-3.5 h-3.5 text-[#9333ea]" />
-              Spaced Repetition · SM-2
+              {t("auth:showcase.sm2Pill", "Spaced Repetition · SM-2")}
             </span>
             <span className="text-xs font-medium text-[#525252] flex items-center gap-1">
               <TrendingUp className="w-3.5 h-3.5 text-[#27c93f]" />
-              Review in 4 days
+              {t("auth:showcase.reviewDays", {
+                count: 4,
+                defaultValue: "Review in 4 days",
+              })}
             </span>
           </div>
 
@@ -134,7 +137,12 @@ export const AuthShowcase: React.FC = () => {
                   showEmbers={false}
                   className="w-4 h-4"
                 />
-                <span>14-Day Streak</span>
+                <span>
+                  {t("auth:showcase.streakDays", {
+                    count: 14,
+                    defaultValue: "14-Day Streak",
+                  })}
+                </span>
               </span>
               <span className="inline-flex items-center gap-1 text-xs font-medium text-[#525252] bg-[#fafafa] px-2.5 py-1 rounded-full border border-[#e5e5e5]">
                 <Award className="w-3.5 h-3.5 text-[#9333ea]" />

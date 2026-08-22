@@ -144,80 +144,94 @@ export function Navbar() {
       {/* Mobile Drawer */}
       <AnimatePresence>
         {mobileOpen && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.2 }}
-            className="border-b border-[#e5e5e5] bg-white px-5 py-4 md:hidden overflow-hidden"
-          >
-            <div className="mb-4">
-              <div className="search-pill-input w-full">
-                <Search className="h-3.5 w-3.5 text-[#a3a3a3] mr-2 shrink-0" />
-                <input
-                  type="text"
-                  placeholder={t(
-                    "nav.searchPlaceholder",
-                    "Search vocabulary...",
-                  )}
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full bg-transparent text-xs text-black placeholder-[#a3a3a3] focus:outline-none"
-                />
-              </div>
-            </div>
-
-            <div className="flex flex-col gap-3 text-sm font-medium text-black">
-              <button
-                onClick={() => scrollToSection("interactive-demo")}
-                className="text-left py-1 text-[#737373] hover:text-black"
-              >
-                {t("nav.interactiveDemo", "Interactive Demo")}
-              </button>
-              <button
-                onClick={() => scrollToSection("features")}
-                className="text-left py-1 text-[#737373] hover:text-black"
-              >
-                {t("nav.features", "Features")}
-              </button>
-              <button
-                onClick={() => scrollToSection("how-it-works")}
-                className="text-left py-1 text-[#737373] hover:text-black"
-              >
-                {t("nav.howItWorks", "How It Works")}
-              </button>
-              <button
-                onClick={() => scrollToSection("study-modes")}
-                className="text-left py-1 text-[#737373] hover:text-black"
-              >
-                {t("nav.studyGoals", "Study Goals")}
-              </button>
-              <button
-                onClick={() => scrollToSection("faq")}
-                className="text-left py-1 text-[#737373] hover:text-black"
-              >
-                {t("nav.faq", "FAQ")}
-              </button>
-
-              <div className="pt-3 border-t border-[#e5e5e5] flex flex-col gap-3">
-                <div className="flex items-center justify-between py-1">
-                  <span className="text-xs text-[#737373] font-medium">
-                    Ngôn ngữ / Language:
-                  </span>
-                  <LanguageSwitcher />
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setMobileOpen(false)}
+              className="fixed inset-0 bg-black/40 z-40 md:hidden"
+            />
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.2 }}
+              className="relative z-50 border-b border-[#e5e5e5] bg-white px-5 py-4 md:hidden shadow-lg overflow-hidden"
+            >
+              <div className="mb-4">
+                <div className="search-pill-input w-full">
+                  <Search className="h-3.5 w-3.5 text-[#a3a3a3] mr-2 shrink-0" />
+                  <input
+                    type="text"
+                    placeholder={t(
+                      "nav.searchPlaceholder",
+                      "Search vocabulary...",
+                    )}
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="w-full bg-transparent text-xs text-black placeholder-[#a3a3a3] focus:outline-none"
+                  />
                 </div>
-                <Link
-                  to="/login"
-                  className="py-2 text-center text-sm font-medium text-black"
-                >
-                  {t("actions.signIn", "Sign In")}
-                </Link>
-                <Link to="/register" className="btn-primary w-full text-center">
-                  {t("actions.startLearning", "Start Learning Free")}
-                </Link>
               </div>
-            </div>
-          </motion.div>
+
+              <div className="flex flex-col gap-3 text-sm font-medium text-black">
+                <button
+                  onClick={() => scrollToSection("interactive-demo")}
+                  className="text-left py-1 text-[#737373] hover:text-black cursor-pointer"
+                >
+                  {t("nav.interactiveDemo", "Interactive Demo")}
+                </button>
+                <button
+                  onClick={() => scrollToSection("features")}
+                  className="text-left py-1 text-[#737373] hover:text-black cursor-pointer"
+                >
+                  {t("nav.features", "Features")}
+                </button>
+                <button
+                  onClick={() => scrollToSection("how-it-works")}
+                  className="text-left py-1 text-[#737373] hover:text-black cursor-pointer"
+                >
+                  {t("nav.howItWorks", "How It Works")}
+                </button>
+                <button
+                  onClick={() => scrollToSection("study-modes")}
+                  className="text-left py-1 text-[#737373] hover:text-black cursor-pointer"
+                >
+                  {t("nav.studyGoals", "Study Goals")}
+                </button>
+                <button
+                  onClick={() => scrollToSection("faq")}
+                  className="text-left py-1 text-[#737373] hover:text-black cursor-pointer"
+                >
+                  {t("nav.faq", "FAQ")}
+                </button>
+
+                <div className="pt-3 border-t border-[#e5e5e5] flex flex-col gap-3">
+                  <div className="flex items-center justify-between py-1">
+                    <span className="text-xs text-[#737373] font-medium">
+                      {t("switcher.languageLabel", "Language")}:
+                    </span>
+                    <LanguageSwitcher />
+                  </div>
+                  <Link
+                    to="/login"
+                    onClick={() => setMobileOpen(false)}
+                    className="py-2 text-center text-sm font-medium text-black"
+                  >
+                    {t("actions.signIn", "Sign In")}
+                  </Link>
+                  <Link
+                    to="/register"
+                    onClick={() => setMobileOpen(false)}
+                    className="btn-primary w-full text-center"
+                  >
+                    {t("actions.startLearning", "Start Learning Free")}
+                  </Link>
+                </div>
+              </div>
+            </motion.div>
+          </>
         )}
       </AnimatePresence>
     </header>

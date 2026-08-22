@@ -11,6 +11,7 @@ import {
   TrendingUp,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useTranslation } from "react-i18next";
 import { StreakFlame } from "./StreakFlame";
 import { FLAME_TIERS, getFlameTier } from "../config/flameTiers";
 
@@ -35,22 +36,41 @@ export const FlameNurtureModal: React.FC<FlameNurtureModalProps> = ({
   onStartReview,
   onFeedWood,
 }) => {
+  const { t, i18n } = useTranslation(["dashboard", "common"]);
   const currentTier = getFlameTier(currentStreak);
   const [selectedTierPreview, setSelectedTierPreview] = useState<number>(
     currentTier.tier,
   );
   const [isInteracting, setIsInteracting] = useState(false);
-  const [interactionQuote, setInteractionQuote] = useState(
-    "Chạm vào tớ để tiếp thêm động lực học tập nhé!",
+  const [interactionQuote, setInteractionQuote] = useState<string>(() =>
+    t(
+      "flameModal.touchPrompt",
+      "Chạm vào tớ để tiếp thêm động lực học tập nhé!",
+    ),
   );
 
   // Quotes when poking the flame
   const quotes = [
-    "Mỗi từ vựng ôn tập là 1 giọt lửa nuôi dưỡng trí nhớ!",
-    "Kiên trì mỗi ngày, ngọn lửa của bạn sẽ sớm đạt bậc Kim Cương!",
-    "Hôm nay bạn đã ôn tập chưa? Tớ đang chờ nạp từ mới nè!",
-    "Spaced Repetition giúp ngọn lửa không bao giờ tàn!",
-    "Chuỗi ngày càng dài, ngọn lửa càng tỏa ánh sáng huyền diệu!",
+    t(
+      "flameModal.quote1",
+      "Mỗi từ vựng ôn tập là 1 giọt lửa nuôi dưỡng trí nhớ!",
+    ),
+    t(
+      "flameModal.quote2",
+      "Kiên trì mỗi ngày, ngọn lửa của bạn sẽ sớm đạt bậc Kim Cương!",
+    ),
+    t(
+      "flameModal.quote3",
+      "Hôm nay bạn đã ôn tập chưa? Tớ đang chờ nạp từ mới nè!",
+    ),
+    t(
+      "flameModal.quote4",
+      "Spaced Repetition giúp ngọn lửa không bao giờ tàn!",
+    ),
+    t(
+      "flameModal.quote5",
+      "Chuỗi ngày càng dài, ngọn lửa càng tỏa ánh sáng huyền diệu!",
+    ),
   ];
 
   const handlePokeFlame = () => {
@@ -84,6 +104,19 @@ export const FlameNurtureModal: React.FC<FlameNurtureModalProps> = ({
       : 0;
 
   const previewTierInfo = FLAME_TIERS[selectedTierPreview];
+  const isVi = i18n.language === "vi";
+  const currentTierTitle = isVi ? currentTier.titleVi : currentTier.name;
+  const previewTierTitle = isVi
+    ? previewTierInfo.titleVi
+    : previewTierInfo.name;
+  const previewTierDesc = isVi
+    ? previewTierInfo.descriptionVi
+    : previewTierInfo.descriptionEn || previewTierInfo.descriptionVi;
+  const nextTierTitle = nextTier
+    ? isVi
+      ? nextTier.titleVi
+      : nextTier.name
+    : "";
 
   const modalContent = (
     <AnimatePresence>
@@ -114,16 +147,23 @@ export const FlameNurtureModal: React.FC<FlameNurtureModalProps> = ({
                   className="text-base sm:text-lg font-bold text-black tracking-tight flex items-center gap-2"
                   style={{ fontFamily: "var(--font-display)" }}
                 >
-                  <span>Khu Vườn Nuôi Lửa & Tiến Hóa</span>
+                  <span>
+                    {t(
+                      "flameModal.gardenTitle",
+                      "Khu Vườn Nuôi Lửa & Tiến Hóa",
+                    )}
+                  </span>
                   <span
                     className={`text-[10px] font-mono font-bold uppercase tracking-wider px-2 py-0.5 rounded-full border ${currentTier.pillBg} ${currentTier.pillText} ${currentTier.pillBorder}`}
                   >
-                    Tier {currentTier.tier}: {currentTier.titleVi}
+                    Tier {currentTier.tier}: {currentTierTitle}
                   </span>
                 </h2>
                 <p className="text-xs text-[#737373]">
-                  Duy trì ôn tập mỗi ngày để nạp năng lượng và tiến hóa ngọn
-                  lửa.
+                  {t(
+                    "flameModal.gardenSubtitle",
+                    "Duy trì ôn tập mỗi ngày để nạp năng lượng và tiến hóa ngọn lửa.",
+                  )}
                 </p>
               </div>
             </div>
@@ -131,7 +171,7 @@ export const FlameNurtureModal: React.FC<FlameNurtureModalProps> = ({
             <button
               onClick={onClose}
               className="p-2 text-[#737373] hover:text-black rounded-full hover:bg-black/5 transition-colors cursor-pointer"
-              aria-label="Đóng"
+              aria-label={t("actions.close", "Close")}
             >
               <X className="w-5 h-5" />
             </button>
@@ -162,7 +202,7 @@ export const FlameNurtureModal: React.FC<FlameNurtureModalProps> = ({
                 transition={{ duration: 0.4 }}
                 onClick={handlePokeFlame}
                 className="cursor-pointer my-2 select-none relative group"
-                title="Chạm vào ngọn lửa!"
+                title={t("flameModal.touchFlameTooltip", "Chạm vào ngọn lửa!")}
               >
                 <StreakFlame
                   tier={selectedTierPreview}
@@ -176,19 +216,22 @@ export const FlameNurtureModal: React.FC<FlameNurtureModalProps> = ({
                 className="text-lg font-extrabold text-black tracking-tight mt-2"
                 style={{ fontFamily: "var(--font-display)" }}
               >
-                {previewTierInfo.titleVi} ({previewTierInfo.daysRange})
+                {previewTierTitle} ({previewTierInfo.daysRange})
               </h3>
               <p className="text-xs text-[#737373] max-w-md mt-1 leading-relaxed">
-                {previewTierInfo.descriptionVi}
+                {previewTierDesc}
               </p>
 
               {selectedTierPreview !== currentTier.tier && (
                 <button
                   type="button"
                   onClick={() => setSelectedTierPreview(currentTier.tier)}
-                  className="mt-3 text-xs font-semibold text-[#9333ea] hover:underline"
+                  className="mt-3 text-xs font-semibold text-[#9333ea] hover:underline cursor-pointer"
                 >
-                  ← Quay lại ngọn lửa hiện tại của bạn
+                  {t(
+                    "flameModal.returnToCurrent",
+                    "← Quay lại ngọn lửa hiện tại của bạn",
+                  )}
                 </button>
               )}
             </div>
@@ -200,11 +243,12 @@ export const FlameNurtureModal: React.FC<FlameNurtureModalProps> = ({
                 <div>
                   <div className="flex items-center justify-between text-xs mb-2">
                     <span className="font-semibold uppercase tracking-wider text-[#525252] flex items-center gap-1.5">
-                      <Flame className="w-3.5 h-3.5 text-[#9333ea]" /> Nhiên
-                      liệu hôm nay
+                      <Flame className="w-3.5 h-3.5 text-[#9333ea]" />{" "}
+                      {t("flameModal.fuelToday", "Nhiên liệu hôm nay")}
                     </span>
                     <span className="font-bold text-black font-mono">
-                      {cardsFedToday} / {dailyGoal} thẻ
+                      {cardsFedToday} / {dailyGoal}{" "}
+                      {t("flameModal.cardsUnit", "thẻ")}
                     </span>
                   </div>
 
@@ -221,16 +265,23 @@ export const FlameNurtureModal: React.FC<FlameNurtureModalProps> = ({
                   <p className="text-[11px] text-[#737373] leading-relaxed">
                     {isFedToday ? (
                       <span className="text-[#16a34a] font-semibold flex items-center gap-1">
-                        <CheckCircle2 className="w-3.5 h-3.5" /> Ngọn lửa đã no
-                        nê và đang bảo vệ chuỗi Streak hôm nay!
+                        <CheckCircle2 className="w-3.5 h-3.5" />{" "}
+                        {t(
+                          "flameModal.flameFull",
+                          "Ngọn lửa đã no nê và đang bảo vệ chuỗi Streak hôm nay!",
+                        )}
                       </span>
                     ) : (
                       <span>
-                        Cần ôn thêm{" "}
+                        {t("flameModal.needMorePrefix", "Cần ôn thêm ")}
                         <strong>
-                          {Math.max(0, dailyGoal - cardsFedToday)} thẻ
+                          {Math.max(0, dailyGoal - cardsFedToday)}{" "}
+                          {t("flameModal.cardsUnit", "thẻ")}
                         </strong>{" "}
-                        để giữ ngọn lửa không bị đói.
+                        {t(
+                          "flameModal.needMoreSuffix",
+                          "để giữ ngọn lửa không bị đói.",
+                        )}
                       </span>
                     )}
                   </p>
@@ -238,13 +289,15 @@ export const FlameNurtureModal: React.FC<FlameNurtureModalProps> = ({
 
                 <div className="mt-4 pt-3 border-t border-[#e5e5e5] flex flex-wrap gap-2 justify-between items-center">
                   <span className="text-xs text-[#737373]">
-                    Trạng thái:{" "}
+                    {t("flameModal.statusLabel", "Trạng thái: ")}
                     <strong
                       className={
                         isFedToday ? "text-[#16a34a]" : "text-[#d97706]"
                       }
                     >
-                      {isFedToday ? "Rực rỡ" : "Đang đói"}
+                      {isFedToday
+                        ? t("flameModal.statusFull", "Rực rỡ")
+                        : t("flameModal.statusHungry", "Đang đói")}
                     </strong>
                   </span>
                   <div className="flex items-center gap-2">
@@ -255,9 +308,12 @@ export const FlameNurtureModal: React.FC<FlameNurtureModalProps> = ({
                         onClose();
                       }}
                       className="btn-secondary h-8 px-3 text-xs font-medium gap-1 cursor-pointer"
-                      title="Nạp 5 khúc củi gỗ vào linh vật lửa"
+                      title={t(
+                        "flameModal.feedWoodTooltip",
+                        "Nạp 5 khúc củi gỗ vào linh vật lửa",
+                      )}
                     >
-                      <span>🪵 +5 củi</span>
+                      <span>{t("flameModal.feedWoodBtn", "🪵 +5 củi")}</span>
                     </button>
                     <button
                       type="button"
@@ -268,7 +324,7 @@ export const FlameNurtureModal: React.FC<FlameNurtureModalProps> = ({
                       className="btn-primary h-8 px-3.5 text-xs font-medium gap-1 cursor-pointer"
                     >
                       <Zap className="w-3 h-3 fill-current" />
-                      <span>Ôn tập ngay</span>
+                      <span>{t("flameModal.reviewNowBtn", "Ôn tập ngay")}</span>
                     </button>
                   </div>
                 </div>
@@ -279,8 +335,8 @@ export const FlameNurtureModal: React.FC<FlameNurtureModalProps> = ({
                 <div>
                   <div className="flex items-center justify-between text-xs mb-2">
                     <span className="font-semibold uppercase tracking-wider text-[#525252] flex items-center gap-1.5">
-                      <TrendingUp className="w-3.5 h-3.5 text-[#0284c7]" /> Tiến
-                      hóa tiếp theo
+                      <TrendingUp className="w-3.5 h-3.5 text-[#0284c7]" />{" "}
+                      {t("flameModal.nextEvolution", "Tiến hóa tiếp theo")}
                     </span>
                     <span className="font-bold text-[#0284c7] font-mono">
                       {nextTier ? `Tier ${nextTier.tier}` : "MAX TIER"}
@@ -299,33 +355,40 @@ export const FlameNurtureModal: React.FC<FlameNurtureModalProps> = ({
                         </div>
                         <div>
                           <p className="text-xs font-bold text-black">
-                            {nextTier.titleVi}
+                            {nextTierTitle}
                           </p>
                           <p className="text-[11px] text-[#737373]">
-                            Yêu cầu: {nextTier.minDays} ngày liên tục
+                            {t("flameModal.reqStreak", {
+                              days: nextTier.minDays,
+                              defaultValue: `Yêu cầu: ${nextTier.minDays} ngày liên tục`,
+                            })}
                           </p>
                         </div>
                       </div>
                       <p className="text-[11px] text-[#737373] mt-2">
-                        Còn{" "}
-                        <strong className="text-black">
-                          {daysToNextTier} ngày
-                        </strong>{" "}
-                        nữa để ngọn lửa đổi màu và bùng nổ năng lượng mới!
+                        {t("flameModal.daysRemaining", {
+                          days: daysToNextTier,
+                          defaultValue: `Còn ${daysToNextTier} ngày nữa để ngọn lửa đổi màu và bùng nổ năng lượng mới!`,
+                        })}
                       </p>
                     </>
                   ) : (
                     <div className="text-xs text-[#7e22ce] font-semibold flex items-center gap-1 py-3">
-                      <Sparkles className="w-4 h-4" /> Bạn đã đạt cảnh giới Lửa
-                      Kim Cương Bất Tử!
+                      <Sparkles className="w-4 h-4" />{" "}
+                      {t(
+                        "flameModal.maxTierMsg",
+                        "Bạn đã đạt cảnh giới Lửa Kim Cương Bất Tử!",
+                      )}
                     </div>
                   )}
                 </div>
 
                 <div className="mt-4 pt-3 border-t border-[#e5e5e5] flex items-center justify-between text-xs text-[#737373]">
                   <span>
-                    Chuỗi kỷ lục:{" "}
-                    <strong className="text-black">{longestStreak} ngày</strong>
+                    {t("flameModal.recordStreak", "Chuỗi kỷ lục: ")}
+                    <strong className="text-black">
+                      {longestStreak} {t("flameModal.daysUnit", "ngày")}
+                    </strong>
                   </span>
                   <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-[#16a34a] bg-[#f0fdf4] px-2 py-0.5 rounded-full border border-[#bbf7d0]">
                     <Shield className="w-2.5 h-2.5" /> Freeze: 1
@@ -339,10 +402,18 @@ export const FlameNurtureModal: React.FC<FlameNurtureModalProps> = ({
               <div className="flex items-center justify-between">
                 <h4 className="font-bold text-black text-sm uppercase tracking-wider flex items-center gap-2">
                   <Sparkles className="w-4 h-4 text-[#9333ea]" />
-                  <span>Bộ Sưu Tập 8 Cấp Độ Lửa Streak</span>
+                  <span>
+                    {t(
+                      "flameModal.galleryTitle",
+                      "Bộ Sưu Tập 8 Cấp Độ Lửa Streak",
+                    )}
+                  </span>
                 </h4>
                 <span className="text-xs text-[#737373]">
-                  Nhấn vào từng Tier để xem trước
+                  {t(
+                    "flameModal.galleryHint",
+                    "Nhấn vào từng Tier để xem trước",
+                  )}
                 </span>
               </div>
 
@@ -350,6 +421,7 @@ export const FlameNurtureModal: React.FC<FlameNurtureModalProps> = ({
                 {FLAME_TIERS.map((tier) => {
                   const isUnlocked = currentStreak >= tier.minDays;
                   const isSelected = selectedTierPreview === tier.tier;
+                  const tTitle = isVi ? tier.titleVi : tier.name;
 
                   return (
                     <button
@@ -374,7 +446,7 @@ export const FlameNurtureModal: React.FC<FlameNurtureModalProps> = ({
                         </div>
                         {isUnlocked ? (
                           <span className="text-[10px] font-semibold text-[#16a34a] bg-[#f0fdf4] border border-[#bbf7d0] px-1.5 py-0.5 rounded-full">
-                            Đã mở
+                            {t("flameModal.unlocked", "Đã mở")}
                           </span>
                         ) : (
                           <span className="text-[10px] font-semibold text-[#737373] flex items-center gap-0.5">
@@ -385,7 +457,7 @@ export const FlameNurtureModal: React.FC<FlameNurtureModalProps> = ({
 
                       <div>
                         <p className="text-xs font-bold text-black line-clamp-1">
-                          {tier.titleVi}
+                          {tTitle}
                         </p>
                         <p className="text-[10px] font-mono text-[#737373]">
                           {tier.daysRange}
