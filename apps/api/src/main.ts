@@ -9,8 +9,17 @@ async function bootstrap() {
 
   app.use(cookieParser());
 
+  const rawOrigins =
+    process.env.CORS_ORIGINS ||
+    process.env.CLIENT_URL ||
+    'http://localhost:5173';
+  const origins = rawOrigins
+    .split(',')
+    .map((origin) => origin.trim())
+    .filter(Boolean);
+
   app.enableCors({
-    origin: process.env.CLIENT_URL || 'http://localhost:5173',
+    origin: origins.length === 1 ? origins[0] : origins,
     credentials: true,
   });
 
