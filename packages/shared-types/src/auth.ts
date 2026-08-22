@@ -1,9 +1,12 @@
 // Shared authentication types and DTOs
 
+export type AppLanguage = "vi" | "en";
+
 export interface RegisterDto {
   email: string;
   username: string;
   password: string;
+  preferredLanguage?: AppLanguage;
 }
 
 export interface LoginDto {
@@ -24,6 +27,7 @@ export interface AuthUser {
   username: string;
   dailyGoal: number;
   avatarUrl?: string | null;
+  preferredLanguage?: AppLanguage;
   createdAt: string | Date;
   updatedAt?: string | Date;
 }
@@ -44,6 +48,7 @@ export interface UserProfileResponse {
 export interface UpdateProfileDto {
   dailyGoal?: number;
   avatarUrl?: string;
+  preferredLanguage?: AppLanguage;
 }
 
 export interface ChangePasswordDto {
