@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { AlertTriangle, Trash2, X } from "lucide-react";
 import type { CardResponse } from "@wordstreak/shared-types";
@@ -30,10 +31,10 @@ export const DeleteCardConfirmModal: React.FC<DeleteCardConfirmModalProps> = ({
 
   if (!isOpen || !card) return null;
 
-  return (
+  const modalContent = (
     <AnimatePresence>
       <div
-        className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-xs"
+        className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto bg-black/40 backdrop-blur-xs"
         role="dialog"
         aria-modal="true"
         aria-labelledby="delete-card-title"
@@ -43,7 +44,7 @@ export const DeleteCardConfirmModal: React.FC<DeleteCardConfirmModalProps> = ({
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: 10 }}
           transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
-          className="relative w-full max-w-md rounded-2xl border border-[#e5e5e5] bg-white p-6 shadow-2xl z-10 text-black"
+          className="relative w-full max-w-md rounded-2xl border border-[#e5e5e5] bg-white p-6 shadow-2xl z-10 text-black my-auto"
         >
           <div className="flex items-start justify-between mb-4">
             <div className="w-10 h-10 rounded-xl bg-[#fff1f2] border border-[#fecdd3] flex items-center justify-center text-[#ff5f56]">
@@ -103,4 +104,8 @@ export const DeleteCardConfirmModal: React.FC<DeleteCardConfirmModalProps> = ({
       </div>
     </AnimatePresence>
   );
+
+  return typeof document !== "undefined"
+    ? createPortal(modalContent, document.body)
+    : modalContent;
 };

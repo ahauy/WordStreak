@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { AlertTriangle, X } from "lucide-react";
 import type { DeckResponse } from "@wordstreak/shared-types";
@@ -54,9 +55,9 @@ export const DeleteDeckConfirmModal: React.FC<DeleteDeckConfirmModalProps> = ({
     }
   };
 
-  return (
+  const modalContent = (
     <AnimatePresence>
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto">
         {/* Backdrop */}
         <motion.div
           initial={{ opacity: 0 }}
@@ -72,7 +73,7 @@ export const DeleteDeckConfirmModal: React.FC<DeleteDeckConfirmModalProps> = ({
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: 10 }}
           transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
-          className="relative w-full max-w-md bg-white rounded-2xl shadow-2xl border border-[#e5e5e5] overflow-hidden z-10 p-6 space-y-4"
+          className="relative w-full max-w-md bg-white rounded-2xl shadow-2xl border border-[#e5e5e5] overflow-hidden z-10 p-6 space-y-4 my-auto"
         >
           <div className="flex items-start justify-between">
             <div className="w-10 h-10 rounded-2xl bg-[#fff1f2] border border-[#fecdd3] flex items-center justify-center text-[#ff5f56]">
@@ -150,4 +151,8 @@ export const DeleteDeckConfirmModal: React.FC<DeleteDeckConfirmModalProps> = ({
       </div>
     </AnimatePresence>
   );
+
+  return typeof document !== "undefined"
+    ? createPortal(modalContent, document.body)
+    : modalContent;
 };

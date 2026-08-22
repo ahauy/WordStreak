@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import { createPortal } from "react-dom";
 import { useTranslation } from "react-i18next";
 import { useVoicePracticeEngine } from "../../hooks/useVoicePracticeEngine";
 import { AcousticSoundwave } from "./AcousticSoundwave";
@@ -131,9 +132,9 @@ export function PronunciationPracticeModal({
 
   if (!isOpen) return null;
 
-  return (
+  const modalContent = (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-xs"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto bg-black/40 backdrop-blur-xs"
       data-testid="pronunciation-modal-backdrop"
       onClick={(e) => {
         if (e.target === e.currentTarget) onClose();
@@ -145,7 +146,7 @@ export function PronunciationPracticeModal({
         aria-modal="true"
         aria-labelledby="modal-target-word"
         tabIndex={-1}
-        className="relative w-full max-w-lg p-6 bg-white border border-neutral-200 rounded-3xl shadow-xl space-y-6 animate-in fade-in zoom-in-95 duration-150 outline-hidden"
+        className="relative w-full max-w-lg p-6 bg-white border border-neutral-200 rounded-3xl shadow-xl space-y-6 animate-in fade-in zoom-in-95 duration-150 outline-hidden my-auto"
         data-testid="pronunciation-modal-content"
       >
         {/* Header */}
@@ -323,4 +324,8 @@ export function PronunciationPracticeModal({
       </div>
     </div>
   );
+
+  return typeof document !== "undefined"
+    ? createPortal(modalContent, document.body)
+    : modalContent;
 }

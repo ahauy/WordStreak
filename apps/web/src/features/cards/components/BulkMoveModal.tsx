@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { FolderSymlink, X, Loader2 } from "lucide-react";
 import { decksService } from "../../decks/services/decksService";
@@ -67,9 +68,9 @@ export const BulkMoveModal: React.FC<BulkMoveModalProps> = ({
     await onConfirmMove(selectedTargetDeckId);
   };
 
-  return (
+  const modalContent = (
     <AnimatePresence>
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto">
         {/* Backdrop */}
         <motion.div
           initial={{ opacity: 0 }}
@@ -84,7 +85,7 @@ export const BulkMoveModal: React.FC<BulkMoveModalProps> = ({
           initial={{ opacity: 0, scale: 0.95, y: 10 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: 10 }}
-          className="relative w-full max-w-md bg-white rounded-2xl border border-[#e5e5e5] p-6 shadow-xl z-10"
+          className="relative w-full max-w-md bg-white rounded-2xl border border-[#e5e5e5] p-6 shadow-xl z-10 my-auto"
         >
           <div className="flex items-center justify-between pb-4 border-b border-[#f0f0f0]">
             <div className="flex items-center gap-2.5">
@@ -177,4 +178,8 @@ export const BulkMoveModal: React.FC<BulkMoveModalProps> = ({
       </div>
     </AnimatePresence>
   );
+
+  return typeof document !== "undefined"
+    ? createPortal(modalContent, document.body)
+    : modalContent;
 };

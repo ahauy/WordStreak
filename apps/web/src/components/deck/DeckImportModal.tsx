@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
+import { createPortal } from "react-dom";
 import {
   X,
   Upload,
@@ -263,14 +264,14 @@ export const DeckImportModal: React.FC<DeckImportModalProps> = ({
     }
   };
 
-  return (
+  const modalContent = (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-xs animate-in fade-in duration-200"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto bg-black/40 backdrop-blur-xs animate-in fade-in duration-200"
       role="dialog"
       aria-modal="true"
       aria-labelledby="modal-title"
     >
-      <div className="bg-white rounded-2xl border border-[#e5e5e5] w-full max-w-4xl shadow-xl overflow-hidden flex flex-col max-h-[90vh]">
+      <div className="bg-white rounded-2xl border border-[#e5e5e5] w-full max-w-4xl shadow-xl overflow-hidden flex flex-col max-h-[90vh] my-auto">
         {/* Header */}
         <div className="px-6 py-4 border-b border-[#e5e5e5] flex items-center justify-between">
           <div>
@@ -729,4 +730,8 @@ export const DeckImportModal: React.FC<DeckImportModalProps> = ({
       </div>
     </div>
   );
+
+  return typeof document !== "undefined"
+    ? createPortal(modalContent, document.body)
+    : modalContent;
 };

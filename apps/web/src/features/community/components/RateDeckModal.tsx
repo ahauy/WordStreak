@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { createPortal } from "react-dom";
 import type { CommunityDeckItem } from "@wordstreak/shared-types";
 import { communityService } from "../services/communityService";
 import { X, Star, AlertCircle, CheckCircle2 } from "lucide-react";
@@ -67,10 +68,10 @@ export const RateDeckModal: React.FC<RateDeckModalProps> = ({
     }
   };
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm animate-in fade-in duration-200">
+  const modalContent = (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto bg-black/40 backdrop-blur-sm animate-in fade-in duration-200">
       <div
-        className="relative w-full max-w-md rounded-3xl bg-white shadow-2xl border border-[#e5e5e5] overflow-hidden"
+        className="relative w-full max-w-md rounded-3xl bg-white shadow-2xl border border-[#e5e5e5] overflow-hidden my-auto"
         role="dialog"
         aria-modal="true"
       >
@@ -196,4 +197,8 @@ export const RateDeckModal: React.FC<RateDeckModalProps> = ({
       </div>
     </div>
   );
+
+  return typeof document !== "undefined"
+    ? createPortal(modalContent, document.body)
+    : modalContent;
 };

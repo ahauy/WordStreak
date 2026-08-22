@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   X,
@@ -120,9 +121,9 @@ export const QuizSetupModal: React.FC<QuizSetupModalProps> = ({
     },
   ];
 
-  return (
+  const modalContent = (
     <AnimatePresence>
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto">
         {/* Backdrop */}
         <motion.div
           initial={{ opacity: 0 }}
@@ -140,7 +141,7 @@ export const QuizSetupModal: React.FC<QuizSetupModalProps> = ({
           initial={{ opacity: 0, scale: 0.95, y: 12 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: 12 }}
-          className="relative w-full max-w-xl bg-white border border-[#e5e5e5] rounded-3xl p-6 sm:p-7 shadow-xl z-10"
+          className="relative w-full max-w-xl bg-white border border-[#e5e5e5] rounded-3xl p-6 sm:p-7 shadow-xl z-10 my-auto"
         >
           {/* Header */}
           <div className="flex items-center justify-between pb-4 border-b border-[#f0f0f0]">
@@ -422,4 +423,8 @@ export const QuizSetupModal: React.FC<QuizSetupModalProps> = ({
       </div>
     </AnimatePresence>
   );
+
+  return typeof document !== "undefined"
+    ? createPortal(modalContent, document.body)
+    : modalContent;
 };

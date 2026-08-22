@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Layers, Check, Globe, Lock } from "lucide-react";
 import {
@@ -101,7 +102,7 @@ const CreateDeckModalDialog: React.FC<{
   );
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto">
       {/* Backdrop */}
       <motion.div
         initial={{ opacity: 0 }}
@@ -117,7 +118,7 @@ const CreateDeckModalDialog: React.FC<{
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.95, y: 10 }}
         transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
-        className="relative w-full max-w-lg bg-white rounded-2xl shadow-2xl border border-[#e5e5e5] overflow-hidden z-10 flex flex-col max-h-[90vh]"
+        className="relative w-full max-w-lg bg-white rounded-2xl shadow-2xl border border-[#e5e5e5] overflow-hidden z-10 flex flex-col max-h-[90vh] my-auto"
       >
         {/* Header */}
         <div className="px-6 pt-5 pb-4 border-b border-[#e5e5e5] flex items-center justify-between">
@@ -497,9 +498,13 @@ export const CreateDeckModal: React.FC<CreateDeckModalProps> = ({
 }) => {
   if (!isOpen) return null;
 
-  return (
+  const modalContent = (
     <AnimatePresence>
       <CreateDeckModalDialog onClose={onClose} onSubmit={onSubmit} />
     </AnimatePresence>
   );
+
+  return typeof document !== "undefined"
+    ? createPortal(modalContent, document.body)
+    : modalContent;
 };

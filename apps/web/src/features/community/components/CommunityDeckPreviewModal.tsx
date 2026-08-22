@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import type {
   CommunityDeckItem,
   CommunityDeckDetailResponse,
@@ -98,10 +99,10 @@ export const CommunityDeckPreviewModal: React.FC<
     }
   };
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm animate-in fade-in duration-200">
+  const modalContent = (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto bg-black/40 backdrop-blur-sm animate-in fade-in duration-200">
       <div
-        className="relative w-full max-w-2xl max-h-[88vh] flex flex-col rounded-3xl bg-white shadow-2xl border border-[#e5e5e5] overflow-hidden"
+        className="relative w-full max-w-2xl max-h-[88vh] flex flex-col rounded-3xl bg-white shadow-2xl border border-[#e5e5e5] overflow-hidden my-auto"
         role="dialog"
         aria-modal="true"
       >
@@ -306,4 +307,8 @@ export const CommunityDeckPreviewModal: React.FC<
       </div>
     </div>
   );
+
+  return typeof document !== "undefined"
+    ? createPortal(modalContent, document.body)
+    : modalContent;
 };

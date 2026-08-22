@@ -86,7 +86,7 @@ const SettingsModalContent: React.FC<SettingsModalProps> = ({
   const modalContent = (
     <AnimatePresence>
       <div
-        className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/40 backdrop-blur-xs overflow-y-auto"
+        className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-xs overflow-y-auto"
         role="dialog"
         aria-modal="true"
         aria-labelledby="settings-modal-title"

@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   X,
@@ -177,10 +178,10 @@ export const AddCardModal: React.FC<AddCardModalProps> = ({
 
   if (!isOpen) return null;
 
-  return (
+  const modalContent = (
     <AnimatePresence>
       <div
-        className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-xs"
+        className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto bg-black/40 backdrop-blur-xs"
         role="dialog"
         aria-modal="true"
         aria-labelledby="add-card-modal-title"
@@ -190,7 +191,7 @@ export const AddCardModal: React.FC<AddCardModalProps> = ({
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: 10 }}
           transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
-          className="relative w-full max-w-4xl max-h-[90vh] flex flex-col rounded-2xl border border-[#e5e5e5] bg-white shadow-2xl overflow-hidden z-10 text-black"
+          className="relative w-full max-w-4xl max-h-[90vh] flex flex-col rounded-2xl border border-[#e5e5e5] bg-white shadow-2xl overflow-hidden z-10 text-black my-auto"
         >
           {/* Header */}
           <div className="flex items-center justify-between px-6 py-4 border-b border-[#e5e5e5] bg-[#fafafa]">
@@ -563,4 +564,8 @@ export const AddCardModal: React.FC<AddCardModalProps> = ({
       </div>
     </AnimatePresence>
   );
+
+  return typeof document !== "undefined"
+    ? createPortal(modalContent, document.body)
+    : modalContent;
 };
