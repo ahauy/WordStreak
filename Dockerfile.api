@@ -19,6 +19,9 @@ COPY packages/shared-types ./packages/shared-types
 COPY apps/api ./apps/api
 COPY tsconfig.base.json ./
 
+# Generate Prisma Client trước khi build
+RUN pnpm --filter api prisma:generate
+
 # Build package dùng chung trước, sau đó build API
 RUN pnpm --filter @wordstreak/shared-types build
 RUN pnpm --filter api build
@@ -42,6 +45,10 @@ COPY apps/api/package.json ./apps/api/
 # Chỉ cài đặt production dependencies
 RUN pnpm install --frozen-lockfile --prod
 
+# Copy Prisma schema và generate Prisma Client cho production runtime
+COPY apps/api/prisma ./apps/api/prisma
+RUN pnpm --filter api prisma:generate
+
 # Copy sản phẩm đã build từ stage builder
 COPY --from=builder /app/packages/shared-types/dist ./packages/shared-types/dist
 COPY --from=builder /app/apps/api/dist ./apps/api/dist
@@ -51,3 +58,4 @@ USER nestjs
 EXPOSE 3000
 
 CMD ["node", "apps/api/dist/main.js"]
+
