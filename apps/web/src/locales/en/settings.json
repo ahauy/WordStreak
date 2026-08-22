@@ -49,7 +49,8 @@
     "selectLabel": "Interface Language",
     "vietnamese": "Tiếng Việt (Vietnamese)",
     "english": "English (US)",
-    "appliedImmediately": "Language changes are applied immediately across the entire application."
+    "appliedImmediately": "Language changes are applied immediately across the entire application.",
+    "autoSync": "Your preferences are saved and automatically synchronized across all your devices."
   },
   "audio": {
     "soundEffects": "Sound Effects & Celebration Chimes",

@@ -49,7 +49,8 @@
     "selectLabel": "Ngôn ngữ giao diện",
     "vietnamese": "Tiếng Việt",
     "english": "English (US)",
-    "appliedImmediately": "Thay đổi ngôn ngữ sẽ được áp dụng ngay lập tức trên toàn bộ ứng dụng."
+    "appliedImmediately": "Thay đổi ngôn ngữ sẽ được áp dụng ngay lập tức trên toàn bộ ứng dụng.",
+    "autoSync": "Tùy chọn của bạn được lưu và tự động đồng bộ hóa trên mọi thiết bị."
   },
   "audio": {
     "soundEffects": "Hiệu ứng âm thanh & Chuông chúc mừng",

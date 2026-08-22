@@ -4,6 +4,7 @@ import type { LanguageSwitcherProps } from "./LanguageSwitcher.types";
 import type { SupportedLocale } from "../../locales/types";
 import { SUPPORTED_LOCALES } from "../../locales/constants";
 import { safeSetLocale } from "../../locales/utils/storage";
+import { syncLanguagePreference } from "../../lib/languageSync";
 
 const VARIANT_STYLES: Record<
   NonNullable<LanguageSwitcherProps["variant"]>,
@@ -35,6 +36,7 @@ export const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({
   const handleToggle = () => {
     i18n.changeLanguage(targetLocale);
     safeSetLocale(targetLocale);
+    syncLanguagePreference(targetLocale);
     if (onLocaleChange) {
       onLocaleChange(targetLocale);
     }

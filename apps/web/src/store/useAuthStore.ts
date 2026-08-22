@@ -3,6 +3,8 @@ import axios from "axios";
 import type { AuthUser, LoginDto, RegisterDto } from "@wordstreak/shared-types";
 import { authApi } from "../features/auth/services/auth.api";
 import { setAccessTokenHeader, setAuthCallbacks } from "../common/api/axios";
+import i18n from "../locales/i18n";
+import { safeSetLocale } from "../locales/utils/storage";
 
 interface AuthState {
   user: AuthUser | null;
@@ -41,6 +43,15 @@ const extractErrorMessage = (err: unknown, fallback: string): string => {
   return fallback;
 };
 
+const syncLocaleFromUser = (user: AuthUser | null | undefined) => {
+  if (user?.preferredLanguage === "vi" || user?.preferredLanguage === "en") {
+    safeSetLocale(user.preferredLanguage);
+    if (i18n.language !== user.preferredLanguage) {
+      void i18n.changeLanguage(user.preferredLanguage);
+    }
+  }
+};
+
 export const useAuthStore = create<AuthState>((set, get) => {
   // Wire up Axios interceptor callbacks to Zustand state
   setAuthCallbacks(
@@ -66,6 +77,11 @@ export const useAuthStore = create<AuthState>((set, get) => {
     },
 
     updateUser: (updatedFields: Partial<AuthUser>) => {
+      if (updatedFields.preferredLanguage) {
+        syncLocaleFromUser({
+          preferredLanguage: updatedFields.preferredLanguage,
+        } as AuthUser);
+      }
       set((state) => ({
         user: state.user ? { ...state.user, ...updatedFields } : null,
       }));
@@ -90,6 +106,7 @@ export const useAuthStore = create<AuthState>((set, get) => {
         const refreshResult = await authApi.refresh();
         setAccessTokenHeader(refreshResult.accessToken);
         const user = await authApi.getMe();
+        syncLocaleFromUser(user);
         set({
           user,
           accessToken: refreshResult.accessToken,
@@ -109,6 +126,7 @@ export const useAuthStore = create<AuthState>((set, get) => {
       try {
         const result = await authApi.login(dto);
         setAccessTokenHeader(result.accessToken);
+        syncLocaleFromUser(result.user);
         set({
           user: result.user,
           accessToken: result.accessToken,
@@ -134,6 +152,7 @@ export const useAuthStore = create<AuthState>((set, get) => {
       try {
         const result = await authApi.register(dto);
         setAccessTokenHeader(result.accessToken);
+        syncLocaleFromUser(result.user);
         set({
           user: result.user,
           accessToken: result.accessToken,

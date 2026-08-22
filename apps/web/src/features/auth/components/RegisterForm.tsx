@@ -59,7 +59,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
   onSuccess,
   onNavigateToLogin,
 }) => {
-  const { t } = useTranslation(["auth", "common"]);
+  const { t, i18n } = useTranslation(["auth", "common"]);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const {
@@ -100,11 +100,13 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
 
   const onSubmit = async (data: RegisterFormData) => {
     clearError();
+    const preferredLanguage = i18n.language?.startsWith("vi") ? "vi" : "en";
     try {
       await registerUser({
         email: data.email,
         username: data.username,
         password: data.password,
+        preferredLanguage,
       });
       onSuccess?.();
     } catch {
