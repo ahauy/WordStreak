@@ -61,6 +61,9 @@ apps/web/src/
 ├── config/                      # Constants, Enums, Environment variables
 ├── store/                       # Global State Management (Zustand / Redux)
 │
+├── lib/                         # Client Utilities (LanguageSync debounced background pipeline)
+│   └── languageSync.ts          # Optimistic language persistence helper
+│
 ├── locales/                     # 🌐 Hạ tầng Đa ngôn ngữ i18n & 9 Domain Namespaces
 │   ├── i18n.ts                  # Khởi tạo i18next & Browser Language Detector
 │   ├── types.ts                 # TypeScript Module Augmentation (CustomTypeOptions)
@@ -85,7 +88,7 @@ apps/web/src/
     ├── cards/                   # Danh sách Thẻ từ vựng & Form Modal có AI Auto-Fill 🤖
     ├── reviews/                 # 🔴 Màn hình lật thẻ Flashcard SRS (Dễ, Khó, Lặp lại)
     ├── practice/                # 🟠 Engine làm bài tập Quiz & Kiểm tra phát âm 🎙️
-    └── user-profile/            # Cài đặt cá nhân & Mục tiêu hàng ngày
+    └── user-profile/            # Cài đặt cá nhân, Mục tiêu hàng ngày, Avatar & Tab Ngôn ngữ (LanguageSettingsTab)
 ```
 
 ---
