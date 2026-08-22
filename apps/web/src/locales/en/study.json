@@ -1,0 +1,19 @@
+{
+  "session": {
+    "cardOf": "Card {{current}} of {{total}}",
+    "flipPrompt": "Tap card or press Space to flip",
+    "flipHint": "Show Answer"
+  },
+  "rating": {
+    "again": "Again",
+    "hard": "Hard",
+    "good": "Good",
+    "easy": "Easy"
+  },
+  "complete": {
+    "title": "Session Complete! 🎉",
+    "subtitle": "You've reviewed all scheduled flashcards for today.",
+    "backToDashboard": "Back to Dashboard",
+    "studyAgain": "Study Again"
+  }
+}

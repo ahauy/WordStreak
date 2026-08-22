@@ -1,0 +1,14 @@
+{
+  "title": "Bộ từ vựng",
+  "subtitle": "Quản lý, sắp xếp và nhập các bộ thẻ flashcard của bạn",
+  "createDeck": "Tạo bộ từ mới",
+  "importDeck": "Nhập bộ từ",
+  "exportDeck": "Xuất bộ từ",
+  "cardCount_one": "{{count}} thẻ",
+  "cardCount_other": "{{count}} thẻ",
+  "emptyState": {
+    "title": "Chưa có bộ từ vựng nào",
+    "description": "Tạo bộ thẻ flashcard đầu tiên hoặc nhập tệp CSV/Anki sẵn có để bắt đầu ôn tập.",
+    "action": "Tạo bộ từ đầu tiên"
+  }
+}

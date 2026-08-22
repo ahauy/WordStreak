@@ -1,0 +1,43 @@
+{
+  "brand": {
+    "name": "WordStreak",
+    "tagline": "Ôn tập ngắt quãng 100% Miễn phí",
+    "badgeFree": "100% Miễn phí"
+  },
+  "nav": {
+    "dashboard": "Tổng quan",
+    "decks": "Bộ từ vựng",
+    "community": "Khám phá",
+    "analytics": "Thống kê",
+    "searchPlaceholder": "Tìm kiếm từ vựng...",
+    "interactiveDemo": "Dùng thử tính năng",
+    "features": "Tính năng",
+    "howItWorks": "Cách hoạt động",
+    "studyGoals": "Mục tiêu học",
+    "faq": "Hỏi đáp"
+  },
+  "actions": {
+    "save": "Lưu",
+    "cancel": "Hủy",
+    "delete": "Xóa",
+    "edit": "Chỉnh sửa",
+    "back": "Quay lại",
+    "next": "Tiếp tục",
+    "close": "Đóng",
+    "confirm": "Xác nhận",
+    "startLearning": "Bắt đầu học miễn phí",
+    "signIn": "Đăng nhập",
+    "signUp": "Bắt đầu miễn phí",
+    "signOut": "Đăng xuất"
+  },
+  "switcher": {
+    "toggleAriaVi": "Chuyển sang Tiếng Việt",
+    "toggleAriaEn": "Switch to English"
+  },
+  "status": {
+    "loading": "Đang tải...",
+    "error": "Đã có lỗi xảy ra",
+    "success": "Thành công",
+    "empty": "Không có dữ liệu"
+  }
+}

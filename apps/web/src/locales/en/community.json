@@ -1,0 +1,15 @@
+{
+  "title": "Community Decks",
+  "subtitle": "Discover and clone high-quality vocabulary decks curated by the community",
+  "searchPlaceholder": "Search shared community decks...",
+  "filters": {
+    "all": "All Decks",
+    "popular": "Most Popular",
+    "trending": "Trending",
+    "recent": "Recently Added"
+  },
+  "actions": {
+    "cloneDeck": "Clone Deck",
+    "viewDetails": "View Details"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "title": "Practice & Quizzes",
+  "subtitle": "Strengthen memory recall with active quiz challenges",
+  "modes": {
+    "multipleChoice": "Multiple Choice",
+    "fillInBlank": "Fill in the Blank",
+    "wordMatching": "Word Matching",
+    "pronunciation": "Pronunciation Practice"
+  },
+  "quiz": {
+    "questionOf": "Question {{current}} of {{total}}",
+    "submit": "Submit Answer",
+    "nextQuestion": "Next Question",
+    "score": "Your Score: {{score}}%"
+  }
+}

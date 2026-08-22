@@ -1,0 +1,16 @@
+{
+  "title": "Luyện tập & Trắc nghiệm",
+  "subtitle": "Tăng cường khả năng ghi nhớ thông qua các bài thử thách tương tác",
+  "modes": {
+    "multipleChoice": "Trắc nghiệm 4 đáp án",
+    "fillInBlank": "Điền vào chỗ trống",
+    "wordMatching": "Nối từ & Nghĩa",
+    "pronunciation": "Luyện phát âm"
+  },
+  "quiz": {
+    "questionOf": "Câu hỏi {{current}} / {{total}}",
+    "submit": "Kiểm tra đáp án",
+    "nextQuestion": "Câu tiếp theo",
+    "score": "Điểm của bạn: {{score}}%"
+  }
+}

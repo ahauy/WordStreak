@@ -1,0 +1,23 @@
+{
+  "welcome": {
+    "greeting": "Chào mừng trở lại",
+    "subtitle": "Duy trì chuỗi học tập bằng cách ôn các thẻ từ hôm nay."
+  },
+  "streak": {
+    "daysLabel": "Ngày Streak",
+    "flameGardenTooltip": "Nhấn để mở Khu Vườn Nuôi Lửa & Tiến Hóa",
+    "activeToday": "Đã học hôm nay",
+    "restDay": "Ngày nghỉ ngơi"
+  },
+  "stats": {
+    "cardsStudied": "Thẻ đã ôn",
+    "accuracy": "Độ chính xác",
+    "timeSpent": "Thời gian học",
+    "currentLevel": "Cấp độ"
+  },
+  "quickActions": {
+    "startDailyReview": "Ôn tập hàng ngày",
+    "exploreCommunity": "Khám phá bộ từ vựng cộng đồng",
+    "createNewDeck": "Tạo bộ từ mới"
+  }
+}

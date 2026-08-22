@@ -1,0 +1,14 @@
+{
+  "title": "Vocabulary Decks",
+  "subtitle": "Manage, organize, and import your flashcard decks",
+  "createDeck": "Create Deck",
+  "importDeck": "Import Deck",
+  "exportDeck": "Export Deck",
+  "cardCount_one": "{{count}} card",
+  "cardCount_other": "{{count}} cards",
+  "emptyState": {
+    "title": "No decks found",
+    "description": "Create your first flashcard deck or import an existing CSV/Anki package to start studying.",
+    "action": "Create First Deck"
+  }
+}
