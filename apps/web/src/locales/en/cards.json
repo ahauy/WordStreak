@@ -1,0 +1,68 @@
+{
+  "title": "Vocabulary Cards",
+  "subtitle": "Manage individual flashcards in this deck",
+  "addCard": "Add Card",
+  "editCard": "Edit Card",
+  "deleteCard": "Delete Card",
+  "selectedCount_one": "{{count}} card selected",
+  "selectedCount_other": "{{count}} cards selected",
+  "form": {
+    "termLabel": "Vocabulary Word / Term",
+    "termPlaceholder": "e.g., Ephemeral",
+    "phoneticLabel": "Phonetic / IPA Transcription",
+    "phoneticPlaceholder": "e.g., /ɪˈfem.ər.əl/",
+    "definitionLabel": "Meaning / Definition",
+    "definitionPlaceholder": "e.g., Lasting for a very short time",
+    "exampleLabel": "Example Sentence",
+    "examplePlaceholder": "e.g., Fashions are ephemeral, but style lasts forever.",
+    "notesLabel": "Personal Notes / Mnemonic",
+    "notesPlaceholder": "Add memory tips or usage notes...",
+    "tagsLabel": "Tags",
+    "tagsPlaceholder": "e.g., advanced, c1, formal",
+    "aiAutoFill": "Auto-Fill with AI",
+    "aiAutoFilling": "Generating AI context...",
+    "aiAutoFillSuccess": "Auto-filled with AI context!",
+    "saveCard": "Save Changes",
+    "createCard": "Create Card"
+  },
+  "table": {
+    "columnTerm": "Term",
+    "columnPhonetic": "Phonetic",
+    "columnDefinition": "Meaning",
+    "columnExample": "Example Sentence",
+    "columnState": "State",
+    "columnInterval": "SRS Interval",
+    "columnActions": "Actions",
+    "repetitions": "Repetitions: {{count}}",
+    "repsLabel": "Repetitions",
+    "playPronunciation": "Play pronunciation",
+    "voicePractice": "Voice practice",
+    "editCard": "Edit card",
+    "deleteCard": "Delete card",
+    "noCards": "No vocabulary cards found in this deck."
+  },
+  "status": {
+    "new": "New",
+    "learning": "Learning",
+    "review": "Review Due",
+    "mastered": "Mastered"
+  },
+  "bulk": {
+    "selectDeselectAll": "Select / Deselect All",
+    "deleteSelected": "Delete Selected",
+    "moveSelected": "Move to Deck",
+    "exportSelected": "Export Selected",
+    "confirmDeleteTitle": "Delete {{count}} Selected Cards",
+    "confirmDeleteDesc": "Are you sure you want to permanently delete {{count}} selected flashcards? This action cannot be undone.",
+    "resetConfirmTitle": "Reset Progress ({{count}} cards)",
+    "resetConfirmDesc": "Reset SRS interval and repetitions to New for selected cards. You will review them from the beginning.",
+    "moveTitle": "Move Cards to Another Deck",
+    "targetDeckSelect": "Select Destination Deck",
+    "moveSubmit": "Move Cards"
+  },
+  "preview": {
+    "front": "Front Prompt",
+    "back": "Back Meaning",
+    "clickToFlip": "Click to flip card"
+  }
+}

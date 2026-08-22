@@ -1,5 +1,6 @@
 import React, { useEffect, useCallback } from "react";
 import { Volume2, BookOpen, Lightbulb, RotateCw, Mic } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import type { DueCardItem, SrsRating } from "@wordstreak/shared-types";
 
 interface FlashcardReviewCardProps {
@@ -19,6 +20,14 @@ export const FlashcardReviewCard: React.FC<FlashcardReviewCardProps> = ({
   onRate,
   onOpenVoicePractice,
 }) => {
+  const { t, i18n } = useTranslation([
+    "study",
+    "cards",
+    "ai_vocabulary",
+    "common",
+  ]);
+  const isVi = (i18n.resolvedLanguage || i18n.language || "").startsWith("vi");
+
   const speakWord = useCallback((text: string) => {
     if ("speechSynthesis" in window) {
       window.speechSynthesis.cancel();
@@ -80,6 +89,19 @@ export const FlashcardReviewCard: React.FC<FlashcardReviewCardProps> = ({
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [isFlipped, isSubmitting, onFlip, onRate, playAudio]);
 
+  const unitDay = isVi ? " ngày" : "d";
+  const goodInterval =
+    card.repetitions === 0
+      ? `1${unitDay}`
+      : card.repetitions === 1
+        ? `6${unitDay}`
+        : `${Math.round(card.interval * card.easeFactor)}${unitDay}`;
+
+  const easyInterval =
+    card.repetitions === 0
+      ? `4${unitDay}`
+      : `${Math.round(card.interval * card.easeFactor * 1.3)}${unitDay}`;
+
   return (
     <div className="w-full max-w-xl mx-auto flex flex-col items-center">
       {/* 3D Perspective Card Container */}
@@ -95,7 +117,7 @@ export const FlashcardReviewCard: React.FC<FlashcardReviewCardProps> = ({
             isFlipped ? "rotate-y-180" : ""
           }`}
         >
-          {/* FRONT FACE */}
+          {/* FRONT FACE (UGC word/IPA rendered verbatim) */}
           <div className="absolute inset-0 w-full h-full backface-hidden p-8 flex flex-col justify-between rounded-2xl bg-[#ffffff]">
             {/* Header info */}
             <div className="flex items-center justify-between">
@@ -105,12 +127,12 @@ export const FlashcardReviewCard: React.FC<FlashcardReviewCardProps> = ({
               </span>
               <span className="text-xs text-[#a3a3a3] font-mono">
                 {card.status === "NEW"
-                  ? "New Word"
-                  : `${card.interval}d interval`}
+                  ? t("cards:status.new", "New Word")
+                  : `${card.interval}${unitDay}`}
               </span>
             </div>
 
-            {/* Word & IPA */}
+            {/* Word & IPA (100% UGC) */}
             <div className="my-auto text-center py-6">
               <h2 className="text-4xl sm:text-5xl font-semibold text-[#000000] tracking-tight font-display mb-3">
                 {card.word}
@@ -141,8 +163,14 @@ export const FlashcardReviewCard: React.FC<FlashcardReviewCardProps> = ({
                       onOpenVoicePractice();
                     }}
                     className="p-1.5 rounded-full hover:bg-[#f3e8ff] text-[#7e22ce] hover:text-[#6b21a8] transition-colors cursor-pointer"
-                    title="Luyện phát âm"
-                    aria-label="Luyện phát âm"
+                    title={t(
+                      "practice:modes.pronunciation",
+                      "Pronunciation Practice",
+                    )}
+                    aria-label={t(
+                      "practice:modes.pronunciation",
+                      "Pronunciation Practice",
+                    )}
                     data-testid="voice-practice-trigger-front"
                   >
                     <Mic className="w-4 h-4" />
@@ -155,16 +183,15 @@ export const FlashcardReviewCard: React.FC<FlashcardReviewCardProps> = ({
             <div className="text-center text-xs text-[#a3a3a3] flex items-center justify-center gap-1.5 pt-2 border-t border-[#f5f5f5]">
               <RotateCw className="w-3 h-3 animate-spin-slow" />
               <span>
-                Click card or press{" "}
-                <kbd className="px-1.5 py-0.5 rounded bg-[#fafafa] border border-[#e5e5e5] font-mono text-[10px] text-[#525252]">
-                  Space
-                </kbd>{" "}
-                to flip
+                {t(
+                  "study:session.flipPrompt",
+                  "Click card or press Space to flip",
+                )}
               </span>
             </div>
           </div>
 
-          {/* BACK FACE */}
+          {/* BACK FACE (UGC meaning/example rendered verbatim) */}
           <div className="absolute inset-0 w-full h-full backface-hidden rotate-y-180 p-8 flex flex-col justify-between rounded-2xl bg-[#ffffff] overflow-y-auto">
             <div>
               {/* Header */}
@@ -193,8 +220,14 @@ export const FlashcardReviewCard: React.FC<FlashcardReviewCardProps> = ({
                         onOpenVoicePractice();
                       }}
                       className="p-1 rounded-full hover:bg-[#f3e8ff] text-[#7e22ce] hover:text-[#6b21a8] transition-colors cursor-pointer"
-                      title="Luyện phát âm"
-                      aria-label="Luyện phát âm"
+                      title={t(
+                        "practice:modes.pronunciation",
+                        "Pronunciation Practice",
+                      )}
+                      aria-label={t(
+                        "practice:modes.pronunciation",
+                        "Pronunciation Practice",
+                      )}
                       data-testid="voice-practice-trigger-back"
                     >
                       <Mic className="w-4 h-4" />
@@ -208,21 +241,22 @@ export const FlashcardReviewCard: React.FC<FlashcardReviewCardProps> = ({
                 )}
               </div>
 
-              {/* Meaning */}
+              {/* Meaning (UGC) */}
               <div className="mb-4">
                 <p className="text-xs uppercase tracking-wider font-semibold text-[#a3a3a3] mb-1">
-                  Meaning
+                  {t("cards:table.columnDefinition", "Meaning")}
                 </p>
                 <p className="text-lg font-medium text-[#000000] leading-relaxed">
                   {card.meaning}
                 </p>
               </div>
 
-              {/* Example Sentence */}
+              {/* Example Sentence (UGC) */}
               {card.exampleSentence && (
                 <div className="mb-4 p-3.5 rounded-xl bg-[#fafafa] border border-[#e5e5e5]">
                   <p className="text-xs uppercase tracking-wider font-semibold text-[#737373] mb-1 flex items-center gap-1">
-                    <BookOpen className="w-3 h-3" /> Example
+                    <BookOpen className="w-3 h-3" />{" "}
+                    {t("cards:table.columnExample", "Example")}
                   </p>
                   <p className="text-sm text-[#090909] italic leading-normal">
                     "{card.exampleSentence}"
@@ -230,11 +264,12 @@ export const FlashcardReviewCard: React.FC<FlashcardReviewCardProps> = ({
                 </div>
               )}
 
-              {/* Collocations */}
+              {/* Collocations (UGC) */}
               {card.collocations && (
                 <div className="mb-3 text-xs text-[#525252]">
                   <span className="font-semibold text-[#737373] uppercase tracking-wider">
-                    Collocations:{" "}
+                    {t("ai_vocabulary:fields.collocations", "Collocations")}
+                    :{" "}
                   </span>
                   <span className="font-medium text-[#000000]">
                     {card.collocations}
@@ -242,12 +277,14 @@ export const FlashcardReviewCard: React.FC<FlashcardReviewCardProps> = ({
                 </div>
               )}
 
-              {/* Mnemonic */}
+              {/* Mnemonic (UGC) */}
               {card.mnemonic && (
                 <div className="flex items-start gap-1.5 text-xs text-[#737373] bg-[#fafafa] p-2.5 rounded-lg border border-[#e5e5e5]">
                   <Lightbulb className="w-3.5 h-3.5 text-[#ffbd2e] flex-shrink-0 mt-0.5" />
                   <span>
-                    <strong className="text-[#525252]">Memory Tip:</strong>{" "}
+                    <strong className="text-[#525252]">
+                      {t("ai_vocabulary:fields.mnemonic", "Memory Tip")}:
+                    </strong>{" "}
                     {card.mnemonic}
                   </span>
                 </div>
@@ -255,13 +292,13 @@ export const FlashcardReviewCard: React.FC<FlashcardReviewCardProps> = ({
             </div>
 
             <div className="text-center text-[11px] text-[#a3a3a3] pt-2 border-t border-[#f5f5f5] mt-2">
-              Select rating below (1-4)
+              {t("study:session.shortcutsHint", "Shortcuts: 1-4 for ratings")}
             </div>
           </div>
         </div>
       </div>
 
-      {/* 4-TIER OBSIDIAN SRS RATING BUTTONS */}
+      {/* 4-TIER OBSIDIAN SRS RATING BUTTONS (BR-I18N-008) */}
       <div className="w-full mt-6 flex flex-col items-center gap-3">
         {isFlipped ? (
           <div className="grid grid-cols-4 gap-2.5 w-full">
@@ -270,12 +307,14 @@ export const FlashcardReviewCard: React.FC<FlashcardReviewCardProps> = ({
               type="button"
               disabled={isSubmitting}
               onClick={() => onRate(1)}
-              className="flex flex-col items-center justify-center p-3 rounded-xl border border-[#e5e5e5] bg-[#ffffff] hover:bg-[#fafafa] hover:border-[#d4d4d4] active:bg-[#f5f5f5] transition-all disabled:opacity-50 group"
+              className="flex flex-col items-center justify-center p-3 rounded-xl border border-[#e5e5e5] bg-[#ffffff] hover:bg-[#fafafa] hover:border-[#d4d4d4] active:bg-[#f5f5f5] transition-all disabled:opacity-50 group cursor-pointer"
             >
               <span className="text-xs font-semibold text-[#ff5f56]">
-                Again
+                {t("study:rating.again", "Again")}
               </span>
-              <span className="text-[11px] text-[#737373] mt-0.5">&lt; 1d</span>
+              <span className="text-[11px] text-[#737373] mt-0.5">
+                {t("study:rating.intervalShort", "< 10m")}
+              </span>
               <kbd className="mt-1.5 px-1.5 py-0.5 text-[10px] rounded bg-[#fafafa] border border-[#e5e5e5] font-mono text-[#737373] group-hover:text-[#000000]">
                 1
               </kbd>
@@ -286,10 +325,14 @@ export const FlashcardReviewCard: React.FC<FlashcardReviewCardProps> = ({
               type="button"
               disabled={isSubmitting}
               onClick={() => onRate(2)}
-              className="flex flex-col items-center justify-center p-3 rounded-xl border border-[#e5e5e5] bg-[#ffffff] hover:bg-[#fafafa] hover:border-[#d4d4d4] active:bg-[#f5f5f5] transition-all disabled:opacity-50 group"
+              className="flex flex-col items-center justify-center p-3 rounded-xl border border-[#e5e5e5] bg-[#ffffff] hover:bg-[#fafafa] hover:border-[#d4d4d4] active:bg-[#f5f5f5] transition-all disabled:opacity-50 group cursor-pointer"
             >
-              <span className="text-xs font-semibold text-[#ffbd2e]">Hard</span>
-              <span className="text-[11px] text-[#737373] mt-0.5">1d</span>
+              <span className="text-xs font-semibold text-[#ffbd2e]">
+                {t("study:rating.hard", "Hard")}
+              </span>
+              <span className="text-[11px] text-[#737373] mt-0.5">
+                {t("study:rating.intervalOneDay", "1d")}
+              </span>
               <kbd className="mt-1.5 px-1.5 py-0.5 text-[10px] rounded bg-[#fafafa] border border-[#e5e5e5] font-mono text-[#737373] group-hover:text-[#000000]">
                 2
               </kbd>
@@ -300,15 +343,13 @@ export const FlashcardReviewCard: React.FC<FlashcardReviewCardProps> = ({
               type="button"
               disabled={isSubmitting}
               onClick={() => onRate(3)}
-              className="flex flex-col items-center justify-center p-3 rounded-xl border border-[#e5e5e5] bg-[#ffffff] hover:bg-[#fafafa] hover:border-[#d4d4d4] active:bg-[#f5f5f5] transition-all disabled:opacity-50 group"
+              className="flex flex-col items-center justify-center p-3 rounded-xl border border-[#e5e5e5] bg-[#ffffff] hover:bg-[#fafafa] hover:border-[#d4d4d4] active:bg-[#f5f5f5] transition-all disabled:opacity-50 group cursor-pointer"
             >
-              <span className="text-xs font-semibold text-[#27c93f]">Good</span>
+              <span className="text-xs font-semibold text-[#27c93f]">
+                {t("study:rating.good", "Good")}
+              </span>
               <span className="text-[11px] text-[#737373] mt-0.5">
-                {card.repetitions === 0
-                  ? "1d"
-                  : card.repetitions === 1
-                    ? "6d"
-                    : `${Math.round(card.interval * card.easeFactor)}d`}
+                {goodInterval}
               </span>
               <kbd className="mt-1.5 px-1.5 py-0.5 text-[10px] rounded bg-[#fafafa] border border-[#e5e5e5] font-mono text-[#737373] group-hover:text-[#000000]">
                 3
@@ -320,13 +361,13 @@ export const FlashcardReviewCard: React.FC<FlashcardReviewCardProps> = ({
               type="button"
               disabled={isSubmitting}
               onClick={() => onRate(4)}
-              className="flex flex-col items-center justify-center p-3 rounded-xl border border-[#e5e5e5] bg-[#ffffff] hover:bg-[#fafafa] hover:border-[#d4d4d4] active:bg-[#f5f5f5] transition-all disabled:opacity-50 group"
+              className="flex flex-col items-center justify-center p-3 rounded-xl border border-[#e5e5e5] bg-[#ffffff] hover:bg-[#fafafa] hover:border-[#d4d4d4] active:bg-[#f5f5f5] transition-all disabled:opacity-50 group cursor-pointer"
             >
-              <span className="text-xs font-semibold text-[#000000]">Easy</span>
+              <span className="text-xs font-semibold text-[#000000]">
+                {t("study:rating.easy", "Easy")}
+              </span>
               <span className="text-[11px] text-[#737373] mt-0.5">
-                {card.repetitions === 0
-                  ? "4d"
-                  : `${Math.round(card.interval * card.easeFactor * 1.3)}d`}
+                {easyInterval}
               </span>
               <kbd className="mt-1.5 px-1.5 py-0.5 text-[10px] rounded bg-[#fafafa] border border-[#e5e5e5] font-mono text-[#737373] group-hover:text-[#000000]">
                 4
@@ -337,9 +378,9 @@ export const FlashcardReviewCard: React.FC<FlashcardReviewCardProps> = ({
           <button
             type="button"
             onClick={onFlip}
-            className="w-full py-3 px-6 rounded-full bg-[#000000] text-[#ffffff] font-medium text-sm hover:bg-[#090909] active:scale-[0.99] transition-all flex items-center justify-center gap-2 shadow-sm"
+            className="w-full py-3 px-6 rounded-full bg-[#000000] text-[#ffffff] font-medium text-sm hover:bg-[#090909] active:scale-[0.99] transition-all flex items-center justify-center gap-2 shadow-sm cursor-pointer"
           >
-            <span>Show Answer</span>
+            <span>{t("study:session.showAnswer", "Show Answer")}</span>
             <kbd className="px-2 py-0.5 text-xs rounded-full bg-[#262626] font-mono text-[#a3a3a3]">
               Space
             </kbd>

@@ -8,12 +8,17 @@ import { DashboardNavbar } from "../DashboardNavbar";
 import { Header } from "../../../../components/layout/Header";
 
 // Mock Mascot & Auth store
-vi.mock("../../../../store/useAuthStore", () => ({
-  useAuthStore: () => ({
+vi.mock("../../../../store/useAuthStore", () => {
+  const mockState = {
     user: { id: "u-1", username: "StreakMaster", avatarUrl: "" },
+    isAuthenticated: true,
     logout: vi.fn(),
-  }),
-}));
+    updateUser: vi.fn(),
+  };
+  const store = () => mockState;
+  store.getState = () => mockState;
+  return { useAuthStore: store };
+});
 
 vi.mock("../../../../store/useMascotStore", () => ({
   useMascotStore: {

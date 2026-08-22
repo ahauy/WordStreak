@@ -1,0 +1,37 @@
+{
+  "title": "Tạo từ vựng với AI",
+  "subtitle": "Tự động tạo ngữ cảnh flashcard phong phú và chính xác với AI",
+  "promptLabel": "Chủ đề, Ngữ cảnh hoặc Từ mục tiêu",
+  "promptPlaceholder": "Ví dụ: Đàm phán thương mại, Động từ Cambridge C1, Thuật ngữ y khoa",
+  "cefrLevel": "Khung trình độ ngôn ngữ CEFR",
+  "levels": {
+    "a1": "A1 - Cơ bản",
+    "a2": "A2 - Sơ cấp",
+    "b1": "B1 - Trung cấp",
+    "b2": "B2 - Trung cao cấp",
+    "c1": "C1 - Cao cấp",
+    "c2": "C2 - Thành thạo",
+    "allLevels": "Tất cả các trình độ"
+  },
+  "cardCount": "Số lượng thẻ cần tạo",
+  "generateButton": "Tạo thẻ từ vựng",
+  "generating": "Đang tạo flashcard thông minh với AI...",
+  "quota": {
+    "dailyRemaining": "Còn {{remaining}} / {{total}} lượt tạo AI hôm nay",
+    "unlimitedCached": "Tra cứu từ điển đã có trong bộ nhớ đệm là hoàn toàn miễn phí và không giới hạn."
+  },
+  "preview": {
+    "generatedCardsTitle": "Xem trước thẻ flashcard được tạo",
+    "importToDeck": "Thêm vào bộ từ",
+    "saveAllCards": "Lưu tất cả {{count}} thẻ",
+    "regenerate": "Tạo lại"
+  },
+  "fields": {
+    "term": "Từ vựng",
+    "phonetic": "Phiên âm IPA",
+    "definition": "Định nghĩa & Ý nghĩa",
+    "example": "Câu ví dụ minh họa",
+    "collocations": "Cụm từ kết hợp (Collocations)",
+    "mnemonic": "Mẹo ghi nhớ"
+  }
+}

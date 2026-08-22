@@ -31,6 +31,13 @@
    - [Epic 10: Multi-language & Internationalization (i18n)](#epic-10-multi-language--internationalization-i18n-đa-ngôn-ngữ-anhviệt)
 5. [Lộ trình phát hành theo Giai đoạn & Sprint (Release Roadmap)](#5-lộ-trình-phát-hành-theo-giai-đoạn--sprint)
 6. [Quy chuẩn định nghĩa hoàn thành (Definition of Done - DoD)](#6-quy-chuẩn-định-nghĩa-hoàn-thành-definition-of-done)
+7. [Phân tích & Kế hoạch Phát hành Production (Go-Live Plan)](#7-phân-tích--kế-hoạch-phát-hành-production-go-live-plan)
+   - [7.1 Quyết định ưu tiên: Epic 10 vs Deploy](#71-quyết-định-ưu-tiên-hoàn-thiện-epic-10-trước-hay-deploy-trước)
+   - [7.2 Kiến trúc Hosting miễn phí — No Sleep](#72-kiến-trúc-hosting-miễn-phí--no-sleep-stable-speed)
+   - [7.3 Tương thích Chrome Extension & PWA](#73-phân-tích-tương-thích-với-chrome-extension--pwa-sprint-7)
+   - [7.4 Pre-Deploy Checklist](#74-pre-deploy-checklist-phải-làm-trước-khi-go-live)
+   - [7.5 Biến môi trường Production](#75-biến-môi-trường-production-template)
+   - [7.6 Sprint 8 — Go-Live Tracking](#76-sprint-8--production-hardening--go-live-tracking)
 
 ---
 
@@ -351,19 +358,19 @@ _Mục tiêu: Xóa bỏ rào cản ngôn ngữ, hỗ trợ song ngữ toàn di�
     - [x] Frontend: Khởi tạo module `apps/web/src/locales/` với cấu hình `i18n.ts` và hệ thống namespace type-safe.
     - [x] Frontend: Xây dựng các file dịch cơ bản `common.json`, `auth.json`, `dashboard.json`, `settings.json` cho cả 2 locale `en` và `vi`.
     - [x] Frontend: Component `LanguageSwitcher` (Obsidian Pill geometry, click/dropdown toggle, không giật hover) gắn trên Header, Navbar và Landing Page.
-- [ ] **US-I18N-02: Bản địa hóa toàn bộ màn hình & Thông báo lỗi (Complete UI Localization & Error Mapping)**
+- [x] **US-I18N-02: Bản địa hóa toàn bộ màn hình & Thông báo lỗi (Complete UI Localization & Error Mapping)**
   - **AC:** Thay thế 100% hardcoded strings trên tất cả các màn hình (Landing, Auth, Dashboard, Decks, Flashcard Review, 4 Quiz Modes, Community Marketplace, Analytics, Settings Modals) sang `t('key')`. Hỗ trợ interpolation (truyền biến `{{count}} words`, `{{streak}} days`) và pluralization (số ít/số nhiều tiếng Anh). Ánh xạ các mã lỗi API backend (ví dụ `ERR_DECK_NOT_FOUND`, `ERR_UNAUTHORIZED`) thành câu thông báo toast chuẩn theo ngôn ngữ hiện hành. Giữ nguyên nội dung thẻ từ vựng của người dùng (không can thiệp dịch nội dung thẻ).
   - **Tasks:**
-    - [ ] Frontend: Bản địa hóa màn hình Auth & Landing (`LoginPage`, `RegisterPage`, `LandingPage`).
-    - [ ] Frontend: Bản địa hóa màn hình Core Deck & Study (`DecksListPage`, `DeckDetailPage`, `ReviewSessionPage`, `CardEditorForm`).
-    - [ ] Frontend: Bản địa hóa 4 chế độ Quiz & Luyện âm (`MultipleChoiceQuizPage`, `FillInTheBlankQuizPage`, `ListeningQuizPage`, `WordMatchingPage`, `PronunciationPracticeModal`).
-    - [ ] Frontend: Bản địa hóa màn hình Community, Analytics & Modals (`CommunityDecksPage`, `AnalyticsPage`, `SettingsModal`, `StreakSavedModal`, `XpHistoryDrawer`).
-- [ ] **US-I18N-03: Cài đặt tùy chọn ngôn ngữ & Đồng bộ hồ sơ người dùng (User Language Preferences Sync)**
-  - **AC:** Bổ sung mục "Tùy chọn ngôn ngữ" (Language Preferences) trong `SettingsModal`. Khi người dùng đã đăng nhập đổi ngôn ngữ, hệ thống tự động lưu vào database (`User.language`) để duy trì đồng bộ trên mọi thiết bị và phiên đăng nhập tiếp theo.
+    - [x] Frontend: Bản địa hóa màn hình Auth & Landing (`LoginPage`, `RegisterPage`, `LandingPage`).
+    - [x] Frontend: Bản địa hóa màn hình Core Deck & Study (`DecksListPage`, `DeckDetailPage`, `ReviewSessionPage`, `CardEditorForm`).
+    - [x] Frontend: Bản địa hóa 4 chế độ Quiz & Luyện âm (`MultipleChoiceQuizPage`, `FillInTheBlankQuizPage`, `ListeningQuizPage`, `WordMatchingPage`, `PronunciationPracticeModal`).
+    - [x] Frontend: Bản địa hóa màn hình Community, Analytics & Modals (`CommunityDecksPage`, `AnalyticsPage`, `SettingsModal`, `StreakSavedModal`, `XpHistoryDrawer`).
+- [x] **US-I18N-03: Cài đặt tùy chọn ngôn ngữ & Đồng bộ hồ sơ người dùng (User Language Preferences Sync)**
+  - **AC:** Bổ sung mục "Tùy chọn ngôn ngữ" (Language Preferences) trong `SettingsModal`. Khi người dùng đã đăng nhập đổi ngôn ngữ, hệ thống tự động lưu vào database (`User.preferredLanguage`) để duy trì đồng bộ trên mọi thiết bị và phiên đăng nhập tiếp theo.
   - **Tasks:**
-    - [ ] Database: Thêm trường `language String @default("vi")` vào model `User` trong Prisma schema và migration.
-    - [ ] Backend: Cập nhật `PATCH /api/v1/users/profile` hỗ trợ cập nhật `language` và trả về trường `language` trong Profile response.
-    - [ ] Frontend: Tích hợp chọn ngôn ngữ vào `SettingsModal` (Tab Profile/Preferences) và đồng bộ vào `useAuthStore` khi khởi tạo ứng dụng.
+    - [x] Database: Thêm trường `preferredLanguage String @default("vi")` vào model `User` trong Prisma schema và migration.
+    - [x] Backend: Cập nhật `PATCH /api/v1/users/profile` hỗ trợ cập nhật `preferredLanguage` và trả về trường `preferredLanguage` trong Profile response.
+    - [x] Frontend: Tích hợp chọn ngôn ngữ vào `SettingsModal` (Tab Profile/Preferences) và đồng bộ vào `useAuthStore` khi khởi tạo ứng dụng.
 
 ---
 
@@ -400,11 +407,21 @@ _Mục tiêu: Xóa bỏ rào cản ngôn ngữ, hỗ trợ song ngữ toàn di�
   ├── EPIC-04: Listening & Word Matching Games
   └── EPIC-08: Web Speech API Pronunciation Check & Soundwaves
 
-[ Sprint 6 - Community, Portability & i18n ]  ──► [ P2 GROWTH 🌐 ]
-  ├── EPIC-09: Import / Export (.apkg, CSV, Excel)
-  ├── EPIC-09: Community Decks Discovery & 1-Click Clone
-  ├── EPIC-10: Multi-language (i18n - English / Vietnamese Switcher)
-  └── Study Notification / Streak Reminder Service
+[ Sprint 6 - Community, Portability & i18n ]  ──► [ COMPLETED ✅ ]
+  ├── EPIC-09: Import / Export (.apkg, CSV, Excel)         ✅
+  ├── EPIC-09: Community Decks Discovery & 1-Click Clone   ✅
+  ├── EPIC-10: i18n Core & Language Switcher               ✅
+  ├── EPIC-10: Full UI Localization (EN/VI)                ✅
+  └── EPIC-10: User Language Preference Sync (DB)          ✅
+
+[ Sprint 8 - Production Hardening & Go-Live ]  ──► [ P0 NEXT 🚀 ]
+  ├── US-DEPLOY-01: Hoàn thiện US-I18N-03 (language sync to DB) ✅
+  ├── US-DEPLOY-02: Security hardening (secrets, CORS, JWT)
+  ├── US-DEPLOY-03: Neon DB setup & prisma migrate deploy
+  ├── US-DEPLOY-04: Koyeb API deployment (Dockerfile.api)
+  ├── US-DEPLOY-05: Vercel frontend deployment
+  ├── US-DEPLOY-06: Nginx SPA routing fix
+  └── US-DEPLOY-07: E2E smoke test on production URL
 
 [ Sprint 7 - Ecosystem & Platform Expansion ]  ──► [ P3 FUTURE 🧩 ]
   ├── EPIC-09: Chrome Extension (Manifest V3)
@@ -426,3 +443,189 @@ Một User Story / Task chỉ được chuyển trạng thái từ `[/]` sang `[
    - Đã kiểm tra các tech skills bắt buộc (`nestjs-patterns`, `frontend-patterns`, `prisma-patterns`, v.v.).
 4. **Không có lỗi nghiêm trọng:** Đạt Bug Severity Gate (Zero Critical / Blocker bugs).
 5. **Tài liệu hóa:** Cập nhật tài liệu kỹ thuật tại `docs/features/<feature-slug>/README.md`.
+
+---
+
+## 7. Phân tích & Kế hoạch Phát hành Production (Go-Live Plan)
+
+> **Phiên bản phân tích:** 1.0.0 — 2026-08-22  
+> **Mục tiêu:** Deploy miễn phí 100%, không sleep, tốc độ ổn định, hỗ trợ mở rộng sang Chrome Extension & PWA trong tương lai.
+
+---
+
+### 7.1. Quyết định ưu tiên: Hoàn thiện Epic 10 trước hay Deploy trước?
+
+**Kết luận: Hoàn thiện US-I18N-03 TRƯỚC, sau đó deploy một lần.**
+
+| Tiêu chí                | Hoàn thiện US-I18N-03 trước       | Deploy trước rồi patch                       |
+| ----------------------- | --------------------------------- | -------------------------------------------- |
+| **Tính nhất quán UX**   | ✅ Language sync hoạt động ngay   | ❌ User đổi ngôn ngữ mất khi đăng nhập lại   |
+| **Migration DB rủi ro** | ✅ Chạy 1 lần duy nhất lúc deploy | ❌ Cần `ALTER TABLE` sau khi prod đã có data |
+| **Thời gian thực tế**   | US-I18N-03 ~ 2–3 giờ              | Tốn thêm 1 migration cycle sau               |
+| **Chi phí downtime**    | ✅ Zero downtime (deploy 1 lần)   | ❌ Cần maintenance window để migrate         |
+| **Phù hợp dự án nhỏ**   | ✅ Rất phù hợp                    | Không tối ưu                                 |
+
+**Lý do cốt lõi:** US-I18N-03 yêu cầu thêm cột `language` vào bảng `User`. Nếu deploy lên production trước khi có migration này, muốn thêm sau bắt buộc phải chạy `prisma migrate deploy` trên live DB — rủi ro không cần thiết. Dự án đang ở cuối US cuối cùng, chỉ cần 2–3 giờ để hoàn thiện.
+
+```
+Thứ tự thực hiện đề xuất:
+  ① Hoàn thiện US-I18N-03 (2–3h)  →  Sprint 6 ĐẦY ĐỦ 100% ✅
+  ② Chạy pre-deploy checklist       →  Fix security & env vars (1–2h)
+  ③ Deploy lên Neon → Koyeb → Vercel →  Go-Live 🚀
+```
+
+---
+
+### 7.2. Kiến trúc Hosting miễn phí — No Sleep, Stable Speed
+
+```
+                        ┌──────────────────────────────────────────────┐
+                        │              WordStreak Production              │
+                        └──────────────────────────────────────────────┘
+
+  User (Browser/Chrome Extension)
+         │
+         ├──► [VERCEL] — Frontend Web App  ──────────────────────────────────┐
+         │      • apps/web (React 19 + Vite static build)                    │
+         │      • Global CDN, ~10ms TTFB globally                            │
+         │      • Free tier: Unlimited bandwidth, 100GB/tháng                │
+         │      • Deploy: Push to main → auto build → live trong 30 giây     │
+         │      • Env var: VITE_API_URL → URL của Koyeb                      │
+         │                                                                    │
+         └──► [KOYEB] — Backend API  ──────────────────────────────────────┐ │
+                • apps/api (NestJS Docker container)                       │ │
+                • Always-on: KHÔNG sleep, 0.1 vCPU / 512MB RAM            │ │
+                • Free tier: 1 web service, run từ Dockerfile.api          │ │
+                • CORS whitelist: domain Vercel + domain Extension         │ │
+                • Env vars: DATABASE_URL, JWT_SECRET, GEMINI_API_KEY, ...  │ │
+                        │                                                  │ │
+                        ▼                                                  │ │
+               [NEON] — Serverless PostgreSQL ─────────────────────────┘ │
+                • Free: 0.5GB storage, auto-scale compute                  │
+                • Cold start DB connection: ~300ms (chấp nhận được)        │
+                • Connection pooling built-in (không cần PgBouncer)        │
+                • Prisma migrate deploy chạy 1 lần khi setup               │
+                                                                           │
+         Chrome Extension (tương lai) ─────────────────────────────────┘
+                • Gọi trực tiếp vào Koyeb API (cùng endpoint /api/v1/...)
+                • CORS: Thêm chrome-extension://<id> vào whitelist
+                • Auth: Dùng lại JWT flow hiện tại (không cần thêm gì)
+```
+
+**Tại sao KHÔNG chọn các lựa chọn khác:**
+
+| Platform          | Vấn đề                                                                    |
+| ----------------- | ------------------------------------------------------------------------- |
+| **Render (free)** | Sleep sau 15 phút không có traffic → cold start 10–30 giây. Không phù hợp |
+| **Railway**       | Chỉ $5 credit/tháng rồi tính tiền. Không thực sự miễn phí                 |
+| **Fly.io**        | Tốt nhưng cấu hình phức tạp hơn, Koyeb đơn giản hơn cho monorepo          |
+| **Supabase**      | Tự động pause DB sau 1 tuần không hoạt động (free tier)                   |
+| **Heroku**        | Đã bỏ free tier hoàn toàn                                                 |
+
+---
+
+### 7.3. Phân tích tương thích với Chrome Extension & PWA (Sprint 7)
+
+#### Chrome Extension (Manifest V3)
+
+- **API**: Extension gọi thẳng `https://<koyeb-domain>/api/v1/...` — **không cần thay đổi gì ở backend**.
+- **CORS**: Cần thêm `chrome-extension://<extension-id>` vào `CORS_ORIGINS` env var trên Koyeb.
+- **Auth**: Dùng lại JWT + Refresh Token flow hiện tại. Extension lưu token trong `chrome.storage.local` (secure, không phải `localStorage`).
+- **Kết luận**: Kiến trúc Koyeb API hoàn toàn tương thích. Khi làm Extension chỉ cần update 1 env var.
+
+#### PWA & Offline Mode
+
+- **Frontend trên Vercel**: Vercel hỗ trợ Service Worker hoàn toàn (file `sw.js` trong `/public`).
+- **Offline caching**: Service Worker cache các thẻ từ đã tải → ôn tập offline hoạt động bình thường.
+- **Background sync**: Khi có mạng lại, sync kết quả ôn tập lên Koyeb API.
+- **Kết luận**: Kiến trúc Vercel + Koyeb hoàn toàn tương thích với PWA.
+
+---
+
+### 7.4. Pre-Deploy Checklist (PHẢI LÀM TRƯỚC KHI GO-LIVE)
+
+#### 🔴 Critical — Blockers tuyệt đối
+
+- [ ] **SEC-01**: Xóa hardcoded credentials trong `docker-compose.yml` (POSTGRES_PASSWORD, DATABASE_URL). Chuyển sang biến môi trường.
+- [ ] **SEC-02**: Generate `JWT_SECRET` mạnh: `openssl rand -hex 64` (≥ 64 ký tự, không phải placeholder).
+- [ ] **SEC-03**: Generate `JWT_REFRESH_SECRET` mạnh tương tự.
+- [ ] **SEC-04**: `GEMINI_API_KEY` thực tế (không phải placeholder) — tính năng AI auto-fill phụ thuộc vào đây.
+- [ ] **SEC-05**: `CORS_ORIGINS` chỉ cho phép domain Vercel thực tế (không dùng `*`).
+
+#### 🟡 Important — Cần làm trước ngày launch
+
+- [ ] **DB-01**: Tạo project trên [neon.tech](https://neon.tech) → lấy `DATABASE_URL` production.
+- [ ] **DB-02**: Chạy `pnpm --filter api prisma migrate deploy` (KHÔNG dùng `migrate dev` trên production).
+- [x] **DB-03**: Verify Prisma schema có migration `US-I18N-03` (thêm cột `preferredLanguage` vào `User`).
+- [ ] **API-01**: Deploy `apps/api` lên Koyeb từ `Dockerfile.api` — verify health endpoint trả về 200.
+- [ ] **WEB-01**: Deploy `apps/web` lên Vercel — set `VITE_API_URL=https://<koyeb-domain>`.
+- [ ] **WEB-02**: Verify `Dockerfile.web` có Nginx config hỗ trợ SPA routing (fallback `index.html` cho client-side routes).
+- [ ] **TEST-01**: Smoke test toàn bộ happy path: Đăng ký → Tạo deck → Thêm từ → Ôn tập → Kiểm tra Streak.
+
+#### 🟢 Nice-to-have — Sau khi go-live
+
+- [ ] **OBS-01**: Thêm Sentry (free tier) vào frontend và backend để capture lỗi production.
+- [ ] **OBS-02**: Thêm Uptime Robot (free) monitor URL Koyeb → cảnh báo email khi down.
+- [ ] **PERF-01**: Bật Prisma connection pool mode `pgbouncer` trong Neon connection string.
+
+---
+
+### 7.5. Biến môi trường Production (Template)
+
+```bash
+# ── Koyeb (apps/api) ──────────────────────────────────────────
+NODE_ENV=production
+PORT=3000
+DATABASE_URL="postgresql://<user>:<pass>@<neon-host>/<db>?sslmode=require&pgbouncer=true"
+JWT_SECRET="<openssl rand -hex 64>"
+JWT_EXPIRES_IN="15m"
+JWT_REFRESH_SECRET="<openssl rand -hex 64>"
+JWT_REFRESH_EXPIRES_IN="7d"
+CLIENT_URL="https://<vercel-domain>.vercel.app"
+CORS_ORIGINS="https://<vercel-domain>.vercel.app"
+GEMINI_API_KEY="<real-key>"
+
+# ── Vercel (apps/web) ──────────────────────────────────────────
+VITE_API_URL="https://<koyeb-service>.koyeb.app"
+```
+
+> ⚠️ **Không bao giờ commit** các file `.env` production lên git. Quản lý secrets qua dashboard của Koyeb và Vercel.
+
+---
+
+### 7.6. Sprint 8 — Production Hardening & Go-Live Tracking
+
+_Mục tiêu: Đưa WordStreak lên production ổn định, sẵn sàng tiếp nhận người dùng thực tế._
+
+- [x] **US-DEPLOY-01: Hoàn thiện US-I18N-03 (Language Preference Sync)**
+  - **AC:** Thêm cột `preferredLanguage` vào DB, sync qua API, tích hợp vào `SettingsModal`.
+  - **Ưu tiên:** P0 — hoàn tất 100% trước khi triển khai production.
+
+- [ ] **US-DEPLOY-02: Security Hardening (Pre-Deploy)**
+  - **AC:** Toàn bộ checklist SEC-01 đến SEC-05 ở mục 7.4 được đánh dấu hoàn thành.
+
+- [ ] **US-DEPLOY-03: Neon Database Setup & Migration**
+  - **AC:** DB production trên Neon khởi tạo thành công, `prisma migrate deploy` chạy sạch không có lỗi, verify schema với `prisma db pull`.
+
+- [ ] **US-DEPLOY-04: Koyeb API Deployment**
+  - **AC:** `apps/api` chạy trên Koyeb từ `Dockerfile.api`, health check endpoint `GET /api/v1/health` trả về `{ status: "ok" }`, tất cả env vars production được set đúng.
+
+- [ ] **US-DEPLOY-05: Vercel Frontend Deployment**
+  - **AC:** `apps/web` build thành công trên Vercel, SPA routing hoạt động (refresh `/decks/123` không trả về 404), kết nối được với Koyeb API.
+
+- [ ] **US-DEPLOY-06: Nginx SPA Routing Fix (Dockerfile.web)**
+  - **AC:** Thêm `nginx.conf` tùy chỉnh vào `Dockerfile.web` để fallback về `index.html` cho tất cả routes — ngăn lỗi 404 khi refresh trang React Router.
+
+- [ ] **US-DEPLOY-07: End-to-End Smoke Test Production**
+  - **AC:** Chạy Playwright smoke test trên URL production: Đăng ký tài khoản mới → Tạo deck → AI auto-fill → Review session → Kiểm tra Streak widget. Zero Critical bugs.
+
+```
+[ Sprint 8 - Production Hardening & Go-Live ]  ──► [ P0 NEXT 🚀 ]
+  ├── US-DEPLOY-01: Hoàn thiện US-I18N-03 (language sync to DB) ✅
+  ├── US-DEPLOY-02: Security hardening (secrets, CORS, JWT)
+  ├── US-DEPLOY-03: Neon DB setup & prisma migrate deploy
+  ├── US-DEPLOY-04: Koyeb API deployment (Dockerfile.api)
+  ├── US-DEPLOY-05: Vercel frontend deployment
+  ├── US-DEPLOY-06: Nginx SPA routing fix
+  └── US-DEPLOY-07: E2E smoke test on production URL
+```

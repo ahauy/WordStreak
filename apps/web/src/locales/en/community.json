@@ -6,10 +6,38 @@
     "all": "All Decks",
     "popular": "Most Popular",
     "trending": "Trending",
-    "recent": "Recently Added"
+    "recent": "Recently Added",
+    "curated": "Curated Sets",
+    "ielts": "IELTS",
+    "toeic": "TOEIC",
+    "toefl": "TOEFL",
+    "beginner": "Beginner (A1-A2)",
+    "intermediate": "Intermediate (B1-B2)",
+    "advanced": "Advanced (C1-C2)"
   },
   "actions": {
     "cloneDeck": "Clone Deck",
-    "viewDetails": "View Details"
+    "cloning": "Cloning deck...",
+    "cloned": "Cloned to Library!",
+    "viewDetails": "View Details",
+    "rateDeck": "Rate Deck",
+    "share": "Share Deck"
+  },
+  "stats": {
+    "clonesCount_one": "{{count}} clone",
+    "clonesCount_other": "{{count}} clones",
+    "cardsCount_one": "{{count}} card",
+    "cardsCount_other": "{{count}} cards",
+    "ratingAverage": "Rating: {{rating}} / 5",
+    "reviewsCount": "{{count}} reviews"
+  },
+  "modal": {
+    "cloneSuccessTitle": "Deck Cloned Successfully! 🚀",
+    "cloneSuccessDesc": "\"{{title}}\" has been cloned into your library. You can start studying right away.",
+    "goToDeck": "Go to Deck",
+    "previewDeck": "Preview Flashcards",
+    "ratingTitle": "Rate this Community Deck",
+    "ratePrompt": "How helpful was this vocabulary deck?",
+    "submitRating": "Submit Rating"
   }
 }

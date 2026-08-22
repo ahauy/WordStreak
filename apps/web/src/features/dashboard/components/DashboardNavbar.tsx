@@ -36,7 +36,7 @@ export const DashboardNavbar: React.FC<DashboardNavbarProps> = ({
   onOpenXpHistory: propOpenXpHistory,
   onLogout: propLogout,
 }) => {
-  const { t } = useTranslation("common");
+  const { t } = useTranslation(["common", "dashboard", "settings"]);
   const { user: storeUser, logout: storeLogout } = useAuthStore();
   const hookStreak = useStreak({
     enabled: propCurrentStreak === undefined && !!storeUser,
@@ -110,7 +110,7 @@ export const DashboardNavbar: React.FC<DashboardNavbarProps> = ({
                   WordStreak
                 </span>
                 <span className="hidden sm:inline-block text-[10px] uppercase font-mono font-bold tracking-wider text-[#7e22ce] mt-0.5 whitespace-nowrap">
-                  100% Free Spaced Repetition
+                  {t("brand.tagline", "100% Free Spaced Repetition")}
                 </span>
               </div>
             </Link>
@@ -130,7 +130,7 @@ export const DashboardNavbar: React.FC<DashboardNavbarProps> = ({
                 }`}
               >
                 <Home className="w-3.5 h-3.5" />
-                <span>{t("nav.dashboard", "Tổng quan")}</span>
+                <span>{t("nav.dashboard", "Overview")}</span>
               </Link>
 
               <Link
@@ -143,7 +143,7 @@ export const DashboardNavbar: React.FC<DashboardNavbarProps> = ({
                 }`}
               >
                 <Layers className="w-3.5 h-3.5" />
-                <span>{t("nav.decks", "Bộ từ vựng")}</span>
+                <span>{t("nav.decks", "Decks")}</span>
               </Link>
 
               <Link
@@ -160,7 +160,7 @@ export const DashboardNavbar: React.FC<DashboardNavbarProps> = ({
                 }`}
               >
                 <Globe className="w-3.5 h-3.5" />
-                <span>{t("nav.community", "Khám phá")}</span>
+                <span>{t("nav.community", "Explore")}</span>
               </Link>
 
               <Link
@@ -175,7 +175,7 @@ export const DashboardNavbar: React.FC<DashboardNavbarProps> = ({
                 }`}
               >
                 <BarChart2 className="w-3.5 h-3.5" />
-                <span>{t("nav.analytics", "Thống kê")}</span>
+                <span>{t("nav.analytics", "Analytics")}</span>
               </Link>
             </nav>
           </div>
@@ -203,8 +203,11 @@ export const DashboardNavbar: React.FC<DashboardNavbarProps> = ({
                 (() => useMascotStore.getState().openFlameNurture())
               }
               className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-xs font-semibold shadow-xs cursor-pointer hover:scale-[1.02] active:scale-[0.98] transition-all focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:ring-offset-2 focus:outline-none whitespace-nowrap shrink-0 ${tierInfo.pillBg} ${tierInfo.pillText} ${tierInfo.pillBorder}`}
-              title="Nhấn để mở Khu Vườn Nuôi Lửa & Tiến Hóa"
-              aria-label="Mở khu vườn nuôi lửa streak và tiến hóa"
+              title={t("dashboard:flame.nurtureGarden", "Flame Nurture Garden")}
+              aria-label={t(
+                "dashboard:flame.nurtureGarden",
+                "Flame Nurture Garden",
+              )}
             >
               <StreakFlame
                 streakDays={currentStreak}
@@ -214,9 +217,11 @@ export const DashboardNavbar: React.FC<DashboardNavbarProps> = ({
                 showGlow={false}
                 isActiveToday={isActiveToday}
               />
-              <span className="font-mono">{currentStreak} Ngày Streak</span>
-              <span className="hidden md:inline-block text-[10px] opacity-75 font-normal">
-                • {tierInfo.titleVi}
+              <span className="font-mono">
+                {t("dashboard:streak.daysStreak", {
+                  count: currentStreak,
+                  defaultValue: `${currentStreak} Day Streak`,
+                })}
               </span>
             </button>
 
@@ -228,8 +233,8 @@ export const DashboardNavbar: React.FC<DashboardNavbarProps> = ({
               type="button"
               onClick={() => handleOpenSettings("profile")}
               className="flex items-center gap-2 px-1.5 py-1 sm:px-2.5 sm:py-1 rounded-full border border-[#e5e5e5] bg-white hover:bg-[#fafafa] hover:border-[#d4d4d4] transition-all cursor-pointer text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 apple-tap-active whitespace-nowrap shrink-0"
-              title="Cài đặt tài khoản & Mục tiêu học"
-              aria-label="Cài đặt tài khoản và hồ sơ người dùng"
+              title={t("settings:title", "Account Settings")}
+              aria-label={t("settings:title", "Account Settings")}
             >
               <UserAvatar
                 avatarUrl={user?.avatarUrl}
@@ -247,8 +252,8 @@ export const DashboardNavbar: React.FC<DashboardNavbarProps> = ({
               type="button"
               onClick={handleLogout}
               className="w-9 h-9 rounded-full flex items-center justify-center text-[#dc2626] border border-[#ff5f56]/30 bg-[#fff5f5] hover:bg-[#ffebeb] hover:border-[#ff5f56]/50 transition-all cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2 apple-tap-active shrink-0"
-              aria-label="Đăng xuất khỏi tài khoản"
-              title="Đăng xuất khỏi tài khoản"
+              aria-label={t("actions.signOut", "Sign Out")}
+              title={t("actions.signOut", "Sign Out")}
             >
               <LogOut className="w-4 h-4" />
             </button>

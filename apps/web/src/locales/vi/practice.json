@@ -1,16 +1,92 @@
 {
   "title": "Luyện tập & Trắc nghiệm",
-  "subtitle": "Tăng cường khả năng ghi nhớ thông qua các bài thử thách tương tác",
+  "subtitle": "Củng cố trí nhớ và khả năng phản xạ với các bài tập kích thích gợi nhớ chủ động",
   "modes": {
-    "multipleChoice": "Trắc nghiệm 4 đáp án",
+    "multipleChoice": "Trắc nghiệm nhiều lựa chọn",
+    "multipleChoiceDesc": "Chọn định nghĩa chính xác từ 4 phương án",
     "fillInBlank": "Điền vào chỗ trống",
-    "wordMatching": "Nối từ & Nghĩa",
-    "pronunciation": "Luyện phát âm"
+    "fillInBlankDesc": "Gõ các chữ cái hoặc từ còn thiếu",
+    "wordMatching": "Ghép cặp từ vựng",
+    "wordMatchingDesc": "Nối từ vựng với nghĩa tương ứng",
+    "listening": "Luyện nghe & Chính tả",
+    "listeningDesc": "Nghe phát âm chuẩn bản ngữ và viết lại từ",
+    "pronunciation": "Luyện phát âm giọng nói",
+    "pronunciationDesc": "Nói từ vựng và nhận phân tích IPA tức thì"
   },
   "quiz": {
     "questionOf": "Câu hỏi {{current}} / {{total}}",
-    "submit": "Kiểm tra đáp án",
-    "nextQuestion": "Câu tiếp theo",
-    "score": "Điểm của bạn: {{score}}%"
+    "submit": "Gửi câu trả lời",
+    "nextQuestion": "Câu hỏi tiếp theo",
+    "score": "Điểm của bạn: {{score}}%",
+    "correct": "Chính xác! Rất tốt.",
+    "incorrect": "Chưa chính xác.",
+    "streakBonus": "+{{xp}} XP Thưởng chuỗi!",
+    "checkAnswer": "Kiểm tra đáp án",
+    "selectAnswer": "Chọn đáp án đúng nhất",
+    "typeAnswerPrompt": "Nhập câu trả lời của bạn bên dưới",
+    "listenPrompt": "Nhấn vào biểu tượng loa để nghe phát âm",
+    "replayAudio": "Nghe lại",
+    "revealedAnswer": "Đáp án đúng: {{answer}}"
+  },
+  "matching": {
+    "findPairsPrompt": "Nhấn chọn các cặp từ và nghĩa tương ứng",
+    "matchedCount": "Đã ghép: {{matched}} / {{total}}",
+    "movesCount": "Số lượt: {{moves}}",
+    "timeElapsed": "Thời gian: {{time}}",
+    "congratulations": "Đã ghép nối tất cả các cặp thành công!",
+    "matchSuccess": "Chính xác!",
+    "matchFail": "Thử lại"
+  },
+  "fillBlank": {
+    "typeMissingLetters": "Điền từ còn thiếu vào chỗ trống",
+    "hint": "Gợi ý",
+    "showHint": "Xem gợi ý",
+    "progressiveHint": "Gợi ý chữ cái: {{hint}}"
+  },
+  "listening": {
+    "typeWhatYouHear": "Nhập từ bạn nghe được",
+    "speedNormal": "Tốc độ chuẩn (1.0x)",
+    "speedSlow": "Tốc độ chậm (0.75x)",
+    "listenAgain": "Nghe lại"
+  },
+  "voice": {
+    "speakWordPrompt": "Nhấn micro và phát âm từ thật rõ ràng",
+    "listeningStatus": "Đang lắng nghe...",
+    "tapToSpeak": "Nhấn để nói",
+    "stopListening": "Dừng nói",
+    "accuracyScore": "Điểm độ chính xác",
+    "pronunciationFeedback": "Phân tích âm tiết IPA & Nhận xét",
+    "accentSelector": "Giọng đọc bản ngữ",
+    "usAccent": "Tiếng Anh - Mỹ (US)",
+    "ukAccent": "Tiếng Anh - Anh (UK)",
+    "audioNotSupported": "Trình duyệt không hỗ trợ nhận diện giọng nói",
+    "micPermissionRequired": "Cần cấp quyền truy cập micro để luyện phát âm",
+    "grantMicPermission": "Cho phép truy cập Micro"
+  },
+  "speech": {
+    "startRecording": "Bắt đầu ghi âm phát âm",
+    "stopRecording": "Dừng nói",
+    "processing": "Đang phân tích phát âm...",
+    "tapToSpeak": "Nhấn để nói hoặc bấm Phím cách",
+    "listening": "Micro đang ghi âm. Hãy phát âm từ vựng ngay bây giờ.",
+    "tryAgain": "Thử lại",
+    "excellent": "Xuất sắc",
+    "good": "Tốt",
+    "needsPractice": "Cần luyện thêm",
+    "scoreLabel": "Điểm phát âm",
+    "evaluatedStatus": "Đã đánh giá phát âm: {{score}}% điểm. Hạng: {{tier}}.",
+    "permissionDenied": "Quyền truy cập micro đã bị từ chối. Vui lòng cấp quyền trong cài đặt trình duyệt.",
+    "unsupported": "Trình duyệt không hỗ trợ nhận diện giọng nói."
+  },
+  "summary": {
+    "title": "Hoàn thành bài tập! 🎉",
+    "subtitle": "Bạn đã hoàn thành thử thách luyện tập này.",
+    "finalScore": "Điểm số cuối cùng",
+    "accuracy": "Độ chính xác",
+    "xpEarned": "Điểm XP nhận được",
+    "timeTaken": "Thời gian hoàn thành",
+    "tryAgain": "Luyện tập lại",
+    "backToPractice": "Quay lại danh mục",
+    "viewAnswers": "Xem lại câu trả lời"
   }
 }

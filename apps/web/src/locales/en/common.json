@@ -14,7 +14,10 @@
     "features": "Features",
     "howItWorks": "How It Works",
     "studyGoals": "Study Goals",
-    "faq": "FAQ"
+    "faq": "FAQ",
+    "pricing": "Pricing",
+    "stats": "Stats",
+    "privacy": "Data Privacy"
   },
   "actions": {
     "save": "Save",
@@ -28,16 +31,70 @@
     "startLearning": "Start Learning Free",
     "signIn": "Sign In",
     "signUp": "Start Free",
-    "signOut": "Sign Out"
+    "signOut": "Sign Out",
+    "continue": "Continue",
+    "submit": "Submit",
+    "done": "Done",
+    "retry": "Retry",
+    "viewAll": "View All",
+    "search": "Search",
+    "filter": "Filter",
+    "sort": "Sort",
+    "export": "Export",
+    "import": "Import",
+    "create": "Create",
+    "clone": "Clone",
+    "reset": "Reset",
+    "refresh": "Refresh",
+    "copy": "Copy",
+    "copied": "Copied!",
+    "share": "Share",
+    "deselectAll": "Deselect All",
+    "selectAllOnPage": "Select all on page"
+  },
+  "view": {
+    "grid": "Grid",
+    "table": "Table"
+  },
+  "filters": {
+    "all": "All",
+    "filterLabel": "Filter:",
+    "clear": "Clear Filters"
   },
   "switcher": {
     "toggleAriaVi": "Chuyển sang Tiếng Việt",
-    "toggleAriaEn": "Switch to English"
+    "toggleAriaEn": "Switch to English",
+    "languageLabel": "Language"
   },
   "status": {
     "loading": "Loading...",
     "error": "An error occurred",
     "success": "Success",
-    "empty": "No data found"
+    "empty": "No data found",
+    "saved": "Saved successfully",
+    "saving": "Saving...",
+    "completed": "Completed",
+    "failed": "Failed"
+  },
+  "time": {
+    "today": "Today",
+    "yesterday": "Yesterday",
+    "daysAgo": "{{count}} days ago",
+    "hoursAgo": "{{count}} hours ago",
+    "minutesAgo": "{{count}} minutes ago",
+    "justNow": "Just now",
+    "days": "days",
+    "hours": "hours",
+    "minutes": "minutes",
+    "seconds": "seconds"
+  },
+  "pagination": {
+    "previous": "Previous",
+    "prev": "Prev",
+    "next": "Next",
+    "page": "page",
+    "perPage": "Per page:",
+    "showingPage": "Showing page",
+    "pageOf": "Page {{current}} of {{total}}"
   }
 }

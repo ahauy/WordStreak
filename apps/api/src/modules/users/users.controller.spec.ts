@@ -18,6 +18,7 @@ describe('UsersController', () => {
     username: 'streakmaster',
     dailyGoal: 10,
     avatarUrl: 'preset:cosmos-1',
+    preferredLanguage: 'vi' as const,
     createdAt: new Date(),
     updatedAt: new Date(),
   };
@@ -56,11 +57,16 @@ describe('UsersController', () => {
 
   describe('PATCH /profile', () => {
     it('should update user profile via service', async () => {
-      const updatedProfile = { ...mockProfile, dailyGoal: 20 };
+      const updatedProfile = {
+        ...mockProfile,
+        dailyGoal: 20,
+        preferredLanguage: 'en' as const,
+      };
       mockUsersService.updateProfile.mockResolvedValue(updatedProfile);
 
       const result = await controller.updateProfile(mockUserPayload, {
         dailyGoal: 20,
+        preferredLanguage: 'en',
       });
 
       expect(result).toEqual(updatedProfile);
@@ -68,6 +74,7 @@ describe('UsersController', () => {
         'user-uuid-1',
         {
           dailyGoal: 20,
+          preferredLanguage: 'en',
         },
       );
     });

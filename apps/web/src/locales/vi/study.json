@@ -1,19 +1,65 @@
 {
+  "title": "Phiên ôn tập SRS",
   "session": {
     "cardOf": "Thẻ {{current}} / {{total}}",
-    "flipPrompt": "Chạm vào thẻ hoặc nhấn Phím Cách để lật",
-    "flipHint": "Hiện đáp án"
+    "flipPrompt": "Nhấn vào thẻ hoặc bấm Phím cách để lật",
+    "flipHint": "Xem đáp án",
+    "showAnswer": "Xem đáp án",
+    "hideAnswer": "Ẩn đáp án",
+    "keyboardHints": "Phím tắt: [Space] Lật thẻ · [1] Lại · [2] Khó · [3] Tốt · [4] Dễ",
+    "flipSpaceHint": "Bấm [Space] để lật",
+    "shortcutsHint": "Phím tắt: 1-4 để đánh giá",
+    "exitStudy": "Thoát phiên học"
   },
   "rating": {
-    "again": "Học lại",
+    "again": "Lại",
     "hard": "Khó",
     "good": "Tốt",
-    "easy": "Dễ"
+    "easy": "Dễ",
+    "againDesc": "Hoàn toàn quên, đặt lại chu kỳ lặp",
+    "hardDesc": "Nhớ ra nhưng còn ngập ngừng nhiều",
+    "goodDesc": "Nhớ chính xác sau vài giây suy nghĩ",
+    "easyDesc": "Nhớ ngay lập tức và dễ dàng",
+    "intervalShort": "< 10p",
+    "intervalOneDay": "1 ngày",
+    "intervalFourDays": "4 ngày",
+    "intervalTenDays": "10 ngày"
+  },
+  "progress": {
+    "reviewed": "Đã ôn tập",
+    "remaining": "Còn lại",
+    "dueCount": "{{count}} thẻ cần ôn"
   },
   "complete": {
     "title": "Hoàn thành phiên học! 🎉",
-    "subtitle": "Bạn đã ôn tập xong tất cả các thẻ flashcard lên lịch cho hôm nay.",
-    "backToDashboard": "Về bảng tổng quan",
-    "studyAgain": "Ôn tiếp"
+    "subtitle": "Bạn đã ôn tập xong tất cả thẻ theo lịch trình hôm nay.",
+    "backToDashboard": "Về trang tổng quan",
+    "studyAgain": "Ôn tập lại",
+    "cardsReviewed": "Số thẻ đã ôn",
+    "retentionRate": "Tỷ lệ ghi nhớ",
+    "xpEarned": "Điểm XP nhận được",
+    "viewDeck": "Xem bộ từ",
+    "streakMaintained": "Đã duy trì chuỗi học tập!"
+  },
+  "summary": {
+    "title": "Hoàn thành phiên học! 🎉",
+    "subtitle": "Bạn đã ôn tập xong tất cả thẻ theo lịch trình hôm nay và duy trì trí nhớ sắc bén với SuperMemo-2.",
+    "cardsReviewed": "Số thẻ đã ôn",
+    "accuracy": "Tỷ lệ ghi nhớ",
+    "timeSpent": "Thời gian ôn tập",
+    "goodEasy": "Ghi nhớ tốt (Tốt / Dễ)",
+    "againHard": "Cần ôn lại (Lại / Khó)",
+    "streakEarned": "Chuỗi học tập duy trì",
+    "xpEarned": "Điểm XP nhận được",
+    "reviewAgain": "Ôn tập lại",
+    "backToDashboard": "Về trang tổng quan",
+    "viewDecks": "Xem tất cả bộ từ",
+    "congratulations": "Chúc mừng bạn đã hoàn thành mục tiêu ôn tập hôm nay!"
+  },
+  "empty": {
+    "noCardsTitle": "Không có thẻ cần ôn tập",
+    "noCardsDesc": "Tất cả flashcard trong bộ từ này đều đang cập nhật đúng lịch. Bạn có thể luyện tập các bài trắc nghiệm hoặc ôn tập sớm.",
+    "returnToDecks": "Quay lại danh sách",
+    "practiceInstead": "Luyện tập trắc nghiệm"
   }
 }

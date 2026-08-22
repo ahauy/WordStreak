@@ -1,8 +1,36 @@
 {
   "title": "Thống kê học tập",
-  "subtitle": "Theo dõi khả năng ghi nhớ, thời gian học và tốc độ tiến bộ của bạn",
+  "subtitle": "Theo dõi khả năng ghi nhớ dài hạn, thời gian học và tốc độ tiến bộ của bạn",
   "retentionRate": "Tỷ lệ ghi nhớ",
+  "retentionSubtitle": "Xác suất nhớ lại từ vựng dài hạn dự đoán trên toàn bộ các thẻ đã học",
   "xpHistory": "Lịch sử XP & Cấp độ",
-  "studyHeatmap": "Biểu đồ hoạt động ôn tập",
-  "masteryDistribution": "Phân bổ độ thành thạo từ vựng"
+  "studyHeatmap": "Biểu đồ nhiệt hoạt động học tập",
+  "masteryDistribution": "Phân bố mức độ thành thạo từ vựng",
+  "stats": {
+    "totalLearned": "Tổng số từ đã học",
+    "studyTimeTotal": "Tổng thời gian học",
+    "dailyStreakCurrent": "Chuỗi streak hiện tại",
+    "reviewsCompleted": "Số lượt ôn tập đã xong"
+  },
+  "heatmap": {
+    "less": "Ít hơn",
+    "more": "Nhiều hơn",
+    "contributionsCount": "{{count}} lượt ôn tập vào {{date}}",
+    "contributionsCount_one": "{{count}} lượt ôn tập vào {{date}}",
+    "contributionsCount_other": "{{count}} lượt ôn tập vào {{date}}",
+    "tooltipDate": "{{date}}: {{count}} lượt ôn tập"
+  },
+  "mastery": {
+    "newCards": "Thẻ mới (0 lượt ôn)",
+    "learningCards": "Đang học (1-3 lượt ôn)",
+    "youngCards": "Đang củng cố (4-9 lượt ôn)",
+    "matureCards": "Thành thạo (10+ lượt ôn)"
+  },
+  "forecast": {
+    "deckProgressTitle": "Tiến độ & Dự báo ôn tập bộ từ",
+    "deckColumn": "Tên bộ từ",
+    "totalCardsColumn": "Tổng số thẻ",
+    "masteryRateColumn": "Tỷ lệ thành thạo",
+    "nextReviewColumn": "Lịch ôn tiếp theo"
+  }
 }

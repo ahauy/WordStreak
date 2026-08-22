@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import { useTranslation } from "react-i18next";
 import { useVoicePracticeEngine } from "../../hooks/useVoicePracticeEngine";
 import { AcousticSoundwave } from "./AcousticSoundwave";
 import { PronunciationScoreBadge } from "./PronunciationScoreBadge";
@@ -30,6 +31,7 @@ export function PronunciationPracticeModal({
   audioUrlUK,
   onSuccess,
 }: PronunciationPracticeModalProps) {
+  const { t } = useTranslation(["practice", "common"]);
   const modalRef = useRef<HTMLDivElement>(null);
   const previousFocusRef = useRef<HTMLElement | null>(null);
 
@@ -150,7 +152,7 @@ export function PronunciationPracticeModal({
         <div className="flex items-start justify-between gap-4">
           <div className="space-y-1">
             <span className="text-xs font-semibold uppercase tracking-wider text-purple-600 font-mono">
-              Oral Pronunciation Studio
+              {t("practice:modes.pronunciation", "Oral Pronunciation Studio")}
             </span>
             <h2
               id="modal-target-word"
@@ -166,7 +168,7 @@ export function PronunciationPracticeModal({
           <button
             type="button"
             onClick={onClose}
-            aria-label="Close modal"
+            aria-label={t("common:actions.close", "Close modal")}
             data-testid="modal-close-button"
             className="p-1.5 text-neutral-400 hover:text-black rounded-full hover:bg-neutral-100 transition-all duration-150 cursor-pointer"
           >
@@ -226,7 +228,7 @@ export function PronunciationPracticeModal({
                 data-testid="stop-recording-button"
                 className="px-6 py-2 rounded-full bg-red-600 text-white font-medium text-sm hover:bg-red-700 active:scale-95 transition-all shadow-xs cursor-pointer"
               >
-                Stop Speaking
+                {t("practice:speech.stopRecording", "Stop Speaking")}
               </button>
               {engine.interimTranscript && (
                 <p
@@ -241,7 +243,7 @@ export function PronunciationPracticeModal({
             <div className="flex flex-col items-center space-y-2 py-4">
               <span className="w-8 h-8 rounded-full border-2 border-purple-600 border-t-transparent animate-spin" />
               <p className="text-xs text-neutral-500 font-medium">
-                Evaluating pronunciation...
+                {t("practice:speech.processing", "Evaluating pronunciation...")}
               </p>
             </div>
           ) : engine.state === "EVALUATED" && engine.result ? (
@@ -260,7 +262,7 @@ export function PronunciationPracticeModal({
                   data-testid="try-again-button"
                   className="px-5 py-2 rounded-full border border-neutral-300 bg-white text-black font-semibold text-xs hover:border-black active:scale-95 transition-all cursor-pointer"
                 >
-                  Try Again
+                  {t("practice:summary.tryAgain", "Try Again")}
                 </button>
                 <button
                   type="button"
@@ -268,7 +270,7 @@ export function PronunciationPracticeModal({
                   data-testid="continue-button"
                   className="px-6 py-2 rounded-full bg-black text-white font-semibold text-xs hover:bg-neutral-800 active:scale-95 transition-all cursor-pointer shadow-xs"
                 >
-                  Done
+                  {t("common:actions.done", "Done")}
                 </button>
               </div>
             </div>
@@ -278,7 +280,10 @@ export function PronunciationPracticeModal({
                 type="button"
                 onClick={() => engine.startPractice()}
                 data-testid="start-recording-button"
-                aria-label="Start recording pronunciation"
+                aria-label={t(
+                  "practice:speech.startRecording",
+                  "Start recording pronunciation",
+                )}
                 className="w-16 h-16 rounded-full bg-black text-white flex items-center justify-center hover:bg-neutral-800 hover:scale-105 active:scale-95 transition-all shadow-md cursor-pointer"
               >
                 <svg
@@ -296,10 +301,7 @@ export function PronunciationPracticeModal({
                 </svg>
               </button>
               <span className="text-xs text-neutral-500 font-medium">
-                Tap to speak or press{" "}
-                <kbd className="px-1.5 py-0.5 text-[10px] bg-neutral-200 rounded border border-neutral-300 font-mono">
-                  Space
-                </kbd>
+                {t("practice:speech.tapToSpeak", "Tap to speak or press Space")}
               </span>
             </div>
           )}

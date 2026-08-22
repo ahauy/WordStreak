@@ -1,15 +1,45 @@
 {
-  "title": "Bộ từ vựng cộng đồng",
-  "subtitle": "Khám phá và sao chép các bộ thẻ từ vựng chất lượng được tuyển chọn bởi cộng đồng",
-  "searchPlaceholder": "Tìm kiếm bộ từ cộng đồng chia sẻ...",
+  "title": "Bộ từ cộng đồng",
+  "subtitle": "Khám phá và sao chép các bộ từ vựng chất lượng cao do cộng đồng chia sẻ",
+  "searchPlaceholder": "Tìm kiếm bộ từ vựng cộng đồng...",
   "filters": {
-    "all": "Tất cả",
+    "all": "Tất cả bộ từ",
     "popular": "Phổ biến nhất",
     "trending": "Thịnh hành",
-    "recent": "Mới cập nhật"
+    "recent": "Mới thêm gần đây",
+    "curated": "Được tuyển chọn",
+    "ielts": "IELTS",
+    "toeic": "TOEIC",
+    "toefl": "TOEFL",
+    "beginner": "Cơ bản (A1-A2)",
+    "intermediate": "Trung cấp (B1-B2)",
+    "advanced": "Nâng cao (C1-C2)"
   },
   "actions": {
     "cloneDeck": "Sao chép bộ từ",
-    "viewDetails": "Xem chi tiết"
+    "cloning": "Đang sao chép...",
+    "cloned": "Đã thêm vào thư viện!",
+    "viewDetails": "Xem chi tiết",
+    "rateDeck": "Đánh giá",
+    "share": "Chia sẻ bộ từ"
+  },
+  "stats": {
+    "clonesCount": "{{count}} lượt sao chép",
+    "clonesCount_one": "{{count}} lượt sao chép",
+    "clonesCount_other": "{{count}} lượt sao chép",
+    "cardsCount": "{{count}} thẻ",
+    "cardsCount_one": "{{count}} thẻ",
+    "cardsCount_other": "{{count}} thẻ",
+    "ratingAverage": "Đánh giá: {{rating}} / 5",
+    "reviewsCount": "{{count}} đánh giá"
+  },
+  "modal": {
+    "cloneSuccessTitle": "Sao chép bộ từ thành công! 🚀",
+    "cloneSuccessDesc": "\"{{title}}\" đã được thêm vào thư viện của bạn. Bạn có thể bắt đầu học ngay bây giờ.",
+    "goToDeck": "Đi đến bộ từ",
+    "previewDeck": "Xem trước thẻ",
+    "ratingTitle": "Đánh giá bộ từ cộng đồng này",
+    "ratePrompt": "Bộ từ vựng này hữu ích với bạn như thế nào?",
+    "submitRating": "Gửi đánh giá"
   }
 }

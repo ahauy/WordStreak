@@ -16,6 +16,7 @@ import { Input } from "../../../common/components/Input";
 import { Button } from "../../../common/components/Button";
 import { useAuthStore } from "../../../store/useAuthStore";
 import { PurpleStreakFlame } from "../../landing/components/PurpleStreakFlame";
+import { useTranslation } from "react-i18next";
 
 const loginSchema = z.object({
   identifier: z.string().min(1, "Email or username is required"),
@@ -33,6 +34,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
   onSuccess,
   onNavigateToRegister,
 }) => {
+  const { t } = useTranslation(["auth", "common"]);
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(true);
   const { login, isLoading, error, clearError } = useAuthStore();
@@ -86,10 +88,10 @@ export const LoginForm: React.FC<LoginFormProps> = ({
           className="text-3xl sm:text-[32px] font-bold text-black mb-1.5 tracking-tight"
           style={{ fontFamily: "var(--font-display)" }}
         >
-          Welcome Back
+          {t("auth:login.title", "Welcome Back")}
         </h2>
         <p className="text-sm text-[#737373]">
-          Sign in to keep your daily streak burning
+          {t("auth:login.subtitle", "Sign in to keep your daily streak alive")}
         </p>
       </div>
 
@@ -108,10 +110,10 @@ export const LoginForm: React.FC<LoginFormProps> = ({
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" noValidate>
         <Input
           id="login-identifier"
-          label="Email or Username"
+          label={t("auth:login.emailLabel", "Email or Username")}
           type="text"
           autoComplete="username"
-          placeholder="you@wordstreak.app or streakmaster"
+          placeholder={t("auth:login.emailPlaceholder", "you@example.com")}
           required
           leftIcon={<User className="w-4 h-4" />}
           error={errors.identifier?.message}
@@ -121,10 +123,10 @@ export const LoginForm: React.FC<LoginFormProps> = ({
         <div className="space-y-1.5">
           <Input
             id="login-password"
-            label="Password"
+            label={t("auth:login.passwordLabel", "Password")}
             type={showPassword ? "text" : "password"}
             autoComplete="current-password"
-            placeholder="••••••••"
+            placeholder={t("auth:login.passwordPlaceholder", "••••••••")}
             required
             leftIcon={<Lock className="w-4 h-4" />}
             rightIcon={
@@ -153,19 +155,22 @@ export const LoginForm: React.FC<LoginFormProps> = ({
                 onChange={(e) => setRememberMe(e.target.checked)}
                 className="w-4 h-4 rounded border-[#d4d4d4] bg-[#fafafa] text-[#9333ea] focus:ring-[#9333ea] cursor-pointer accent-[#9333ea]"
               />
-              <span>Remember me</span>
+              <span>{t("auth:login.rememberMe", "Remember me")}</span>
             </label>
 
             <button
               type="button"
               onClick={() =>
                 alert(
-                  "Password reset instructions will be sent to your registered email.",
+                  t(
+                    "auth:forgotPassword.subtitle",
+                    "Password reset instructions will be sent to your registered email.",
+                  ),
                 )
               }
               className="text-xs font-medium text-[#737373] hover:text-black hover:underline transition-colors focus:outline-none cursor-pointer"
             >
-              Forgot password?
+              {t("auth:login.forgotPassword", "Forgot password?")}
             </button>
           </div>
         </div>
@@ -179,20 +184,22 @@ export const LoginForm: React.FC<LoginFormProps> = ({
           leftIcon={<LogIn className="w-4 h-4" />}
           rightIcon={<ArrowRight className="w-4 h-4" />}
         >
-          Sign In
+          {isLoading
+            ? t("auth:login.signingIn", "Signing in...")
+            : t("auth:login.submitButton", "Sign In")}
         </Button>
       </form>
 
       {onNavigateToRegister && (
         <div className="text-center mt-6 pt-5 border-t border-[#e5e5e5]">
           <p className="text-xs text-[#737373]">
-            Don't have an account?{" "}
+            {t("auth:login.noAccount", "Don't have an account?")}{" "}
             <button
               type="button"
               onClick={onNavigateToRegister}
               className="font-semibold text-black hover:text-[#7e22ce] hover:underline transition-colors focus:outline-none cursor-pointer"
             >
-              Create free account
+              {t("auth:login.signUpLink", "Sign up for free")}
             </button>
           </p>
         </div>

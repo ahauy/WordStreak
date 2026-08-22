@@ -1,0 +1,44 @@
+{
+  "auth": {
+    "invalid_credentials": "Invalid email or password.",
+    "email_already_exists": "This email is already registered.",
+    "unauthorized": "Session expired. Please log in again.",
+    "forbidden": "You do not have permission to perform this action.",
+    "account_locked": "Account is temporarily locked. Please try again later.",
+    "invalid_token": "Invalid verification token.",
+    "token_expired": "Verification token has expired."
+  },
+  "decks": {
+    "not_found": "Deck not found or has been deleted.",
+    "title_required": "Deck title is required.",
+    "permission_denied": "You do not have permission to edit this deck.",
+    "duplicate_title": "A deck with this title already exists."
+  },
+  "cards": {
+    "not_found": "Vocabulary card not found.",
+    "limit_exceeded": "Card limit exceeded for this deck.",
+    "invalid_data": "Invalid flashcard data provided."
+  },
+  "practice": {
+    "no_cards_due": "No cards due for review at this time!",
+    "session_expired": "Practice session has expired.",
+    "insufficient_cards": "Deck does not have enough cards for this practice mode."
+  },
+  "ai": {
+    "generation_failed": "AI service is temporarily busy. Please try again.",
+    "quota_exceeded": "Daily AI generation quota reached.",
+    "word_not_found": "Unable to find definition for this word."
+  },
+  "network": {
+    "connection_failed": "Unable to connect to server. Check your connection.",
+    "timeout": "Request timed out. Please try again.",
+    "server_unreachable": "Server is currently unreachable."
+  },
+  "generic": {
+    "unexpected_error": "An unexpected error occurred. Please try again.",
+    "rate_limited": "Too many requests. Please slow down.",
+    "not_found": "Requested resource not found.",
+    "bad_request": "Invalid request. Please check your inputs.",
+    "action_failed": "Action failed. Please try again."
+  }
+}

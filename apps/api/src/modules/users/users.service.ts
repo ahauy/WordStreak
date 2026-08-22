@@ -8,7 +8,7 @@ import { User } from '@prisma/client';
 import { PasswordUtil } from '../auth/utils/password.util';
 import { UpdateProfileDto } from './dto/update-profile.dto';
 import { ChangePasswordDto } from './dto/change-password.dto';
-import { AuthUser } from '@wordstreak/shared-types';
+import { AuthUser, AppLanguage } from '@wordstreak/shared-types';
 
 export interface CreateUserData {
   email: string;
@@ -16,6 +16,7 @@ export interface CreateUserData {
   passwordHash: string;
   dailyGoal?: number;
   avatarUrl?: string;
+  preferredLanguage?: AppLanguage;
 }
 
 @Injectable()
@@ -29,6 +30,7 @@ export class UsersService {
       username: user.username,
       dailyGoal: user.dailyGoal,
       avatarUrl: user.avatarUrl,
+      preferredLanguage: (user.preferredLanguage as AppLanguage) ?? 'vi',
       createdAt: user.createdAt,
       updatedAt: user.updatedAt,
     };
@@ -71,6 +73,7 @@ export class UsersService {
         passwordHash: data.passwordHash,
         dailyGoal: data.dailyGoal ?? 10,
         avatarUrl: data.avatarUrl,
+        preferredLanguage: data.preferredLanguage ?? 'vi',
       },
     });
   }
@@ -92,6 +95,9 @@ export class UsersService {
       data: {
         ...(dto.dailyGoal !== undefined && { dailyGoal: dto.dailyGoal }),
         ...(dto.avatarUrl !== undefined && { avatarUrl: dto.avatarUrl }),
+        ...(dto.preferredLanguage !== undefined && {
+          preferredLanguage: dto.preferredLanguage,
+        }),
       },
     });
     return this.mapToProfile(user);

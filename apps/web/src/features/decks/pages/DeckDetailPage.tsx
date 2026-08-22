@@ -28,6 +28,7 @@ import { QuizSetupModal } from "../../practice/components/QuizSetupModal";
 import { PronunciationPracticeModal } from "../../practice/components/PronunciationPracticeModal";
 import { DashboardNavbar } from "../../dashboard/components/DashboardNavbar";
 import { getColorTheme } from "../constants/deckThemes";
+import { useTranslation } from "react-i18next";
 import type {
   DeckResponse,
   CardResponse,
@@ -39,6 +40,7 @@ import type {
 const VIEW_MODE_STORAGE_KEY = "wordstreak_deck_view_mode";
 
 export const DeckDetailPage: React.FC = () => {
+  const { t } = useTranslation(["decks", "common", "cards"]);
   const { id: deckId } = useParams<{ id: string }>();
   const navigate = useNavigate();
 
@@ -222,11 +224,14 @@ export const DeckDetailPage: React.FC = () => {
               className="text-xl font-bold text-black mb-2"
               style={{ fontFamily: "var(--font-display)" }}
             >
-              Không thể tìm thấy bộ từ vựng
+              {t("decks:errors.notFoundTitle", "Deck Not Found")}
             </h2>
             <p className="text-xs sm:text-sm text-[#737373] mb-6">
               {deckError ||
-                "Bộ từ này không tồn tại hoặc bạn không có quyền truy cập."}
+                t(
+                  "decks:errors.notFoundDesc",
+                  "This deck does not exist or you do not have permission to access it.",
+                )}
             </p>
             <button
               type="button"
@@ -234,7 +239,7 @@ export const DeckDetailPage: React.FC = () => {
               className="btn-primary h-10 px-5 text-xs font-semibold gap-2 cursor-pointer inline-flex items-center"
             >
               <ArrowLeft className="w-4 h-4" />
-              <span>Quay lại danh sách bộ từ</span>
+              <span>{t("decks:detail.backToDecks", "Back to Decks")}</span>
             </button>
           </div>
         </main>
@@ -256,10 +261,18 @@ export const DeckDetailPage: React.FC = () => {
     label: string;
     count?: number;
   }> = [
-    { id: "ALL", label: "Tất cả" },
-    { id: "NEW", label: "Thẻ mới", count: stats.newCards },
-    { id: "LEARNING", label: "Đang học", count: stats.learningCards },
-    { id: "MASTERED", label: "Thành thạo", count: stats.masteredCards },
+    { id: "ALL", label: t("common:filters.all", "All") },
+    { id: "NEW", label: t("cards:status.new", "New"), count: stats.newCards },
+    {
+      id: "LEARNING",
+      label: t("cards:status.learning", "Learning"),
+      count: stats.learningCards,
+    },
+    {
+      id: "MASTERED",
+      label: t("cards:status.mastered", "Mastered"),
+      count: stats.masteredCards,
+    },
   ];
 
   return (
@@ -274,7 +287,7 @@ export const DeckDetailPage: React.FC = () => {
             className="inline-flex items-center gap-2 text-xs font-semibold text-[#737373] hover:text-black transition-colors group"
           >
             <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
-            <span>Quay lại danh sách bộ từ</span>
+            <span>{t("decks:detail.backToDecks", "Back to Decks")}</span>
           </Link>
         </div>
 
@@ -299,7 +312,8 @@ export const DeckDetailPage: React.FC = () => {
                 className="text-lg sm:text-xl font-bold text-black tracking-tight"
                 style={{ fontFamily: "var(--font-display)" }}
               >
-                Danh sách thẻ từ vựng ({paginationMeta.total})
+                {t("decks:detail.cardsList", "Vocabulary Cards")} (
+                {paginationMeta.total})
               </h2>
             </div>
 
@@ -310,7 +324,7 @@ export const DeckDetailPage: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => handleViewModeChange("grid")}
-                  title="Chế độ lưới thẻ 3D"
+                  title={t("decks:detail.gridView", "3D Grid View")}
                   className={`p-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer ${
                     viewMode === "grid"
                       ? "bg-white text-black shadow-xs"
@@ -318,12 +332,14 @@ export const DeckDetailPage: React.FC = () => {
                   }`}
                 >
                   <LayoutGrid className="w-3.5 h-3.5" />
-                  <span className="text-[11px] hidden sm:inline">Lưới</span>
+                  <span className="text-[11px] hidden sm:inline">
+                    {t("common:view.grid", "Grid")}
+                  </span>
                 </button>
                 <button
                   type="button"
                   onClick={() => handleViewModeChange("table")}
-                  title="Chế độ bảng danh sách"
+                  title={t("decks:detail.tableView", "List Table View")}
                   className={`p-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer ${
                     viewMode === "table"
                       ? "bg-white text-black shadow-xs"
@@ -331,7 +347,9 @@ export const DeckDetailPage: React.FC = () => {
                   }`}
                 >
                   <List className="w-3.5 h-3.5" />
-                  <span className="text-[11px] hidden sm:inline">Bảng</span>
+                  <span className="text-[11px] hidden sm:inline">
+                    {t("common:view.table", "Table")}
+                  </span>
                 </button>
               </div>
 
@@ -342,7 +360,10 @@ export const DeckDetailPage: React.FC = () => {
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Tìm từ, nghĩa, ví dụ..."
+                  placeholder={t(
+                    "decks:detail.searchPlaceholder",
+                    "Search term, meaning, example...",
+                  )}
                   className="w-full h-9 pl-9 pr-3 rounded-xl border border-[#e5e5e5] bg-[#fafafa] focus:bg-white text-xs text-black placeholder:text-[#a3a3a3] focus:outline-none focus:border-black transition-all"
                 />
               </div>
@@ -354,7 +375,7 @@ export const DeckDetailPage: React.FC = () => {
             <div className="flex flex-wrap items-center gap-1.5">
               <span className="text-[11px] font-semibold text-[#737373] flex items-center gap-1 mr-1">
                 <Filter className="w-3 h-3" />
-                <span>Lọc:</span>
+                <span>{t("common:filters.filterLabel", "Filter:")}</span>
               </span>
               {statusChips.map((chip) => {
                 const isActive = statusFilter === chip.id;
@@ -391,7 +412,9 @@ export const DeckDetailPage: React.FC = () => {
                 onClick={selectAllCards}
                 className="text-xs font-semibold text-[#737373] hover:text-black cursor-pointer transition-colors"
               >
-                {isAllSelected ? "Bỏ chọn tất cả" : "Chọn tất cả trên trang"}
+                {isAllSelected
+                  ? t("common:actions.deselectAll", "Deselect All")
+                  : t("common:actions.selectAllOnPage", "Select all on page")}
               </button>
             )}
           </div>
@@ -427,11 +450,13 @@ export const DeckDetailPage: React.FC = () => {
               className="text-base sm:text-lg font-bold text-black mb-1.5"
               style={{ fontFamily: "var(--font-display)" }}
             >
-              Bộ từ này chưa có thẻ từ vựng nào
+              {t("decks:detail.emptyTitle", "No cards in this deck yet")}
             </h3>
             <p className="text-xs sm:text-sm text-[#737373] mb-6 max-w-sm leading-relaxed">
-              Bắt đầu thêm thẻ từ hoặc nhập hàng loạt từ file CSV, Excel, Anki
-              để ôn tập với Spaced Repetition (SM-2).
+              {t(
+                "decks:detail.emptyDesc",
+                "Start adding flashcards or import in bulk from CSV, Excel, or Anki to study with Spaced Repetition (SM-2).",
+              )}
             </p>
 
             <div className="flex flex-wrap items-center justify-center gap-3">
@@ -441,7 +466,7 @@ export const DeckDetailPage: React.FC = () => {
                 className="btn-primary h-10 px-5 text-xs font-semibold gap-2 shadow-xs cursor-pointer inline-flex items-center"
               >
                 <Plus className="w-4 h-4" />
-                <span>Thêm thẻ từ mới</span>
+                <span>{t("cards:addCard", "Add New Card")}</span>
               </button>
 
               <button
@@ -449,7 +474,7 @@ export const DeckDetailPage: React.FC = () => {
                 onClick={() => setIsImportOpen(true)}
                 className="btn-secondary h-10 px-5 text-xs font-semibold gap-2 cursor-pointer inline-flex items-center"
               >
-                <span>Nhập từ từ file</span>
+                <span>{t("decks:detail.importCards", "Import from file")}</span>
               </button>
             </div>
           </div>
@@ -457,7 +482,10 @@ export const DeckDetailPage: React.FC = () => {
           /* Empty Filter/Search Results */
           <div className="rounded-2xl border border-[#e5e5e5] bg-[#fafafa] p-10 text-center max-w-md mx-auto">
             <p className="text-xs sm:text-sm text-[#737373] mb-4">
-              Không tìm thấy từ vựng nào khớp với bộ lọc hiện tại.
+              {t(
+                "decks:detail.emptyFilter",
+                "No cards match the current filter criteria.",
+              )}
             </p>
             <button
               type="button"
@@ -467,7 +495,7 @@ export const DeckDetailPage: React.FC = () => {
               }}
               className="btn-secondary h-9 px-4 text-xs font-semibold cursor-pointer"
             >
-              Xóa bộ lọc & tìm kiếm
+              {t("decks:detail.clearFilter", "Clear filters & search")}
             </button>
           </div>
         ) : viewMode === "table" ? (
@@ -518,12 +546,14 @@ export const DeckDetailPage: React.FC = () => {
           <div className="mt-8 pt-6 border-t border-[#e5e5e5] flex flex-col sm:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-2 text-xs text-[#737373]">
               <span>
-                Hiển thị trang <strong>{paginationMeta.page}</strong> /{" "}
-                {paginationMeta.totalPages} ({paginationMeta.total} thẻ)
+                {t("common:pagination.showingPage", "Showing page")}{" "}
+                <strong>{paginationMeta.page}</strong> /{" "}
+                {paginationMeta.totalPages} ({paginationMeta.total}{" "}
+                {t("cards:title", "cards").toLowerCase()})
               </span>
               <span className="mx-1">•</span>
               <label htmlFor="limit-select" className="text-xs">
-                Số lượng:
+                {t("common:pagination.perPage", "Per page:")}
               </label>
               <select
                 id="limit-select"
@@ -534,9 +564,15 @@ export const DeckDetailPage: React.FC = () => {
                 }}
                 className="h-7 px-2 rounded-lg border border-[#e5e5e5] bg-[#fafafa] text-xs text-black font-medium focus:outline-none focus:border-black"
               >
-                <option value={10}>10 / trang</option>
-                <option value={20}>20 / trang</option>
-                <option value={50}>50 / trang</option>
+                <option value={10}>
+                  10 / {t("common:pagination.page", "page")}
+                </option>
+                <option value={20}>
+                  20 / {t("common:pagination.page", "page")}
+                </option>
+                <option value={50}>
+                  50 / {t("common:pagination.page", "page")}
+                </option>
               </select>
             </div>
 
@@ -545,11 +581,11 @@ export const DeckDetailPage: React.FC = () => {
                 type="button"
                 onClick={() => setPage(page - 1)}
                 disabled={!paginationMeta.hasPrevPage}
-                aria-label="Trang trước"
+                aria-label={t("common:pagination.prev", "Previous")}
                 className="h-8 px-3 rounded-xl border border-[#e5e5e5] bg-[#fafafa] hover:bg-white text-xs font-semibold text-black flex items-center gap-1 disabled:opacity-40 disabled:cursor-not-allowed transition-colors cursor-pointer"
               >
                 <ChevronLeft className="w-3.5 h-3.5" />
-                <span>Trước</span>
+                <span>{t("common:pagination.prev", "Prev")}</span>
               </button>
 
               <div className="flex items-center gap-1 px-1">
@@ -587,10 +623,10 @@ export const DeckDetailPage: React.FC = () => {
                 type="button"
                 onClick={() => setPage(page + 1)}
                 disabled={!paginationMeta.hasNextPage}
-                aria-label="Trang sau"
+                aria-label={t("common:pagination.next", "Next")}
                 className="h-8 px-3 rounded-xl border border-[#e5e5e5] bg-[#fafafa] hover:bg-white text-xs font-semibold text-black flex items-center gap-1 disabled:opacity-40 disabled:cursor-not-allowed transition-colors cursor-pointer"
               >
-                <span>Sau</span>
+                <span>{t("common:pagination.next", "Next")}</span>
                 <ChevronRight className="w-3.5 h-3.5" />
               </button>
             </div>

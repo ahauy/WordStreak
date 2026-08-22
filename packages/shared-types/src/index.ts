@@ -1,5 +1,4 @@
-// Shared types and interfaces between apps/api and apps/web
-
+import type { AppLanguage } from "./auth.js";
 export * from "./auth.js";
 export * from "./decks.js";
 export * from "./cards.js";
@@ -17,6 +16,7 @@ export interface User {
   email: string;
   dailyGoal: number;
   avatarUrl?: string | null;
+  preferredLanguage?: AppLanguage;
   totalXp?: number;
   level?: number;
   tier?: string;

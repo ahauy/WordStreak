@@ -1,23 +1,57 @@
 {
   "welcome": {
     "greeting": "Chào mừng trở lại",
-    "subtitle": "Duy trì chuỗi học tập bằng cách ôn các thẻ từ hôm nay."
+    "subtitle": "Duy trì chuỗi học tập bằng cách hoàn thành các thẻ hôm nay.",
+    "todayGoal": "Mục tiêu hôm nay",
+    "cardsDue": "{{count}} thẻ cần ôn"
   },
   "streak": {
-    "daysLabel": "Ngày Streak",
-    "flameGardenTooltip": "Nhấn để mở Khu Vườn Nuôi Lửa & Tiến Hóa",
+    "daysLabel": "Chuỗi ngày",
+    "daysStreak": "Chuỗi {{count}} ngày",
+    "flameGardenTooltip": "Nhấn để mở Vườn nuôi dưỡng Ngọn lửa & Tiến hóa",
     "activeToday": "Đã học hôm nay",
-    "restDay": "Ngày nghỉ ngơi"
+    "restDay": "Nghỉ ngơi hôm nay",
+    "streakFrozen": "Chuỗi đã đóng băng",
+    "freezeRemaining": "Còn {{count}} lượt đóng băng",
+    "currentStreak": "Chuỗi hiện tại",
+    "longestStreak": "Chuỗi dài nhất",
+    "saveStreak": "Cứu chuỗi học tập",
+    "streakLost": "Đã mất chuỗi",
+    "streakSaved": "Đã cứu chuỗi thành công!"
   },
   "stats": {
-    "cardsStudied": "Thẻ đã ôn",
+    "cardsStudied": "Thẻ đã học",
     "accuracy": "Độ chính xác",
     "timeSpent": "Thời gian học",
-    "currentLevel": "Cấp độ"
+    "currentLevel": "Cấp độ",
+    "totalXp": "Tổng điểm XP",
+    "retentionRate": "Tỷ lệ ghi nhớ",
+    "masteredWords": "Từ đã thành thạo",
+    "learningWords": "Từ đang học"
   },
   "quickActions": {
-    "startDailyReview": "Ôn tập hàng ngày",
-    "exploreCommunity": "Khám phá bộ từ vựng cộng đồng",
-    "createNewDeck": "Tạo bộ từ mới"
+    "startDailyReview": "Bắt đầu ôn tập hôm nay",
+    "exploreCommunity": "Khám phá bộ từ cộng đồng",
+    "createNewDeck": "Tạo bộ từ mới",
+    "quickPractice": "Luyện tập nhanh",
+    "aiGenerate": "Tạo từ vựng với AI"
+  },
+  "preview": {
+    "dueDecksTitle": "Bộ từ cần ôn tập",
+    "viewAllDecks": "Xem tất cả bộ từ",
+    "noDueDecksTitle": "Đã hoàn thành ôn tập hôm nay!",
+    "noDueDecksDesc": "Bạn đã hoàn thành tất cả thẻ theo lịch trình. Thật tuyệt vời!",
+    "studyNow": "Học ngay"
+  },
+  "flame": {
+    "evolutionTitle": "Vườn Ngọn lửa Streak",
+    "nurtureGarden": "Vườn nuôi dưỡng",
+    "nurtureButton": "Chăm sóc Ngọn lửa",
+    "nextStage": "Tiến hóa tiếp theo",
+    "flameStageBaby": "Đốm lửa nhỏ",
+    "flameStageYoung": "Ngọn lửa tím",
+    "flameStageAdult": "Lõi rực cháy",
+    "flameStageMythic": "Siêu tân tinh vũ trụ",
+    "feedFlame": "Nuôi dưỡng"
   }
 }

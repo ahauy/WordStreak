@@ -1,0 +1,69 @@
+{
+  "title": "Thẻ từ vựng",
+  "subtitle": "Quản lý các thẻ từ vựng flashcard trong bộ từ này",
+  "addCard": "Thêm thẻ",
+  "editCard": "Sửa thẻ",
+  "deleteCard": "Xóa thẻ",
+  "selectedCount": "{{count}} thẻ đã chọn",
+  "selectedCount_one": "{{count}} thẻ đã chọn",
+  "selectedCount_other": "{{count}} thẻ đã chọn",
+  "form": {
+    "termLabel": "Từ vựng / Thuật ngữ",
+    "termPlaceholder": "Ví dụ: Ephemeral",
+    "phoneticLabel": "Phiên âm / Ký hiệu IPA",
+    "phoneticPlaceholder": "Ví dụ: /ɪˈfem.ər.əl/",
+    "definitionLabel": "Ý nghĩa / Định nghĩa",
+    "definitionPlaceholder": "Ví dụ: Tồn tại trong khoảng thời gian rất ngắn",
+    "exampleLabel": "Câu ví dụ minh họa",
+    "examplePlaceholder": "Ví dụ: Fashions are ephemeral, but style lasts forever.",
+    "notesLabel": "Ghi chú cá nhân / Mẹo ghi nhớ",
+    "notesPlaceholder": "Thêm mẹo nhớ từ hoặc ngữ cảnh sử dụng...",
+    "tagsLabel": "Thẻ phân loại",
+    "tagsPlaceholder": "Ví dụ: advanced, c1, formal",
+    "aiAutoFill": "Tự động điền với AI",
+    "aiAutoFilling": "Đang tạo ngữ cảnh AI...",
+    "aiAutoFillSuccess": "Đã tự động điền ngữ cảnh bằng AI!",
+    "saveCard": "Lưu thay đổi",
+    "createCard": "Tạo thẻ mới"
+  },
+  "table": {
+    "columnTerm": "Từ vựng",
+    "columnPhonetic": "Phiên âm",
+    "columnDefinition": "Ý nghĩa",
+    "columnExample": "Câu ví dụ",
+    "columnState": "Trạng thái",
+    "columnInterval": "Chu kỳ SRS",
+    "columnActions": "Thao tác",
+    "repetitions": "Lặp lại: {{count}}",
+    "repsLabel": "Lặp lại",
+    "playPronunciation": "Phát âm",
+    "voicePractice": "Luyện phát âm",
+    "editCard": "Sửa thẻ",
+    "deleteCard": "Xóa thẻ",
+    "noCards": "Chưa có thẻ từ vựng nào trong bộ từ này."
+  },
+  "status": {
+    "new": "Mới",
+    "learning": "Đang học",
+    "review": "Cần ôn tập",
+    "mastered": "Đã thành thạo"
+  },
+  "bulk": {
+    "selectDeselectAll": "Chọn / Bỏ chọn tất cả",
+    "deleteSelected": "Xóa các thẻ đã chọn",
+    "moveSelected": "Chuyển sang bộ từ khác",
+    "exportSelected": "Xuất các thẻ đã chọn",
+    "confirmDeleteTitle": "Xóa {{count}} thẻ đã chọn",
+    "confirmDeleteDesc": "Bạn có chắc chắn muốn xóa vĩnh viễn {{count}} thẻ flashcard đã chọn? Thao tác này không thể hoàn tác.",
+    "resetConfirmTitle": "Đặt lại tiến độ ({{count}} thẻ)",
+    "resetConfirmDesc": "Đặt lại chu kỳ lặp và số lần ôn tập về Mới (NEW) cho các thẻ đã chọn. Bạn sẽ học lại các từ này từ đầu.",
+    "moveTitle": "Chuyển thẻ sang bộ từ khác",
+    "targetDeckSelect": "Chọn bộ từ đích",
+    "moveSubmit": "Chuyển thẻ"
+  },
+  "preview": {
+    "front": "Mặt trước",
+    "back": "Mặt sau (Nghĩa)",
+    "clickToFlip": "Nhấn để lật thẻ"
+  }
+}

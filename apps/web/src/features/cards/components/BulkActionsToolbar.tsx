@@ -7,6 +7,7 @@ import {
   Loader2,
   AlertTriangle,
 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { BulkMoveModal } from "./BulkMoveModal";
 
 interface BulkActionsToolbarProps {
@@ -28,6 +29,7 @@ export const BulkActionsToolbar: React.FC<BulkActionsToolbarProps> = ({
   onBulkResetProgress,
   isLoading,
 }) => {
+  const { t } = useTranslation(["cards", "common"]);
   const [isMoveModalOpen, setIsMoveModalOpen] = useState(false);
   const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
   const [isResetConfirmOpen, setIsResetConfirmOpen] = useState(false);
@@ -50,7 +52,10 @@ export const BulkActionsToolbar: React.FC<BulkActionsToolbarProps> = ({
               {selectedCount}
             </span>
             <span className="text-xs font-semibold text-white/90">
-              thẻ đã được chọn
+              {t("cards:selectedCount", {
+                count: selectedCount,
+                defaultValue: `${selectedCount} cards selected`,
+              })}
             </span>
             <button
               type="button"
@@ -58,7 +63,7 @@ export const BulkActionsToolbar: React.FC<BulkActionsToolbarProps> = ({
               disabled={isLoading}
               className="text-[11px] text-white/60 hover:text-white underline ml-1 cursor-pointer transition-colors"
             >
-              Bỏ chọn
+              {t("common:actions.cancel", "Cancel")}
             </button>
           </div>
 
@@ -69,11 +74,13 @@ export const BulkActionsToolbar: React.FC<BulkActionsToolbarProps> = ({
               type="button"
               onClick={() => setIsResetConfirmOpen(true)}
               disabled={isLoading}
-              title="Đặt lại trạng thái học về Mới"
+              title={t("common:actions.reset", "Reset Progress")}
               className="h-8 px-3 rounded-xl bg-white/10 hover:bg-white/20 text-xs font-semibold text-white flex items-center gap-1.5 transition-colors cursor-pointer disabled:opacity-50"
             >
               <RotateCcw className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline">Đặt lại tiến độ</span>
+              <span className="hidden sm:inline">
+                {t("common:actions.reset", "Reset")}
+              </span>
             </button>
 
             {/* Move to Deck Button */}
@@ -81,11 +88,13 @@ export const BulkActionsToolbar: React.FC<BulkActionsToolbarProps> = ({
               type="button"
               onClick={() => setIsMoveModalOpen(true)}
               disabled={isLoading}
-              title="Di chuyển sang bộ từ khác"
+              title={t("cards:bulk.moveSelected", "Move to Deck")}
               className="h-8 px-3 rounded-xl bg-white/10 hover:bg-white/20 text-xs font-semibold text-white flex items-center gap-1.5 transition-colors cursor-pointer disabled:opacity-50"
             >
               <FolderSymlink className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline">Di chuyển</span>
+              <span className="hidden sm:inline">
+                {t("cards:bulk.moveSelected", "Move")}
+              </span>
             </button>
 
             {/* Bulk Delete Button */}
@@ -93,7 +102,7 @@ export const BulkActionsToolbar: React.FC<BulkActionsToolbarProps> = ({
               type="button"
               onClick={() => setIsDeleteConfirmOpen(true)}
               disabled={isLoading}
-              title="Xóa các thẻ đã chọn"
+              title={t("cards:bulk.deleteSelected", "Delete Selected")}
               className="h-8 px-3 rounded-xl bg-[#ff5f56]/20 hover:bg-[#ff5f56]/30 text-[#ff5f56] text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer disabled:opacity-50"
             >
               {isLoading ? (
@@ -101,7 +110,7 @@ export const BulkActionsToolbar: React.FC<BulkActionsToolbarProps> = ({
               ) : (
                 <Trash2 className="w-3.5 h-3.5" />
               )}
-              <span>Xóa</span>
+              <span>{t("common:actions.delete", "Delete")}</span>
             </button>
           </div>
         </motion.div>
@@ -144,11 +153,16 @@ export const BulkActionsToolbar: React.FC<BulkActionsToolbarProps> = ({
                 className="text-base font-bold text-black mb-1"
                 style={{ fontFamily: "var(--font-display)" }}
               >
-                Xóa {selectedCount} thẻ từ vựng?
+                {t("cards:bulk.confirmDeleteTitle", {
+                  count: selectedCount,
+                  defaultValue: `Delete ${selectedCount} cards?`,
+                })}
               </h3>
               <p className="text-xs text-[#737373] mb-6 leading-relaxed">
-                Hành động này không thể hoàn tác. Toàn bộ tiến độ học và dữ liệu
-                của {selectedCount} thẻ đã chọn sẽ bị xóa vĩnh viễn.
+                {t("cards:bulk.confirmDeleteDesc", {
+                  count: selectedCount,
+                  defaultValue: `Are you sure you want to delete ${selectedCount} cards?`,
+                })}
               </p>
               <div className="flex items-center justify-center gap-2.5">
                 <button
@@ -157,7 +171,7 @@ export const BulkActionsToolbar: React.FC<BulkActionsToolbarProps> = ({
                   disabled={isLoading}
                   className="btn-secondary h-9 px-4 text-xs font-semibold cursor-pointer"
                 >
-                  Hủy bỏ
+                  {t("common:actions.cancel", "Cancel")}
                 </button>
                 <button
                   type="button"
@@ -171,7 +185,7 @@ export const BulkActionsToolbar: React.FC<BulkActionsToolbarProps> = ({
                   {isLoading && (
                     <Loader2 className="w-3.5 h-3.5 animate-spin" />
                   )}
-                  <span>Xóa vĩnh viễn</span>
+                  <span>{t("common:actions.delete", "Delete")}</span>
                 </button>
               </div>
             </motion.div>
@@ -203,11 +217,16 @@ export const BulkActionsToolbar: React.FC<BulkActionsToolbarProps> = ({
                 className="text-base font-bold text-black mb-1"
                 style={{ fontFamily: "var(--font-display)" }}
               >
-                Đặt lại tiến độ {selectedCount} thẻ?
+                {t("cards:bulk.resetConfirmTitle", {
+                  count: selectedCount,
+                  defaultValue: `Reset Progress (${selectedCount} cards)`,
+                })}
               </h3>
               <p className="text-xs text-[#737373] mb-6 leading-relaxed">
-                Tiến độ Spaced Repetition của {selectedCount} thẻ sẽ được chuyển
-                về trạng thái <strong>Mới (NEW)</strong> để bạn học lại từ đầu.
+                {t(
+                  "cards:bulk.resetConfirmDesc",
+                  "Reset SRS interval and repetitions to New for selected cards. You will review them from the beginning.",
+                )}
               </p>
               <div className="flex items-center justify-center gap-2.5">
                 <button
@@ -216,7 +235,7 @@ export const BulkActionsToolbar: React.FC<BulkActionsToolbarProps> = ({
                   disabled={isLoading}
                   className="btn-secondary h-9 px-4 text-xs font-semibold cursor-pointer"
                 >
-                  Hủy bỏ
+                  {t("common:actions.cancel", "Cancel")}
                 </button>
                 <button
                   type="button"
@@ -230,7 +249,7 @@ export const BulkActionsToolbar: React.FC<BulkActionsToolbarProps> = ({
                   {isLoading && (
                     <Loader2 className="w-3.5 h-3.5 animate-spin" />
                   )}
-                  <span>Xác nhận đặt lại</span>
+                  <span>{t("common:actions.confirm", "Confirm")}</span>
                 </button>
               </div>
             </motion.div>

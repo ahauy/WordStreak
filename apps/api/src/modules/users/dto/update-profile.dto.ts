@@ -6,8 +6,12 @@ import {
   MaxLength,
   Min,
   Matches,
+  IsIn,
 } from 'class-validator';
-import { UpdateProfileDto as IUpdateProfileDto } from '@wordstreak/shared-types';
+import type {
+  UpdateProfileDto as IUpdateProfileDto,
+  AppLanguage,
+} from '@wordstreak/shared-types';
 
 export class UpdateProfileDto implements IUpdateProfileDto {
   @IsOptional()
@@ -24,4 +28,10 @@ export class UpdateProfileDto implements IUpdateProfileDto {
       'avatarUrl must be a valid preset identifier (preset:...) or HTTP(S) URL',
   })
   avatarUrl?: string;
+
+  @IsOptional()
+  @IsIn(['vi', 'en'], {
+    message: 'preferredLanguage must be one of the following values: vi, en',
+  })
+  preferredLanguage?: AppLanguage;
 }

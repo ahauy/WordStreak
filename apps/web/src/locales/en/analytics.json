@@ -2,7 +2,34 @@
   "title": "Learning Analytics",
   "subtitle": "Track your memory retention, study time, and learning velocity",
   "retentionRate": "Retention Rate",
+  "retentionSubtitle": "Predicted long-term recall probability across all learned cards",
   "xpHistory": "XP History & Levels",
   "studyHeatmap": "Study Activity Heatmap",
-  "masteryDistribution": "Vocabulary Mastery Distribution"
+  "masteryDistribution": "Vocabulary Mastery Distribution",
+  "stats": {
+    "totalLearned": "Total Words Learned",
+    "studyTimeTotal": "Total Study Time",
+    "dailyStreakCurrent": "Current Streak",
+    "reviewsCompleted": "Reviews Completed"
+  },
+  "heatmap": {
+    "less": "Less",
+    "more": "More",
+    "contributionsCount_one": "{{count}} review on {{date}}",
+    "contributionsCount_other": "{{count}} reviews on {{date}}",
+    "tooltipDate": "{{date}}: {{count}} reviews"
+  },
+  "mastery": {
+    "newCards": "New Cards (0 reviews)",
+    "learningCards": "Learning (1-3 reviews)",
+    "youngCards": "Reviewing (4-9 reviews)",
+    "matureCards": "Mature / Mastered (10+ reviews)"
+  },
+  "forecast": {
+    "deckProgressTitle": "Deck Mastery & Review Forecast",
+    "deckColumn": "Deck Name",
+    "totalCardsColumn": "Total Cards",
+    "masteryRateColumn": "Mastery Rate",
+    "nextReviewColumn": "Next Scheduled Review"
+  }
 }
