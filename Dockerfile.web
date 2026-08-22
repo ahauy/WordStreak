@@ -21,6 +21,9 @@ RUN pnpm --filter web build
 # Stage 2: Serve với Nginx
 FROM nginx:alpine AS runner
 
+# Copy custom Nginx configuration for SPA routing fallback
+COPY apps/web/nginx.conf /etc/nginx/conf.d/default.conf
+
 # Copy file tĩnh đã build từ Vite sang Nginx web root
 COPY --from=builder /app/apps/web/dist /usr/share/nginx/html
 
