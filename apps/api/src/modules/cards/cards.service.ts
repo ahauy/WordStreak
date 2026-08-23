@@ -3,18 +3,22 @@ import {
   NotFoundException,
   ForbiddenException,
   BadRequestException,
+  Optional,
 } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
+import { AiVocabularyService } from '../ai-vocabulary/ai-vocabulary.service';
 import { CreateCardDto } from './dto/create-card.dto';
 import { UpdateCardDto } from './dto/update-card.dto';
 import { QueryCardsDto } from './dto/query-cards.dto';
 import { BulkCardActionDto } from './dto/bulk-card-action.dto';
+import { QuickCaptureCardDto } from './dto/quick-capture-card.dto';
 import type {
   CardResponse,
   CardProgressInfo,
   PaginatedCardsResponse,
   BulkCardActionResult,
+  QuickCaptureResponseDto,
 } from '@wordstreak/shared-types';
 
 interface CardWithProgress {
@@ -42,7 +46,148 @@ interface CardWithProgress {
 
 @Injectable()
 export class CardsService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    @Optional() private readonly aiVocabularyService?: AiVocabularyService,
+  ) {}
+
+  async quickCapture(
+    userId: string,
+    dto: QuickCaptureCardDto,
+  ): Promise<QuickCaptureResponseDto> {
+    const rawWord = dto.word?.trim();
+    if (!rawWord) {
+      throw new BadRequestException('Vui lòng nhập từ vựng hợp lệ');
+    }
+
+    // 1. Resolve Target Deck
+    let targetDeck: { id: string; title: string; userId: string } | null = null;
+    if (dto.deckId) {
+      targetDeck = await this.prisma.deck.findUnique({
+        where: { id: dto.deckId },
+        select: { id: true, title: true, userId: true },
+      });
+      if (!targetDeck) {
+        throw new NotFoundException('Không tìm thấy bộ từ vựng đích');
+      }
+      if (targetDeck.userId !== userId) {
+        throw new ForbiddenException(
+          'Bạn không có quyền thêm thẻ vào bộ từ vựng này',
+        );
+      }
+    } else {
+      targetDeck = await this.prisma.deck.findFirst({
+        where: { userId },
+        orderBy: { createdAt: 'asc' },
+        select: { id: true, title: true, userId: true },
+      });
+
+      if (!targetDeck) {
+        targetDeck = await this.prisma.deck.create({
+          data: {
+            userId,
+            title: 'Inbox / Thu thập Web',
+            description:
+              'Bộ từ tự động tạo để lưu từ vựng thu thập khi duyệt web',
+          },
+          select: { id: true, title: true, userId: true },
+        });
+      }
+    }
+
+    // 2. Duplicate check (case-insensitive)
+    const existingCard = await this.prisma.card.findFirst({
+      where: {
+        deckId: targetDeck.id,
+        word: { equals: rawWord, mode: 'insensitive' },
+      },
+      include: {
+        progress: {
+          where: { userId },
+        },
+      },
+    });
+
+    if (existingCard) {
+      return {
+        message: `Từ "${rawWord}" đã có trong bộ từ "${targetDeck.title}"`,
+        card: this.mapToResponse(existingCard),
+        isDuplicate: true,
+        deck: {
+          id: targetDeck.id,
+          title: targetDeck.title,
+        },
+      };
+    }
+
+    // 3. Auto-enrich definition & phonetic
+    let resolvedMeaning = dto.customDefinition?.trim() || '';
+    let resolvedPhonetic: string | null = null;
+    let resolvedExample = dto.contextSentence?.trim() || null;
+
+    if (!resolvedMeaning && this.aiVocabularyService) {
+      try {
+        const enriched = await this.aiVocabularyService.generateCard(
+          { word: rawWord },
+          userId,
+        );
+        if (enriched?.card) {
+          resolvedMeaning =
+            enriched.card.meaningVi || enriched.card.meaningEn || rawWord;
+          resolvedPhonetic = enriched.card.phonetic || null;
+          if (!resolvedExample && enriched.card.exampleSentence) {
+            resolvedExample = enriched.card.exampleSentence;
+          }
+        }
+      } catch {
+        resolvedMeaning = rawWord;
+      }
+    }
+
+    if (!resolvedMeaning) {
+      resolvedMeaning = rawWord;
+    }
+
+    // 4. Atomic create card + SM-2 NEW progress
+    const { card, progress } = await this.prisma.$transaction(async (tx) => {
+      const createdCard = await tx.card.create({
+        data: {
+          deckId: targetDeck.id,
+          word: rawWord,
+          meaning: resolvedMeaning,
+          phonetic: resolvedPhonetic,
+          exampleSentence: resolvedExample,
+        },
+      });
+
+      const initialProgress = await tx.userCardProgress.create({
+        data: {
+          userId,
+          cardId: createdCard.id,
+          status: 'NEW',
+          interval: 0,
+          easeFactor: 2.5,
+          repetitions: 0,
+          nextReviewDate: new Date(),
+        },
+      });
+
+      return { card: createdCard, progress: initialProgress };
+    });
+
+    return {
+      message: `Đã lưu từ "${rawWord}" vào bộ từ "${targetDeck.title}"`,
+      card: this.mapToResponse({
+        ...card,
+        progress: [progress],
+      }),
+      isDuplicate: false,
+      deck: {
+        id: targetDeck.id,
+        title: targetDeck.title,
+      },
+    };
+  }
 
   async create(
     userId: string,

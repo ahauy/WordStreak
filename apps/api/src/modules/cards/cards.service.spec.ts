@@ -44,11 +44,14 @@ describe('CardsService', () => {
     prisma = {
       deck: {
         findUnique: jest.fn(),
+        findFirst: jest.fn(),
+        create: jest.fn(),
       },
       card: {
         create: jest.fn(),
         findMany: jest.fn(),
         findUnique: jest.fn(),
+        findFirst: jest.fn(),
         update: jest.fn(),
         delete: jest.fn(),
         deleteMany: jest.fn(),
@@ -386,6 +389,163 @@ describe('CardsService', () => {
       await expect(service.remove(mockUserId, mockCardId)).rejects.toThrow(
         ForbiddenException,
       );
+    });
+  });
+
+  describe('quickCapture', () => {
+    it('TC-EXT-001: should create new card with SM-2 NEW progress and auto-fill if not duplicate', async () => {
+      prisma.deck.findUnique.mockResolvedValue({
+        id: mockDeckId,
+        title: 'IELTS Vocabulary',
+        userId: mockUserId,
+      });
+      prisma.card.findFirst.mockResolvedValue(null);
+
+      const mockCreatedCard = {
+        id: 'new-card-123',
+        deckId: mockDeckId,
+        word: 'ubiquitous',
+        meaning: 'phổ biến khắp nơi',
+        phonetic: '/juːˈbɪk.wə.təs/',
+        audioUrl: null,
+        exampleSentence: 'Smartphones are ubiquitous in modern life.',
+        collocations: null,
+        mnemonic: null,
+        imageUrl: null,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
+
+      const mockProgress = {
+        status: 'NEW',
+        interval: 0,
+        easeFactor: 2.5,
+        repetitions: 0,
+        nextReviewDate: new Date(),
+        lastReviewedAt: null,
+      };
+
+      prisma.$transaction.mockImplementation(async (callback) => {
+        return callback({
+          card: {
+            create: jest.fn().mockResolvedValue(mockCreatedCard),
+          },
+          userCardProgress: {
+            create: jest.fn().mockResolvedValue(mockProgress),
+          },
+        });
+      });
+
+      const result = await service.quickCapture(mockUserId, {
+        word: 'ubiquitous',
+        deckId: mockDeckId,
+        contextSentence: 'Smartphones are ubiquitous in modern life.',
+        customDefinition: 'phổ biến khắp nơi',
+      });
+
+      expect(result.isDuplicate).toBe(false);
+      expect(result.card.word).toBe('ubiquitous');
+      expect(result.card.meaning).toBe('phổ biến khắp nơi');
+      expect(result.card.progress?.status).toBe('NEW');
+      expect(result.deck.id).toBe(mockDeckId);
+    });
+
+    it('TC-EXT-002: should detect duplicate word in target deck and return isDuplicate=true', async () => {
+      prisma.deck.findUnique.mockResolvedValue({
+        id: mockDeckId,
+        title: 'IELTS Vocabulary',
+        userId: mockUserId,
+      });
+
+      const existingCard = {
+        id: 'existing-card-123',
+        deckId: mockDeckId,
+        word: 'ubiquitous',
+        meaning: 'phổ biến',
+        phonetic: null,
+        audioUrl: null,
+        exampleSentence: null,
+        collocations: null,
+        mnemonic: null,
+        imageUrl: null,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        progress: [
+          {
+            status: 'LEARNING',
+            interval: 1,
+            easeFactor: 2.5,
+            repetitions: 1,
+            nextReviewDate: new Date(),
+            lastReviewedAt: new Date(),
+          },
+        ],
+      };
+
+      prisma.card.findFirst.mockResolvedValue(existingCard);
+
+      const result = await service.quickCapture(mockUserId, {
+        word: 'Ubiquitous',
+        deckId: mockDeckId,
+      });
+
+      expect(result.isDuplicate).toBe(true);
+      expect(result.card.id).toBe('existing-card-123');
+      expect(result.message).toContain('đã có trong bộ từ');
+    });
+
+    it('TC-EXT-003: should auto-create "Inbox / Thu thập Web" deck if user has no deck', async () => {
+      prisma.deck.findFirst.mockResolvedValue(null);
+      const autoCreatedDeck = {
+        id: 'inbox-deck-999',
+        title: 'Inbox / Thu thập Web',
+        userId: mockUserId,
+      };
+      prisma.deck.create.mockResolvedValue(autoCreatedDeck);
+      prisma.card.findFirst.mockResolvedValue(null);
+
+      const mockCreatedCard = {
+        id: 'new-card-999',
+        deckId: 'inbox-deck-999',
+        word: 'ephemeral',
+        meaning: 'ephemeral',
+        phonetic: null,
+        audioUrl: null,
+        exampleSentence: null,
+        collocations: null,
+        mnemonic: null,
+        imageUrl: null,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
+
+      const mockProgress = {
+        status: 'NEW',
+        interval: 0,
+        easeFactor: 2.5,
+        repetitions: 0,
+        nextReviewDate: new Date(),
+        lastReviewedAt: null,
+      };
+
+      prisma.$transaction.mockImplementation(async (callback) => {
+        return callback({
+          card: {
+            create: jest.fn().mockResolvedValue(mockCreatedCard),
+          },
+          userCardProgress: {
+            create: jest.fn().mockResolvedValue(mockProgress),
+          },
+        });
+      });
+
+      const result = await service.quickCapture(mockUserId, {
+        word: 'ephemeral',
+      });
+
+      expect(prisma.deck.create).toHaveBeenCalled();
+      expect(result.deck.title).toBe('Inbox / Thu thập Web');
+      expect(result.isDuplicate).toBe(false);
     });
   });
 });

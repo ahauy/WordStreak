@@ -18,17 +18,27 @@ import { CreateCardDto } from './dto/create-card.dto';
 import { UpdateCardDto } from './dto/update-card.dto';
 import { QueryCardsDto } from './dto/query-cards.dto';
 import { BulkCardActionDto } from './dto/bulk-card-action.dto';
+import { QuickCaptureCardDto } from './dto/quick-capture-card.dto';
 import type {
   JwtPayload,
   CardResponse,
   PaginatedCardsResponse,
   BulkCardActionResult,
+  QuickCaptureResponseDto,
 } from '@wordstreak/shared-types';
 
 @Controller()
 @UseGuards(JwtAuthGuard)
 export class CardsController {
   constructor(private readonly cardsService: CardsService) {}
+
+  @Post('cards/quick-capture')
+  async quickCapture(
+    @CurrentUser() user: JwtPayload,
+    @Body() dto: QuickCaptureCardDto,
+  ): Promise<QuickCaptureResponseDto> {
+    return this.cardsService.quickCapture(user.sub, dto);
+  }
 
   @Post('decks/:deckId/cards')
   async create(
