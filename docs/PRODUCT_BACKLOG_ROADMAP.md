@@ -339,10 +339,12 @@ _Mục tiêu: Giúp người dùng dễ dàng chuyển đổi dữ liệu và m�
   - **Tasks:**
     - [x] Backend: `GET /api/v1/community/decks` với filter theo chủ đề (IELTS, Business, Daily, v.v.), sắp xếp và phân trang; `POST /api/v1/community/decks/:id/clone` sao chép nguyên tử; `POST /api/v1/community/decks/:id/rate` đánh giá 1-5 sao có chống gian lận.
     - [x] Frontend: Trang Khám phá Bộ từ (`/community` - `CommunityDecksPage`), `CategoryFilterBar`, `CommunityDeckCard`, `CommunityDeckPreviewModal` và `RateDeckModal`.
-- [~] **US-ECO-03: Tiện ích mở rộng trình duyệt (Chrome Extension Manifest V3)**
+- [x] **US-ECO-03: Tiện ích mở rộng trình duyệt (Chrome Extension Manifest V3)**
   - **AC:** Khi bôi đen từ trên bất kỳ trang web nào, hiển thị popup tra nhanh nghĩa và nút "Thêm vào WordStreak". Tự động đồng bộ với Deck đã chọn.
   - **Tasks:**
-    - [ ] Chrome Extension: Xây dựng folder `apps/extension` với Manifest V3, Content Script, Popup UI và Auth Sync.
+    - [x] Chrome Extension: Xây dựng folder `apps/extension` với Manifest V3, Content Script, Popup UI, Shadow DOM isolation và Web SSO Auth Sync.
+    - [x] Backend: Endpoint `POST /api/v1/cards/quick-capture` với AI auto-enrichment và duplicate detection.
+
 - [~] **US-ECO-04: Progressive Web App (PWA) & Chế độ học Offline**
   - **AC:** Cài đặt ứng dụng lên màn hình chính điện thoại/máy tính, lưu cache thẻ từ để ôn tập ngay cả khi mất mạng; tự động đồng bộ khi có kết nối lại.
 
