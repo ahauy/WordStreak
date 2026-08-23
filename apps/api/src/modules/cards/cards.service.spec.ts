@@ -15,11 +15,14 @@ describe('CardsService', () => {
   let prisma: {
     deck: {
       findUnique: jest.Mock;
+      findFirst: jest.Mock;
+      create: jest.Mock;
     };
     card: {
       create: jest.Mock;
       findMany: jest.Mock;
       findUnique: jest.Mock;
+      findFirst: jest.Mock;
       update: jest.Mock;
       delete: jest.Mock;
       deleteMany: jest.Mock;
@@ -425,16 +428,18 @@ describe('CardsService', () => {
         lastReviewedAt: null,
       };
 
-      prisma.$transaction.mockImplementation(async (callback) => {
-        return callback({
-          card: {
-            create: jest.fn().mockResolvedValue(mockCreatedCard),
-          },
-          userCardProgress: {
-            create: jest.fn().mockResolvedValue(mockProgress),
-          },
-        });
-      });
+      prisma.$transaction.mockImplementation(
+        (callback: (tx: any) => Promise<any>) => {
+          return callback({
+            card: {
+              create: jest.fn().mockResolvedValue(mockCreatedCard),
+            },
+            userCardProgress: {
+              create: jest.fn().mockResolvedValue(mockProgress),
+            },
+          });
+        },
+      );
 
       const result = await service.quickCapture(mockUserId, {
         word: 'ubiquitous',
@@ -528,16 +533,18 @@ describe('CardsService', () => {
         lastReviewedAt: null,
       };
 
-      prisma.$transaction.mockImplementation(async (callback) => {
-        return callback({
-          card: {
-            create: jest.fn().mockResolvedValue(mockCreatedCard),
-          },
-          userCardProgress: {
-            create: jest.fn().mockResolvedValue(mockProgress),
-          },
-        });
-      });
+      prisma.$transaction.mockImplementation(
+        (callback: (tx: any) => Promise<any>) => {
+          return callback({
+            card: {
+              create: jest.fn().mockResolvedValue(mockCreatedCard),
+            },
+            userCardProgress: {
+              create: jest.fn().mockResolvedValue(mockProgress),
+            },
+          });
+        },
+      );
 
       const result = await service.quickCapture(mockUserId, {
         word: 'ephemeral',
