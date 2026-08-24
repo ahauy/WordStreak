@@ -13,10 +13,12 @@
   },
   "pnpm": {
     "onlyBuiltDependencies": [
-      "esbuild",
       "@prisma/client",
       "@prisma/engines",
-      "prisma"
+      "argon2",
+      "esbuild",
+      "prisma",
+      "unrs-resolver"
     ]
   },
   "devDependencies": {
