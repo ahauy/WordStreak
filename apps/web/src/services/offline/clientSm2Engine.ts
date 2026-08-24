@@ -28,8 +28,8 @@ export class ClientSm2Engine {
     nextEaseFactor = Number(nextEaseFactor.toFixed(2));
 
     // 2. Update Repetitions and Interval
-    let nextRepetitions = repetitions;
-    let nextInterval = interval;
+    let nextRepetitions: number;
+    let nextInterval: number;
 
     if (rating < 3) {
       // Again (1) or Hard (2) resets streak

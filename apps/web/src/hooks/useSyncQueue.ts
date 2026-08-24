@@ -41,7 +41,14 @@ export function useSyncQueue(userId?: string) {
   }, [isOnline, userId, refreshPendingCount]);
 
   useEffect(() => {
-    refreshPendingCount();
+    let ignore = false;
+    getPendingReviews(userId)
+      .then((items) => {
+        if (!ignore) {
+          setPendingCount(items.length);
+        }
+      })
+      .catch(() => {});
 
     // Start reconnection engine listener
     reconnectionSyncEngine.startReconnectionListener(userId);
@@ -59,14 +66,14 @@ export function useSyncQueue(userId?: string) {
     const handleSyncCompleted = () => {
       setSyncStatus("SUCCESS");
       setLastSyncedAt(new Date());
-      refreshPendingCount();
+      refreshPendingCount().catch(() => {});
     };
 
     const handleSyncFailed = (e: Event) => {
       const customEvent = e as CustomEvent<{ error: string }>;
       setSyncStatus("ERROR");
       setLastError(customEvent.detail?.error || "Sync failed");
-      refreshPendingCount();
+      refreshPendingCount().catch(() => {});
     };
 
     window.addEventListener("wordstreak:sync-status", handleSyncStatus);
@@ -74,6 +81,7 @@ export function useSyncQueue(userId?: string) {
     window.addEventListener("wordstreak:sync-failed", handleSyncFailed);
 
     return () => {
+      ignore = true;
       reconnectionSyncEngine.stopReconnectionListener();
       window.removeEventListener("wordstreak:sync-status", handleSyncStatus);
       window.removeEventListener(
@@ -84,19 +92,14 @@ export function useSyncQueue(userId?: string) {
     };
   }, [userId, refreshPendingCount]);
 
-  // Adjust status based on online/offline state
-  useEffect(() => {
-    if (!isOnline) {
-      setSyncStatus("OFFLINE");
-    } else if (syncStatus === "OFFLINE") {
-      setSyncStatus(pendingCount > 0 ? "IDLE" : "SUCCESS");
-    }
-  }, [isOnline, pendingCount, syncStatus]);
+  const effectiveSyncStatus: OfflineSyncStatus = !isOnline
+    ? "OFFLINE"
+    : syncStatus;
 
   return {
     pendingCount,
-    syncStatus,
-    isSyncing: syncStatus === "SYNCING",
+    syncStatus: effectiveSyncStatus,
+    isSyncing: effectiveSyncStatus === "SYNCING",
     lastSyncedAt,
     lastError,
     triggerSync,

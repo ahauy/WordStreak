@@ -47,8 +47,24 @@ export function useOfflineDatabase() {
   }, []);
 
   useEffect(() => {
-    refreshEstimate();
-  }, [refreshEstimate]);
+    let ignore = false;
+    getStorageEstimate()
+      .then((data) => {
+        if (!ignore) {
+          setEstimate(data);
+          setIsLoading(false);
+        }
+      })
+      .catch(() => {
+        if (!ignore) {
+          setIsLoading(false);
+        }
+      });
+
+    return () => {
+      ignore = true;
+    };
+  }, []);
 
   const isDeckSaved = useCallback(async (deckId: string): Promise<boolean> => {
     const deck = await getOfflineDeck(deckId);

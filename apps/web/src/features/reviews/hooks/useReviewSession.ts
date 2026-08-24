@@ -73,59 +73,81 @@ export function useReviewSession(deckId?: string) {
     }));
   }, [deckId]);
 
+  const loadQueue = useCallback(async (): Promise<{
+    offline: boolean;
+    queue: DueCardItem[];
+  }> => {
+    if (!navigator.onLine) {
+      const offlineData = await loadOfflineCards();
+      return { offline: true, queue: offlineData };
+    }
+    try {
+      const { data } = await reviewsService.getDueCards(deckId);
+      return { offline: false, queue: data };
+    } catch {
+      // Fallback to offline cards on network error
+      try {
+        const offlineData = await loadOfflineCards();
+        return { offline: true, queue: offlineData };
+      } catch (err: unknown) {
+        const message =
+          err instanceof Error ? err.message : "Failed to load review queue";
+        throw new Error(message, { cause: err });
+      }
+    }
+  }, [deckId, loadOfflineCards]);
+
+  const applyQueueData = useCallback(
+    (offline: boolean, queueData: DueCardItem[]) => {
+      setIsOfflineMode(offline);
+      setQueue(queueData);
+      setInitialTotal(queueData.length);
+      setIsCompleted(queueData.length === 0);
+      setIsFlipped(false);
+      setHistory([]);
+      setSessionStartTime(Date.now());
+    },
+    [],
+  );
+
   const fetchQueue = useCallback(async () => {
     setIsLoading(true);
     setError(null);
     try {
-      if (!navigator.onLine) {
-        const offlineData = await loadOfflineCards();
-        setIsOfflineMode(true);
-        setQueue(offlineData);
-        setInitialTotal(offlineData.length);
-        setIsCompleted(offlineData.length === 0);
-      } else {
-        const { data } = await reviewsService.getDueCards(deckId);
-        setIsOfflineMode(false);
-        setQueue(data);
-        setInitialTotal(data.length);
-        setIsCompleted(data.length === 0);
-      }
-      setIsFlipped(false);
-      setHistory([]);
-      setSessionStartTime(Date.now());
+      const res = await loadQueue();
+      applyQueueData(res.offline, res.queue);
     } catch (err: unknown) {
-      // Fallback to offline cards on network error
-      try {
-        const offlineData = await loadOfflineCards();
-        setIsOfflineMode(true);
-        setQueue(offlineData);
-        setInitialTotal(offlineData.length);
-        setIsCompleted(offlineData.length === 0);
-        setIsFlipped(false);
-        setHistory([]);
-        setSessionStartTime(Date.now());
-      } catch {
-        const message =
-          err instanceof Error ? err.message : "Failed to load review queue";
-        setError(message);
-      }
+      const message =
+        err instanceof Error ? err.message : "Failed to load review queue";
+      setError(message);
     } finally {
       setIsLoading(false);
     }
-  }, [deckId, loadOfflineCards]);
+  }, [loadQueue, applyQueueData]);
 
   useEffect(() => {
     let ignore = false;
-    fetchQueue().catch(() => {
-      if (!ignore) {
-        setIsLoading(false);
-      }
-    });
+    loadQueue()
+      .then((res) => {
+        if (!ignore) {
+          applyQueueData(res.offline, res.queue);
+          setError(null);
+          setIsLoading(false);
+        }
+      })
+      .catch((err: unknown) => {
+        if (!ignore) {
+          const message =
+            err instanceof Error ? err.message : "Failed to load review queue";
+          setError(message);
+          setIsLoading(false);
+        }
+      });
 
     return () => {
       ignore = true;
     };
-  }, [fetchQueue]);
+  }, [loadQueue, applyQueueData]);
 
   const currentCard = queue[0] || null;
 
@@ -229,7 +251,7 @@ export function useReviewSession(deckId?: string) {
                 setLevelUpData(response.xp.levelUp);
               }
             }
-          } catch (onlineError) {
+          } catch {
             // Fallback to offline queue if server is unreachable
             await handleOfflineGrading(currentCard, rating);
           }

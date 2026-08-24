@@ -13,6 +13,7 @@ import type {
   DeckResponse,
   CardResponse,
   DueCardItem,
+  CardLearningStatus,
 } from "@wordstreak/shared-types";
 
 export class PrecacheManager {
@@ -27,7 +28,7 @@ export class PrecacheManager {
     const deckRes = await apiClient.get<DeckResponse>(`/decks/${deckId}`);
     const deckData = deckRes.data;
 
-    let cardsData: CardResponse[] = [];
+    let cardsData: CardResponse[];
     try {
       const cardsRes = await apiClient.get<CardResponse[]>(
         `/decks/${deckId}/cards`,
@@ -65,7 +66,7 @@ export class PrecacheManager {
       collocations: c.collocations,
       mnemonic: c.mnemonic,
       imageUrl: c.imageUrl,
-      status: (c.progress?.status as any) || "NEW",
+      status: (c.progress?.status as CardLearningStatus | undefined) || "NEW",
       interval: c.progress?.interval || 0,
       easeFactor: c.progress?.easeFactor || 2.5,
       repetitions: c.progress?.repetitions || 0,
@@ -154,7 +155,7 @@ export class PrecacheManager {
         collocations: null,
         mnemonic: null,
         imageUrl: null,
-        status: (c.status as any) || "LEARNING",
+        status: (c.status as CardLearningStatus | undefined) || "LEARNING",
         interval: c.interval || 0,
         easeFactor: c.easeFactor || 2.5,
         repetitions: c.repetitions || 0,

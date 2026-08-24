@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import { CloudDownload, Check, Loader2, Trash2 } from "lucide-react";
 import { precacheManager } from "../../services/offline/precacheManager";
 import { useNetworkStatus } from "../../hooks/useNetworkStatus";
@@ -21,19 +21,26 @@ export const DeckOfflineToggle: React.FC<DeckOfflineToggleProps> = ({
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isHovered, setIsHovered] = useState<boolean>(false);
 
-  const checkStatus = useCallback(async () => {
-    try {
-      const cached = await precacheManager.isDeckCached(deckId);
-      setIsCached(cached);
-      onStatusChange?.(cached);
-    } catch {
-      setIsCached(false);
-    }
-  }, [deckId, onStatusChange]);
-
   useEffect(() => {
-    checkStatus();
-  }, [checkStatus]);
+    let ignore = false;
+    precacheManager
+      .isDeckCached(deckId)
+      .then((cached) => {
+        if (!ignore) {
+          setIsCached(cached);
+          onStatusChange?.(cached);
+        }
+      })
+      .catch(() => {
+        if (!ignore) {
+          setIsCached(false);
+        }
+      });
+
+    return () => {
+      ignore = true;
+    };
+  }, [deckId, onStatusChange]);
 
   const handleDownload = async (e: React.MouseEvent) => {
     e.stopPropagation();
