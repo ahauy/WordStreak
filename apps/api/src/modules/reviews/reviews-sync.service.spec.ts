@@ -9,8 +9,6 @@ import type { SyncReviewBatchDto } from '@wordstreak/shared-types';
 
 describe('ReviewsSyncService', () => {
   let service: ReviewsSyncService;
-  let srsService: SrsService;
-  let streakService: StreakService;
 
   let prismaMock: {
     user: { findUnique: jest.Mock; update: jest.Mock };
@@ -39,62 +37,90 @@ describe('ReviewsSyncService', () => {
           id: mockUserId,
           totalXp: 100,
         }),
-        update: jest.fn().mockImplementation(({ data }) => {
-          const increment = data?.totalXp?.increment ?? 0;
-          return Promise.resolve({
-            id: mockUserId,
-            totalXp: 100 + increment,
-          });
-        }),
+        update: jest
+          .fn()
+          .mockImplementation(
+            ({ data }: { data?: { totalXp?: { increment?: number } } }) => {
+              const increment = data?.totalXp?.increment ?? 0;
+              return Promise.resolve({
+                id: mockUserId,
+                totalXp: 100 + increment,
+              });
+            },
+          ),
       },
       card: {
-        findUnique: jest.fn().mockImplementation(({ where }) => {
-          return Promise.resolve({
-            id: where.id,
-            deck: { userId: mockUserId },
-          });
-        }),
+        findUnique: jest
+          .fn()
+          .mockImplementation(({ where }: { where: { id: string } }) => {
+            return Promise.resolve({
+              id: where.id,
+              deck: { userId: mockUserId },
+            });
+          }),
       },
       userCardProgress: {
-        findUnique: jest.fn().mockImplementation(({ where }) => {
-          return Promise.resolve({
-            id: `prog-${where.userId_cardId.cardId}`,
-            userId: mockUserId,
-            cardId: where.userId_cardId.cardId,
-            interval: 1,
-            repetitions: 1,
-            easeFactor: 2.5,
-            status: 'LEARNING',
-          });
-        }),
-        create: jest.fn().mockImplementation(({ data }) => {
-          return Promise.resolve({
-            id: `prog-created-${data.cardId}`,
-            ...data,
-          });
-        }),
-        update: jest.fn().mockImplementation(({ data }) => {
-          return Promise.resolve({
-            id: 'prog-updated',
-            ...data,
-          });
-        }),
+        findUnique: jest
+          .fn()
+          .mockImplementation(
+            ({
+              where,
+            }: {
+              where: { userId_cardId: { userId: string; cardId: string } };
+            }) => {
+              return Promise.resolve({
+                id: `prog-${where.userId_cardId.cardId}`,
+                userId: mockUserId,
+                cardId: where.userId_cardId.cardId,
+                interval: 1,
+                repetitions: 1,
+                easeFactor: 2.5,
+                status: 'LEARNING',
+              });
+            },
+          ),
+        create: jest
+          .fn()
+          .mockImplementation(
+            ({
+              data,
+            }: {
+              data: Record<string, unknown> & { cardId: string };
+            }) => {
+              return Promise.resolve({
+                id: `prog-created-${data.cardId}`,
+                ...data,
+              });
+            },
+          ),
+        update: jest
+          .fn()
+          .mockImplementation(({ data }: { data: Record<string, unknown> }) => {
+            return Promise.resolve({
+              id: 'prog-updated',
+              ...data,
+            });
+          }),
       },
       reviewLog: {
-        create: jest.fn().mockImplementation(({ data }) => {
-          return Promise.resolve({
-            id: 'log-uuid',
-            ...data,
-          });
-        }),
+        create: jest
+          .fn()
+          .mockImplementation(({ data }: { data: Record<string, unknown> }) => {
+            return Promise.resolve({
+              id: 'log-uuid',
+              ...data,
+            });
+          }),
       },
       userActivityLog: {
-        create: jest.fn().mockImplementation(({ data }) => {
-          return Promise.resolve({
-            id: 'activity-uuid',
-            ...data,
-          });
-        }),
+        create: jest
+          .fn()
+          .mockImplementation(({ data }: { data: Record<string, unknown> }) => {
+            return Promise.resolve({
+              id: 'activity-uuid',
+              ...data,
+            });
+          }),
       },
       userStreak: {
         findUnique: jest.fn().mockResolvedValue({
@@ -117,17 +143,19 @@ describe('ReviewsSyncService', () => {
           totalFreezesUsed: 0,
           lastFreezeDate: null,
         }),
-        update: jest.fn().mockImplementation(({ data }) => {
-          return Promise.resolve({
-            id: 'streak-1',
-            userId: mockUserId,
-            ...data,
-          });
-        }),
+        update: jest
+          .fn()
+          .mockImplementation(({ data }: { data: Record<string, unknown> }) => {
+            return Promise.resolve({
+              id: 'streak-1',
+              userId: mockUserId,
+              ...data,
+            });
+          }),
       },
       $transaction: jest
         .fn()
-        .mockImplementation((callback: (tx: any) => Promise<any>) =>
+        .mockImplementation((callback: (tx: unknown) => Promise<unknown>) =>
           callback(prismaMock),
         ),
     };
@@ -145,8 +173,6 @@ describe('ReviewsSyncService', () => {
     }).compile();
 
     service = module.get<ReviewsSyncService>(ReviewsSyncService);
-    srsService = module.get<SrsService>(SrsService);
-    streakService = module.get<StreakService>(StreakService);
   });
 
   it('should be defined', () => {
@@ -308,15 +334,17 @@ describe('ReviewsSyncService', () => {
       const deletedCardId = 'c0eebc99-9c0b-4ef8-bb6d-6bb9bd380a32';
       const validCardId2 = 'c0eebc99-9c0b-4ef8-bb6d-6bb9bd380a33';
 
-      prismaMock.card.findUnique.mockImplementation(({ where }) => {
-        if (where.id === deletedCardId) {
-          return Promise.resolve(null);
-        }
-        return Promise.resolve({
-          id: where.id,
-          deck: { userId: mockUserId },
-        });
-      });
+      prismaMock.card.findUnique.mockImplementation(
+        ({ where }: { where: { id: string } }) => {
+          if (where.id === deletedCardId) {
+            return Promise.resolve(null);
+          }
+          return Promise.resolve({
+            id: where.id,
+            deck: { userId: mockUserId },
+          });
+        },
+      );
 
       const batchDto: SyncReviewBatchDto = {
         reviews: [
