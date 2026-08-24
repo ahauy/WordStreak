@@ -345,8 +345,16 @@ _Mục tiêu: Giúp người dùng dễ dàng chuyển đổi dữ liệu và m�
     - [x] Chrome Extension: Xây dựng folder `apps/extension` với Manifest V3, Content Script, Popup UI, Shadow DOM isolation và Web SSO Auth Sync.
     - [x] Backend: Endpoint `POST /api/v1/cards/quick-capture` với AI auto-enrichment và duplicate detection.
 
-- [~] **US-ECO-04: Progressive Web App (PWA) & Chế độ học Offline**
-  - **AC:** Cài đặt ứng dụng lên màn hình chính điện thoại/máy tính, lưu cache thẻ từ để ôn tập ngay cả khi mất mạng; tự động đồng bộ khi có kết nối lại.
+- [x] **US-ECO-04: Progressive Web App (PWA) & Chế độ học Offline (PWA & Offline Study Mode)**
+  - **AC:** Cài đặt ứng dụng lên màn hình chính điện thoại/máy tính (Web App Manifest + Service Worker Workbox), tải trước bộ thẻ và âm thanh vào IndexedDB (`wordstreak_offline_db`), ôn tập offline không gián đoạn với thuật toán SuperMemo-2 cục bộ (`ClientSm2Engine`), phát âm dự phòng qua Web Speech Synthesis API, tự động đồng bộ hàng loạt (`POST /api/v1/reviews/sync-batch`) khi có mạng với cơ chế Exponential Backoff, hòa giải chuỗi ngày học trong 48h, giới hạn trần chống lạm dụng 500 XP/batch, và cảnh báo bảo mật khi đăng xuất với hàng đợi chưa đồng bộ.
+  - **Tasks:**
+    - [x] Backend: Endpoint `POST /api/v1/reviews/sync-batch` và `ReviewsSyncService` xử lý giao dịch Prisma `$transaction` nguyên tử, kiểm soát trôi đồng hồ (Clock drift <= 5 min), hòa giải chuỗi ngày 48h và giải quyết xung đột thẻ bị xóa (`DELETED_CARD_DROPPED` + 10 Effort XP).
+    - [x] Shared: Data contracts `SyncReviewBatchDto`, `SyncReviewResponseDto`, `ReviewQueueEntity`, `CachedMediaEntity` trong `packages/shared-types`.
+    - [x] Frontend: Cấu hình `vite-plugin-pwa` với chiến lược CacheFirst Google Fonts, Workbox precaching, và manifest chuẩn PWA.
+    - [x] Frontend: Module IndexedDB `offlineDatabase.ts` với 5 object stores (`offline_decks`, `offline_cards`, `review_queue`, `cached_media`, `pwa_preferences`) và cơ chế dọn dẹp LRU 45MB.
+    - [x] Frontend: Động cơ SRS offline `ClientSm2Engine.ts` chuẩn SM-2 khớp 100% backend.
+    - [x] Frontend: Động cơ tự động đồng bộ `reconnectionSyncEngine.ts` với Exponential Backoff (5s - 60s) và lắng nghe sự kiện mạng `online`/`offline`.
+    - [x] Frontend: Bộ components Obsidian UI (`OfflineSyncPill`, `DeckOfflineToggle`, `PwaInstallBanner`, `LogoutWarningModal`, `TtsAudioPlayer`) tích hợp vào `DashboardNavbar`, `DeckDetailPage`, và `ReviewSessionPage`.
 
 ---
 
@@ -425,9 +433,9 @@ _Mục tiêu: Xóa bỏ rào cản ngôn ngữ, hỗ trợ song ngữ toàn di�
   ├── US-DEPLOY-06: Nginx SPA routing fix                      ✅
   └── US-DEPLOY-07: E2E smoke test on production URL
 
-[ Sprint 7 - Ecosystem & Platform Expansion ]  ──► [ P3 FUTURE 🧩 ]
-  ├── EPIC-09: Chrome Extension (Manifest V3)
-  └── EPIC-09: PWA & Offline Caching (Service Workers)
+[ Sprint 7 - Ecosystem & Platform Expansion ]  ──► [ COMPLETED ✅ ]
+  ├── EPIC-09: Chrome Extension (Manifest V3)           ✅
+  └── EPIC-09: PWA & Offline Caching (Service Workers)   ✅
 ```
 
 ---
