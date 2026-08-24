@@ -11,6 +11,14 @@
     "lint": "pnpm -r run lint",
     "test": "pnpm --filter api test && pnpm --filter web test"
   },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild",
+      "@prisma/client",
+      "@prisma/engines",
+      "prisma"
+    ]
+  },
   "devDependencies": {
     "playwright": "^1.62.1"
   }
