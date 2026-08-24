@@ -9,6 +9,8 @@ export * from "./ai-vocabulary.js";
 export * from "./analytics.js";
 export * from "./gamification-xp.js";
 export * from "./community.js";
+export * from "./extension.js";
+export * from "./pwa-offline.js";
 
 export interface User {
   id: string;

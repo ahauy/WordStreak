@@ -2,11 +2,16 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ReviewsController } from './reviews.controller';
 import { ReviewsService } from './reviews.service';
-import type { JwtPayload } from '@wordstreak/shared-types';
+import { ReviewsSyncService } from './reviews-sync.service';
+import type {
+  JwtPayload,
+  SyncReviewResponseDto,
+} from '@wordstreak/shared-types';
 
 describe('ReviewsController', () => {
   let controller: ReviewsController;
   let service: jest.Mocked<ReviewsService>;
+  let syncService: jest.Mocked<ReviewsSyncService>;
 
   const mockUser: JwtPayload = {
     sub: 'user-uuid-1',
@@ -21,6 +26,10 @@ describe('ReviewsController', () => {
       getReviewStats: jest.fn(),
     };
 
+    const mockReviewsSyncService = {
+      syncReviews: jest.fn(),
+    };
+
     const module: TestingModule = await Test.createTestingModule({
       controllers: [ReviewsController],
       providers: [
@@ -28,11 +37,16 @@ describe('ReviewsController', () => {
           provide: ReviewsService,
           useValue: mockReviewsService,
         },
+        {
+          provide: ReviewsSyncService,
+          useValue: mockReviewsSyncService,
+        },
       ],
     }).compile();
 
     controller = module.get<ReviewsController>(ReviewsController);
     service = module.get(ReviewsService);
+    syncService = module.get(ReviewsSyncService);
   });
 
   it('should be defined', () => {
@@ -108,6 +122,54 @@ describe('ReviewsController', () => {
           rating: 3,
         },
         undefined,
+      );
+    });
+  });
+
+  describe('syncReviewBatch', () => {
+    it('TC-PWA-021: synchronizes batch reviews successfully', async () => {
+      const mockSyncResult: SyncReviewResponseDto = {
+        processedCount: 2,
+        syncedCount: 2,
+        failedCount: 0,
+        conflictsResolved: 0,
+        syncedCardIds: ['c1', 'c2'],
+        totalXpAwarded: 20,
+        streakUpdated: true,
+        currentStreak: 3,
+        bestStreak: 5,
+        conflicts: [],
+        serverTimestamp: new Date().toISOString(),
+      };
+      syncService.syncReviews.mockResolvedValue(mockSyncResult);
+
+      const batchDto = {
+        clientTimezone: 'Asia/Ho_Chi_Minh',
+        reviews: [
+          {
+            idempotencyKey: 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11',
+            cardId: 'b0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11',
+            rating: 3 as const,
+            interval: 6,
+            easeFactor: 2.5,
+            repetitions: 2,
+            reviewedAtClient: new Date().toISOString(),
+          },
+        ],
+      };
+
+      const response = await controller.syncReviewBatch(
+        mockUser,
+        batchDto,
+        'Asia/Ho_Chi_Minh',
+      );
+
+      expect(response.success).toBe(true);
+      expect(response.data).toEqual(mockSyncResult);
+      expect(syncService.syncReviews).toHaveBeenCalledWith(
+        mockUser.sub,
+        batchDto,
+        'Asia/Ho_Chi_Minh',
       );
     });
   });

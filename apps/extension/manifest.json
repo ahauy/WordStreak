@@ -1,0 +1,43 @@
+{
+  "manifest_version": 3,
+  "name": "WordStreak - Quick Vocabulary Capture",
+  "version": "1.0.0",
+  "description": "Tra cứu nhanh nghĩa tiếng Anh, phiên âm IPA và 1-Click lưu từ vựng kèm ngữ cảnh câu vào WordStreak.",
+  "permissions": ["storage", "activeTab", "contextMenus", "scripting", "tabs"],
+  "host_permissions": [
+    "http://localhost:3000/*",
+    "http://localhost:5173/*",
+    "https://*.wordstreak.com/*",
+    "<all_urls>"
+  ],
+
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "action": {
+    "default_popup": "src/popup/index.html",
+    "default_title": "WordStreak Vocabulary",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "options_ui": {
+    "page": "src/options/index.html",
+    "open_in_tab": true
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  }
+}

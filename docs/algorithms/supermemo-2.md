@@ -22,9 +22,10 @@ Mỗi thẻ từ vựng của người dùng (`UserCardProgress`) sẽ lưu gi�
 ## 🔄 Công thức tính toán
 
 ### 1. Cập nhật Ease Factor ($EF$)
+
 $$EF' = EF + (0.1 - (5 - q) \times (0.08 + (5 - q) \times 0.02))$$
 
-*Nếu $EF' < 1.3$ thì gán $EF' = 1.3$.*
+_Nếu $EF' < 1.3$ thì gán $EF' = 1.3$._
 
 ### 2. Cập nhật Số lần lặp ($n$) và Khoảng cách ($I$)
 
@@ -40,6 +41,7 @@ $$EF' = EF + (0.1 - (5 - q) \times (0.08 + (5 - q) \times 0.02))$$
     - Lần $n > 2$: $I(n) = I(n-1) \times EF'$
 
 ### 3. Tính ngày ôn tập tiếp theo ($nextReviewDate$)
+
 $$nextReviewDate = currentDate + I \text{ (ngày)}$$
 
 ---
@@ -60,7 +62,8 @@ export function calculateSm2(
   easeFactor: number,
   interval: number,
 ): SrsResult {
-  let nextEaseFactor = easeFactor + (0.1 - (5 - rating) * (0.08 + (5 - rating) * 0.02));
+  let nextEaseFactor =
+    easeFactor + (0.1 - (5 - rating) * (0.08 + (5 - rating) * 0.02));
   if (nextEaseFactor < 1.3) nextEaseFactor = 1.3;
 
   let nextRepetitions = repetitions;
@@ -91,3 +94,9 @@ export function calculateSm2(
   };
 }
 ```
+
+---
+
+## 🌐 Chế độ Ngoại tuyến & Client Parity (PWA Offline Mode)
+
+Trong chế độ học ngoại tuyến (**US-ECO-04**), thuật toán SM-2 được thực thi cục bộ trên trình duyệt bởi [`ClientSm2Engine`](file:///Users/vutuanhau/Documents/PROJECT/WordStreak/apps/web/src/services/offline/clientSm2Engine.ts) đảm bảo độ chính xác toán học tương đồng 100% với backend [`SrsService`](file:///Users/vutuanhau/Documents/PROJECT/WordStreak/apps/api/src/modules/reviews/srs.service.ts), bao gồm Easy Bonus ($1.30\times$) và giới hạn cận dưới $EF \ge 1.30$. Khi có kết nối mạng, các log ôn tập được gửi theo lô qua endpoint `POST /api/v1/reviews/sync-batch` để đồng bộ nguyên tử vào cơ sở dữ liệu.

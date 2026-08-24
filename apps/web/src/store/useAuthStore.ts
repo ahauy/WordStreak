@@ -52,10 +52,31 @@ const syncLocaleFromUser = (user: AuthUser | null | undefined) => {
   }
 };
 
+const syncAuthWithExtension = (token: string | null) => {
+  if (typeof window === "undefined") return;
+  window.postMessage({ type: "WORDSTREAK_AUTH_SYNC", token }, "*");
+};
+
+if (typeof window !== "undefined") {
+  window.addEventListener("message", (event) => {
+    if (event.data?.type === "REQUEST_WORDSTREAK_AUTH") {
+      const state = useAuthStore.getState();
+      if (state.accessToken) {
+        window.postMessage(
+          { type: "WORDSTREAK_AUTH_SYNC", token: state.accessToken },
+          "*",
+        );
+      }
+    }
+  });
+}
+
 export const useAuthStore = create<AuthState>((set, get) => {
   // Wire up Axios interceptor callbacks to Zustand state
   setAuthCallbacks(
     (newToken: string) => {
+      setAccessTokenHeader(newToken);
+      syncAuthWithExtension(newToken);
       set({ accessToken: newToken, isAuthenticated: true });
     },
     () => {
@@ -73,6 +94,7 @@ export const useAuthStore = create<AuthState>((set, get) => {
 
     setAccessToken: (token: string) => {
       setAccessTokenHeader(token);
+      syncAuthWithExtension(token);
       set({ accessToken: token, isAuthenticated: true });
     },
 
@@ -89,6 +111,7 @@ export const useAuthStore = create<AuthState>((set, get) => {
 
     clearAuth: () => {
       setAccessTokenHeader(null);
+      syncAuthWithExtension(null);
       set({
         user: null,
         accessToken: null,
@@ -105,6 +128,7 @@ export const useAuthStore = create<AuthState>((set, get) => {
       try {
         const refreshResult = await authApi.refresh();
         setAccessTokenHeader(refreshResult.accessToken);
+        syncAuthWithExtension(refreshResult.accessToken);
         const user = await authApi.getMe();
         syncLocaleFromUser(user);
         set({
@@ -126,6 +150,7 @@ export const useAuthStore = create<AuthState>((set, get) => {
       try {
         const result = await authApi.login(dto);
         setAccessTokenHeader(result.accessToken);
+        syncAuthWithExtension(result.accessToken);
         syncLocaleFromUser(result.user);
         set({
           user: result.user,
@@ -152,6 +177,7 @@ export const useAuthStore = create<AuthState>((set, get) => {
       try {
         const result = await authApi.register(dto);
         setAccessTokenHeader(result.accessToken);
+        syncAuthWithExtension(result.accessToken);
         syncLocaleFromUser(result.user);
         set({
           user: result.user,

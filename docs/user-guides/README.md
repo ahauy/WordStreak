@@ -25,6 +25,8 @@ Tập hợp tất cả các tài liệu hướng dẫn sử dụng trực quan, 
 | 15  | **Nút Chuyển Đổi Ngôn Ngữ Tức Thì (Instant Language Switcher)** |   `US-I18N-01`   | [i18n-core-switcher.md](./i18n-core-switcher.md)                           |      ✅ Có       |
 | 16  | **Trải Nghiệm Học Tập Đa Ngôn Ngữ Song Ngữ (UI Localization)**  |   `US-I18N-02`   | [i18n-ui-localization.md](./i18n-ui-localization.md)                       |      ✅ Có       |
 | 17  | **Cài Đặt Ngôn Ngữ & Đồng Bộ Hồ Sơ Tự Động (Preferences Sync)** |   `US-I18N-03`   | [i18n-user-preferences-sync.md](./i18n-user-preferences-sync.md)           |      ✅ Có       |
+| 18  | **Tiện Ích Mở Rộng Trình Duyệt (WordStreak Extension MV3)**     |   `US-ECO-03`    | [browser-extension.md](./browser-extension.md)                             |      ✅ Có       |
+| 19  | **Ứng Dụng PWA & Chế Độ Học Ngoại Tuyến (Offline Mode)**        |   `US-ECO-04`    | [pwa-offline-mode.md](./pwa-offline-mode.md)                               |      ✅ Có       |
 
 ---
 

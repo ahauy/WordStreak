@@ -69,6 +69,7 @@ describe('CardsController', () => {
       update: jest.fn(),
       remove: jest.fn(),
       bulkAction: jest.fn(),
+      quickCapture: jest.fn(),
     };
 
     const module: TestingModule = await Test.createTestingModule({
@@ -196,6 +197,33 @@ describe('CardsController', () => {
 
       expect(service.remove).toHaveBeenCalledWith(mockUser.sub, mockCardId);
       expect(result.deletedCardId).toBe(mockCardId);
+    });
+  });
+
+  describe('quickCapture', () => {
+    it('TC-EXT-010: should call cardsService.quickCapture and return result', async () => {
+      const dto = {
+        word: 'serendipity',
+        contextSentence: 'Finding this book was pure serendipity.',
+      };
+
+      const mockResult = {
+        message: 'Đã lưu từ "serendipity" vào bộ từ "Inbox / Thu thập Web"',
+        card: { ...mockCardResponse, word: 'serendipity' },
+        isDuplicate: false,
+        deck: {
+          id: mockDeckId,
+          title: 'Inbox / Thu thập Web',
+        },
+      };
+
+      service.quickCapture.mockResolvedValue(mockResult);
+
+      const result = await controller.quickCapture(mockUser, dto);
+
+      expect(service.quickCapture).toHaveBeenCalledWith(mockUser.sub, dto);
+      expect(result.isDuplicate).toBe(false);
+      expect(result.card.word).toBe('serendipity');
     });
   });
 });

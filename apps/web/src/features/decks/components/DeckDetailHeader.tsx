@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { DeckIcon, getColorTheme } from "../constants/deckThemes";
+import { DeckOfflineToggle } from "../../../components/pwa/DeckOfflineToggle";
 import type { DeckResponse } from "@wordstreak/shared-types";
 
 interface DeckDetailHeaderProps {
@@ -135,6 +136,8 @@ export const DeckDetailHeader: React.FC<DeckDetailHeaderProps> = ({
 
           {/* Secondary Management Actions (Bottom Tier) */}
           <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto justify-start lg:justify-end">
+            <DeckOfflineToggle deckId={deck.id} deckTitle={deck.title} />
+
             <button
               type="button"
               onClick={onAddCard}
