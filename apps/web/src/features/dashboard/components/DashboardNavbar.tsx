@@ -11,6 +11,10 @@ import { useMascotStore } from "../../../store/useMascotStore";
 import { useStreak } from "../hooks/useStreak";
 import { useTranslation } from "react-i18next";
 import { LanguageSwitcher } from "../../../components/LanguageSwitcher";
+import { OfflineSyncPill } from "../../../components/pwa/OfflineSyncPill";
+import { LogoutWarningModal } from "../../../components/pwa/LogoutWarningModal";
+import { useSyncQueue } from "../../../hooks/useSyncQueue";
+import { purgeOfflineDatabase } from "../../../services/offline/offlineDatabase";
 import type { AuthUser } from "@wordstreak/shared-types";
 
 interface DashboardNavbarProps {
@@ -44,6 +48,8 @@ export const DashboardNavbar: React.FC<DashboardNavbarProps> = ({
   const location = useLocation();
   const navigate = useNavigate();
 
+  const { pendingCount, triggerSync } = useSyncQueue(storeUser?.id);
+  const [isLogoutWarningOpen, setIsLogoutWarningOpen] = useState(false);
   const [isInternalSettingsOpen, setIsInternalSettingsOpen] = useState(false);
   const [internalSettingsTab, setInternalSettingsTab] = useState<
     "profile" | "avatar" | "security" | "gamification"
@@ -73,12 +79,25 @@ export const DashboardNavbar: React.FC<DashboardNavbarProps> = ({
     }
   };
 
-  const handleLogout = async () => {
+  const confirmLogout = async () => {
+    try {
+      await purgeOfflineDatabase();
+    } catch {
+      // Best effort purge
+    }
     if (propLogout) {
       propLogout();
     } else {
       await storeLogout();
       navigate("/login", { replace: true });
+    }
+  };
+
+  const handleLogout = async () => {
+    if (pendingCount > 0) {
+      setIsLogoutWarningOpen(true);
+    } else {
+      await confirmLogout();
     }
   };
 
@@ -225,6 +244,9 @@ export const DashboardNavbar: React.FC<DashboardNavbarProps> = ({
               </span>
             </button>
 
+            {/* Offline Sync State Pill */}
+            <OfflineSyncPill userId={storeUser?.id} />
+
             {/* Language Switcher Secondary Utility Pill */}
             <LanguageSwitcher />
 
@@ -269,6 +291,15 @@ export const DashboardNavbar: React.FC<DashboardNavbarProps> = ({
           onClose={() => setIsInternalSettingsOpen(false)}
         />
       )}
+
+      {/* Logout Warning Modal for Unsynced Offline Reviews */}
+      <LogoutWarningModal
+        isOpen={isLogoutWarningOpen}
+        unsyncedCount={pendingCount}
+        onClose={() => setIsLogoutWarningOpen(false)}
+        onConfirmLogout={confirmLogout}
+        onSyncAndLogout={triggerSync}
+      />
     </>
   );
 };

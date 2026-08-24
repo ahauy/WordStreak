@@ -1,6 +1,7 @@
 import React, { useEffect, useCallback } from "react";
-import { Volume2, BookOpen, Lightbulb, RotateCw, Mic } from "lucide-react";
+import { BookOpen, Lightbulb, RotateCw, Mic } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { TtsAudioPlayer } from "../../../components/pwa/TtsAudioPlayer";
 import type { DueCardItem, SrsRating } from "@wordstreak/shared-types";
 
 interface FlashcardReviewCardProps {
@@ -143,18 +144,11 @@ export const FlashcardReviewCard: React.FC<FlashcardReviewCardProps> = ({
                     {card.phonetic}
                   </span>
                 )}
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    playAudio();
-                  }}
-                  className="p-1.5 rounded-full hover:bg-[#fafafa] text-[#525252] hover:text-[#000000] transition-colors cursor-pointer"
-                  title="Listen pronunciation (R)"
-                  aria-label="Listen pronunciation"
-                >
-                  <Volume2 className="w-4 h-4" />
-                </button>
+                <TtsAudioPlayer
+                  audioUrl={card.audioUrl}
+                  text={card.word}
+                  size="sm"
+                />
                 {onOpenVoicePractice && (
                   <button
                     type="button"
@@ -200,18 +194,11 @@ export const FlashcardReviewCard: React.FC<FlashcardReviewCardProps> = ({
                   <h3 className="text-2xl font-semibold text-[#000000] font-display">
                     {card.word}
                   </h3>
-                  <button
-                    type="button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      playAudio();
-                    }}
-                    className="p-1 rounded-full hover:bg-[#fafafa] text-[#737373] hover:text-[#000000] cursor-pointer"
-                    title="Replay audio (R)"
-                    aria-label="Replay audio"
-                  >
-                    <Volume2 className="w-4 h-4" />
-                  </button>
+                  <TtsAudioPlayer
+                    audioUrl={card.audioUrl}
+                    text={card.word}
+                    size="sm"
+                  />
                   {onOpenVoicePractice && (
                     <button
                       type="button"

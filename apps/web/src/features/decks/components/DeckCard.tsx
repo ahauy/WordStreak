@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import type { DeckResponse } from "@wordstreak/shared-types";
 import { DeckIcon, getColorTheme } from "../constants/deckThemes";
+import { DeckOfflineToggle } from "../../../components/pwa/DeckOfflineToggle";
 
 interface DeckCardProps {
   deck: DeckResponse;
@@ -393,6 +394,7 @@ export const DeckCard: React.FC<DeckCardProps> = ({
                 <span>{hasDue ? "Ôn tập ngay" : "Xem danh sách từ"}</span>
                 <ArrowRight className="w-3.5 h-3.5" />
               </button>
+              <DeckOfflineToggle deckId={deck.id} deckTitle={deck.title} />
             </div>
           </div>
         </div>

@@ -10,6 +10,8 @@ import { FloatingXpToast } from "../../gamification/components/FloatingXpToast";
 import { LevelUpCelebrationModal } from "../../gamification/components/LevelUpCelebrationModal";
 import { PronunciationPracticeModal } from "../../practice/components/PronunciationPracticeModal";
 import { useStreak } from "../../dashboard/hooks/useStreak";
+import { OfflineSyncPill } from "../../../components/pwa/OfflineSyncPill";
+import { PwaInstallBanner } from "../../../components/pwa/PwaInstallBanner";
 import { Loader2, AlertCircle, RotateCcw } from "lucide-react";
 import type { StreakActivityResponseDto } from "@wordstreak/shared-types";
 
@@ -78,17 +80,22 @@ export const ReviewSessionPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-[#ffffff] text-[#000000] flex flex-col justify-between p-4 sm:p-6 md:p-8">
       {/* Top Header / Progress */}
-      <header className="w-full">
+      <header className="w-full flex items-center justify-between gap-4">
         {!isLoading && !error && (
-          <ReviewProgressBar
-            completedCount={completedCount}
-            totalCount={initialTotal}
-            deckTitle={currentCard?.deckTitle}
-            onExit={() =>
-              deckId ? navigate(`/decks/${deckId}`) : navigate("/dashboard")
-            }
-          />
+          <div className="flex-1">
+            <ReviewProgressBar
+              completedCount={completedCount}
+              totalCount={initialTotal}
+              deckTitle={currentCard?.deckTitle}
+              onExit={() =>
+                deckId ? navigate(`/decks/${deckId}`) : navigate("/dashboard")
+              }
+            />
+          </div>
         )}
+        <div className="shrink-0 mb-4">
+          <OfflineSyncPill />
+        </div>
       </header>
 
       {/* Main Review Canvas */}
@@ -195,6 +202,9 @@ export const ReviewSessionPage: React.FC = () => {
           }
         />
       )}
+
+      {/* PWA Install Banner for Offline Studies */}
+      <PwaInstallBanner />
     </div>
   );
 };

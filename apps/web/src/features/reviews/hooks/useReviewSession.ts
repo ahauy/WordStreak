@@ -1,11 +1,20 @@
 import { useState, useEffect, useCallback } from "react";
 import { reviewsService } from "../services/reviewsService";
 import { dispatchXpUpdated } from "../../gamification/api/xpApi";
+import { clientSm2Engine } from "../../../services/offline/clientSm2Engine";
+import {
+  getDueOfflineCards,
+  getOfflineCardsByDeck,
+  saveCardsOffline,
+  queueOfflineReview,
+} from "../../../services/offline/offlineDatabase";
+import { useAuthStore } from "../../../store/useAuthStore";
 import type {
   DueCardItem,
   SrsRating,
   XpReviewRewardDto,
   LevelUpEventDto,
+  OfflineCardEntity,
 } from "@wordstreak/shared-types";
 
 export interface ReviewHistoryEntry {
@@ -24,6 +33,7 @@ export interface SessionStats {
 }
 
 export function useReviewSession(deckId?: string) {
+  const { user } = useAuthStore();
   const [queue, setQueue] = useState<DueCardItem[]>([]);
   const [initialTotal, setInitialTotal] = useState<number>(0);
   const [isFlipped, setIsFlipped] = useState<boolean>(false);
@@ -37,55 +47,85 @@ export function useReviewSession(deckId?: string) {
     null,
   );
   const [levelUpData, setLevelUpData] = useState<LevelUpEventDto | null>(null);
+  const [isOfflineMode, setIsOfflineMode] = useState<boolean>(false);
+
+  const loadOfflineCards = useCallback(async (): Promise<DueCardItem[]> => {
+    let offlineEntities = await getDueOfflineCards(deckId);
+    if (offlineEntities.length === 0 && deckId) {
+      offlineEntities = await getOfflineCardsByDeck(deckId);
+    }
+
+    return offlineEntities.map((c) => ({
+      id: c.id,
+      cardId: c.id,
+      deckId: c.deckId,
+      deckTitle: "Offline Deck",
+      word: c.word,
+      meaning: c.meaning,
+      phonetic: c.phonetic,
+      audioUrl: c.audioUrl,
+      exampleSentence: c.exampleSentence,
+      status: c.status,
+      interval: c.interval,
+      easeFactor: c.easeFactor,
+      repetitions: c.repetitions,
+      nextReviewDate: c.nextReviewDate,
+    }));
+  }, [deckId]);
 
   const fetchQueue = useCallback(async () => {
     setIsLoading(true);
     setError(null);
     try {
-      const { data } = await reviewsService.getDueCards(deckId);
-      setQueue(data);
-      setInitialTotal(data.length);
-      setIsCompleted(data.length === 0);
+      if (!navigator.onLine) {
+        const offlineData = await loadOfflineCards();
+        setIsOfflineMode(true);
+        setQueue(offlineData);
+        setInitialTotal(offlineData.length);
+        setIsCompleted(offlineData.length === 0);
+      } else {
+        const { data } = await reviewsService.getDueCards(deckId);
+        setIsOfflineMode(false);
+        setQueue(data);
+        setInitialTotal(data.length);
+        setIsCompleted(data.length === 0);
+      }
       setIsFlipped(false);
       setHistory([]);
       setSessionStartTime(Date.now());
     } catch (err: unknown) {
-      const message =
-        err instanceof Error ? err.message : "Failed to load review queue";
-      setError(message);
+      // Fallback to offline cards on network error
+      try {
+        const offlineData = await loadOfflineCards();
+        setIsOfflineMode(true);
+        setQueue(offlineData);
+        setInitialTotal(offlineData.length);
+        setIsCompleted(offlineData.length === 0);
+        setIsFlipped(false);
+        setHistory([]);
+        setSessionStartTime(Date.now());
+      } catch {
+        const message =
+          err instanceof Error ? err.message : "Failed to load review queue";
+        setError(message);
+      }
     } finally {
       setIsLoading(false);
     }
-  }, [deckId]);
+  }, [deckId, loadOfflineCards]);
 
   useEffect(() => {
     let ignore = false;
-    reviewsService
-      .getDueCards(deckId)
-      .then(({ data }) => {
-        if (!ignore) {
-          setQueue(data);
-          setInitialTotal(data.length);
-          setIsCompleted(data.length === 0);
-          setIsFlipped(false);
-          setHistory([]);
-          setSessionStartTime(Date.now());
-          setIsLoading(false);
-        }
-      })
-      .catch((err: unknown) => {
-        if (!ignore) {
-          const message =
-            err instanceof Error ? err.message : "Failed to load review queue";
-          setError(message);
-          setIsLoading(false);
-        }
-      });
+    fetchQueue().catch(() => {
+      if (!ignore) {
+        setIsLoading(false);
+      }
+    });
 
     return () => {
       ignore = true;
     };
-  }, [deckId]);
+  }, [fetchQueue]);
 
   const currentCard = queue[0] || null;
 
@@ -93,22 +133,105 @@ export function useReviewSession(deckId?: string) {
     setIsFlipped((prev) => !prev);
   }, []);
 
+  const handleOfflineGrading = useCallback(
+    async (card: DueCardItem, rating: SrsRating) => {
+      const sm2Result = clientSm2Engine.calculateSm2({
+        rating,
+        repetitions: card.repetitions || 0,
+        easeFactor: card.easeFactor || 2.5,
+        interval: card.interval || 0,
+      });
+
+      const updatedCardEntity: OfflineCardEntity = {
+        id: card.cardId,
+        deckId: card.deckId,
+        word: card.word,
+        meaning: card.meaning,
+        phonetic: card.phonetic,
+        audioUrl: card.audioUrl,
+        exampleSentence: card.exampleSentence,
+        exampleTranslation: null,
+        collocations: null,
+        mnemonic: null,
+        imageUrl: null,
+        status: sm2Result.status,
+        interval: sm2Result.interval,
+        easeFactor: sm2Result.easeFactor,
+        repetitions: sm2Result.repetitions,
+        nextReviewDate: sm2Result.nextReviewDate.toISOString(),
+        cachedAt: new Date().toISOString(),
+      };
+
+      await saveCardsOffline([updatedCardEntity]);
+
+      await queueOfflineReview({
+        userId: user?.id || "offline_user",
+        cardId: card.cardId,
+        rating,
+        interval: sm2Result.interval,
+        easeFactor: sm2Result.easeFactor,
+        repetitions: sm2Result.repetitions,
+        reviewedAtClient: new Date().toISOString(),
+        clientTimezone:
+          Intl.DateTimeFormat().resolvedOptions().timeZone || "UTC",
+      });
+
+      const rawXp = rating >= 3 ? 10 : rating === 2 ? 5 : 0;
+      if (rawXp > 0) {
+        setLastXpReward({
+          xpEarned: rawXp,
+          totalXp: rawXp,
+          level: 1,
+          tier: "BRONZE",
+          currentLevelXp: rawXp,
+          nextLevelRequiredXp: 100,
+          levelProgressPercent: rawXp,
+          levelUp: {
+            isLevelUp: false,
+            previousLevel: 1,
+            currentLevel: 1,
+            previousTier: "BRONZE",
+            currentTier: "BRONZE",
+            isTierPromotion: false,
+          },
+          breakdown: [
+            {
+              type: "CARD_REVIEW",
+              xp: rawXp,
+              description: "Offline review completed",
+            },
+          ],
+        });
+      }
+    },
+    [user],
+  );
+
   const rateCard = useCallback(
     async (rating: SrsRating) => {
       if (!currentCard || isSubmitting) return;
 
       setIsSubmitting(true);
       try {
-        const response = await reviewsService.submitReview({
-          cardId: currentCard.cardId,
-          rating,
-        });
+        if (isOfflineMode || !navigator.onLine) {
+          await handleOfflineGrading(currentCard, rating);
+        } else {
+          try {
+            const response = await reviewsService.submitReview({
+              cardId: currentCard.cardId,
+              rating,
+            });
 
-        if (response?.xp) {
-          setLastXpReward(response.xp);
-          dispatchXpUpdated();
-          if (response.xp.levelUp?.isLevelUp) {
-            setLevelUpData(response.xp.levelUp);
+            if (response?.xp) {
+              setLastXpReward(response.xp);
+              dispatchXpUpdated();
+              if (response.xp.levelUp?.isLevelUp) {
+                setLevelUpData(response.xp.levelUp);
+              }
+            }
+          } catch (onlineError) {
+            // Fallback to offline queue if server is unreachable
+            await handleOfflineGrading(currentCard, rating);
           }
         }
 
@@ -138,7 +261,6 @@ export function useReviewSession(deckId?: string) {
           });
         }
 
-        // Reset flip state for the next card
         setIsFlipped(false);
       } catch (err: unknown) {
         const message =
@@ -148,7 +270,7 @@ export function useReviewSession(deckId?: string) {
         setIsSubmitting(false);
       }
     },
-    [currentCard, isSubmitting],
+    [currentCard, isSubmitting, isOfflineMode, handleOfflineGrading],
   );
 
   // Compute session metrics
@@ -199,6 +321,7 @@ export function useReviewSession(deckId?: string) {
     sessionStats,
     lastXpReward,
     levelUpData,
+    isOfflineMode,
     clearXpReward,
     clearLevelUpData,
     flip,
