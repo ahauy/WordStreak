@@ -187,7 +187,7 @@ export const ProfileGoalTab: React.FC = () => {
                 max="100"
                 value={customGoalInput}
                 onChange={(e) => setCustomGoalInput(e.target.value)}
-                className="w-28 px-3.5 py-1.5 bg-[#fafafa] border border-[#e5e5e5] rounded-xl text-black font-bold text-sm focus:outline-none focus:border-[#9333ea] focus:bg-white"
+                className="w-28 px-3.5 py-1.5 bg-[#fafafa] border border-[#e5e5e5] rounded-xl text-black font-bold text-base focus:outline-none focus:border-[#9333ea] focus:bg-white"
                 placeholder="10"
               />
               <span className="text-xs text-[#737373]">

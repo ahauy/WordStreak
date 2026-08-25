@@ -83,30 +83,30 @@ export const DashboardAnalyticsWidget: React.FC<
             </div>
 
             {/* Quick Metrics */}
-            <div className="grid grid-cols-3 gap-2 text-center pt-1">
-              <div className="bg-emerald-50/60 border border-emerald-100 rounded-xl py-2 px-1">
+            <div className="grid grid-cols-3 gap-2 text-center pt-1 min-w-0">
+              <div className="bg-emerald-50/60 border border-emerald-100 rounded-xl py-2 px-1 min-w-0">
                 <div className="text-xs font-bold text-emerald-800 font-['Nunito']">
                   {mastered}
                 </div>
-                <div className="text-[10px] text-emerald-600 font-['Inter']">
+                <div className="text-[10px] text-emerald-600 font-['Inter'] truncate">
                   {t("widget.mastered", "Mastered")} ({masteredPct}%)
                 </div>
               </div>
 
-              <div className="bg-indigo-50/60 border border-indigo-100 rounded-xl py-2 px-1">
+              <div className="bg-indigo-50/60 border border-indigo-100 rounded-xl py-2 px-1 min-w-0">
                 <div className="text-xs font-bold text-indigo-800 font-['Nunito']">
                   {learning}
                 </div>
-                <div className="text-[10px] text-indigo-600 font-['Inter']">
+                <div className="text-[10px] text-indigo-600 font-['Inter'] truncate">
                   {t("widget.learning", "Learning")} ({learningPct}%)
                 </div>
               </div>
 
-              <div className="bg-slate-50 border border-slate-200/80 rounded-xl py-2 px-1">
+              <div className="bg-slate-50 border border-slate-200/80 rounded-xl py-2 px-1 min-w-0">
                 <div className="text-xs font-bold text-slate-800 font-['Nunito']">
                   {newCards}
                 </div>
-                <div className="text-[10px] text-slate-500 font-['Inter']">
+                <div className="text-[10px] text-slate-500 font-['Inter'] truncate">
                   {t("widget.new", "New")} ({newPct}%)
                 </div>
               </div>

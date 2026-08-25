@@ -211,15 +211,15 @@ export const CommunityDeckPreviewModal: React.FC<
                   className="p-3.5 flex items-start justify-between gap-3 hover:bg-[#fafafa] transition-colors"
                 >
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-baseline gap-2">
+                    <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
                       <span className="text-xs font-mono text-[#a3a3a3]">
                         #{idx + 1}
                       </span>
-                      <span className="font-bold text-sm text-black">
+                      <span className="font-bold text-sm text-black break-words max-w-full">
                         {card.word}
                       </span>
                       {card.phonetic && (
-                        <span className="text-xs font-mono text-[#7e22ce]">
+                        <span className="text-xs font-mono text-[#7e22ce] min-w-0 break-all">
                           {card.phonetic}
                         </span>
                       )}
@@ -261,7 +261,7 @@ export const CommunityDeckPreviewModal: React.FC<
         </div>
 
         {/* Modal Sticky Footer */}
-        <div className="p-4 sm:p-5 border-t border-[#e5e5e5] bg-[#fafafa] flex items-center justify-between gap-3">
+        <div className="p-4 sm:p-5 border-t border-[#e5e5e5] bg-[#fafafa] flex flex-wrap items-center justify-between gap-3">
           <div>
             {!deck.isOwner && onRate && (
               <button
@@ -288,14 +288,17 @@ export const CommunityDeckPreviewModal: React.FC<
                 type="button"
                 disabled={isCloning}
                 onClick={() => onClone(deck)}
-                className="inline-flex items-center gap-2 px-6 py-2.5 text-xs font-semibold text-white bg-black hover:bg-[#171717] rounded-full shadow-sm transition-all duration-150 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+                className="inline-flex flex-1 sm:flex-initial items-center justify-center gap-2 px-5 sm:px-6 py-2.5 text-xs font-semibold text-white bg-black hover:bg-[#171717] rounded-full shadow-sm transition-all duration-150 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
               >
                 {isCloning ? (
                   <div className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                 ) : (
                   <Download className="w-4 h-4" />
                 )}
-                <span>
+                <span className="sm:hidden">
+                  {isCloning ? "Đang sao chép..." : "Sao chép"}
+                </span>
+                <span className="hidden sm:inline">
                   {isCloning
                     ? "Đang sao chép..."
                     : "Sao chép vào Bộ từ của tôi"}

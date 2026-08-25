@@ -121,7 +121,7 @@ export const FillBlankInput: React.FC<FillBlankInputProps> = ({
         {/* Masked Sentence Context */}
         <div className="pt-3 border-t border-[#f5f5f5] text-base sm:text-lg text-[#171717] leading-relaxed">
           {question.sentencePrefix && <span>{question.sentencePrefix}</span>}
-          <span className="inline-block px-3 py-0.5 mx-1 font-mono font-bold text-[#000000] bg-[#f5f5f5] rounded-md border border-[#e5e5e5]">
+          <span className="inline-block px-3 py-0.5 mx-1 font-mono font-bold text-[#000000] bg-[#f5f5f5] rounded-md border border-[#e5e5e5] max-w-full break-all">
             {isLocked ? (
               <span className={isCorrect ? "text-[#10b981]" : "text-[#ef4444]"}>
                 {typedInput || "_____"}
@@ -184,17 +184,17 @@ export const FillBlankInput: React.FC<FillBlankInputProps> = ({
           <motion.div
             initial={{ opacity: 0, y: -4 }}
             animate={{ opacity: 1, y: 0 }}
-            className="p-3 rounded-xl bg-[#fef2f2] border border-[#ef4444]/20 flex items-center justify-between text-sm"
+            className="p-3 rounded-xl bg-[#fef2f2] border border-[#ef4444]/20 flex flex-wrap items-center justify-between gap-x-2 text-sm"
           >
-            <span className="text-[#991b1b]">Correct spelling:</span>
-            <span className="font-mono font-bold text-[#10b981] text-base">
+            <span className="text-[#991b1b] shrink-0">Correct spelling:</span>
+            <span className="font-mono font-bold text-[#10b981] text-base min-w-0 break-all">
               {targetWord}
             </span>
           </motion.div>
         )}
 
         {/* Input Mode Switcher (Typing vs Anagram Tiles) */}
-        <div className="flex items-center justify-between px-1">
+        <div className="flex flex-wrap items-center justify-between gap-x-2 gap-y-1 px-1">
           <span className="text-xs font-mono text-[#a3a3a3]">
             Length: {targetWord.length} chars
           </span>
@@ -203,7 +203,7 @@ export const FillBlankInput: React.FC<FillBlankInputProps> = ({
             type="button"
             disabled={isLocked}
             onClick={onToggleAnagram}
-            className="text-xs font-mono text-[#737373] hover:text-[#000000] underline underline-offset-4 transition-colors cursor-pointer"
+            className="text-xs font-mono text-left text-[#737373] hover:text-[#000000] underline underline-offset-4 transition-colors cursor-pointer"
           >
             {isAnagramMode
               ? "Switch to Direct Typing"

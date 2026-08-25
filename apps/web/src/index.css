@@ -59,6 +59,12 @@
       color 0.25s ease;
   }
 
+  /* BR-MOBILE-001: Zero Horizontal Scroll Guarantee */
+  html,
+  body {
+    overflow-x: clip;
+  }
+
   html.dark,
   html.dark body,
   html.dark #root {

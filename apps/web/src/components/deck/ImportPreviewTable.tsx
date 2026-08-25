@@ -108,7 +108,7 @@ export const ImportPreviewTable: React.FC<ImportPreviewTableProps> = ({
                 return (
                   <th
                     key={colIndex}
-                    className="py-2.5 px-3 min-w-[160px] max-w-[240px] text-black font-semibold"
+                    className="py-2.5 px-3 min-w-[120px] sm:min-w-[160px] max-w-[240px] text-black font-semibold"
                   >
                     <div className="flex flex-col gap-1.5">
                       <span className="font-mono text-[11px] text-[#737373] truncate">

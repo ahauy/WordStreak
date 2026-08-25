@@ -544,7 +544,7 @@ export const DeckDetailPage: React.FC = () => {
         {/* Pagination Bar */}
         {paginationMeta.totalPages > 1 && (
           <div className="mt-8 pt-6 border-t border-[#e5e5e5] flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div className="flex items-center gap-2 text-xs text-[#737373]">
+            <div className="flex flex-wrap items-center gap-y-1 gap-2 text-xs text-[#737373]">
               <span>
                 {t("common:pagination.showingPage", "Showing page")}{" "}
                 <strong>{paginationMeta.page}</strong> /{" "}
@@ -576,7 +576,7 @@ export const DeckDetailPage: React.FC = () => {
               </select>
             </div>
 
-            <div className="flex items-center gap-1.5">
+            <div className="flex flex-wrap items-center justify-center gap-1.5">
               <button
                 type="button"
                 onClick={() => setPage(page - 1)}
@@ -585,7 +585,7 @@ export const DeckDetailPage: React.FC = () => {
                 className="h-8 px-3 rounded-xl border border-[#e5e5e5] bg-[#fafafa] hover:bg-white text-xs font-semibold text-black flex items-center gap-1 disabled:opacity-40 disabled:cursor-not-allowed transition-colors cursor-pointer"
               >
                 <ChevronLeft className="w-3.5 h-3.5" />
-                <span>{t("common:pagination.prev", "Prev")}</span>
+                <span className="hidden min-[420px]:inline">{t("common:pagination.prev", "Prev")}</span>
               </button>
 
               <div className="flex items-center gap-1 px-1">
@@ -626,7 +626,7 @@ export const DeckDetailPage: React.FC = () => {
                 aria-label={t("common:pagination.next", "Next")}
                 className="h-8 px-3 rounded-xl border border-[#e5e5e5] bg-[#fafafa] hover:bg-white text-xs font-semibold text-black flex items-center gap-1 disabled:opacity-40 disabled:cursor-not-allowed transition-colors cursor-pointer"
               >
-                <span>{t("common:pagination.next", "Next")}</span>
+                <span className="hidden min-[420px]:inline">{t("common:pagination.next", "Next")}</span>
                 <ChevronRight className="w-3.5 h-3.5" />
               </button>
             </div>

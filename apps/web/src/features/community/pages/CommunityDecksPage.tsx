@@ -112,9 +112,9 @@ export const CommunityDecksPage: React.FC = () => {
 
           {/* Toast Notification */}
           {toastMessage && (
-            <div className="fixed bottom-6 right-6 z-50 animate-in slide-in-from-bottom-5 fade-in duration-200">
+            <div className="fixed bottom-6 left-4 right-4 sm:left-auto sm:right-6 z-50 animate-in slide-in-from-bottom-5 fade-in duration-200">
               <div
-                className={`flex items-center gap-2.5 px-4 py-3 rounded-2xl shadow-xl border text-xs font-semibold ${
+                className={`flex items-center gap-2.5 px-4 py-3 rounded-2xl shadow-xl border text-xs font-semibold max-w-sm sm:ml-auto ${
                   toastMessage.type === "success"
                     ? "bg-emerald-50 text-emerald-900 border-emerald-200"
                     : "bg-red-50 text-red-900 border-red-200"
@@ -125,7 +125,7 @@ export const CommunityDecksPage: React.FC = () => {
                 ) : (
                   <AlertCircle className="w-4 h-4 text-red-600 shrink-0" />
                 )}
-                <span>{toastMessage.text}</span>
+                <span className="break-words min-w-0">{toastMessage.text}</span>
               </div>
             </div>
           )}

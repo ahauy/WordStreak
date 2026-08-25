@@ -77,9 +77,9 @@ export const QuizResultsView: React.FC<QuizResultsViewProps> = ({
         </p>
 
         {/* Stats Grid */}
-        <div className="grid grid-cols-3 gap-3 mb-6">
+        <div className="grid grid-cols-3 gap-2 sm:gap-3 mb-6 min-w-0">
           {/* Accuracy */}
-          <div className="bg-[#fafafa] border border-[#e5e5e5] rounded-2xl p-3.5">
+          <div className="bg-[#fafafa] border border-[#e5e5e5] rounded-2xl p-2.5 sm:p-3.5 min-w-0">
             <span className="block text-xs font-mono text-[#737373] mb-1">
               Accuracy
             </span>
@@ -89,7 +89,7 @@ export const QuizResultsView: React.FC<QuizResultsViewProps> = ({
           </div>
 
           {/* XP Earned */}
-          <div className="bg-[#fafafa] border border-[#e5e5e5] rounded-2xl p-3.5">
+          <div className="bg-[#fafafa] border border-[#e5e5e5] rounded-2xl p-2.5 sm:p-3.5 min-w-0">
             <span className="block text-xs font-mono text-[#737373] mb-1">
               XP Earned
             </span>
@@ -99,7 +99,7 @@ export const QuizResultsView: React.FC<QuizResultsViewProps> = ({
           </div>
 
           {/* Highest Combo */}
-          <div className="bg-[#fafafa] border border-[#e5e5e5] rounded-2xl p-3.5">
+          <div className="bg-[#fafafa] border border-[#e5e5e5] rounded-2xl p-2.5 sm:p-3.5 min-w-0">
             <span className="block text-xs font-mono text-[#737373] mb-1 flex items-center justify-center gap-1">
               <Flame className="w-3 h-3 text-[#9333ea]" />
               Combo
@@ -155,9 +155,9 @@ export const QuizResultsView: React.FC<QuizResultsViewProps> = ({
         {/* Missed Words Section */}
         {result.missedCards && result.missedCards.length > 0 && (
           <div className="text-left mb-8">
-            <h3 className="text-xs font-mono font-bold text-[#737373] uppercase tracking-wider mb-3 flex items-center justify-between">
+            <h3 className="text-xs font-mono font-bold text-[#737373] uppercase tracking-wider mb-3 flex flex-wrap items-center justify-between gap-x-2 gap-y-1">
               <span>Words to Review ({result.missedCards.length})</span>
-              <span className="text-[11px] font-normal text-[#a3a3a3]">
+              <span className="text-[11px] font-normal normal-case text-[#a3a3a3]">
                 Thẻ cần ôn lại
               </span>
             </h3>
@@ -168,12 +168,12 @@ export const QuizResultsView: React.FC<QuizResultsViewProps> = ({
                   className="p-3.5 bg-white flex items-center justify-between gap-3"
                 >
                   <div className="min-w-0 flex-1">
-                    <div className="flex items-center gap-2">
-                      <span className="font-semibold text-sm text-[#000000]">
+                    <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+                      <span className="font-semibold text-sm text-[#000000] break-words max-w-full">
                         {card.word}
                       </span>
                       {card.phonetic && (
-                        <span className="text-xs font-mono text-[#737373]">
+                        <span className="text-xs font-mono text-[#737373] min-w-0 break-all">
                           {card.phonetic}
                         </span>
                       )}

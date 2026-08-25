@@ -43,7 +43,7 @@ export function PronunciationScoreBadge({
 
   return (
     <div
-      className={`inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border text-sm font-medium ${theme.bg} ${className}`}
+      className={`inline-flex flex-wrap items-center gap-2 max-w-full px-3.5 py-1.5 rounded-full border text-sm font-medium ${theme.bg} ${className}`}
       data-testid="pronunciation-score-badge"
     >
       <span className={`w-2 h-2 rounded-full ${theme.dot}`} />

@@ -328,7 +328,7 @@ export const DraggableFlameMascot: React.FC<DraggableFlameMascotProps> = ({
                 initial={{ opacity: 0, y: 6, scale: 0.85 }}
                 animate={{ opacity: 1, y: -6, scale: 1 }}
                 exit={{ opacity: 0, y: 4, scale: 0.85 }}
-                className={`absolute bottom-full mb-1 whitespace-nowrap px-3 py-1 rounded-2xl text-xs font-bold shadow-lg border backdrop-blur-md pointer-events-none flex items-center gap-1.5 ${
+                className={`absolute bottom-full mb-1 max-w-[240px] whitespace-normal text-center px-3 py-1 rounded-2xl text-xs font-bold shadow-lg border backdrop-blur-md pointer-events-none flex items-center gap-1.5 ${
                   celebrationText
                     ? "bg-[#fff7ed] text-[#c2410c] border-[#fed7aa]"
                     : "bg-white/95 text-black border-[#e5e5e5]"

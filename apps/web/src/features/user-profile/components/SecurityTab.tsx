@@ -121,7 +121,7 @@ export const SecurityTab: React.FC = () => {
             onChange={(e) => setCurrentPassword(e.target.value)}
             required
             placeholder="••••••••"
-            className="w-full px-3.5 py-2 bg-[#fafafa] border border-[#e5e5e5] rounded-xl text-black text-sm focus:outline-none focus:border-[#9333ea] focus:bg-white pr-10"
+            className="w-full px-3.5 py-2 bg-[#fafafa] border border-[#e5e5e5] rounded-xl text-black text-base focus:outline-none focus:border-[#9333ea] focus:bg-white pr-10"
           />
           <button
             type="button"
@@ -152,7 +152,7 @@ export const SecurityTab: React.FC = () => {
               "settings:security.passwordReqs",
               "Minimum 8 characters, 1 uppercase, 1 number",
             )}
-            className="w-full px-3.5 py-2 bg-[#fafafa] border border-[#e5e5e5] rounded-xl text-black text-sm focus:outline-none focus:border-[#9333ea] focus:bg-white pr-10"
+            className="w-full px-3.5 py-2 bg-[#fafafa] border border-[#e5e5e5] rounded-xl text-black text-base focus:outline-none focus:border-[#9333ea] focus:bg-white pr-10"
           />
           <button
             type="button"
@@ -179,7 +179,7 @@ export const SecurityTab: React.FC = () => {
           onChange={(e) => setConfirmPassword(e.target.value)}
           required
           placeholder="••••••••"
-          className="w-full px-3.5 py-2 bg-[#fafafa] border border-[#e5e5e5] rounded-xl text-black text-sm focus:outline-none focus:border-[#9333ea] focus:bg-white"
+          className="w-full px-3.5 py-2 bg-[#fafafa] border border-[#e5e5e5] rounded-xl text-black text-base focus:outline-none focus:border-[#9333ea] focus:bg-white"
         />
       </div>
 

@@ -155,13 +155,13 @@ export const DeckExportModal: React.FC<DeckExportModalProps> = ({
         </div>
 
         {/* Modal Body */}
-        <div className="p-6 space-y-5">
+        <div className="flex-1 overflow-y-auto p-6 space-y-5">
           {/* Format Selector */}
           <div>
             <label className="text-xs font-bold uppercase tracking-wider text-[#737373] block mb-2">
               1. Chọn định dạng xuất
             </label>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <button
                 type="button"
                 onClick={() => setFormat("csv")}

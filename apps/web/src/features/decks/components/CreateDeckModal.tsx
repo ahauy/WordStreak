@@ -159,11 +159,11 @@ const CreateDeckModalDialog: React.FC<{
         </div>
 
         {/* Tab Navigation */}
-        <div className="flex border-b border-[#e5e5e5] px-6 bg-[#fafafa]">
+        <div className="flex border-b border-[#e5e5e5] px-4 sm:px-6 bg-[#fafafa] overflow-x-auto">
           <button
             type="button"
             onClick={() => setActiveTab("info")}
-            className={`py-3 text-xs font-semibold border-b-2 mr-6 transition-colors cursor-pointer ${
+            className={`py-3 text-xs font-semibold border-b-2 mr-6 whitespace-nowrap transition-colors cursor-pointer ${
               activeTab === "info"
                 ? "border-black text-black"
                 : "border-transparent text-[#737373] hover:text-black"
@@ -174,7 +174,7 @@ const CreateDeckModalDialog: React.FC<{
           <button
             type="button"
             onClick={() => setActiveTab("style")}
-            className={`py-3 text-xs font-semibold border-b-2 transition-colors cursor-pointer ${
+            className={`py-3 text-xs font-semibold border-b-2 whitespace-nowrap transition-colors cursor-pointer ${
               activeTab === "style"
                 ? "border-black text-black"
                 : "border-transparent text-[#737373] hover:text-black"
@@ -330,7 +330,7 @@ const CreateDeckModalDialog: React.FC<{
                 <label className="block text-xs font-semibold text-black uppercase tracking-wider mb-2.5">
                   Màu chủ đề Cosmos (8 Presets)
                 </label>
-                <div className="grid grid-cols-4 gap-2.5">
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
                   {PRESET_COLORS.map((color) => {
                     const isSelected =
                       !isCustomColor && selectedColor === color.hex;

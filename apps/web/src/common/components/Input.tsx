@@ -57,7 +57,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             aria-invalid={Boolean(error)}
             aria-describedby={describedBy}
             required={required}
-            className={`w-full rounded-xl px-3.5 py-2.5 text-[15px] font-normal transition-all duration-150 focus:outline-none disabled:opacity-40 disabled:cursor-not-allowed ${
+            className={`w-full rounded-xl px-3.5 py-2.5 text-base font-normal transition-all duration-150 focus:outline-none disabled:opacity-40 disabled:cursor-not-allowed ${
               leftIcon ? "pl-10" : "pl-3.5"
             } ${rightIcon ? "pr-10" : "pr-3.5"} ${
               error

@@ -21,7 +21,7 @@ export function AccentAudioSelector({
 }: AccentAudioSelectorProps) {
   return (
     <div
-      className={`flex items-center justify-between gap-3 w-full max-w-md ${className}`}
+      className={`flex flex-wrap items-center justify-between gap-x-3 gap-y-2 w-full max-w-md ${className}`}
       data-testid="accent-audio-selector"
     >
       {/* Accent selection tabs */}
@@ -68,7 +68,14 @@ export function AccentAudioSelector({
               : "border-neutral-300 bg-white text-neutral-600 hover:border-neutral-400"
           }`}
         >
-          {playbackSpeed === 0.75 ? "0.75x (Slow)" : "1.0x"}
+          {playbackSpeed === 0.75 ? (
+            <>
+              <span className="sm:hidden">0.75x</span>
+              <span className="hidden sm:inline">0.75x (Slow)</span>
+            </>
+          ) : (
+            "1.0x"
+          )}
         </button>
 
         <button

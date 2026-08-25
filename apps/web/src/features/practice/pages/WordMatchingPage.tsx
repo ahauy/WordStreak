@@ -281,8 +281,8 @@ export const WordMatchingPage: React.FC = () => {
           />
         </motion.div>
 
-        {/* Hotkey Guide Bar */}
-        <div className="text-center mt-6">
+        {/* Hotkey Guide Bar (desktop only — mobile has no keyboard) */}
+        <div className="hidden sm:block text-center mt-6">
           <span className="text-xs font-mono text-[#a3a3a3]">
             Phím tắt:{" "}
             <kbd className="px-1.5 py-0.5 rounded border border-[#e5e5e5] bg-[#fafafa] text-[#737373]">

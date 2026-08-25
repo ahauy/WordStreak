@@ -84,11 +84,11 @@ export const CardDataTable: React.FC<CardDataTableProps> = ({
                 {t("cards:table.columnTerm", "Term")} &{" "}
                 {t("cards:table.columnPhonetic", "Phonetic")}
               </th>
-              <th className="py-3.5 px-4 font-bold text-black min-w-[240px]">
+              <th className="py-3.5 px-4 font-bold text-black min-w-[180px]">
                 {t("cards:table.columnDefinition", "Meaning")} &{" "}
                 {t("cards:table.columnExample", "Example")}
               </th>
-              <th className="py-3.5 px-4 font-bold text-black min-w-[180px]">
+              <th className="hidden md:table-cell py-3.5 px-4 font-bold text-black min-w-[180px]">
                 {t("cards:form.notesLabel", "Notes")} &{" "}
                 {t("ai_vocabulary:fields.collocations", "Collocations")}
               </th>
@@ -200,7 +200,7 @@ export const CardDataTable: React.FC<CardDataTableProps> = ({
                   </td>
 
                   {/* Mnemonic & Collocations */}
-                  <td className="py-3.5 px-4">
+                  <td className="hidden md:table-cell py-3.5 px-4">
                     {card.mnemonic && (
                       <div className="flex items-start gap-1 text-[11px] text-[#92400e] bg-[#fffbeb] p-1.5 rounded-md border border-[#fef3c7] mb-1">
                         <Lightbulb className="w-3 h-3 flex-shrink-0 mt-0.5 text-[#d97706]" />

@@ -113,7 +113,7 @@ export const ListeningTypingInput: React.FC<ListeningTypingInputProps> = ({
       {feedbackState === "IDLE" && wordLength > 0 && (
         <div
           data-testid="character-slots"
-          className="flex items-center justify-center gap-1.5 pt-1"
+          className="flex flex-wrap items-center justify-center gap-1 sm:gap-1.5 pt-1"
         >
           {Array.from({ length: wordLength }).map((_, idx) => {
             const isFilled = idx < value.length;
@@ -121,7 +121,7 @@ export const ListeningTypingInput: React.FC<ListeningTypingInputProps> = ({
             return (
               <div
                 key={idx}
-                className={`w-7 h-9 rounded-lg border flex items-center justify-center font-mono text-sm font-bold transition-colors ${
+                className={`w-5 h-8 sm:w-7 sm:h-9 rounded-lg border flex items-center justify-center font-mono text-xs sm:text-sm font-bold transition-colors ${
                   isFilled
                     ? "border-[#000000] bg-white text-[#000000] shadow-2xs"
                     : "border-[#e5e5e5] bg-[#fafafa] text-[#d4d4d4]"
