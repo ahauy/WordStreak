@@ -1,0 +1,5 @@
+# Changelog: Mobile Responsive Layout & Header Navigation Fixes (TASK-MOBILE-RESPONSIVE)
+
+- v0.1-draft — 2026-08-25 — Feature folder created by intake-classifier. Classified as Bounded Task.
+- v0.2-draft — 2026-08-25 — Elicitation, domain model, risk register, user stories added.
+- v0.3-implemented — 2026-08-25 — Implementation sweep completed per US-MOBILE-001/002/003. 30+ files fixed: DashboardNavbar hamburger drawer (< sm) + mobile widget condensation; global `overflow-x: clip` (BR-MOBILE-001); landing TerminalPreview wrap fixes; landing drawer body-scroll lock / Escape / resize close + scrollable drawer; auth footers flex-wrap; iOS zoom fix (inputs ≥16px); Decks list/detail/pagination; CardDataTable hides Notes column < md; Import/Export/Create/Edit modals; FlashcardReviewCard rating grid `grid-cols-2 sm:grid-cols-4` + UGC truncation; quiz/listening/matching/hint components wrap-safe; community toast/modal bounds; voice selector wrap; heatmap tooltip clamped to viewport. Verified: typecheck ✓, eslint ✓, vitest 425/425 ✓, production build ✓.
