@@ -141,7 +141,7 @@ export const QuizSetupModal: React.FC<QuizSetupModalProps> = ({
           initial={{ opacity: 0, scale: 0.95, y: 12 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: 12 }}
-          className="relative w-full max-w-xl bg-white border border-[#e5e5e5] rounded-3xl p-6 sm:p-7 shadow-xl z-10 my-auto"
+          className="relative w-full max-w-xl bg-white border border-[#e5e5e5] rounded-3xl p-4 sm:p-7 shadow-xl z-10 my-auto"
         >
           {/* Header */}
           <div className="flex items-center justify-between pb-4 border-b border-[#f0f0f0]">
@@ -180,7 +180,7 @@ export const QuizSetupModal: React.FC<QuizSetupModalProps> = ({
               <span className="text-[11px] font-mono text-[#737373] uppercase tracking-wider font-semibold block mb-2.5">
                 {t("setup.modeLabel", "Chế độ ôn luyện")}
               </span>
-              <div className="grid grid-cols-5 gap-2">
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2">
                 {practiceModes.map((mode) => {
                   const Icon = mode.icon;
                   const isSelected = selectedMode === mode.id;
@@ -277,7 +277,7 @@ export const QuizSetupModal: React.FC<QuizSetupModalProps> = ({
                   <span className="text-[11px] font-mono text-[#737373] uppercase tracking-wider font-semibold block mb-2">
                     {t("setup.questionCount", "Số lượng câu hỏi")}
                   </span>
-                  <div className="grid grid-cols-3 gap-2.5">
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
                     {[
                       {
                         label:

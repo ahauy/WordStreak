@@ -145,7 +145,7 @@ export const AvatarTab: React.FC = () => {
           value={customAvatarUrl}
           onChange={(e) => setCustomAvatarUrl(e.target.value)}
           placeholder="https://images.unsplash.com/photo-..."
-          className="w-full px-3.5 py-2 bg-[#fafafa] border border-[#e5e5e5] rounded-xl text-black text-xs focus:outline-none focus:border-[#9333ea] focus:bg-white"
+          className="w-full px-3.5 py-2 bg-[#fafafa] border border-[#e5e5e5] rounded-xl text-black text-base focus:outline-none focus:border-[#9333ea] focus:bg-white"
         />
         <p className="text-[11px] text-[#737373]">
           {t(

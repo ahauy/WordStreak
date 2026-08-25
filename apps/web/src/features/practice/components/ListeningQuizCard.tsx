@@ -101,7 +101,7 @@ export const ListeningQuizCard: React.FC<ListeningQuizCardProps> = ({
               <span>Bấm để nghe (Click to Listen - Space)</span>
             </button>
           ) : (
-            <div className="flex items-center gap-2.5">
+            <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-2.5">
               {/* Replay Button */}
               <button
                 type="button"

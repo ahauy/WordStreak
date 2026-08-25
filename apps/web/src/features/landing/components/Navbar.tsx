@@ -20,6 +20,34 @@ export function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // BR-MOBILE-004: lock body scroll while the mobile drawer is open
+  useEffect(() => {
+    document.body.style.overflow = mobileOpen ? "hidden" : "";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [mobileOpen]);
+
+  // EC-01: auto-close the drawer when viewport reaches md (768px+)
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(min-width: 768px)");
+    const handleChange = (e: MediaQueryListEvent) => {
+      if (e.matches) setMobileOpen(false);
+    };
+    mediaQuery.addEventListener("change", handleChange);
+    return () => mediaQuery.removeEventListener("change", handleChange);
+  }, []);
+
+  // US-MOBILE-001 Scenario 5: dismiss drawer via Escape key
+  useEffect(() => {
+    if (!mobileOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setMobileOpen(false);
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [mobileOpen]);
+
   const scrollToSection = (id: string) => {
     setMobileOpen(false);
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
@@ -93,7 +121,7 @@ export function Navbar() {
                 placeholder={t("nav.searchPlaceholder", "Search vocabulary...")}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full bg-transparent text-xs text-black placeholder-[#a3a3a3] focus:outline-none"
+                className="w-full bg-transparent text-base text-black placeholder-[#a3a3a3] focus:outline-none"
               />
             </div>
             <kbd className="hidden sm:inline-block rounded-md border border-[#e5e5e5] bg-white px-1.5 py-0.5 text-[10px] font-mono text-[#a3a3a3]">
@@ -130,8 +158,10 @@ export function Navbar() {
         {/* Mobile Menu Trigger */}
         <button
           onClick={() => setMobileOpen(!mobileOpen)}
-          className="flex h-9 w-9 items-center justify-center rounded-full border border-[#e5e5e5] bg-[#fafafa] text-black md:hidden cursor-pointer"
           aria-label="Toggle menu"
+          aria-expanded={mobileOpen}
+          aria-controls="landing-mobile-drawer"
+          className="flex h-9 w-9 items-center justify-center rounded-full border border-[#e5e5e5] bg-[#fafafa] text-black md:hidden cursor-pointer"
         >
           {mobileOpen ? (
             <X className="h-4 w-4" />
@@ -153,11 +183,12 @@ export function Navbar() {
               className="fixed inset-0 bg-black/40 z-40 md:hidden"
             />
             <motion.div
+              id="landing-mobile-drawer"
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: "auto" }}
               exit={{ opacity: 0, height: 0 }}
               transition={{ duration: 0.2 }}
-              className="relative z-50 border-b border-[#e5e5e5] bg-white px-5 py-4 md:hidden shadow-lg overflow-hidden"
+              className="relative z-50 border-b border-[#e5e5e5] bg-white px-5 py-4 md:hidden shadow-lg max-h-[calc(100vh-3.5rem)] overflow-y-auto"
             >
               <div className="mb-4">
                 <div className="search-pill-input w-full">
@@ -170,7 +201,7 @@ export function Navbar() {
                     )}
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full bg-transparent text-xs text-black placeholder-[#a3a3a3] focus:outline-none"
+                className="w-full bg-transparent text-base text-black placeholder-[#a3a3a3] focus:outline-none"
                   />
                 </div>
               </div>

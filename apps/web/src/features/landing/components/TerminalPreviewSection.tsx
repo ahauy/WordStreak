@@ -249,11 +249,11 @@ export function TerminalPreviewSection() {
                 </div>
 
                 {/* Self-Rating Interval Action Buttons */}
-                <div className="mt-4 pt-3 border-t border-[#e5e5e5] flex items-center justify-between gap-2">
+                <div className="mt-4 pt-3 border-t border-[#e5e5e5] flex flex-wrap items-center justify-between gap-x-2 gap-y-1.5">
                   <span className="text-[11px] text-[#a3a3a3] font-mono">
                     {t("sandbox.rateRecall", "Rate Recall:")}
                   </span>
-                  <div className="flex gap-1.5">
+                  <div className="flex flex-wrap gap-1.5">
                     <motion.button
                       whileTap={{ scale: 0.95 }}
                       onClick={() => handleGrade("Hard")}
@@ -348,11 +348,11 @@ export function TerminalPreviewSection() {
                   </div>
                 </div>
 
-                <div className="mt-3 flex items-center justify-between">
+                <div className="mt-3 flex flex-wrap items-center justify-between gap-y-1.5">
                   <span className="text-[11px] text-[#a3a3a3]">
                     {t("sandbox.telemetrySelectWord", "SELECT WORD:")}
                   </span>
-                  <div className="flex gap-1.5">
+                  <div className="flex flex-wrap gap-1.5">
                     {sampleWords.map((item, idx) => (
                       <button
                         key={item.word}
@@ -450,7 +450,7 @@ export function TerminalPreviewSection() {
                   <motion.div
                     initial={{ opacity: 0, y: 6 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="mt-4 pt-3 border-t border-[#e5e5e5] flex items-center justify-between text-xs font-mono"
+                    className="mt-4 pt-3 border-t border-[#e5e5e5] flex flex-wrap items-center justify-between gap-x-3 gap-y-2 text-xs font-mono"
                   >
                     {quizSelectedOption === 1 ? (
                       <span className="text-[#27c93f] font-semibold flex items-center gap-1">

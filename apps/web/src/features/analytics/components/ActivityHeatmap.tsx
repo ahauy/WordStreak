@@ -63,8 +63,13 @@ export const ActivityHeatmap: React.FC<ActivityHeatmapProps> = ({
   ) => {
     const rect = e.currentTarget.getBoundingClientRect();
     setHoveredDay(day);
+    // Clamp x so the centered tooltip never clips offscreen on small viewports
+    const tooltipHalfWidth = 90;
     setTooltipPos({
-      x: rect.left + rect.width / 2,
+      x: Math.min(
+        Math.max(rect.left + rect.width / 2, tooltipHalfWidth + 8),
+        window.innerWidth - tooltipHalfWidth - 8,
+      ),
       y: rect.top - 8,
     });
   };

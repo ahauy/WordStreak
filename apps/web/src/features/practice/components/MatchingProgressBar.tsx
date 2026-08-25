@@ -50,7 +50,7 @@ export const MatchingProgressBar: React.FC<MatchingProgressBarProps> = ({
         />
       </div>
 
-      <div className="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
+      <div className="max-w-4xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
         {/* Left: Exit button & Deck Title */}
         <div className="flex items-center gap-3 min-w-0">
           <button
@@ -81,8 +81,8 @@ export const MatchingProgressBar: React.FC<MatchingProgressBarProps> = ({
           </div>
 
           {currentCombo >= 2 && (
-            <div className="flex items-center gap-1.5 px-3 py-1 rounded-full border border-[#9333ea]/30 bg-[#9333ea]/10 text-xs font-mono font-bold text-[#9333ea] animate-pulse">
-              <Flame className="w-3.5 h-3.5 fill-[#9333ea]" />
+            <div className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1 rounded-full border border-[#9333ea]/30 bg-[#9333ea]/10 text-xs font-mono font-bold text-[#9333ea] animate-pulse whitespace-nowrap">
+              <Flame className="w-3.5 h-3.5 fill-[#9333ea] shrink-0" />
               <span>{currentCombo}x Combo</span>
             </div>
           )}

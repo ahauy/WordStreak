@@ -302,7 +302,7 @@ export const DeckImportModal: React.FC<DeckImportModalProps> = ({
         </div>
 
         {/* Step Wizard Progress Bar */}
-        <div className="px-6 py-3 bg-[#fafafa] border-b border-[#e5e5e5] flex items-center justify-between text-xs">
+        <div className="px-4 sm:px-6 py-3 bg-[#fafafa] border-b border-[#e5e5e5] flex flex-wrap items-center justify-between gap-x-3 gap-y-2 text-xs">
           <div className="flex items-center gap-2">
             {[
               { num: 1, label: "Tải tập tin" },
@@ -368,7 +368,7 @@ export const DeckImportModal: React.FC<DeckImportModalProps> = ({
                   if (file) handleProcessFile(file);
                 }}
                 onClick={() => fileInputRef.current?.click()}
-                className={`border-2 border-dashed rounded-2xl p-10 text-center cursor-pointer transition-all flex flex-col items-center justify-center ${
+                className={`border-2 border-dashed rounded-2xl p-5 sm:p-10 text-center cursor-pointer transition-all flex flex-col items-center justify-center ${
                   isDragging
                     ? "border-black bg-[#f5f5f5]"
                     : "border-[#d4d4d4] hover:border-black bg-[#fafafa] hover:bg-white"
@@ -430,8 +430,8 @@ export const DeckImportModal: React.FC<DeckImportModalProps> = ({
               )}
 
               {/* Sample Template Download Card */}
-              <div className="p-4 rounded-xl bg-[#fafafa] border border-[#e5e5e5] flex items-center justify-between gap-4">
-                <div className="flex items-center gap-3">
+              <div className="p-4 rounded-xl bg-[#fafafa] border border-[#e5e5e5] flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+                <div className="flex items-start gap-3 min-w-0">
                   <FileText className="w-5 h-5 text-[#737373]" />
                   <div>
                     <h4 className="text-xs font-bold text-black">
@@ -612,9 +612,9 @@ export const DeckImportModal: React.FC<DeckImportModalProps> = ({
                   </div>
 
                   {/* Metrics Grid */}
-                  <div className="grid grid-cols-3 gap-3 p-4 rounded-xl bg-[#fafafa] border border-[#e5e5e5]">
-                    <div>
-                      <span className="text-[10px] font-bold uppercase tracking-wider text-[#059669] block mb-0.5">
+                  <div className="grid grid-cols-3 gap-2 sm:gap-3 p-4 rounded-xl bg-[#fafafa] border border-[#e5e5e5]">
+                    <div className="min-w-0">
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-[#059669] block mb-0.5 break-words">
                         Thêm mới
                       </span>
                       <span className="text-xl font-bold font-mono text-black">
@@ -660,7 +660,7 @@ export const DeckImportModal: React.FC<DeckImportModalProps> = ({
         </div>
 
         {/* Footer Actions */}
-        <div className="px-6 py-4 bg-[#fafafa] border-t border-[#e5e5e5] flex items-center justify-between">
+        <div className="px-4 sm:px-6 py-4 bg-[#fafafa] border-t border-[#e5e5e5] flex flex-wrap items-center justify-between gap-2">
           {step > 1 && step < 4 ? (
             <button
               type="button"
@@ -699,7 +699,7 @@ export const DeckImportModal: React.FC<DeckImportModalProps> = ({
             )}
 
             {step === 4 && !isSubmitting && (
-              <div className="flex items-center gap-2">
+              <div className="flex flex-wrap items-center gap-2">
                 <button
                   type="button"
                   onClick={() => {

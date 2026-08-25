@@ -80,9 +80,9 @@ export const ReviewSessionPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-[#ffffff] text-[#000000] flex flex-col justify-between p-4 sm:p-6 md:p-8">
       {/* Top Header / Progress */}
-      <header className="w-full flex items-center justify-between gap-4">
+      <header className="w-full flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
         {!isLoading && !error && (
-          <div className="flex-1">
+          <div className="flex-1 min-w-[200px]">
             <ReviewProgressBar
               completedCount={completedCount}
               totalCount={initialTotal}
@@ -93,7 +93,7 @@ export const ReviewSessionPage: React.FC = () => {
             />
           </div>
         )}
-        <div className="shrink-0 mb-4">
+        <div className="shrink-0">
           <OfflineSyncPill />
         </div>
       </header>

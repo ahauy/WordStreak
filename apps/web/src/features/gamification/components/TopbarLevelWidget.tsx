@@ -148,7 +148,7 @@ export const TopbarLevelWidget: React.FC<TopbarLevelWidgetProps> = ({
         </span>
 
         {/* Mini progress bar */}
-        <div className="w-7 sm:w-9 hidden xs:block">
+        <div className="w-7 sm:w-9 hidden min-[420px]:block">
           <XpProgressBar
             progressPercent={progressPercent}
             tier={tier}
@@ -166,7 +166,7 @@ export const TopbarLevelWidget: React.FC<TopbarLevelWidgetProps> = ({
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 4, scale: 0.98 }}
             transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
-            className="absolute right-0 mt-2 w-80 rounded-2xl bg-white border border-[#e5e5e5] shadow-xl p-4 z-50 text-black text-left focus:outline-none"
+            className="absolute right-0 mt-2 w-[calc(100vw-2rem)] max-w-80 sm:w-80 rounded-2xl bg-white border border-[#e5e5e5] shadow-xl p-4 z-50 text-black text-left focus:outline-none"
             role="dialog"
             aria-label={t("widget.levelProgress", "Level Progress")}
             data-testid="topbar-level-popover"

@@ -102,7 +102,7 @@ export const AnalyticsPage: React.FC = () => {
 
             {/* Error Banner */}
             {error && (
-              <div className="p-4 rounded-2xl bg-red-50 border border-red-200 text-red-700 text-sm font-['Inter'] flex items-center justify-between">
+              <div className="p-4 rounded-2xl bg-red-50 border border-red-200 text-red-700 text-sm font-['Inter'] flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
                 <span>
                   {t(
                     "header.errorLoading",

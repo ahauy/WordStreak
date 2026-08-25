@@ -73,15 +73,15 @@ export const ProgressiveHintBox: React.FC<ProgressiveHintBoxProps> = ({
           >
             {/* Tier 1: Length & First Letter */}
             {hintLevel >= 1 && (
-              <div className="flex items-center justify-between text-xs bg-white border border-[#e5e5e5] rounded-xl px-3 py-2">
+              <div className="flex flex-wrap items-center justify-between gap-y-1.5 text-xs bg-white border border-[#e5e5e5] rounded-xl px-3 py-2">
                 <span className="font-medium text-[#737373]">
                   Tier 1: Độ dài & Ký tự đầu
                 </span>
-                <div className="flex items-center gap-2 font-mono">
-                  <span className="px-1.5 py-0.5 rounded bg-[#f5f3ff] text-[#9333ea] font-semibold">
+                <div className="flex flex-wrap items-center gap-2 font-mono min-w-0">
+                  <span className="px-1.5 py-0.5 rounded bg-[#f5f3ff] text-[#9333ea] font-semibold whitespace-nowrap">
                     {wordLength} chữ cái
                   </span>
-                  <span className="font-bold tracking-widest text-[#000000]">
+                  <span className="font-bold tracking-widest text-[#000000] break-all">
                     {slotsString}
                   </span>
                 </div>
@@ -90,12 +90,12 @@ export const ProgressiveHintBox: React.FC<ProgressiveHintBoxProps> = ({
 
             {/* Tier 2: Meaning */}
             {hintLevel >= 2 && (
-              <div className="flex items-start justify-between text-xs bg-white border border-[#e5e5e5] rounded-xl px-3 py-2">
-                <div className="flex items-center gap-1.5 font-medium text-[#737373]">
+              <div className="flex items-start justify-between gap-x-2 gap-y-1 flex-wrap text-xs bg-white border border-[#e5e5e5] rounded-xl px-3 py-2">
+                <div className="flex items-center gap-1.5 font-medium text-[#737373] shrink-0">
                   <BookOpen className="w-3.5 h-3.5 text-[#9333ea]" />
                   <span>Tier 2: Nghĩa từ</span>
                 </div>
-                <span className="font-sans font-medium text-[#000000] text-right">
+                <span className="font-sans font-medium text-[#000000] text-right min-w-0 break-words flex-1">
                   {meaning}
                 </span>
               </div>
@@ -103,12 +103,12 @@ export const ProgressiveHintBox: React.FC<ProgressiveHintBoxProps> = ({
 
             {/* Tier 3: Phonetic IPA */}
             {hintLevel >= 3 && phonetic && (
-              <div className="flex items-center justify-between text-xs bg-white border border-[#e5e5e5] rounded-xl px-3 py-2">
-                <div className="flex items-center gap-1.5 font-medium text-[#737373]">
+              <div className="flex items-center justify-between gap-x-2 gap-y-1 flex-wrap text-xs bg-white border border-[#e5e5e5] rounded-xl px-3 py-2">
+                <div className="flex items-center gap-1.5 font-medium text-[#737373] shrink-0">
                   <Volume2 className="w-3.5 h-3.5 text-[#9333ea]" />
                   <span>Tier 3: Phiên âm</span>
                 </div>
-                <span className="font-mono text-[#9333ea] font-bold">
+                <span className="font-mono text-[#9333ea] font-bold min-w-0 break-all text-right">
                   {phonetic}
                 </span>
               </div>

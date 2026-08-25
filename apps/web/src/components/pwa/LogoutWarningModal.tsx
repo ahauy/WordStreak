@@ -36,12 +36,12 @@ export const LogoutWarningModal: React.FC<LogoutWarningModalProps> = ({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-xs animate-in fade-in duration-200"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto bg-black/40 backdrop-blur-xs animate-in fade-in duration-200"
       role="dialog"
       aria-modal="true"
       aria-labelledby="logout-warning-title"
     >
-      <div className="w-full max-w-md bg-white rounded-3xl border border-[#e5e5e5] shadow-2xl p-6 relative animate-in zoom-in-95 duration-200">
+      <div className="w-full max-w-md bg-white rounded-3xl border border-[#e5e5e5] shadow-2xl p-6 relative my-auto animate-in zoom-in-95 duration-200">
         <div className="flex items-center gap-3.5 mb-4">
           <div className="w-11 h-11 rounded-full bg-[#fff5f5] border border-[#ff5f56]/30 flex items-center justify-center text-[#ff5f56] shrink-0">
             <AlertTriangle className="w-6 h-6" />

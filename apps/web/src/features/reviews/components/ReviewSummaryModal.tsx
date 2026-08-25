@@ -27,7 +27,7 @@ export const ReviewSummaryModal: React.FC<ReviewSummaryModalProps> = ({
   };
 
   return (
-    <div className="w-full max-w-lg mx-auto my-8 p-8 rounded-2xl border border-[#e5e5e5] bg-[#ffffff] shadow-sm text-center">
+    <div className="w-full max-w-lg mx-auto my-8 p-5 sm:p-8 rounded-2xl border border-[#e5e5e5] bg-[#ffffff] shadow-sm text-center">
       {/* Celebration Icon / Mascot Badge */}
       <div className="w-16 h-16 rounded-full bg-[#fafafa] border border-[#e5e5e5] flex items-center justify-center mx-auto mb-4 relative">
         <Trophy className="w-8 h-8 text-[#ffbd2e]" />
@@ -49,10 +49,10 @@ export const ReviewSummaryModal: React.FC<ReviewSummaryModalProps> = ({
       </p>
 
       {/* Grid of Key Metrics */}
-      <div className="grid grid-cols-3 gap-3 mb-8">
+      <div className="grid grid-cols-3 gap-2 sm:gap-3 mb-8">
         {/* Total Reviewed */}
-        <div className="p-4 rounded-xl bg-[#fafafa] border border-[#e5e5e5] flex flex-col items-center">
-          <span className="text-2xl font-bold text-[#000000] font-display">
+        <div className="p-2.5 sm:p-4 min-w-0 rounded-xl bg-[#fafafa] border border-[#e5e5e5] flex flex-col items-center">
+          <span className="text-xl sm:text-2xl font-bold text-[#000000] font-display">
             {formatNumber(stats.totalReviewed)}
           </span>
           <span className="text-xs text-[#737373] mt-1">
@@ -61,8 +61,8 @@ export const ReviewSummaryModal: React.FC<ReviewSummaryModalProps> = ({
         </div>
 
         {/* Accuracy */}
-        <div className="p-4 rounded-xl bg-[#fafafa] border border-[#e5e5e5] flex flex-col items-center">
-          <span className="text-2xl font-bold text-[#27c93f] font-display">
+        <div className="p-2.5 sm:p-4 min-w-0 rounded-xl bg-[#fafafa] border border-[#e5e5e5] flex flex-col items-center">
+          <span className="text-xl sm:text-2xl font-bold text-[#27c93f] font-display">
             {formatPercent(stats.accuracyPercentage)}
           </span>
           <span className="text-xs text-[#737373] mt-1">
@@ -71,8 +71,8 @@ export const ReviewSummaryModal: React.FC<ReviewSummaryModalProps> = ({
         </div>
 
         {/* Time Spent */}
-        <div className="p-4 rounded-xl bg-[#fafafa] border border-[#e5e5e5] flex flex-col items-center">
-          <span className="text-2xl font-bold text-[#000000] font-display">
+        <div className="p-2.5 sm:p-4 min-w-0 rounded-xl bg-[#fafafa] border border-[#e5e5e5] flex flex-col items-center">
+          <span className="text-xl sm:text-2xl font-bold text-[#000000] font-display">
             {formatTime(stats.durationSeconds)}
           </span>
           <span className="text-xs text-[#737373] mt-1">
@@ -83,7 +83,7 @@ export const ReviewSummaryModal: React.FC<ReviewSummaryModalProps> = ({
 
       {/* Accuracy Detail */}
       <div className="p-4 rounded-xl bg-[#fafafa] border border-[#e5e5e5] text-left mb-8">
-        <div className="flex justify-between text-xs font-medium text-[#525252] mb-2">
+        <div className="flex flex-wrap justify-between gap-x-4 gap-y-1 text-xs font-medium text-[#525252] mb-2">
           <span>
             {t("study:summary.goodEasy", "Remembered (Good / Easy)")}:{" "}
             <strong className="text-[#27c93f]">

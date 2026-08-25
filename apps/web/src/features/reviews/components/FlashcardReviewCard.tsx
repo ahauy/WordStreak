@@ -114,19 +114,19 @@ export const FlashcardReviewCard: React.FC<FlashcardReviewCardProps> = ({
         aria-label={`Flashcard for ${card.word}. Click or press space to flip.`}
       >
         <div
-          className={`relative w-full min-h-[380px] rounded-2xl transition-transform duration-500 transform-style-3d border border-[#e5e5e5] bg-[#ffffff] shadow-sm hover:border-[#d4d4d4] ${
+          className={`relative w-full min-h-[300px] sm:min-h-[380px] rounded-2xl transition-transform duration-500 transform-style-3d border border-[#e5e5e5] bg-[#ffffff] shadow-sm hover:border-[#d4d4d4] ${
             isFlipped ? "rotate-y-180" : ""
           }`}
         >
           {/* FRONT FACE (UGC word/IPA rendered verbatim) */}
           <div className="absolute inset-0 w-full h-full backface-hidden p-8 flex flex-col justify-between rounded-2xl bg-[#ffffff]">
             {/* Header info */}
-            <div className="flex items-center justify-between">
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-[#fafafa] border border-[#e5e5e5] text-[#525252]">
-                <BookOpen className="w-3.5 h-3.5 text-[#737373]" />
-                {card.deckTitle}
+            <div className="flex items-center justify-between gap-2 min-w-0">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-[#fafafa] border border-[#e5e5e5] text-[#525252] min-w-0 max-w-[65%]">
+                <BookOpen className="w-3.5 h-3.5 text-[#737373] shrink-0" />
+                <span className="truncate">{card.deckTitle}</span>
               </span>
-              <span className="text-xs text-[#a3a3a3] font-mono">
+              <span className="text-xs text-[#a3a3a3] font-mono shrink-0">
                 {card.status === "NEW"
                   ? t("cards:status.new", "New Word")
                   : `${card.interval}${unitDay}`}
@@ -138,9 +138,9 @@ export const FlashcardReviewCard: React.FC<FlashcardReviewCardProps> = ({
               <h2 className="text-4xl sm:text-5xl font-semibold text-[#000000] tracking-tight font-display mb-3">
                 {card.word}
               </h2>
-              <div className="flex items-center justify-center gap-2">
+              <div className="flex flex-wrap items-center justify-center gap-2 mt-2">
                 {card.phonetic && (
-                  <span className="text-lg text-[#737373] font-mono">
+                  <span className="text-lg text-[#737373] font-mono max-w-full break-all px-2">
                     {card.phonetic}
                   </span>
                 )}
@@ -189,9 +189,9 @@ export const FlashcardReviewCard: React.FC<FlashcardReviewCardProps> = ({
           <div className="absolute inset-0 w-full h-full backface-hidden rotate-y-180 p-8 flex flex-col justify-between rounded-2xl bg-[#ffffff] overflow-y-auto">
             <div>
               {/* Header */}
-              <div className="flex items-center justify-between border-b border-[#f5f5f5] pb-3 mb-4">
-                <div className="flex items-center gap-2">
-                  <h3 className="text-2xl font-semibold text-[#000000] font-display">
+              <div className="flex items-center justify-between gap-2 border-b border-[#f5f5f5] pb-3 mb-4">
+                <div className="flex items-center gap-2 min-w-0">
+                  <h3 className="text-2xl font-semibold text-[#000000] font-display truncate">
                     {card.word}
                   </h3>
                   <TtsAudioPlayer
@@ -222,7 +222,7 @@ export const FlashcardReviewCard: React.FC<FlashcardReviewCardProps> = ({
                   )}
                 </div>
                 {card.phonetic && (
-                  <span className="text-sm text-[#737373] font-mono">
+                  <span className="text-sm text-[#737373] font-mono shrink-0 max-w-[40%] break-all text-right">
                     {card.phonetic}
                   </span>
                 )}
@@ -288,7 +288,7 @@ export const FlashcardReviewCard: React.FC<FlashcardReviewCardProps> = ({
       {/* 4-TIER OBSIDIAN SRS RATING BUTTONS (BR-I18N-008) */}
       <div className="w-full mt-6 flex flex-col items-center gap-3">
         {isFlipped ? (
-          <div className="grid grid-cols-4 gap-2.5 w-full">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 w-full">
             {/* AGAIN (1) */}
             <button
               type="button"

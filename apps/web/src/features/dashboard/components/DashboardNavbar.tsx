@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { LogOut, Layers, Home, BarChart2, Globe } from "lucide-react";
+import { LogOut, Layers, Home, BarChart2, Globe, Menu, X } from "lucide-react";
 import { UserAvatar } from "../../user-profile/components/UserAvatar";
 import { SettingsModal } from "../../user-profile/components/SettingsModal";
 import { StreakFlame } from "./StreakFlame";
@@ -51,6 +51,7 @@ export const DashboardNavbar: React.FC<DashboardNavbarProps> = ({
   const { pendingCount, triggerSync } = useSyncQueue(storeUser?.id);
   const [isLogoutWarningOpen, setIsLogoutWarningOpen] = useState(false);
   const [isInternalSettingsOpen, setIsInternalSettingsOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [internalSettingsTab, setInternalSettingsTab] = useState<
     "profile" | "avatar" | "security" | "gamification"
   >("profile");
@@ -104,12 +105,46 @@ export const DashboardNavbar: React.FC<DashboardNavbarProps> = ({
   const isDashboardActive = location.pathname === "/dashboard";
   const isDecksActive = location.pathname.startsWith("/decks");
 
+  // Close the mobile menu whenever the route changes (BR-MOBILE-002/003)
+  const [prevPathname, setPrevPathname] = useState(location.pathname);
+  if (prevPathname !== location.pathname) {
+    setPrevPathname(location.pathname);
+    setIsMobileMenuOpen(false);
+  }
+
+  const mobileNavLinkClass = (isActive: boolean) =>
+    `flex items-center gap-2.5 px-3 py-3 rounded-xl text-sm font-semibold transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 ${
+      isActive
+        ? "bg-black text-white"
+        : "text-[#737373] hover:text-black hover:bg-[#fafafa]"
+    }`;
+
   return (
     <>
       <header className="sticky top-0 z-30 w-full border-b border-[#e5e5e5] bg-white/95 backdrop-blur-md transition-colors">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           {/* Brand Logo & Nav links */}
-          <div className="flex items-center gap-4 sm:gap-6 lg:gap-8 shrink-0">
+          <div className="flex items-center gap-3 sm:gap-4 lg:gap-8 shrink-0">
+            {/* Mobile Hamburger Toggle (< sm) — BR-MOBILE-002 */}
+            <button
+              type="button"
+              onClick={() => setIsMobileMenuOpen((prev) => !prev)}
+              aria-expanded={isMobileMenuOpen}
+              aria-controls="mobile-nav-menu"
+              aria-label={
+                isMobileMenuOpen
+                  ? t("actions.closeMenu", "Close menu")
+                  : t("actions.openMenu", "Open menu")
+              }
+              className="sm:hidden w-9 h-9 rounded-full border border-[#e5e5e5] bg-white flex items-center justify-center text-black cursor-pointer hover:bg-[#fafafa] transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 shrink-0 apple-tap-active"
+            >
+              {isMobileMenuOpen ? (
+                <X className="w-[18px] h-[18px]" />
+              ) : (
+                <Menu className="w-[18px] h-[18px]" />
+              )}
+            </button>
+
             <Link
               to="/dashboard"
               className="flex items-center gap-2.5 group focus:outline-none shrink-0"
@@ -221,7 +256,7 @@ export const DashboardNavbar: React.FC<DashboardNavbarProps> = ({
                 onOpenFlameNurture ||
                 (() => useMascotStore.getState().openFlameNurture())
               }
-              className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-xs font-semibold shadow-xs cursor-pointer hover:scale-[1.02] active:scale-[0.98] transition-all focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:ring-offset-2 focus:outline-none whitespace-nowrap shrink-0 ${tierInfo.pillBg} ${tierInfo.pillText} ${tierInfo.pillBorder}`}
+              className={`hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-xs font-semibold shadow-xs cursor-pointer hover:scale-[1.02] active:scale-[0.98] transition-all focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:ring-offset-2 focus:outline-none whitespace-nowrap shrink-0 ${tierInfo.pillBg} ${tierInfo.pillText} ${tierInfo.pillBorder}`}
               title={t("dashboard:flame.nurtureGarden", "Flame Nurture Garden")}
               aria-label={t(
                 "dashboard:flame.nurtureGarden",
@@ -245,10 +280,14 @@ export const DashboardNavbar: React.FC<DashboardNavbarProps> = ({
             </button>
 
             {/* Offline Sync State Pill */}
-            <OfflineSyncPill userId={storeUser?.id} />
+            <div className="hidden sm:flex">
+              <OfflineSyncPill userId={storeUser?.id} />
+            </div>
 
             {/* Language Switcher Secondary Utility Pill */}
-            <LanguageSwitcher />
+            <div className="hidden sm:flex">
+              <LanguageSwitcher />
+            </div>
 
             {/* User Profile & Settings Pill Trigger */}
             <button
@@ -281,6 +320,63 @@ export const DashboardNavbar: React.FC<DashboardNavbarProps> = ({
             </button>
           </div>
         </div>
+
+        {/* Mobile Navigation Drawer (< sm) — BR-MOBILE-003 */}
+        {isMobileMenuOpen && (
+          <nav
+            id="mobile-nav-menu"
+            aria-label="Main Navigation"
+            className="sm:hidden absolute inset-x-0 top-full border-b border-[#e5e5e5] bg-white/95 backdrop-blur-md shadow-lg px-3 py-3 flex flex-col gap-1"
+          >
+            <Link
+              to="/dashboard"
+              onClick={() => setIsMobileMenuOpen(false)}
+              aria-current={isDashboardActive ? "page" : undefined}
+              className={mobileNavLinkClass(isDashboardActive)}
+            >
+              <Home className="w-4 h-4 shrink-0" />
+              <span>{t("nav.dashboard", "Overview")}</span>
+            </Link>
+
+            <Link
+              to="/decks"
+              onClick={() => setIsMobileMenuOpen(false)}
+              aria-current={isDecksActive ? "page" : undefined}
+              className={mobileNavLinkClass(isDecksActive)}
+            >
+              <Layers className="w-4 h-4 shrink-0" />
+              <span>{t("nav.decks", "Decks")}</span>
+            </Link>
+
+            <Link
+              to="/community"
+              onClick={() => setIsMobileMenuOpen(false)}
+              aria-current={
+                location.pathname.startsWith("/community")
+                  ? "page"
+                  : undefined
+              }
+              className={mobileNavLinkClass(
+                location.pathname.startsWith("/community"),
+              )}
+            >
+              <Globe className="w-4 h-4 shrink-0" />
+              <span>{t("nav.community", "Explore")}</span>
+            </Link>
+
+            <Link
+              to="/analytics"
+              onClick={() => setIsMobileMenuOpen(false)}
+              aria-current={
+                location.pathname === "/analytics" ? "page" : undefined
+              }
+              className={mobileNavLinkClass(location.pathname === "/analytics")}
+            >
+              <BarChart2 className="w-4 h-4 shrink-0" />
+              <span>{t("nav.analytics", "Analytics")}</span>
+            </Link>
+          </nav>
+        )}
       </header>
 
       {/* Fallback Internal Settings Modal when not controlled externally */}

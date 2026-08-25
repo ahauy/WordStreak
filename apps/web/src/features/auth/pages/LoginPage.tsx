@@ -65,7 +65,7 @@ export const LoginPage: React.FC = () => {
             <p>
               © {new Date().getFullYear()} WordStreak. 100% Free & Open-Source.
             </p>
-            <div className="flex items-center gap-5">
+            <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2">
               <a
                 href="#"
                 onClick={(e) => e.preventDefault()}

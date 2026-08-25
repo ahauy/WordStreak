@@ -67,11 +67,11 @@ export const DecksListPage: React.FC = () => {
             </div>
 
             <h1
-              className="text-2xl sm:text-3xl font-bold text-black tracking-tight flex items-center gap-3"
+              className="text-2xl sm:text-3xl font-bold text-black tracking-tight flex flex-wrap items-center gap-x-3 gap-y-1"
               style={{ fontFamily: "var(--font-display)" }}
             >
-              <span>{t("decks:title", "Vocabulary Decks")}</span>
-              <span className="text-xs sm:text-sm font-mono font-medium px-2.5 py-0.5 rounded-full bg-[#fafafa] border border-[#e5e5e5] text-[#525252]">
+              <span className="min-w-0 break-words">{t("decks:title", "Vocabulary Decks")}</span>
+              <span className="shrink-0 text-xs sm:text-sm font-mono font-medium px-2.5 py-0.5 rounded-full bg-[#fafafa] border border-[#e5e5e5] text-[#525252]">
                 {t("decks:cardCount", {
                   count: decks.length,
                   defaultValue: `${formatNumber(decks.length)} decks`,
@@ -131,9 +131,9 @@ export const DecksListPage: React.FC = () => {
           </div>
 
           {/* Search & Sort Options */}
-          <div className="flex flex-1 sm:flex-initial items-center gap-3">
+          <div className="flex flex-1 sm:flex-initial flex-wrap items-center gap-3">
             {/* Search Input */}
-            <div className="relative flex-1 sm:w-64">
+            <div className="relative min-w-0 flex-1 sm:w-64">
               <Search className="w-3.5 h-3.5 text-[#a3a3a3] absolute left-3.5 top-1/2 -translate-y-1/2" />
               <input
                 type="text"
@@ -148,7 +148,7 @@ export const DecksListPage: React.FC = () => {
             </div>
 
             {/* Sort Select */}
-            <div className="relative">
+            <div className="relative shrink-0">
               <select
                 value={sortBy}
                 onChange={(e) =>
