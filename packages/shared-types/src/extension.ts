@@ -1,4 +1,5 @@
 import type { CardResponse } from "./cards.js";
+import type { ReviewSummaryDto } from "./reviews.js";
 
 export interface QuickCaptureCardDto {
   word: string;
@@ -42,11 +43,18 @@ export interface RecentCaptureItem {
   sourceUrl?: string | null;
 }
 
+export interface ReviewSummaryCacheState {
+  summary: ReviewSummaryDto;
+  etag: string | null;
+  fetchedAt: string;
+}
+
 export interface ExtensionStorageState {
   token: string | null;
   user: ExtensionUserSummary | null;
   settings: ExtensionSettingsPayload;
   recentCaptures: RecentCaptureItem[];
+  reviewSummaryCache?: ReviewSummaryCacheState | null;
 }
 
 export type ExtensionMessage =
@@ -57,4 +65,6 @@ export type ExtensionMessage =
   | { type: "LOGOUT" }
   | { type: "FETCH_DECKS" }
   | { type: "GET_SETTINGS" }
-  | { type: "UPDATE_SETTINGS"; payload: Partial<ExtensionSettingsPayload> };
+  | { type: "UPDATE_SETTINGS"; payload: Partial<ExtensionSettingsPayload> }
+  | { type: "REFRESH_BADGE"; payload?: { immediate?: boolean } };
+
