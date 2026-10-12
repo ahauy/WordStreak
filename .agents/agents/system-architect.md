@@ -7,7 +7,7 @@ description: >-
   requirements quality checklist (speckit-checklist), architectural design & data modeling
   (speckit-plan), DTO contract definition in packages/shared-types, Prisma database migration
   planning, and dependency-ordered task generation (speckit-tasks).
-model: claude-sonnet-4.6
+model: inherit
 subagent: true
 inheritMcp: true
 commandExecutionPolicy: auto

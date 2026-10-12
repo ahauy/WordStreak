@@ -58,7 +58,7 @@ Before starting analysis or code, ensure the working environment is synced with 
 
 - **MANDATORY AUTOMATIC SUBAGENT DELEGATION**:
   - The Orchestrator MUST NEVER run BA stages directly on the primary context.
-  - **Step 1 (Intake)**: Dispatch `business-analyst` via `invoke_subagent` (`claude-opus-4.6` / `inherit`) to run `intake-classifier` and create `.specify/features/<slug>/`.
+  - **Step 1 (Intake)**: Dispatch `business-analyst` via `invoke_subagent` (`pro` / `inherit`) to run `intake-classifier` and create `.specify/features/<slug>/`.
 
 - **🛑 INTERACTIVE ELICITATION INTERVIEW GATE (Stage 2 — MANDATORY CUSTOMER INTERVIEW)**:
   - The AI **MUST PAUSE** before domain modeling, gap analysis, or spec writing.
@@ -88,7 +88,7 @@ Before starting analysis or code, ensure the working environment is synced with 
 #### Case B: Domain Baseline SIGNED-OFF but Technical Plan Missing
 
 - **MANDATORY AUTOMATIC SUBAGENT DELEGATION**:
-  - Dispatch `system-architect` via `invoke_subagent` (`claude-sonnet-4.6` / `inherit`) to run the Speckit Pipeline:
+  - Dispatch `system-architect` via `invoke_subagent` (`pro` / `inherit`) to run the Speckit Pipeline:
     - Run `speckit-specify` -> create `spec.md`.
     - Run `speckit-plan` -> create `plan.md`, `data-model.md`, `contracts/`.
     - Run `speckit-tasks` -> create `tasks.md`.
@@ -124,7 +124,7 @@ Before starting analysis or code, ensure the working environment is synced with 
 #### Case D: Implementation Finished, Final Review & Documentation
 
 - **MANDATORY AUTOMATIC SUBAGENT DELEGATION**:
-  - Dispatch `code-reviewer` (`claude-sonnet-4.6` / `inherit`) via `invoke_subagent` for adversarial code quality & security audit.
+  - Dispatch `code-reviewer` (`flash` / `inherit`) via `invoke_subagent` for adversarial code quality & security audit.
   - Dispatch `ui-ux-reviewer` (`gemini-3.7-flash`) via `invoke_subagent` for adversarial UI, anti-slop, and WCAG AA review.
   - Dispatch `user-guide-creator` (`gemini-3.7-flash`) via `invoke_subagent` to generate [docs/user-guides/<slug>.md](../../docs/user-guides/) with real Playwright screenshots.
   - Dispatch `tech-doc-architect` (`gemini-3.7-flash`) via `invoke_subagent` to update [docs/features/<slug>/README.md](../../docs/features/).

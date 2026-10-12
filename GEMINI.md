@@ -97,11 +97,11 @@ The primary orchestrator agent MUST strictly follow the standard multi-agent exe
 ```mermaid
 graph TD
     subgraph P1 ["PHASE 1: BA & Domain Elicitation"]
-        BA["🍉 business-analyst (claude-opus-4.6 / inherit)"]
+        BA["🍉 business-analyst (pro / inherit — 5h Pool)"]
     end
 
     subgraph P2 ["PHASE 2-4: Tech Spec & Architecture Planning"]
-        SA["🏗️ system-architect (claude-sonnet-4.6 / inherit)"]
+        SA["🏗️ system-architect (pro / inherit — 5h Pool)"]
     end
 
     subgraph P5 ["PHASE 5: Fullstack Implementation & TDD"]
@@ -121,14 +121,14 @@ graph TD
     end
 
     subgraph P6A ["PHASE 6A: Adversarial Quality Review"]
-        CR["🛡️ code-reviewer (claude-sonnet-4.6 / inherit)"]
+        CR["🛡️ code-reviewer (flash / inherit — 5h Pool)"]
         UR["👁️ ui-ux-reviewer (gemini-3.7-flash)"]
     end
 
     subgraph P6B ["PHASE 6B: Standard Documentation"]
         TD["📚 tech-doc-architect (gemini-3.7-flash)"]
         UG["💼 user-guide-creator (gemini-3.7-flash)"]
-        AE["⚖️ agent-evaluator (claude-sonnet-4.6 / inherit)"]
+        AE["⚖️ agent-evaluator (flash / inherit — 5h Pool)"]
     end
 
     BA --> SA
@@ -148,9 +148,9 @@ graph TD
 - **Zero Direct Feature Coding by Orchestrator**: The primary orchestrator agent is **STRICTLY PROHIBITED** from calling `write_to_file` or `replace_file_content` directly for any feature code, specifications, database schemas, or unit/E2E test files.
 - **Mandatory Delegation via `invoke_subagent`**: All domain elicitation, architecture planning, backend/frontend implementation, code review, and user guide generation MUST be delegated to dedicated subagents spawned via `invoke_subagent`.
 - **Model Allocation Matrix**:
-  - `Model: "claude-opus-4.6" / "inherit"` (Deep Domain Elicitation): `business-analyst`.
-  - `Model: "claude-sonnet-4.6" / "inherit"` (Architecture & Adversarial Review): `system-architect`, `code-reviewer`, `agent-evaluator`.
-  - `Model: "gemini-3.7-flash"` (Fast Execution & Testing): `code-explorer`, `backend-developer`, `frontend-developer`, `slice-implementer`, `build-resolver`, `ui-ux-reviewer`, `tech-doc-architect`, `user-guide-creator`.
+  - **5-Hour Rolling Pool Priority (Default)**: Always prioritize Gemini models (`flash`, `pro`, `flash_lite`, or `inherit` when the main chat is on Gemini) so 100% of orchestration and subagents consume the 5-hour rolling quota pool instead of external weekly caps.
+  - `Model: "pro" / "inherit"` (Deep Domain Elicitation & Architecture — 5h Pool): `business-analyst`, `system-architect`.
+  - `Model: "flash"` (Fast Execution, Adversarial Review & Testing — 5h Pool): `code-explorer`, `backend-developer`, `frontend-developer`, `slice-implementer`, `build-resolver`, `e2e-runner`, `code-reviewer`, `ui-ux-reviewer`, `tech-doc-architect`, `user-guide-creator`, `agent-evaluator`.
 - **Pre-execution Catalog Definition**: Before running any phase, the orchestrator MUST ensure subagents are defined via `define_subagent` with specialized system prompts.
 
 ### Protocol Execution Chain:
@@ -162,7 +162,7 @@ graph TD
      - **Strict No-Hallucination Policy**: AI is STRICTLY FORBIDDEN from inventing business rules, error behaviors, default parameters, or edge cases. If anything is unknown or ambiguous, AI MUST ask the customer directly. Silent auto-generation of unconfirmed `ASM-` assumptions without user interaction is strictly prohibited.
    - **Stage 3–8 (Domain Modeling to Handover)**: Only after the user confirms elicitation answers, `business-analyst` executes gap analysis, domain modeling, risk scanning, spec writing, IEEE 29148 validation, and handover brief to produce `baseline.md`.
    - **🛑 Confirmation Gate 1**: Present Domain Baseline summary to User for sign-off.
-2. **Phase 2–4 (Spec & Architecture)**: Auto-dispatch `system-architect` (`claude-sonnet-4.6` / `inherit`) to produce `spec.md`, `plan.md`, `data-model.md`, `contracts/`, and `tasks.md`. Present Confirmation Gate 2 to User.
+2. **Phase 2–4 (Spec & Architecture)**: Auto-dispatch `system-architect` (`pro` / `inherit`) to produce `spec.md`, `plan.md`, `data-model.md`, `contracts/`, and `tasks.md`. Present Confirmation Gate 2 to User.
 3. **Phase 5 (Fullstack Implementation & TDD)**:
    - Auto-dispatch `code-explorer` (`gemini-3.7-flash`) to inspect existing patterns.
    - Auto-dispatch `backend-developer` (`gemini-3.7-flash`) & `frontend-developer` (`gemini-3.7-flash`) in parallel or sequenced slices.
@@ -170,12 +170,24 @@ graph TD
    - Auto-dispatch `build-resolver` (`gemini-3.7-flash`) to eliminate type/lint build errors.
    - Auto-dispatch `e2e-runner` (`gemini-3.7-flash`) to verify test suites.
 4. **Phase 6A (Adversarial Review)**:
-   - Auto-dispatch `code-reviewer` (`claude-sonnet-4.6` / `inherit`) for adversarial code quality & security review.
+   - Auto-dispatch `code-reviewer` (`flash` / `inherit`) for adversarial code quality & security review.
    - Auto-dispatch `ui-ux-reviewer` (`gemini-3.7-flash`) for Anti-AI-Slop, `DESIGN.md`, `MEMORY.md`, and WCAG AA verification.
 5. **Phase 6B (Documentation & Sign-off)**:
    - Auto-dispatch `tech-doc-architect` (`gemini-3.7-flash`) (`docs/features/<slug>/README.md`).
    - Auto-dispatch `user-guide-creator` (`gemini-3.7-flash`) (`docs/user-guides/<slug>.md`).
-   - Auto-dispatch `agent-evaluator` (`claude-sonnet-4.6` / `inherit`) (Final DoD & Quality Scorecard).
+   - Auto-dispatch `agent-evaluator` (`flash` / `inherit`) (Final DoD & Quality Scorecard).
+
+## 8. 5-Hour Quota Pool Monitoring & Early Warning Protocol
+
+WordStreak utilizes the Gemini 5-hour rolling quota window to maintain continuous autonomous execution. The PreInvocation hook at `.agents/scripts/hooks/session-context-init.js` automatically tracks rolling turns and token consumption across all recent transcripts within the active 5-hour window, injecting real-time quota telemetry into `### [WordStreak Project Context]`.
+
+**MANDATORY EARLY WARNING GATE:**
+Whenever the hook injects a `🟡 WARNING (≥ 75%)` or `🔴 CRITICAL (≥ 90%)` alert, the AI MUST display a prominent notice at the top of its response in Vietnamese:
+- **Thông tin hạn mức 5h**: Tỷ lệ sử dụng hiện tại (`%`), số turns (`turns/150`), tokens đã dùng (`activeTokens`, `cachedTokens`) và thời điểm reset chính xác theo giờ địa phương (`HH:MM`).
+- **Khuyến nghị hành động**:
+  - Ưu tiên ủy thác công việc nặng cho các subagent `flash` / `flash_lite`.
+  - Giữ câu trả lời ngắn gọn, tập trung vào trọng tâm.
+  - Sử dụng công cụ `schedule` để lập lịch tiếp tục công việc ngay sau mốc reset 5h nếu hạn mức chạm ngưỡng tới hạn.
 
 ---
 
