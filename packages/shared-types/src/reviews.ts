@@ -57,3 +57,16 @@ export interface ReviewStatsResponse {
   learningCount: number;
   masteredCount: number;
 }
+
+export interface ReviewSummaryDto {
+  dueCount: number;
+  newAvailable: number;
+  studiedToday: number;
+  dailyGoal: number;
+  goalReached: boolean;
+  currentStreak: number;
+  streakAtRisk: boolean;
+  timezone: string;
+  endOfDayAt: string;
+  nextDueAt: string | null;
+}

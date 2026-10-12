@@ -29,7 +29,14 @@
    - [Epic 8: Speech Recognition & Pronunciation Assessment](#epic-08-speech-recognition--pronunciation-luyện-phát-âm-ai)
    - [Epic 9: Import/Export, Community & Ecosystem](#epic-09-importexport-community--ecosystem-hệ-sinh-thái)
    - [Epic 10: Multi-language & Internationalization (i18n)](#epic-10-multi-language--internationalization-i18n-đa-ngôn-ngữ-anhviệt)
+   - [Epic 11: Starter Decks & Onboarding](#epic-11-starter-decks--onboarding-bộ-từ-có-sẵn--hướng-dẫn-đầu-tiên)
+   - [Epic 12: UX Improvements & Growth](#epic-12-ux-improvements--growth-cải-tiến-ux--tăng-trưởng) <!-- Epic 12: Notification & Reminder System -->
+   - [Epic 13: Vocabulary Starter Library & Content Strategy (TSL/NGSL)](#epic-13-vocabulary-starter-library--content-strategy-tslngsl)
 5. [Lộ trình phát hành theo Giai đoạn & Sprint (Release Roadmap)](#5-lộ-trình-phát-hành-theo-giai-đoạn--sprint)
+   - [Sprint 9: Activation & Retention](#5-lộ-trình-phát-hành-theo-giai-đoạn--sprint)
+   - [Sprint 10: Learning Quality & Growth](#5-lộ-trình-phát-hành-theo-giai-đoạn--sprint)
+   - [Sprint 11: Academic & IELTS Expansion (NAWL)](#5-lộ-trình-phát-hành-theo-giai-đoạn--sprint)
+   - [Sprint 12: Business & Spoken Expansion (BSL & NGSL-S)](#5-lộ-trình-phát-hành-theo-giai-đoạn--sprint)
 6. [Quy chuẩn định nghĩa hoàn thành (Definition of Done - DoD)](#6-quy-chuẩn-định-nghĩa-hoàn-thành-definition-of-done)
 7. [Phân tích & Kế hoạch Phát hành Production (Go-Live Plan)](#7-phân-tích--kế-hoạch-phát-hành-production-go-live-plan)
    - [7.1 Quyết định ưu tiên: Epic 10 vs Deploy](#71-quyết-định-ưu-tiên-hoàn-thiện-epic-10-trước-hay-deploy-trước)
@@ -57,6 +64,7 @@
 - **Persona A - Alex (Luyện thi chứng chỉ IELTS/TOEIC/TOEFL):** Cần học 10-30 từ học thuật mỗi ngày theo chủ đề, cần nhớ chuẩn nghĩa trong ngữ cảnh và collocations đi kèm.
 - **Persona B - Minh (Người đi làm bận rộn):** Có ít thời gian (10-15 phút/ngày), cần app nhắc nhở ôn tập đúng lúc, có cơ chế bảo vệ chuỗi học (Streak Freeze) khi tăng ca.
 - **Persona C - Linh (Người đọc báo/xem video tiếng Anh thường xuyên):** Thấy từ mới khi lướt web và muốn lưu ngay vào bộ từ cá nhân thông qua Extension mà không phải mở app thủ công.
+- **Persona D - Nam (Người mất gốc / Khởi đầu lại từ đầu):** Đã bỏ tiếng Anh lâu năm, mất phương hướng và dễ nản lòng khi thấy danh sách từ quá dài hoặc câu ví dụ quá khó. Cần lộ trình chia nhỏ (5 từ/ngày), giải thích bằng tiếng Việt, bài học ngữ pháp nền tảng $\le 2$ phút, âm thanh rõ ràng và mẹo phát âm âm cuối đặc thù cho người Việt.
 
 ---
 
@@ -101,22 +109,45 @@ graph TD
 
 ## 3. Bảng ma trận ưu tiên MoSCoW & RICE
 
-| Mã Epic     | Nghiệp vụ / Tính năng                            |  Phân loại MoSCoW   | RICE Score |    Mức ưu tiên     |   Sprint khuyến nghị    |
-| :---------- | :----------------------------------------------- | :-----------------: | :--------: | :----------------: | :---------------------: |
-| **EPIC-01** | Authentication, Sessions & Profile               |    **Must Have**    |    9.0     | **P0 (Critical)**  | Sprint 1 _(Hoàn thành)_ |
-| **EPIC-02** | Deck & Card Management (CRUD + Context)          |    **Must Have**    |    9.5     | **P0 (Critical)**  |        Sprint 2         |
-| **EPIC-03** | SRS Engine (SM-2) & Flashcard Review Flow        |    **Must Have**    |    10.0    | **P0 (Core USP)**  |        Sprint 2         |
-| **EPIC-04** | Quiz Modes: Trắc nghiệm & Điền vào chỗ trống     |    **Must Have**    |    8.5     |   **P0 (High)**    |        Sprint 3         |
-| **EPIC-05** | Streak Tracking, Daily Goal & Streak Freeze      |    **Must Have**    |    8.8     | **P0 (Retention)** |        Sprint 3         |
-| **EPIC-06** | Learning Analytics & GitHub-style Heatmap        |   **Should Have**   |    7.8     |   **P1 (High)**    |        Sprint 4         |
-| **EPIC-07** | AI Flashcard Auto-fill & Shared DB Cache         |   **Should Have**   |    8.2     |   **P1 (High)**    |        Sprint 4         |
-| **EPIC-04** | Quiz Modes: Luyện nghe (Audio) & Nối từ          |   **Should Have**   |    7.0     |  **P1 (Medium)**   |        Sprint 5         |
-| **EPIC-08** | Luyện phát âm (Voice Recognition via Web Speech) |   **Could Have**    |    6.2     |  **P2 (Medium)**   |        Sprint 5         |
-| **EPIC-09** | Import/Export Anki (.apkg) & CSV                 |   **Could Have**    |    6.5     |  **P2 (Medium)**   |        Sprint 6         |
-| **EPIC-09** | Community Deck Sharing (Public/Clone Deck)       |   **Could Have**    |    6.0     |  **P2 (Medium)**   |        Sprint 6         |
-| **EPIC-10** | Multi-language & i18n (Tiếng Anh & Tiếng Việt)   |   **Should Have**   |    8.0     |   **P1 (High)**    |        Sprint 6         |
-| **EPIC-09** | Chrome Extension (Highlight to Save Deck)        | **Won't Have (v1)** |    5.5     |  **P3 (Phase 4)**  |        Sprint 7         |
-| **EPIC-09** | PWA & Offline Study Mode                         | **Won't Have (v1)** |    5.0     |  **P3 (Phase 4)**  |        Sprint 7         |
+| Mã Epic     | Nghiệp vụ / Tính năng                             |  Phân loại MoSCoW   | RICE Score |      Mức ưu tiên      |   Sprint khuyến nghị    |
+| :---------- | :------------------------------------------------ | :-----------------: | :--------: | :-------------------: | :---------------------: |
+| **EPIC-01** | Authentication, Sessions & Profile                |    **Must Have**    |    9.0     |   **P0 (Critical)**   | Sprint 1 _(Hoàn thành)_ |
+| **EPIC-02** | Deck & Card Management (CRUD + Context)           |    **Must Have**    |    9.5     |   **P0 (Critical)**   |        Sprint 2         |
+| **EPIC-03** | SRS Engine (SM-2) & Flashcard Review Flow         |    **Must Have**    |    10.0    |   **P0 (Core USP)**   |        Sprint 2         |
+| **EPIC-04** | Quiz Modes: Trắc nghiệm & Điền vào chỗ trống      |    **Must Have**    |    8.5     |     **P0 (High)**     |        Sprint 3         |
+| **EPIC-05** | Streak Tracking, Daily Goal & Streak Freeze       |    **Must Have**    |    8.8     |  **P0 (Retention)**   |        Sprint 3         |
+| **EPIC-06** | Learning Analytics & GitHub-style Heatmap         |   **Should Have**   |    7.8     |     **P1 (High)**     |        Sprint 4         |
+| **EPIC-07** | AI Flashcard Auto-fill & Shared DB Cache          |   **Should Have**   |    8.2     |     **P1 (High)**     |        Sprint 4         |
+| **EPIC-04** | Quiz Modes: Luyện nghe (Audio) & Nối từ           |   **Should Have**   |    7.0     |    **P1 (Medium)**    |        Sprint 5         |
+| **EPIC-08** | Luyện phát âm (Voice Recognition via Web Speech)  |   **Could Have**    |    6.2     |    **P2 (Medium)**    |        Sprint 5         |
+| **EPIC-09** | Import/Export Anki (.apkg) & CSV                  |   **Could Have**    |    6.5     |    **P2 (Medium)**    |        Sprint 6         |
+| **EPIC-09** | Community Deck Sharing (Public/Clone Deck)        |   **Could Have**    |    6.0     |    **P2 (Medium)**    |        Sprint 6         |
+| **EPIC-10** | Multi-language & i18n (Tiếng Anh & Tiếng Việt)    |   **Should Have**   |    8.0     |     **P1 (High)**     |        Sprint 6         |
+| **EPIC-09** | Chrome Extension (Highlight to Save Deck)         | **Won't Have (v1)** |    5.5     |   **P3 (Phase 4)**    |        Sprint 7         |
+| **EPIC-09** | PWA & Offline Study Mode                          | **Won't Have (v1)** |    5.0     |   **P3 (Phase 4)**    |        Sprint 7         |
+| **EPIC-09** | Extension: Badge, Notification, Micro-review      |    **Must Have**    |    8.5     |  **P0 (Retention)**   |        Sprint 9         |
+| **EPIC-11** | Starter Decks + Onboarding 60s                    |    **Must Have**    |    9.0     |  **P0 (Activation)**  |        Sprint 9         |
+| **EPIC-12** | "Học hôm nay" Button + SRS Auto-grade             |   **Should Have**   |    8.0     |      **P1 (UX)**      |        Sprint 9         |
+| **EPIC-13** | US-LIB-01: Pipeline nạp & làm giàu nội dung       |    **Must Have**    |    9.2     |   **P0 (Critical)**   |        Sprint 9         |
+| **EPIC-13** | US-LIB-02: Mô hình dữ liệu Official & Enrollment  |    **Must Have**    |    9.0     | **P0 (Architecture)** |        Sprint 9         |
+| **EPIC-13** | US-LIB-03: Trang Thư viện & Chi tiết Deck         |    **Must Have**    |    8.8     |  **P0 (Activation)**  |        Sprint 9         |
+| **EPIC-13** | US-LIB-04: Onboarding theo mục tiêu (TOEIC)       |    **Must Have**    |    9.0     |  **P0 (Activation)**  |        Sprint 9         |
+| **EPIC-13** | US-LIB-08: Ghi nguồn dữ liệu & CC BY-SA 4.0       |    **Must Have**    |    7.5     |    **P0 (Legal)**     |        Sprint 9         |
+| **EPIC-13** | US-LIB-11: Lối vào mất gốc & Test thích ứng       |    **Must Have**    |    8.8     | **P0 (Inclusivity)**  |        Sprint 9         |
+| **EPIC-13** | US-LIB-12: Chặng Khởi động (NGSL Top 300 Decks)   |    **Must Have**    |    9.0     |  **P0 (Activation)**  |        Sprint 9         |
+| **EPIC-13** | US-LIB-13: Ví dụ kiểm soát từ vựng (NGSL+TSL)     |   **Should Have**   |    8.2     |   **P1 (Quality)**    |        Sprint 9         |
+| **EPIC-13** | US-LIB-05: Lọc từ đã biết (Known-word Triage)     |   **Should Have**   |    8.2     |      **P1 (UX)**      |        Sprint 10        |
+| **EPIC-13** | US-LIB-06: Lộ trình TOEIC & Thanh độ phủ ước tính |   **Should Have**   |    8.5     |   **P1 (Core USP)**   |        Sprint 10        |
+| **EPIC-13** | US-LIB-07: Quiz kiểu TOEIC (Mini Part 5)          |   **Should Have**   |    8.0     |   **P1 (Learning)**   |        Sprint 10        |
+| **EPIC-13** | US-LIB-09: Báo lỗi thẻ & Content Versioning       |   **Should Have**   |    7.2     |   **P1 (Quality)**    |        Sprint 10        |
+| **EPIC-13** | US-LIB-10: Analytics cho thư viện từ vựng         |   **Could Have**    |    6.8     |    **P2 (Growth)**    |        Sprint 10        |
+| **EPIC-13** | US-LIB-14: Audio-first & Mẹo âm cuối tiếng Việt   |   **Should Have**   |    8.0     |   **P1 (Learning)**   |        Sprint 10        |
+| **EPIC-13** | US-LIB-15: Intra-session Learning Steps & Check   |   **Should Have**   |    7.8     |     **P1 (SRS)**      |        Sprint 10        |
+| **EPIC-13** | US-LIB-16: Cột mốc, Phiên 5p & Welcome Back       |   **Could Have**    |    7.2     |  **P2 (Retention)**   |        Sprint 10        |
+| **EPIC-12** | AI: Đoạn văn ngắn + Leech detection               |   **Could Have**    |    7.0     |   **P2 (Learning)**   |        Sprint 10        |
+| **EPIC-11** | SEO Word Pages + Analytics                        |   **Could Have**    |    6.5     |    **P2 (Growth)**    |        Sprint 10        |
+| **EPIC-09** | Web Push & Email (mobile)                         | **Won't Have (v2)** |    6.0     |   **P3 (Phase 5)**    |        Sprint 10        |
+| **EPIC-13** | US-LIB-17: Cụm từ cố định & Deck ảnh Part 1       | **Won't Have (v2)** |    6.0     |   **P3 (Phase 6)**    |        Sprint 11        |
 
 ---
 
@@ -356,6 +387,52 @@ _Mục tiêu: Giúp người dùng dễ dàng chuyển đổi dữ liệu và m�
     - [x] Frontend: Động cơ tự động đồng bộ `reconnectionSyncEngine.ts` với Exponential Backoff (5s - 60s) và lắng nghe sự kiện mạng `online`/`offline`.
     - [x] Frontend: Bộ components Obsidian UI (`OfflineSyncPill`, `DeckOfflineToggle`, `PwaInstallBanner`, `LogoutWarningModal`, `TtsAudioPlayer`) tích hợp vào `DashboardNavbar`, `DeckDetailPage`, và `ReviewSessionPage`.
 
+- [x] **US-REM-01: API tóm tắt trạng thái học cho Extension (Backend)**
+  - **AC:** Endpoint nhẹ `GET /api/v1/reviews/summary` (JwtAuthGuard) trả `dueCount`, `newAvailable`, `studiedToday`, `dailyGoal`, `goalReached`, `currentStreak`, `streakAtRisk`, `timezone`, `endOfDayAt`, `nextDueAt`. Hỗ trợ `ETag`/`304`.
+  - **Tasks:**
+    - [x] Backend: `GET /api/v1/reviews/summary` tái dùng `StreakService` tính ngày theo múi giờ người dùng.
+    - [x] Backend: Unit test cho các nhánh `goalReached` / `streakAtRisk`.
+    - [x] Shared: `ReviewSummaryDto` vào `packages/shared-types`.
+
+- [ ] **US-ECO-05: Badge số thẻ đến hạn trên icon Extension**
+  - **AC:** Icon hiển thị số thẻ đến hạn; tự cập nhật khi mở trình duyệt, khi mở popup, và theo chu kỳ alarm. Ẩn khi `dueCount = 0`.
+  - **Tasks:**
+    - [ ] Extension: thêm `alarms` vào `manifest.json`; alarm làm mới badge (30–60 phút).
+    - [ ] Extension: `chrome.runtime.onStartup` + `onInstalled` làm mới badge ngay.
+    - [ ] Extension: dùng `nextDueAt` để đặt alarm đúng lúc thay vì poll liên tục.
+    - [ ] Extension: khi người dùng ôn xong trên web app, extension làm mới badge qua Web SSO Auth Sync.
+
+- [ ] **US-ECO-06: Thông báo nhắc học theo luật điều kiện**
+  - **AC:** Thông báo hệ thống có nút **Học ngay** / **Để sau**; bấm "Học ngay" mở `/review` ở tab mới. Tuân thủ giờ yên tĩnh, trần 3 thông báo/ngày và logic giảm tần suất (bỏ qua 3 lần liên tiếp → tối đa 1/ngày).
+  - **Tasks:**
+    - [ ] Extension: thêm `notifications` vào `manifest.json`.
+    - [ ] Extension: module `reminderRules.ts` (hàm thuần, dễ unit test) nhận `summary + settings + state` → quyết định có nhắc không.
+    - [ ] Extension: alarm `daily-reminder` đặt theo giờ người dùng chọn.
+    - [ ] Extension: xử lý `onClicked` / `onButtonClicked`, snooze bằng alarm một lần.
+    - [ ] Extension: lưu trạng thái nhắc vào `chrome.storage.local`.
+    - [ ] i18n: chuỗi thông báo EN/VI theo `preferredLanguage`.
+
+- [ ] **US-ECO-07: Cài đặt nhắc học (Options Page)**
+  - **AC:** Bật/tắt nhắc, chọn giờ nhắc, giờ yên tĩnh (bắt đầu–kết thúc), bật/tắt "nhắc khi streak sắp mất", bật/tắt badge.
+  - **Tasks:**
+    - [ ] Extension: trang options/popup tab cài đặt, lưu bằng `chrome.storage.sync`.
+    - [~] Giai đoạn sau: đồng bộ cài đặt lên profile người dùng để web app và PWA dùng chung.
+
+- [ ] **US-ECO-08: Ôn nhanh trong Popup (Micro-review)**
+  - **AC:** Từ popup, người dùng ôn tối đa 5 thẻ với 4 nút Again/Hard/Good/Easy, kết quả gửi qua `POST /api/v1/reviews/submit`. Cuối phiên hiển thị tiến độ và nút "Mở app để học tiếp".
+  - **Tasks:**
+    - [ ] Extension: UI thẻ mini (lật thẻ, phát âm), tái dùng logic có sẵn.
+    - [ ] Extension: gọi `GET /api/v1/reviews/due?limit=5`.
+    - [ ] Extension: sau khi ôn xong làm mới badge.
+
+- [~] **US-ECO-09: Web Push & Email nhắc học (mobile / PWA)**
+  - **AC:** Người dùng mobile nhận nhắc qua Web Push từ PWA; có email dự phòng khi streak sắp mất.
+  - **Tasks:**
+    - [~] Backend: bảng `PushSubscription`, VAPID keys, gửi bằng `web-push`.
+    - [~] Backend: cron (`@nestjs/schedule`) quét người dùng đến giờ nhắc theo timezone.
+    - [~] Frontend: xin quyền thông báo sau khi người dùng hoàn thành phiên học đầu tiên.
+    - [~] Dùng chung luật nhắc với extension để tránh nhắc trùng.
+
 ---
 
 ### EPIC 10: Multi-language & Internationalization (i18n - Đa ngôn ngữ Anh/Việt)
@@ -381,6 +458,208 @@ _Mục tiêu: Xóa bỏ rào cản ngôn ngữ, hỗ trợ song ngữ toàn di�
     - [x] Database: Thêm trường `preferredLanguage String @default("vi")` vào model `User` trong Prisma schema và migration.
     - [x] Backend: Cập nhật `PATCH /api/v1/users/profile` hỗ trợ cập nhật `preferredLanguage` và trả về trường `preferredLanguage` trong Profile response.
     - [x] Frontend: Tích hợp chọn ngôn ngữ vào `SettingsModal` (Tab Profile/Preferences) và đồng bộ vào `useAuthStore` khi khởi tạo ứng dụng.
+
+---
+
+### EPIC 11: Starter Decks & Onboarding (Bộ từ có sẵn & Hướng dẫn đầu tiên)
+
+_Mục tiêu: Xóa bỏ "app trống" khi người dùng mới đăng ký — tăng tỉ lệ hoàn thành phiên học đầu tiên từ 0 → 60+%._
+
+- [ ] **US-START-01: Official Starter Decks (Bộ từ chính thức)**
+  - **AC:** Ít nhất 5 deck Official (IELTS Core, TOEIC Office, Giao tiếp hằng ngày, Business English, Academic) mỗi deck 20–50 từ, huy hiệu "Official", `isPublic = true`, người dùng clone 1 chạm (deep copy + khởi tạo SM-2 NEW). Nội dung thẻ đã qua AI-fill và kiểm duyệt mẫu.
+  - **Tasks:**
+    - [ ] Backend/Script: Script một lần sinh nội dung thẻ qua AI, lưu vào `GlobalDictionaryCache`.
+    - [ ] Backend: Seed script tạo deck Official với tài khoản system admin.
+    - [ ] Frontend: Huy hiệu "Official" trên `CommunityDeckCard`; sắp xếp deck Official lên đầu trang `/community`.
+
+- [ ] **US-START-02: Onboarding 60 giây (Personalized First-Run)**
+  - **AC:** Sau đăng ký lần đầu, hiển thị wizard 3 bước: (1) Mục tiêu học (IELTS/TOEIC/Giao tiếp/Công việc), (2) Mini test 8–10 câu để xác định trình độ, (3) Tự động gán deck phù hợp và cài `dailyGoal`. Người dùng có thể bỏ qua (Skip) nhưng deck vẫn được gợi ý.
+  - **Tasks:**
+    - [ ] Frontend: `OnboardingWizard` modal 3 bước, i18n EN/VI.
+    - [ ] Backend: Logic ánh xạ (mục tiêu + trình độ) → deck ID gợi ý, `PATCH /api/v1/users/onboarding`.
+
+- [ ] **US-START-03: Học thử trước khi đăng ký (Guest Preview)**
+  - **AC:** Landing page cho học ~5 từ mẫu không cần đăng ký (local state). Khi đăng ký xong, dữ liệu tạm được nhắc lại hoặc hiển thị thống kê "5 từ bạn vừa học."
+  - **Tasks:**
+    - [ ] Frontend: `GuestFlashcardPreview` widget trên Landing Page, lưu tạm localStorage.
+    - [ ] Frontend: Chuyển trạng thái guest → user sau đăng ký (prompt để import).
+
+---
+
+### EPIC 12: UX Improvements & Growth (Cải tiến UX & Tăng trưởng)
+
+_Mục tiêu: Giảm ma sát, tăng tỉ lệ quay lại ngày 1/ngày 7, và đưa app đến tay nhiều người dùng hơn._
+
+- [ ] **US-UX-01: Nút "Học hôm nay" — Phiên học gộp**
+  - **AC:** Một nút duy nhất trên Dashboard gộp ôn đến hạn + từ mới + quiz thành một phiên liền mạch. Người mới không phải chọn giữa 4 chế độ.
+  - **Tasks:**
+    - [ ] Frontend: `StudyTodayButton` nổi bật trên Dashboard, điều hướng vào `ReviewSessionPage` với chế độ auto-mix.
+    - [ ] Backend: `GET /api/v1/reviews/today-session` trả về danh sách ưu tiên (due → new theo dailyGoal).
+
+- [ ] **US-UX-02: Quiz tự chấm vào SRS (Auto-grade Quiz Results)**
+  - **AC:** Kết quả đúng/sai + thời gian trả lời của 4 quiz modes tự động quy ra SM-2 rating để cập nhật lịch ôn — không cần người dùng bấm Again/Hard/Good/Easy thủ công.
+  - **Tasks:**
+    - [!] Kiểm tra: kết quả các quiz hiện tại đã cập nhật `UserCardProgress` chưa?
+    - [ ] Backend: Logic ánh xạ (quiz result + response time) → SM-2 rating trong `PracticeService`.
+
+- [ ] **US-UX-03: Chống ngợp Backlog (Backlog Guard)**
+  - **AC:** Khi số thẻ tồn đọng vượt ngưỡng (ví dụ > 3× dailyGoal), tạm ngưng thêm thẻ mới; có banner "Quay lại sau vài ngày nghỉ" với chế độ giải backlog dần.
+  - **Tasks:**
+    - [ ] Backend: Logic kiểm tra backlog trong `ReviewsService`; trả về `backlogWarning` trong summary.
+    - [ ] Frontend: Banner cảnh báo trên `ReviewSessionPage` và `DashboardPage`.
+
+- [ ] **US-GROW-01: Trang từ vựng công khai (SEO Word Pages)**
+  - **AC:** Trang `/word/:word` sinh từ `GlobalDictionaryCache` với metadata SEO đầy đủ; nút "Thêm vào WordStreak" cho khách chưa đăng nhập.
+  - **Tasks:**
+    - [!] SPA React thuần kém SEO → cần SSR/prerender cho `/word/:word`.
+    - [~] Frontend: Prerender hoặc Next.js migration cho trang từ vựng công khai.
+
+- [ ] **US-GROW-02: Chrome Web Store Submission**
+  - **AC:** Extension được nộp và duyệt thành công trên Chrome Web Store với mô tả rõ mục đích xin quyền `notifications` và `alarms`.
+  - **Tasks:**
+    - [ ] Extension: Hoàn thiện `store-assets/` (icon 128px, screenshots, promo banner).
+    - [ ] Extension: Điền đầy đủ Privacy Policy URL và Permissions Justification khi nộp.
+
+- [ ] **US-GROW-03: Analytics & Đo lường (Product Analytics)**
+  - **AC:** Gắn PostHog free tier để theo dõi: tỉ lệ hoàn thành phiên học đầu tiên, Day-1/Day-7 retention, funnel đăng ký → học thử → ôn lại.
+  - **Tasks:**
+    - [ ] Frontend: Tích hợp PostHog SDK; track events `study_session_completed`, `onboarding_completed`, `deck_cloned`.
+    - [ ] Tuân thủ GDPR: hiển thị cookie notice, không track khi người dùng opt-out.
+
+---
+
+### EPIC 13: Vocabulary Starter Library & Content Strategy (TSL/NGSL)
+
+_Mục tiêu: Xóa bỏ hoàn toàn rào cản "ứng dụng trống" bằng cách cung cấp kho từ vựng học thuật chuẩn hóa khoa học (NGSL 1.2 + TSL 1.2), lộ trình TOEIC hẹp-mà-sâu với độ phủ ~98.5%, thẻ ngữ cảnh chất lượng cao cho người Việt, và Chặng Khởi động chuyên biệt cho người mất gốc._
+
+- [ ] **US-LIB-01: Pipeline nạp và làm giàu nội dung (Content Enrichment Pipeline)**
+  - **AC:** Pipeline tự động hóa gồm 7 giai đoạn (`Import` → `Normalize` → `Enrich` → `Validate` → `Review` → `Build Decks` → `Publish`). Chạy độc lập từng giai đoạn qua file checkpoint JSON tại `scripts/seed/data/stages/`. Cơ chế gọi AI theo batch 10 từ/lô kèm retry và rate-limit. Đảm bảo tính idempotent qua khóa `(listCode, headword, pos)`. Xuất báo cáo validation và file CSV duyệt thủ công.
+  - **Tasks:**
+    - [ ] Script: Tải và xác thực tệp gốc từ newgeneralservicelist.com (TSL 1.2 stats, definitions; NGSL 1.2 stats, definitions). Lưu vào `scripts/seed/data/raw/`.
+    - [ ] Script: Viết `01-import.ts` đọc file Excel/CSV, trích xuất `freqRank`, `freqValue`, `entryCount`, ghi nhận `WordList.version = "1.2"`.
+    - [ ] Script: Viết `02-normalize.ts` chuẩn hóa chữ thường, dedupe chéo NGSL ↔ TSL, phân cấp `level` (T1: 1–400, T2: 401–800, T3: 801–1.200).
+    - [ ] Script: Viết `03-enrich.ts` tích hợp Gemini LLM theo batch 10 từ, cấu hình `temperature = 0.2`, lưu checkpoint lũy tiến; ghi nhận `promptVersion` và `modelName`.
+    - [ ] Script: Viết `04-validate.ts` kiểm tra luật tự động (đầy đủ trường bắt buộc, regex IPA `/.../`, câu ví dụ chứa lemma, độ phủ từ vựng).
+    - [ ] Script: Viết `05-review-export.ts` xuất CSV (OK/Sửa/Loại) và nạp lại kết quả duyệt, chuyển `status: DRAFT → REVIEWED → PUBLISHED`.
+    - [ ] Script: Viết `06-build-decks.ts` phân 10 chủ đề, cắt deck 25 từ, sinh slug và tiêu đề song ngữ chuẩn SEO.
+    - [ ] Script: Viết `07-publish.ts` upsert nguyên tử vào database production.
+
+- [ ] **US-LIB-02: Mô hình dữ liệu Official & Enrollment (Data Architecture)**
+  - **AC:** Chuyển đổi từ mô hình Deep Copy sang mô hình Thẻ Official dùng chung (`OfficialCard`, `OfficialDeck`) và tiến độ cá nhân lazy-loaded (`UserOfficialCardProgress`). Bản ghi tiến độ chỉ được tạo khi thẻ thực sự vào phiên học/ôn. Hàng đợi ôn tập `GET /api/v1/reviews/due` hợp nhất thẻ tự tạo và thẻ Official qua `UNION ALL`. Hỗ trợ tính năng "Sao chép thành thẻ của tôi" khi muốn sửa đổi sâu.
+  - **Tasks:**
+    - [ ] Database: Tạo Prisma migration cho 7 bảng: `WordList`, `WordListEntry`, `OfficialCard`, `OfficialDeck`, `OfficialDeckCard`, `UserDeckEnrollment`, `UserOfficialCardProgress`, `OfficialCardFeedback`.
+    - [ ] Backend: Cập nhật `ReviewsService` gộp hàng đợi ôn tập từ cả 2 nguồn thẻ (Custom Cards và Official Cards).
+    - [ ] Backend: Đồng bộ logic tính Daily Streak, XP, và Dashboard Stats cho cả thẻ Official.
+    - [ ] Backend: Endpoint `POST /api/v1/library/cards/:id/fork` sao chép thẻ Official thành thẻ cá nhân độc lập (`Card`).
+    - [ ] Performance: Viết load test xác nhận truy vấn phản hồi < 100ms với 1.200 thẻ Official × 10.000 users ảo.
+
+- [ ] **US-LIB-03: Trang Thư viện và Chi tiết Deck (Library Discovery UI)**
+  - **AC:** Trang Thư viện (`/library`) hiển thị danh mục theo Lộ trình: TOEIC (TSL), Nền tảng (NGSL), IELTS (NAWL), Giao tiếp (NGSL-S). Bộ lọc theo Cấp độ và Chủ đề. Thẻ Deck hiển thị: Tên, số từ (25 từ), thời gian ước tính, thanh tiến độ cá nhân, huy hiệu bản quyền "NGSL Project Official · CC BY-SA 4.0". Nút "Học ngay" hoặc "Thêm vào thư viện" một chạm. Trang Chi tiết Deck (`/library/decks/:slug`) cho xem trước toàn bộ danh sách từ.
+  - **Tasks:**
+    - [ ] Frontend: Xây dựng `LibraryPage` (`/library`) với tab bar Lộ trình và lưới `OfficialDeckCardItem`.
+    - [ ] Frontend: Xây dựng `OfficialDeckDetailPage` (`/library/decks/:slug`) với danh sách xem trước thẻ từ vựng và bảng âm thanh phát âm mẫu.
+    - [ ] Backend: Endpoint `GET /api/v1/library/decks` hỗ trợ filter `pathCode`, `level`, `topic`, phân trang và kèm tiến độ của user hiện tại.
+    - [ ] Backend: Endpoint `POST /api/v1/library/decks/:id/enroll` ghi nhận `UserDeckEnrollment`.
+
+- [ ] **US-LIB-04: Onboarding theo mục tiêu (TOEIC Personalized Onboarding)**
+  - **AC:** Wizard 60 giây xuất hiện ngay sau khi đăng ký: (1) Chọn mục tiêu học (TOEIC, IELTS, Giao tiếp, Đi làm), (2) Xác định xuất phát điểm, (3) Đặt mục tiêu ngày (5/10/20 từ), (4) Tự động gán deck đầu tiên phù hợp vào Dashboard. Hỗ trợ chế độ Guest Preview cho phép học thử 5 thẻ ngay trên Landing Page mà không bắt buộc tạo tài khoản trước.
+  - **Tasks:**
+    - [ ] Frontend: Xây dựng `OnboardingWizard` modal 3 bước mượt mà, hỗ trợ i18n EN/VI.
+    - [ ] Frontend: Xây dựng `GuestFlashcardPreview` trên Landing Page, lưu tạm trạng thái trên `localStorage`.
+    - [ ] Backend: Endpoint `PATCH /api/v1/users/onboarding` lưu `learningGoal`, `startingLevel`, `dailyGoal`, và tự động enroll deck khởi đầu.
+    - [ ] Integration: Chuyển dữ liệu 5 từ học thử của khách vãng lai vào tài khoản ngay sau khi đăng ký thành công.
+
+- [ ] **US-LIB-05: Lọc từ đã biết trước khi học (Known-Word Triage Flow)**
+  - **AC:** Trước khi bắt đầu một deck 25 từ, cung cấp màn hình Triage vuốt/bấm phím tắt (`Biết` [K/Mũi tên phải] vs `Chưa biết` [U/Mũi tên trái]) trong ~60 giây. Từ đánh dấu "Đã biết" gán trạng thái `KNOWN_SKIPPED`, tính vào điểm độ phủ từ vựng nhưng không đưa vào hàng đợi lặp lại SM-2. Có thể hoàn tác trong phiên.
+  - **Tasks:**
+    - [ ] Frontend: Giao diện `KnownWordTriageModal` tối giản, hỗ trợ swipe gestures trên mobile và phím tắt desktop.
+    - [ ] Frontend: Modal xác nhận nhanh (Quick popover quiz) khi người học ở Beginner Mode bấm "Biết" để chống ngộ nhận "quen mắt".
+    - [ ] Backend: Endpoint `POST /api/v1/library/decks/:id/triage` ghi nhận trạng thái hàng loạt cho `UserOfficialCardProgress`.
+
+- [ ] **US-LIB-06: Lộ trình TOEIC & Thanh độ phủ ước tính (TSL Path & Coverage Bar)**
+  - **AC:** Màn hình Lộ trình TOEIC chuyên biệt (`/paths/toeic`) hiển thị 3 cấp độ TSL (48 decks), tiến độ hoàn thành từng deck, ngày hoàn thành dự kiến theo `dailyGoal`, và thanh tiến độ thời gian thực: "Độ phủ từ vựng TOEIC ước tính: X% (tối đa 98.5%)". Công thức phân tách trọng số: NGSL chiếm tối đa 94%, TSL bổ sung tối đa 4.5%. Kèm dòng giải thích minh bạch về nghiên cứu corpus của NGSL Project.
+  - **Tasks:**
+    - [ ] Backend: Service tính toán độ phủ TOEIC dựa trên tổng `freqValue` các từ đã Mastered hoặc Known trong NGSL và TSL.
+    - [ ] Backend: Endpoint `GET /api/v1/library/paths/toeic/progress` trả về % độ phủ, số deck hoàn thành, số ngày dự kiến về đích.
+    - [ ] Frontend: Giao diện `ToeicPathPage` với bản đồ tiến trình phân nhánh, thanh `ToeicCoverageProgressBar` và biểu đồ trực quan.
+
+- [ ] **US-LIB-07: Quiz kiểu đề thi TOEIC (Mini Part 5 & Word Family Quiz)**
+  - **AC:** Tạo 4 dạng bài tập chuyên sâu từ thẻ TSL: (1) Mini Part 5 điền từ vào câu (4 lựa chọn, đáp án nhiễu trích xuất từ `confusables`), (2) Chọn dạng từ đúng (dựa trên `word_family`), (3) Paraphrase (tìm từ đồng nghĩa trong ngữ cảnh công sở), (4) Nghe và gõ từ. Kết quả đúng/sai và thời gian trả lời tự động quy đổi sang điểm rating SM-2 (1: Again, 2: Hard, 3: Good, 4: Easy).
+  - **Tasks:**
+    - [ ] Prompt/AI: Xây dựng pipeline sinh câu hỏi Mini Part 5 với bước AI-check độc lập (giải thử xác nhận chỉ có 1 đáp án duy nhất đúng).
+    - [ ] Database: Bảng `official_quiz_questions` lưu ngân hàng câu hỏi trắc nghiệm đã qua kiểm duyệt.
+    - [ ] Frontend: Component `MiniPart5QuizCard`, `WordFamilyQuizCard` tích hợp vào luồng luyện tập.
+    - [ ] Backend: Logic tự động cập nhật SM-2 trong `PracticeService` khi nộp kết quả quiz kiểu TOEIC.
+
+- [ ] **US-LIB-08: Ghi nhận nguồn dữ liệu & Bản quyền (Attribution & Licensing)**
+  - **AC:** Trang tĩnh `/sources` công bố đầy đủ thông tin: Danh mục từ vựng dựa trên NGSL 1.2 và TSL 1.2 của Browne, Culligan, và Phillips theo giấy phép Creative Commons Attribution-ShareAlike 4.0 International (CC BY-SA 4.0). Tuyên bố miễn trừ trách nhiệm pháp lý rõ ràng: WordStreak không liên kết hay được chứng thực bởi Viện Khảo thí Giáo dục Hoa Kỳ (ETS); TOEIC là nhãn hiệu đã đăng ký của ETS. Mọi deck thuộc thư viện đều có nhãn bản quyền nguồn.
+  - **Tasks:**
+    - [ ] Frontend: Xây dựng trang tĩnh `DataSourcesPage` (`/sources`) song ngữ EN/VI.
+    - [ ] Frontend: Gắn nhãn bản quyền `SourceAttributionBadge` trên từng thẻ deck và chân trang thư viện.
+    - [ ] Legal: Rà soát câu chữ khước từ trách nhiệm và tuân thủ giấy phép CC BY-SA 4.0.
+
+- [ ] **US-LIB-09: Báo lỗi nội dung thẻ & Quản lý phiên bản (Card Feedback & Versioning)**
+  - **AC:** Nút "Báo lỗi thẻ" một chạm trên mọi màn hình hiển thị thẻ Official (Nghĩa chưa chuẩn, Lỗi chính tả, Âm thanh lỗi, Ví dụ thiếu tự nhiên). Admin có giao diện xem hàng đợi báo lỗi. Khi sửa nội dung thẻ, tăng `contentVersion` của `OfficialCard` để toàn bộ người dùng nhận bản cập nhật mới nhất ngay lập tức mà không làm mất ghi chú cá nhân (`personalNote`).
+  - **Tasks:**
+    - [ ] Frontend: Component `ReportCardFeedbackModal` tích hợp vào Flashcard Review và Deck Detail.
+    - [ ] Backend: Endpoint `POST /api/v1/library/cards/:id/feedback`, model `OfficialCardFeedback`.
+    - [ ] Backend: Endpoint Admin cập nhật nội dung thẻ, tự động tăng `contentVersion` và thông báo toast nhẹ cho user khi thẻ được sửa.
+
+- [ ] **US-LIB-10: Hệ thống đo lường Thư viện (Library & Learning Analytics)**
+  - **AC:** Thu thập và tổng hợp các chỉ số quan trọng: Tỷ lệ thêm deck trong phiên đầu (Activation), Tỷ lệ hoàn thành 10 thẻ đầu (First Value), Day-1/Day-7 Retention theo từng Deck/Lộ trình, Tỷ lệ từ đánh dấu "Đã biết" ở bước Triage, và Tỷ lệ báo lỗi nội dung theo từng deck.
+  - **Tasks:**
+    - [ ] Analytics: Định nghĩa taxonomy sự kiện (`library_deck_viewed`, `library_deck_enrolled`, `triage_completed`, `first_10_cards_mastered`, `card_feedback_submitted`).
+    - [ ] Backend: Aggregation service tổng hợp số liệu retention và hoàn thành theo từng mã `pathCode` và `slug`.
+    - [ ] Dashboard: Tích hợp widget theo dõi hiệu quả nội dung vào trang quản trị.
+
+- [ ] **US-LIB-11: Lối vào Người mất gốc & Mini-test thích ứng (Beginner Adaptive Entry)**
+  - **AC:** Onboarding phân loại rõ 3 nhóm: "Mất gốc hoàn toàn", "Biết cơ bản", "Đã khá". Lựa chọn "Mất gốc hoàn toàn" đưa thẳng vào Chặng Khởi động (Foundation Stage) mà không bắt buộc làm bài kiểm tra để tránh gây nản lòng. Lựa chọn "Biết cơ bản" kích hoạt mini-test thích ứng bắt đầu từ các từ rất dễ trong NGSL Top 300 và dừng sớm nếu sai liên tiếp 3 câu. Thông điệp kết quả mang tính khích lệ, thực tế.
+  - **Tasks:**
+    - [ ] Frontend: Thiết kế giao diện chọn trình độ trực quan, thân thiện cho người mất gốc.
+    - [ ] Backend: Thuật toán chọn từ mini-test phân tầng theo `freqRank`, lưu `startingLevel = "FOUNDATION"` vào profile.
+    - [ ] Content: Bộ thông điệp định hướng tâm lý sau test giúp người học giải tỏa tự ti.
+
+- [ ] **US-LIB-12: Chặng Khởi động cho người mất gốc (Foundation Stage Decks)**
+  - **AC:** Trích xuất NGSL Top 300 đóng gói thành 15 deck đặc biệt (20 từ/deck), ưu tiên nhóm từ vựng sinh tồn (đại từ, số đếm, ngày tháng, động từ cơ bản). Xen kẽ 4 bài học ngắn (Mini-lessons) thời lượng $\le 2$ phút (1 màn hình) về: Từ loại (N/V/Adj/Adv), Trật tự từ trong câu (S+V+O), Dạng động từ (-ed, -ing), và Số ít/Số nhiều (-s/-es). Nội dung tự biên soạn, duyệt tay 100%, gán mã `pathCode = "FOUNDATION"`.
+  - **Tasks:**
+    - [ ] Content: Soạn thảo 4 bài học ngữ pháp nền tảng cực ngắn bằng tiếng Việt kèm ví dụ minh họa trực quan.
+    - [ ] Script: Đóng gói 15 deck Foundation từ NGSL Top 300, tích hợp liên kết bài học ngắn trước khi học từ vựng.
+    - [ ] Frontend: Giao diện `FoundationPathView` với lộ trình hình bậc thang thân thiện cho người mới bắt đầu.
+
+- [ ] **US-LIB-13: Động cơ kiểm soát độ phủ từ vựng trong ví dụ (Vocabulary Control Engine)**
+  - **AC:** Luật tự động kiểm tra nghiêm ngặt độ phủ từ vựng câu ví dụ: Trường `example_easy_en` (dành riêng cho Beginner Mode) chỉ dài 5–8 từ, 100% từ bổ trợ phải nằm trong NGSL Top 500. Trường `example_en` (chuẩn TOEIC) phải có $\ge 95\%$ số từ thuộc NGSL + TSL. Báo cáo validate liệt kê chi tiết các thẻ có ví dụ quá khó để AI sinh lại tự động.
+  - **Tasks:**
+    - [ ] Script/Core: Xây dựng bảng từ vựng Lemma chuẩn cho NGSL Top 500 và NGSL + TSL.
+    - [ ] Script: Viết hàm `checkSentenceVocabularyCoverage(sentence, allowedWordSet)` trong `04-validate.ts`.
+    - [ ] Script: Cơ chế tự động gọi lại AI với constraint chặt hơn nếu câu ví dụ không đạt chuẩn độ phủ.
+
+- [ ] **US-LIB-14: Chế độ Nghe trước (Audio-First) & Mẹo phát âm người Việt**
+  - **AC:** Ở Beginner Mode, kích hoạt chế độ Audio-first: phát âm thanh mẫu trước, yêu cầu nhận diện nghĩa hoặc gõ từ, sau đó mới hiển thị mặt chữ. Thẻ từ vựng hiển thị rõ vị trí trọng âm nhấn mạnh (`stress_syllable`). Trường `ending_sound_tip_vi` cung cấp mẹo khắc phục lỗi nuốt âm cuối đặc trưng của người Việt (âm /s/, /z/, /t/, /d/, /k/, -ed, -s/-es).
+  - **Tasks:**
+    - [ ] Frontend: Chế độ học Audio-first trong `ReviewSessionPage` (mặt trước chỉ hiện nút nghe và chọn nghĩa, mặt sau hiện chữ và ví dụ).
+    - [ ] Frontend: Hiển thị chip âm tiết tương tác với gạch chân trọng âm chính từ trường `stress_syllable`.
+    - [ ] Content: Hoàn thiện dữ liệu `ending_sound_tip_vi` cho toàn bộ 300 từ Foundation và Top 200 từ TSL.
+
+- [ ] **US-LIB-15: Bước học trong phiên & Xác nhận từ đã biết (Learning Steps & Verification)**
+  - **AC:** Đối với người dùng ở Beginner Mode, thẻ mới phải trải qua các bước học trong phiên (Intra-session learning steps: lặp lại sau 1 phút và 5 phút) trước khi chính thức chuyển sang chu kỳ ngày tiếp theo của SM-2. Ở bước lọc từ đã biết, khi người mới bấm "Biết", hiển thị câu kiểm tra trắc nghiệm nhanh 3 giây để xác thực; nếu trả lời sai, tự động đưa từ vào hàng đợi học. Tốc độ học mặc định cho người mới là 5 từ/ngày.
+  - **Tasks:**
+    - [ ] Backend: Mở rộng `SrsService` hỗ trợ trạng thái `LEARNING_STEP` với khoảng cách tính bằng phút.
+    - [ ] Frontend: Quản lý hàng đợi thẻ lặp lại ngắn hạn trong phiên học `ReviewSessionPage`.
+    - [ ] Frontend: Popover quiz kiểm tra nhanh khi bấm "Biết" ở chế độ sàng lọc.
+
+- [ ] **US-LIB-16: Cột mốc nhỏ, Phiên 5 phút & Khôi phục sau khi nghỉ (Habit Milestones)**
+  - **AC:** Thiết lập các cột mốc động lực thực tế: 50 từ, 100 từ, 300 từ, 500 từ kèm thông điệp giải thích ý nghĩa bằng ngôn ngữ đời thường (ví dụ: "Bạn đã nắm 100 từ xuất hiện nhiều nhất trong mọi bài thi TOEIC"). Hỗ trợ chế độ "Phiên học 5 phút" cho những ngày bận rộn (chỉ ôn 5–7 thẻ quan trọng nhất). Khi người học quay lại sau nhiều ngày nghỉ, hệ thống kích hoạt logic "Welcome Back" chỉ hiển thị 5–10 thẻ ôn tập đầu tiên kèm bảo vệ streak freeze, tránh phơi bày hàng trăm thẻ dồn ứ gây nản lòng.
+  - **Tasks:**
+    - [ ] Frontend: Modal chúc mừng khi chạm các cột mốc 50/100/300/500 từ.
+    - [ ] Frontend: Chế độ "Phiên học 5 phút" trên DashboardNavbar và StudyToday button.
+    - [ ] Backend: Logic phân phối lại thẻ backlog quá hạn trong `ReviewsService` khi phát hiện user không hoạt động > 7 ngày.
+
+- [~] **US-LIB-17: Thẻ cụm từ cố định, Mẹo đoán từ loại & Deck tranh Part 1 (Advanced Content)**
+  - **AC:** Xây dựng các deck nâng cao bổ trợ cho kỳ thi TOEIC: (1) Deck các cụm từ cố định và giới từ hay gặp (`be responsible for`, `look forward to + V-ing`), (2) Mini-lesson hướng dẫn mẹo đoán từ loại dựa trên vị trí đứng trong câu Part 5, (3) Deck từ vựng mô tả tranh Part 1 kèm hình ảnh minh họa bản quyền mở.
+  - **Tasks:**
+    - [~] Content: Tuyển chọn 100 cụm từ cố định kinh điển trong đề thi TOEIC.
+    - [~] Content: Xây dựng mini-lesson mẹo làm nhanh bài tập dạng từ Part 5.
+    - [~] Content: Thu thập hình ảnh bản quyền miễn phí (Unsplash/Wikimedia) cho 50 từ miêu tả hành động Part 1.
 
 ---
 
@@ -436,6 +715,48 @@ _Mục tiêu: Xóa bỏ rào cản ngôn ngữ, hỗ trợ song ngữ toàn di�
 [ Sprint 7 - Ecosystem & Platform Expansion ]  ──► [ COMPLETED ✅ ]
   ├── EPIC-09: Chrome Extension (Manifest V3)           ✅
   └── EPIC-09: PWA & Offline Caching (Service Workers)   ✅
+
+[ Sprint 9 - Activation & Starter Library Soft Launch ] ──► [ PLANNED 📋 ]
+  ├── EPIC-13: US-LIB-01 (Content Enrichment Pipeline: TSL Top 200 & NGSL Top 300)
+  ├── EPIC-13: US-LIB-02 (Shared Official Cards & Lazy Progress Model)
+  ├── EPIC-13: US-LIB-03 (Library Discovery Page & Deck Details)
+  ├── EPIC-13: US-LIB-04 & US-LIB-11 (60s Goal Onboarding & Adaptive Beginner Entry)
+  ├── EPIC-13: US-LIB-12 (Foundation Stage: 15 Decks NGSL Top 300 + 4 Mini-lessons)
+  ├── EPIC-13: US-LIB-13 (Vocabulary Control Engine for Examples)
+  ├── EPIC-13: US-LIB-08 (Data Attribution & CC BY-SA 4.0 Compliance Page)
+  ├── EPIC-09: US-REM-01 (Review Summary API)            ✅
+  ├── EPIC-09: US-ECO-05 (Extension Badge)
+  ├── EPIC-09: US-ECO-06 (Reminder Notifications)
+  ├── EPIC-09: US-ECO-07 (Notification Settings)
+  └── EPIC-12: US-UX-01 ("Học hôm nay" Button)
+
+[ Sprint 10 - TSL Expansion, Retention & Learning Quality ] ──► [ PLANNED 📋 ]
+  ├── EPIC-13: US-LIB-05 (Known-word Triage Flow with Verification Quiz)
+  ├── EPIC-13: US-LIB-06 (Full TSL Path 1.200 words & Real-time Coverage Bar)
+  ├── EPIC-13: US-LIB-07 (TOEIC Quizzes: Mini Part 5 & Word Family)
+  ├── EPIC-13: US-LIB-14 (Audio-First Mode & Vietnamese Ending Sound Tips)
+  ├── EPIC-13: US-LIB-15 (Intra-session Learning Steps & 5 words/day default)
+  ├── EPIC-13: US-LIB-16 (Habit Milestones & 5-minute Express Session)
+  ├── EPIC-13: US-LIB-09 (Card Feedback Modal & Content Versioning)
+  ├── EPIC-13: US-LIB-10 (Library & Path Retention Analytics)
+  ├── EPIC-09: US-ECO-08 (Micro-review in Popup)
+  ├── EPIC-12: US-UX-02 (Quiz auto-grade → SRS)
+  ├── EPIC-12: US-UX-03 (Backlog Guard)
+  ├── EPIC-12: US-GROW-02 (Chrome Web Store Submission)
+  ├── EPIC-12: US-GROW-03 (Product Analytics)
+  └── [~] EPIC-09: US-ECO-09 (Web Push / Email — mobile)
+
+[ Sprint 11 - Academic & IELTS Expansion ] ──► [ FUTURE 🔮 ]
+  ├── EPIC-13: NAWL 1.2 Import & Enrichment (960 Academic Words)
+  ├── EPIC-13: IELTS Academic Path (32 Decks × 30 words)
+  ├── EPIC-13: US-LIB-17 (Fixed Collocations & Part 1 Photo Decks)
+  └── EPIC-11: SEO Word Pages (`/word/:word` with SSR/prerender)
+
+[ Sprint 12 - Business & Spoken Expansion ] ──► [ FUTURE 🔮 ]
+  ├── EPIC-13: BSL Import & Enrichment (1.700 Business Service Words)
+  ├── EPIC-13: NGSL-S Import & Enrichment (721 Spoken Words & Dialogues)
+  ├── EPIC-13: Business English & Workplace Communications Path
+  └── Continuous Content Operations (Weekly card correction releases)
 ```
 
 ---
@@ -639,3 +960,5 @@ _Mục tiêu: Đưa WordStreak lên production ổn định, sẵn sàng tiếp 
   ├── US-DEPLOY-06: Nginx SPA routing fix                      ✅
   └── US-DEPLOY-07: E2E smoke test on production URL
 ```
+
+> **Sau Sprint 8:** Tiếp tục với Sprint 9 (Activation & Retention) và Sprint 10 (Learning Quality & Growth) theo roadmap mục 5.
