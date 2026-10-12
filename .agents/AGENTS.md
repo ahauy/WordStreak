@@ -9,11 +9,11 @@
 ```mermaid
 graph TD
     subgraph P1 ["PHASE 1: BA & Domain Elicitation"]
-        BA["🍉 business-analyst (claude-opus-4.6 / inherit)"]
+        BA["🍉 business-analyst (pro / inherit — 5h Pool)"]
     end
 
     subgraph P2 ["PHASE 2-4: Tech Spec & Architecture Planning"]
-        SA["🏗️ system-architect (claude-sonnet-4.6 / inherit)"]
+        SA["🏗️ system-architect (pro / inherit — 5h Pool)"]
     end
 
     subgraph P5 ["PHASE 5: Fullstack Implementation & TDD"]
@@ -33,14 +33,14 @@ graph TD
     end
 
     subgraph P6A ["PHASE 6A: Adversarial Quality Review"]
-        CR["🛡️ code-reviewer (claude-sonnet-4.6 / inherit)"]
+        CR["🛡️ code-reviewer (flash / inherit — 5h Pool)"]
         UR["👁️ ui-ux-reviewer (gemini-3.7-flash)"]
     end
 
     subgraph P6B ["PHASE 6B: Standard Documentation"]
         TD["📚 tech-doc-architect (gemini-3.7-flash)"]
         UG["💼 user-guide-creator (gemini-3.7-flash)"]
-        AE["⚖️ agent-evaluator (claude-sonnet-4.6 / inherit)"]
+        AE["⚖️ agent-evaluator (flash / inherit — 5h Pool)"]
     end
 
     BA --> SA
@@ -143,6 +143,7 @@ graph TD
 | **Baseline sign-off & dev handover**                          | `handover`                                                     |
 | **Feature execution, slice delegation & review**              | `implementation-orchestrator`                                  |
 | Technical documentation, feature README, architecture, AGENTS | `technical-documentation` (Agent: `tech-doc-architect`)        |
+| **Interactive Architecture, Sequence, Dataflow, State Lifecycle & Diff Maps** | `archify` (`node .agents/skills/archify/bin/archify.mjs`) |
 | Any `.tsx`, `.jsx` file, React component                      | `frontend-patterns` + `frontend-a11y`                          |
 | **UI Design: Landing, Marketing, Public surfaces**            | `frontend-design` + `design-taste-frontend` + `ui-taste-pro`   |
 | **UI Design: In-App, Dashboard, Study/Flashcards, Decks**     | `frontend-design` + `design-taste-product` + `ui-taste-pro`    |
@@ -182,6 +183,7 @@ graph TD
 - **Zero Code Before Approved Spec**: Never write code or create mockups without an approved domain baseline and specification.
 - **Mandatory Automatic Subagent Delegation (STRICT)**: The orchestrator AI MUST NOT execute implementation slices or documentation directly in the primary context. Once Gate 2 (Technical Plan & Tasks) is approved, the orchestrator MUST automatically decompose tasks and dispatch dedicated subagents (`backend-developer`, `frontend-developer`, `ui-ux-reviewer`, `tech-doc-architect`, `user-guide-creator`) via `invoke_subagent`.
 - **Subagent Transparency & Notification Protocol (MANDATORY)**: Whenever a subagent (e.g. `implementation-orchestrator`, `ui-design-review`, `tech-doc-writer`, `browser_subagent`) is dispatched or finishes, the AI MUST explicitly notify the user in chat with a clear announcement block specifying: (1) Subagent Name & Role, (2) Active Model Name (e.g. `Gemini 3.7 Flash`), (3) Exact Task Scope, and (4) Output Artifact / Report Link.
+- **5-Hour Quota Pool Priority & Early Warning Gate**: Prioritize Gemini 5-hour rolling pool models (`flash`, `pro`, `inherit`) across all subagent delegations. Whenever the `PreInvocation` quota monitor (`session-context-init.js`) flags `WARNING` (≥ 75%) or `CRITICAL` (≥ 90%), the AI MUST surface an immediate warning banner in chat with the exact 5h reset time and mitigation options.
 - **Design System & Anti-AI-Slop Gate (STRICT)**: Before creating or modifying any UI in `apps/web/`, AI MUST read [apps/web/DESIGN.md](file:///Users/vutuanhau/Documents/PROJECT/WordStreak/apps/web/DESIGN.md) and [apps/web/MEMORY.md](file:///Users/vutuanhau/Documents/PROJECT/WordStreak/apps/web/MEMORY.md). All UI must strictly adhere to the document-first minimal canvas (`#ffffff`), 1px hairline borders (`#e5e5e5`), Obsidian pure black pills (`#000000`, `rounded-full`), Nunito/Inter/JetBrains Mono typography, and stable outer anchor hover physics. Generic AI slop (unrequested multi-color gradients, neon blobs, glassmorphism, fake pricing tiers) is strictly forbidden.
 - **UI Visual Review Gate**: Every UI slice must undergo an independent anti-slop verification using `ui-design-review` before closing.
 - **Bug Severity Gate**: No feature branch can be merged or marked complete with unresolved `Critical` bugs.

@@ -4,7 +4,7 @@ description: >-
   Evaluates agent output and PR changes against a 5-axis quality rubric
   (accuracy, completeness, clarity, actionability, conciseness) and analyzes
   recurring friction or mistakes to suggest rule improvements.
-model: claude-sonnet-4.6
+model: gemini-3.7-flash
 subagent: true
 inheritMcp: true
 commandExecutionPolicy: auto

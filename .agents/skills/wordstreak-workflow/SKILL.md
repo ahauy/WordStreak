@@ -33,11 +33,11 @@ This skill orchestrates the end-to-end development pipeline for WordStreak, plac
 ```mermaid
 graph TD
     subgraph P1 ["PHASE 1: BA & Domain Elicitation"]
-        BA["🍉 business-analyst (claude-opus-4.6 / inherit)"]
+        BA["🍉 business-analyst (pro / inherit — 5h Pool)"]
     end
 
     subgraph P2 ["PHASE 2-4: Tech Spec & Architecture Planning"]
-        SA["🏗️ system-architect (claude-sonnet-4.6 / inherit)"]
+        SA["🏗️ system-architect (pro / inherit — 5h Pool)"]
     end
 
     subgraph P5 ["PHASE 5: Fullstack Implementation & TDD"]
