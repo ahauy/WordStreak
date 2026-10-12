@@ -1,10 +1,14 @@
 /* eslint-disable @typescript-eslint/unbound-method */
+import { HttpStatus } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { ReviewsController } from './reviews.controller';
 import { ReviewsService } from './reviews.service';
 import { ReviewsSyncService } from './reviews-sync.service';
+import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
+import type { Response } from 'express';
 import type {
   JwtPayload,
+  ReviewSummaryDto,
   SyncReviewResponseDto,
 } from '@wordstreak/shared-types';
 
@@ -24,6 +28,7 @@ describe('ReviewsController', () => {
       getDueCards: jest.fn(),
       submitReview: jest.fn(),
       getReviewStats: jest.fn(),
+      getReviewSummary: jest.fn(),
     };
 
     const mockReviewsSyncService = {
@@ -189,6 +194,231 @@ describe('ReviewsController', () => {
       expect(response.success).toBe(true);
       expect(response.data).toEqual(mockStats);
       expect(service.getReviewStats).toHaveBeenCalledWith(mockUser.sub);
+    });
+  });
+
+  describe('getReviewSummary', () => {
+    it('TC-REM-008: returns 200 OK with ApiResponse<ReviewSummaryDto>, ETag, and Cache-Control', async () => {
+      const mockSummary: ReviewSummaryDto = {
+        dueCount: 12,
+        newAvailable: 35,
+        studiedToday: 4,
+        dailyGoal: 10,
+        goalReached: false,
+        currentStreak: 5,
+        streakAtRisk: false,
+        timezone: 'Asia/Ho_Chi_Minh',
+        endOfDayAt: '2026-10-12T16:59:59.999Z',
+        nextDueAt: '2026-10-12T15:30:00.000Z',
+      };
+      service.getReviewSummary.mockResolvedValue(mockSummary);
+
+      const mockRes = {
+        setHeader: jest.fn(),
+        status: jest.fn(),
+      } as unknown as Response;
+
+      const response = await controller.getReviewSummary(
+        mockUser,
+        'Asia/Ho_Chi_Minh',
+        'Asia/Ho_Chi_Minh',
+        undefined,
+        mockRes,
+      );
+
+      expect(service.getReviewSummary).toHaveBeenCalledWith(
+        mockUser.sub,
+        'Asia/Ho_Chi_Minh',
+        'Asia/Ho_Chi_Minh',
+      );
+      expect(response).toEqual({
+        success: true,
+        data: mockSummary,
+      });
+      expect(mockRes.setHeader).toHaveBeenCalledWith(
+        'ETag',
+        expect.stringMatching(/^W\/"[a-f0-9]{64}"$/),
+      );
+      expect(mockRes.setHeader).toHaveBeenCalledWith(
+        'Cache-Control',
+        'private, must-revalidate, max-age=0',
+      );
+    });
+
+    it('TC-REM-009: returns 304 Not Modified with empty body when If-None-Match matches ETag', async () => {
+      const mockSummary: ReviewSummaryDto = {
+        dueCount: 12,
+        newAvailable: 35,
+        studiedToday: 4,
+        dailyGoal: 10,
+        goalReached: false,
+        currentStreak: 5,
+        streakAtRisk: false,
+        timezone: 'Asia/Ho_Chi_Minh',
+        endOfDayAt: '2026-10-12T16:59:59.999Z',
+        nextDueAt: '2026-10-12T15:30:00.000Z',
+      };
+      service.getReviewSummary.mockResolvedValue(mockSummary);
+
+      let computedEtag = '';
+      const mockRes1 = {
+        setHeader: jest.fn((k: string, v: string) => {
+          if (k === 'ETag') computedEtag = v;
+        }),
+        status: jest.fn(),
+      } as unknown as Response;
+
+      await controller.getReviewSummary(
+        mockUser,
+        'Asia/Ho_Chi_Minh',
+        undefined,
+        undefined,
+        mockRes1,
+      );
+      expect(computedEtag).toMatch(/^W\/"[a-f0-9]{64}"$/);
+
+      const mockRes2 = {
+        setHeader: jest.fn(),
+        status: jest.fn(),
+      } as unknown as Response;
+
+      const response = await controller.getReviewSummary(
+        mockUser,
+        'Asia/Ho_Chi_Minh',
+        undefined,
+        computedEtag,
+        mockRes2,
+      );
+
+      expect(mockRes2.status).toHaveBeenCalledWith(HttpStatus.NOT_MODIFIED);
+      expect(mockRes2.setHeader).toHaveBeenCalledWith('ETag', computedEtag);
+      expect(mockRes2.setHeader).toHaveBeenCalledWith(
+        'Cache-Control',
+        'private, must-revalidate, max-age=0',
+      );
+      expect(response).toBeUndefined();
+    });
+
+    it('TC-REM-010: handles comma-separated list, bare tag, and wildcard If-None-Match', async () => {
+      const mockSummary: ReviewSummaryDto = {
+        dueCount: 0,
+        newAvailable: 0,
+        studiedToday: 0,
+        dailyGoal: 10,
+        goalReached: false,
+        currentStreak: 0,
+        streakAtRisk: false,
+        timezone: 'UTC',
+        endOfDayAt: '2026-10-12T23:59:59.999Z',
+        nextDueAt: null,
+      };
+      service.getReviewSummary.mockResolvedValue(mockSummary);
+
+      let computedEtag = '';
+      const probeRes = {
+        setHeader: jest.fn((k: string, v: string) => {
+          if (k === 'ETag') computedEtag = v;
+        }),
+        status: jest.fn(),
+      } as unknown as Response;
+
+      await controller.getReviewSummary(
+        mockUser,
+        undefined,
+        undefined,
+        undefined,
+        probeRes,
+      );
+      const bareHash = computedEtag.replace(/^W\//, '');
+
+      // Case 1: comma-separated list
+      const res1 = {
+        setHeader: jest.fn(),
+        status: jest.fn(),
+      } as unknown as Response;
+      const resp1 = await controller.getReviewSummary(
+        mockUser,
+        undefined,
+        undefined,
+        `W/"stale-hash", ${computedEtag}`,
+        res1,
+      );
+      expect(res1.status).toHaveBeenCalledWith(HttpStatus.NOT_MODIFIED);
+      expect(resp1).toBeUndefined();
+
+      // Case 2: bare tag without W/
+      const res2 = {
+        setHeader: jest.fn(),
+        status: jest.fn(),
+      } as unknown as Response;
+      const resp2 = await controller.getReviewSummary(
+        mockUser,
+        undefined,
+        undefined,
+        bareHash,
+        res2,
+      );
+      expect(res2.status).toHaveBeenCalledWith(HttpStatus.NOT_MODIFIED);
+      expect(resp2).toBeUndefined();
+
+      // Case 3: wildcard *
+      const res3 = {
+        setHeader: jest.fn(),
+        status: jest.fn(),
+      } as unknown as Response;
+      const resp3 = await controller.getReviewSummary(
+        mockUser,
+        undefined,
+        undefined,
+        '*',
+        res3,
+      );
+      expect(res3.status).toHaveBeenCalledWith(HttpStatus.NOT_MODIFIED);
+      expect(resp3).toBeUndefined();
+    });
+
+    it('TC-REM-011: returns 200 OK with fresh body when If-None-Match is stale', async () => {
+      const mockSummary: ReviewSummaryDto = {
+        dueCount: 1,
+        newAvailable: 0,
+        studiedToday: 0,
+        dailyGoal: 10,
+        goalReached: false,
+        currentStreak: 0,
+        streakAtRisk: false,
+        timezone: 'UTC',
+        endOfDayAt: '2026-10-12T23:59:59.999Z',
+        nextDueAt: null,
+      };
+      service.getReviewSummary.mockResolvedValue(mockSummary);
+
+      const mockRes = {
+        setHeader: jest.fn(),
+        status: jest.fn(),
+      } as unknown as Response;
+
+      const response = await controller.getReviewSummary(
+        mockUser,
+        undefined,
+        undefined,
+        'W/"stale-sha256-hash"',
+        mockRes,
+      );
+
+      expect(mockRes.status).not.toHaveBeenCalledWith(HttpStatus.NOT_MODIFIED);
+      expect(response).toEqual({
+        success: true,
+        data: mockSummary,
+      });
+    });
+
+    it('TC-REM-012: verifies JwtAuthGuard is applied on ReviewsController', () => {
+      const guards = Reflect.getMetadata(
+        '__guards__',
+        ReviewsController,
+      ) as unknown[];
+      expect(guards).toBeDefined();
+      expect(guards).toContain(JwtAuthGuard);
     });
   });
 });

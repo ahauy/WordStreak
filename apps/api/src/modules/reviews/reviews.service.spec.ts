@@ -11,6 +11,7 @@ describe('ReviewsService', () => {
   let service: ReviewsService;
   let streakService: {
     recordActivity: jest.Mock;
+    getStreak: jest.Mock;
   };
   let xpService: {
     awardReviewXp: jest.Mock;
@@ -24,8 +25,9 @@ describe('ReviewsService', () => {
       create: jest.Mock;
       update: jest.Mock;
       count: jest.Mock;
+      findFirst: jest.Mock;
     };
-    reviewLog: { create: jest.Mock };
+    reviewLog: { create: jest.Mock; count: jest.Mock };
   };
 
   const mockUserId = 'user-uuid-1';
@@ -40,6 +42,22 @@ describe('ReviewsService', () => {
         isActiveToday: true,
         flameTier: 1,
         message: 'New streak started!',
+      }),
+      getStreak: jest.fn().mockResolvedValue({
+        userId: mockUserId,
+        currentStreak: 0,
+        bestStreak: 0,
+        lastActiveDate: null,
+        isActiveToday: false,
+        isPendingToday: false,
+        timezone: 'UTC',
+        flameTier: 1,
+        streakFreezes: 0,
+        maxStreakFreezes: 2,
+        totalFreezesUsed: 0,
+        lastFreezeDate: null,
+        wasProtectedByFreeze: false,
+        freezesUsed: 0,
       }),
     };
 
@@ -73,6 +91,7 @@ describe('ReviewsService', () => {
         create: jest.fn(),
         update: jest.fn(),
         count: jest.fn(),
+        findFirst: jest.fn(),
       },
       reviewLog: {
         create: jest.fn().mockResolvedValue({
@@ -83,6 +102,7 @@ describe('ReviewsService', () => {
           interval: 1,
           reviewedAt: new Date(),
         }),
+        count: jest.fn(),
       },
     };
 
@@ -282,6 +302,291 @@ describe('ReviewsService', () => {
       expect(stats.newCount).toBe(4);
       expect(stats.learningCount).toBe(10);
       expect(stats.masteredCount).toBe(6);
+    });
+  });
+
+  describe('getReviewSummary', () => {
+    afterEach(() => {
+      jest.useRealTimers();
+    });
+
+    it('TC-REM-001: calculates complete 10-field summary in Asia/Ho_Chi_Minh', async () => {
+      jest.useFakeTimers();
+      jest.setSystemTime(new Date('2026-10-12T10:00:00.000Z'));
+
+      prisma.user.findUnique.mockResolvedValue({ dailyGoal: 10 });
+      prisma.userCardProgress.count
+        .mockResolvedValueOnce(12) // dueCount (status not NEW, nextReviewDate <= now)
+        .mockResolvedValueOnce(35); // newAvailable (status NEW)
+      prisma.reviewLog.count.mockResolvedValue(4); // studiedToday
+      prisma.userCardProgress.findFirst.mockResolvedValue({
+        nextReviewDate: new Date('2026-10-12T15:30:00.000Z'),
+      });
+      streakService.getStreak.mockResolvedValue({
+        currentStreak: 5,
+        isActiveToday: false,
+      });
+
+      const summary = await service.getReviewSummary(
+        mockUserId,
+        'Asia/Ho_Chi_Minh',
+      );
+
+      expect(summary).toEqual({
+        dueCount: 12,
+        newAvailable: 35,
+        studiedToday: 4,
+        dailyGoal: 10,
+        goalReached: false,
+        currentStreak: 5,
+        streakAtRisk: false,
+        timezone: 'Asia/Ho_Chi_Minh',
+        endOfDayAt: '2026-10-12T16:59:59.999Z',
+        nextDueAt: '2026-10-12T15:30:00.000Z',
+      });
+      expect(streakService.getStreak).toHaveBeenCalledWith(
+        mockUserId,
+        'Asia/Ho_Chi_Minh',
+      );
+    });
+
+    it('TC-REM-002: marks goalReached true when studiedToday >= dailyGoal', async () => {
+      jest.useFakeTimers();
+      jest.setSystemTime(new Date('2026-10-12T10:00:00.000Z'));
+
+      prisma.user.findUnique.mockResolvedValue({ dailyGoal: 10 });
+      prisma.userCardProgress.count
+        .mockResolvedValueOnce(0)
+        .mockResolvedValueOnce(0);
+      prisma.reviewLog.count.mockResolvedValue(10);
+      prisma.userCardProgress.findFirst.mockResolvedValue(null);
+      streakService.getStreak.mockResolvedValue({
+        currentStreak: 5,
+        isActiveToday: true,
+      });
+
+      const summary = await service.getReviewSummary(
+        mockUserId,
+        'Asia/Ho_Chi_Minh',
+      );
+
+      expect(summary.goalReached).toBe(true);
+      expect(summary.studiedToday).toBe(10);
+      expect(summary.streakAtRisk).toBe(false);
+    });
+
+    it('TC-REM-003: flags streakAtRisk true when currentStreak >= 3, unstudied today, and within 3h of midnight even with streakFreezes > 0', async () => {
+      jest.useFakeTimers();
+      // In Asia/Ho_Chi_Minh (UTC+7), midnight is 2026-10-12T16:59:59.999Z.
+      // 3 hours before midnight is 2026-10-12T13:59:59.999Z (10,800,000 ms remaining)
+      jest.setSystemTime(new Date('2026-10-12T13:59:59.999Z'));
+
+      prisma.user.findUnique.mockResolvedValue({ dailyGoal: 10 });
+      prisma.userCardProgress.count
+        .mockResolvedValueOnce(5)
+        .mockResolvedValueOnce(10);
+      prisma.reviewLog.count.mockResolvedValue(0);
+      prisma.userCardProgress.findFirst.mockResolvedValue(null);
+      streakService.getStreak.mockResolvedValue({
+        currentStreak: 3,
+        streakFreezes: 2,
+        isActiveToday: false,
+      });
+
+      const summaryExact = await service.getReviewSummary(
+        mockUserId,
+        'Asia/Ho_Chi_Minh',
+      );
+      expect(summaryExact.streakAtRisk).toBe(true);
+      expect(summaryExact.currentStreak).toBe(3);
+
+      // 2 hours remaining: 2026-10-12T15:00:00.000Z
+      jest.setSystemTime(new Date('2026-10-12T15:00:00.000Z'));
+      const summaryWithin = await service.getReviewSummary(
+        mockUserId,
+        'Asia/Ho_Chi_Minh',
+      );
+      expect(summaryWithin.streakAtRisk).toBe(true);
+    });
+
+    it('TC-REM-004: keeps streakAtRisk false if streak < 3, > 3h left, or already studied/active', async () => {
+      jest.useFakeTimers();
+      // 1 hour before midnight (2026-10-12T16:00:00.000Z) but streak = 2 (< 3)
+      jest.setSystemTime(new Date('2026-10-12T16:00:00.000Z'));
+      prisma.user.findUnique.mockResolvedValue({ dailyGoal: 10 });
+      prisma.userCardProgress.count.mockResolvedValue(0);
+      prisma.reviewLog.count.mockResolvedValue(0);
+      prisma.userCardProgress.findFirst.mockResolvedValue(null);
+      streakService.getStreak.mockResolvedValue({
+        currentStreak: 2,
+        isActiveToday: false,
+      });
+
+      const lowStreak = await service.getReviewSummary(
+        mockUserId,
+        'Asia/Ho_Chi_Minh',
+      );
+      expect(lowStreak.streakAtRisk).toBe(false);
+
+      // Streak = 10, but msUntilEndOfDay = 10,800,001 ms (> 3h): 2026-10-12T13:59:59.998Z
+      jest.setSystemTime(new Date('2026-10-12T13:59:59.998Z'));
+      streakService.getStreak.mockResolvedValue({
+        currentStreak: 10,
+        isActiveToday: false,
+      });
+      const outsideWindow = await service.getReviewSummary(
+        mockUserId,
+        'Asia/Ho_Chi_Minh',
+      );
+      expect(outsideWindow.streakAtRisk).toBe(false);
+
+      // Streak = 5, inside 3h window, but studiedToday = 1
+      jest.setSystemTime(new Date('2026-10-12T15:00:00.000Z'));
+      prisma.reviewLog.count.mockResolvedValue(1);
+      streakService.getStreak.mockResolvedValue({
+        currentStreak: 5,
+        isActiveToday: false,
+      });
+      const studiedTodayRes = await service.getReviewSummary(
+        mockUserId,
+        'Asia/Ho_Chi_Minh',
+      );
+      expect(studiedTodayRes.streakAtRisk).toBe(false);
+
+      // Streak = 5, inside 3h window, studiedToday = 0, but isActiveToday = true
+      prisma.reviewLog.count.mockResolvedValue(0);
+      streakService.getStreak.mockResolvedValue({
+        currentStreak: 5,
+        isActiveToday: true,
+      });
+      const activeTodayRes = await service.getReviewSummary(
+        mockUserId,
+        'Asia/Ho_Chi_Minh',
+      );
+      expect(activeTodayRes.streakAtRisk).toBe(false);
+    });
+
+    it('TC-REM-005: strictly filters active non-archived decks for dueCount, newAvailable, and nextDueAt', async () => {
+      jest.useFakeTimers();
+      const fixedNow = new Date('2026-10-12T10:00:00.000Z');
+      jest.setSystemTime(fixedNow);
+
+      prisma.user.findUnique.mockResolvedValue({ dailyGoal: 10 });
+      prisma.userCardProgress.count.mockResolvedValue(0);
+      prisma.reviewLog.count.mockResolvedValue(0);
+      prisma.userCardProgress.findFirst.mockResolvedValue(null);
+      streakService.getStreak.mockResolvedValue({
+        currentStreak: 0,
+        isActiveToday: false,
+      });
+
+      const summary = await service.getReviewSummary(mockUserId, 'UTC');
+
+      expect(summary.dueCount).toBe(0);
+      expect(summary.newAvailable).toBe(0);
+      expect(summary.nextDueAt).toBeNull();
+
+      const expectedActiveDeckFilter = {
+        deck: { userId: mockUserId, isArchived: false },
+      };
+
+      expect(prisma.userCardProgress.count).toHaveBeenCalledWith({
+        where: {
+          userId: mockUserId,
+          status: { not: 'NEW' },
+          nextReviewDate: { lte: fixedNow },
+          card: expectedActiveDeckFilter,
+        },
+      });
+
+      expect(prisma.userCardProgress.count).toHaveBeenCalledWith({
+        where: {
+          userId: mockUserId,
+          status: 'NEW',
+          card: expectedActiveDeckFilter,
+        },
+      });
+
+      expect(prisma.userCardProgress.findFirst).toHaveBeenCalledWith({
+        where: {
+          userId: mockUserId,
+          status: { not: 'NEW' },
+          nextReviewDate: { gt: fixedNow },
+          card: expectedActiveDeckFilter,
+        },
+        orderBy: { nextReviewDate: 'asc' },
+        select: { nextReviewDate: true },
+      });
+    });
+
+    it('TC-REM-006: resolves timezone with query param taking priority, header as fallback, and UTC as safe default', async () => {
+      jest.useFakeTimers();
+      jest.setSystemTime(new Date('2026-10-12T10:00:00.000Z'));
+
+      prisma.user.findUnique.mockResolvedValue({ dailyGoal: 10 });
+      prisma.userCardProgress.count.mockResolvedValue(0);
+      prisma.reviewLog.count.mockResolvedValue(0);
+      prisma.userCardProgress.findFirst.mockResolvedValue(null);
+      streakService.getStreak.mockResolvedValue({
+        currentStreak: 0,
+        isActiveToday: false,
+      });
+
+      // Priority 1: valid query over valid header
+      const tz1 = await service.getReviewSummary(
+        mockUserId,
+        'Asia/Tokyo',
+        'America/New_York',
+      );
+      expect(tz1.timezone).toBe('Asia/Tokyo');
+
+      // Priority 2: invalid query falls back to valid header
+      const tz2 = await service.getReviewSummary(
+        mockUserId,
+        'Invalid/Timezone',
+        'Asia/Tokyo',
+      );
+      expect(tz2.timezone).toBe('Asia/Tokyo');
+
+      // Priority 3: both invalid or omitted fall back to UTC without throwing
+      const tz3 = await service.getReviewSummary(
+        mockUserId,
+        'Invalid/Timezone',
+        'Mars/Phobos',
+      );
+      expect(tz3.timezone).toBe('UTC');
+      expect(tz3.endOfDayAt).toBe('2026-10-12T23:59:59.999Z');
+
+      // Half-hour offset timezone (Asia/Kolkata UTC+5:30)
+      const tz4 = await service.getReviewSummary(mockUserId, 'Asia/Kolkata');
+      expect(tz4.timezone).toBe('Asia/Kolkata');
+      expect(tz4.endOfDayAt).toBe('2026-10-12T18:29:59.999Z');
+    });
+
+    it('TC-REM-007: safely handles brand-new user with zero decks and null dailyGoal', async () => {
+      jest.useFakeTimers();
+      jest.setSystemTime(new Date('2026-10-12T10:00:00.000Z'));
+
+      prisma.user.findUnique.mockResolvedValue(null);
+      prisma.userCardProgress.count.mockResolvedValue(0);
+      prisma.reviewLog.count.mockResolvedValue(0);
+      prisma.userCardProgress.findFirst.mockResolvedValue(null);
+      streakService.getStreak.mockResolvedValue({
+        currentStreak: 0,
+        isActiveToday: false,
+      });
+
+      const summary = await service.getReviewSummary('new-user-id');
+
+      expect(summary.dailyGoal).toBe(10);
+      expect(summary.dueCount).toBe(0);
+      expect(summary.newAvailable).toBe(0);
+      expect(summary.studiedToday).toBe(0);
+      expect(summary.goalReached).toBe(false);
+      expect(summary.currentStreak).toBe(0);
+      expect(summary.streakAtRisk).toBe(false);
+      expect(summary.nextDueAt).toBeNull();
+      expect(summary.timezone).toBe('UTC');
     });
   });
 });
