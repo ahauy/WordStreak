@@ -51,14 +51,8 @@ export function isOriginAllowed(
   return false;
 }
 
-async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
-
-  app.use(cookieParser());
-
-  const allowedOrigins = getAllowedOrigins();
-
-  app.enableCors({
+export function getCorsOptions(allowedOrigins: string[] = getAllowedOrigins()) {
+  return {
     origin: (
       origin: string | undefined,
       callback: (err: Error | null, allow?: boolean) => void,
@@ -70,7 +64,18 @@ async function bootstrap() {
       }
     },
     credentials: true,
-  });
+    exposedHeaders: ['ETag'],
+  };
+}
+
+async function bootstrap() {
+  const app = await NestFactory.create(AppModule);
+
+  app.use(cookieParser());
+
+  const allowedOrigins = getAllowedOrigins();
+
+  app.enableCors(getCorsOptions(allowedOrigins));
 
   app.setGlobalPrefix('api');
 

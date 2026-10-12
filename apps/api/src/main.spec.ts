@@ -1,4 +1,4 @@
-import { getAllowedOrigins, isOriginAllowed } from './main';
+import { getAllowedOrigins, isOriginAllowed, getCorsOptions } from './main';
 
 describe('CORS Configuration', () => {
   const originalEnv = process.env;
@@ -173,6 +173,37 @@ describe('CORS Configuration', () => {
           isOriginAllowed('http://example.com:5173', customAllowedOrigins),
         ).toBe(false);
       });
+    });
+  });
+
+  describe('TC-EDB-INT-001: CORS Configuration Options (getCorsOptions)', () => {
+    it('exposes ETag header in CORS exposedHeaders and sets credentials to true', () => {
+      const corsOptions = getCorsOptions();
+      expect(corsOptions.exposedHeaders).toContain('ETag');
+      expect(corsOptions.credentials).toBe(true);
+    });
+
+    it('invokes origin callback allowing permitted origins', () => {
+      const corsOptions = getCorsOptions(['https://custom.com']);
+      const callback = jest.fn();
+
+      corsOptions.origin('https://custom.com', callback);
+      expect(callback).toHaveBeenCalledWith(null, true);
+
+      corsOptions.origin('chrome-extension://my-extension-id', callback);
+      expect(callback).toHaveBeenCalledWith(null, true);
+    });
+
+    it('invokes origin callback with Error for unpermitted origin', () => {
+      const corsOptions = getCorsOptions(['https://custom.com']);
+      const callback = jest.fn();
+
+      corsOptions.origin('https://malicious.com', callback);
+      expect(callback).toHaveBeenCalledWith(
+        expect.objectContaining({
+          message: 'Origin https://malicious.com not allowed by CORS',
+        }),
+      );
     });
   });
 });
