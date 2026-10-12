@@ -1,0 +1,64 @@
+{
+  "schemaVersion": 1,
+  "ok": false,
+  "command": "finalize",
+  "status": "skipped",
+  "type": "architecture",
+  "quality": "showcase",
+  "specification": {
+    "path": "/Users/vutuanhau/Documents/PROJECT/WordStreak/.archify/architecture-vocabulary-decks-20261012-095214/candidate.json",
+    "sha256": "5d1b4ad1bce9bce4fb56e53086965de1340f27dff2a5d8f74db7da2bcd498ab5",
+    "bytes": 13624
+  },
+  "artifact": {
+    "path": "/Users/vutuanhau/Documents/PROJECT/WordStreak/.archify/architecture-vocabulary-decks-20261012-095214/vocabulary-decks.html",
+    "sha256": "b09d907ca2b876388dd3108b2526003c703e0cea48e9a1d12f01e7df7360829b",
+    "bytes": 779477
+  },
+  "gates": {
+    "validate": "pass",
+    "deliver": "pass",
+    "check": "pass",
+    "browser-check": "skipped"
+  },
+  "failedStage": "browser-check",
+  "diagnostics": [
+    {
+      "code": "viewer/chrome-unavailable",
+      "severity": "warning",
+      "message": "Chrome or Chromium is unavailable. Set ARCHIFY_CHROME to its executable path.",
+      "subject": {
+        "artifact": "/Users/vutuanhau/Documents/PROJECT/WordStreak/.archify/architecture-vocabulary-decks-20261012-095214/vocabulary-decks.html"
+      },
+      "evidence": {
+        "executable": null
+      },
+      "supportedFixes": [
+        "set ARCHIFY_CHROME to a Chrome or Chromium executable and rerun browser-check"
+      ]
+    }
+  ],
+  "diagnosticSummary": {
+    "total": 1,
+    "shown": 1,
+    "truncated": false
+  },
+  "evidence": {
+    "receipt": "/Users/vutuanhau/Documents/PROJECT/WordStreak/.archify/architecture-vocabulary-decks-20261012-095214/vocabulary-decks.finalize.json",
+    "summaryReceipt": "/Users/vutuanhau/Documents/PROJECT/WordStreak/.archify/architecture-vocabulary-decks-20261012-095214/vocabulary-decks.finalize-summary.json",
+    "browserCheckReceipt": "/Users/vutuanhau/Documents/PROJECT/WordStreak/.archify/architecture-vocabulary-decks-20261012-095214/vocabulary-decks.browser-check.json"
+  },
+  "update": {
+    "status": "unavailable",
+    "installedVersion": null,
+    "availableVersion": null,
+    "releaseNotes": null,
+    "checkedAt": null,
+    "source": null,
+    "noticeRequired": false,
+    "noticeText": null,
+    "reason": "cache-valid"
+  },
+  "visualReview": "not-requested",
+  "durationMs": 1072
+}
