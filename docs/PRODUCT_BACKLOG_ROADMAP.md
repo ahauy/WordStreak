@@ -394,13 +394,13 @@ _Mục tiêu: Giúp người dùng dễ dàng chuyển đổi dữ liệu và m�
     - [x] Backend: Unit test cho các nhánh `goalReached` / `streakAtRisk`.
     - [x] Shared: `ReviewSummaryDto` vào `packages/shared-types`.
 
-- [ ] **US-ECO-05: Badge số thẻ đến hạn trên icon Extension**
+- [x] **US-ECO-05: Badge số thẻ đến hạn trên icon Extension**
   - **AC:** Icon hiển thị số thẻ đến hạn; tự cập nhật khi mở trình duyệt, khi mở popup, và theo chu kỳ alarm. Ẩn khi `dueCount = 0`.
   - **Tasks:**
-    - [ ] Extension: thêm `alarms` vào `manifest.json`; alarm làm mới badge (30–60 phút).
-    - [ ] Extension: `chrome.runtime.onStartup` + `onInstalled` làm mới badge ngay.
-    - [ ] Extension: dùng `nextDueAt` để đặt alarm đúng lúc thay vì poll liên tục.
-    - [ ] Extension: khi người dùng ôn xong trên web app, extension làm mới badge qua Web SSO Auth Sync.
+    - [x] Extension: thêm `alarms` vào `manifest.json`; alarm làm mới badge (30–60 phút).
+    - [x] Extension: `chrome.runtime.onStartup` + `onInstalled` làm mới badge ngay.
+    - [x] Extension: dùng `nextDueAt` để đặt alarm đúng lúc thay vì poll liên tục.
+    - [x] Extension: khi người dùng ôn xong trên web app, extension làm mới badge qua Web SSO Auth Sync.
 
 - [ ] **US-ECO-06: Thông báo nhắc học theo luật điều kiện**
   - **AC:** Thông báo hệ thống có nút **Học ngay** / **Để sau**; bấm "Học ngay" mở `/review` ở tab mới. Tuân thủ giờ yên tĩnh, trần 3 thông báo/ngày và logic giảm tần suất (bỏ qua 3 lần liên tiếp → tối đa 1/ngày).
@@ -725,7 +725,7 @@ _Mục tiêu: Xóa bỏ hoàn toàn rào cản "ứng dụng trống" bằng cá
   ├── EPIC-13: US-LIB-13 (Vocabulary Control Engine for Examples)
   ├── EPIC-13: US-LIB-08 (Data Attribution & CC BY-SA 4.0 Compliance Page)
   ├── EPIC-09: US-REM-01 (Review Summary API)            ✅
-  ├── EPIC-09: US-ECO-05 (Extension Badge)
+  ├── EPIC-09: US-ECO-05 (Extension Badge)                 ✅
   ├── EPIC-09: US-ECO-06 (Reminder Notifications)
   ├── EPIC-09: US-ECO-07 (Notification Settings)
   └── EPIC-12: US-UX-01 ("Học hôm nay" Button)
