@@ -1,17 +1,22 @@
 import { apiClient } from "./api-client";
 import { extensionStorage } from "../shared/storage";
+import { badgeManager } from "./badge-manager";
+import { ALARM_NAMES } from "../shared/constants";
 import type {
   QuickCaptureCardDto,
   ExtensionMessage,
 } from "@wordstreak/shared-types";
 
-// Register Context Menu and inject content script on install/update
+// Register Context Menu, ensure alarms, and inject content script on install/update
 chrome.runtime.onInstalled.addListener(async () => {
   chrome.contextMenus.create({
     id: "ws-quick-capture",
     title: 'Thêm "%s" vào WordStreak',
     contexts: ["selection"],
   });
+
+  await badgeManager.ensurePeriodicAlarm();
+  void badgeManager.refreshBadgeNow();
 
   // Automatically inject content script into all active http/https tabs
   try {
@@ -38,6 +43,22 @@ chrome.runtime.onInstalled.addListener(async () => {
     }
   } catch {
     // Ignored if permissions are not granted yet
+  }
+});
+
+// Refresh badge and alarms on browser startup
+chrome.runtime.onStartup.addListener(async () => {
+  await badgeManager.ensurePeriodicAlarm();
+  void badgeManager.refreshBadgeNow();
+});
+
+// Handle scheduled alarms for badge refreshing
+chrome.alarms.onAlarm.addListener((alarm) => {
+  if (
+    alarm.name === ALARM_NAMES.BADGE_PERIODIC ||
+    alarm.name === ALARM_NAMES.BADGE_NEXT_DUE
+  ) {
+    void badgeManager.refreshBadgeNow();
   }
 });
 
@@ -79,6 +100,8 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
         sourceUrl: tab.url,
       });
 
+      void badgeManager.refreshBadgeNow();
+
       // Send toast notification message to content script
       chrome.tabs.sendMessage(tab.id, {
         type: "SHOW_IN_PAGE_TOAST",
@@ -109,6 +132,7 @@ chrome.runtime.onMessage.addListener(
           const result = await apiClient.login(message.payload);
           await extensionStorage.setToken(result.accessToken);
           await extensionStorage.setUser(result.user);
+          void badgeManager.refreshBadgeNow();
           return { success: true, data: result };
         }
 
@@ -139,6 +163,8 @@ chrome.runtime.onMessage.addListener(
             sourceUrl: message.payload.sourceUrl,
           });
 
+          void badgeManager.refreshBadgeNow();
+
           return { success: true, data: result };
         }
 
@@ -150,17 +176,18 @@ chrome.runtime.onMessage.addListener(
             try {
               user = await apiClient.getMe();
               await extensionStorage.setUser(user);
+              void badgeManager.refreshBadgeNow();
             } catch (e: any) {
               if (
                 e.message?.includes("UNAUTHORIZED") ||
                 e.message?.includes("401")
               ) {
-                await extensionStorage.setToken(null);
-                await extensionStorage.setUser(null);
+                await badgeManager.clearAuthAndBadge();
                 user = null;
               }
             }
           } else {
+            await badgeManager.clearAuthAndBadge();
             user = null;
           }
 
@@ -169,6 +196,7 @@ chrome.runtime.onMessage.addListener(
 
         case "SET_AUTH_TOKEN": {
           await extensionStorage.setToken(message.payload.token);
+          void badgeManager.refreshBadgeNow();
           try {
             const user = await apiClient.getMe();
             await extensionStorage.setUser(user);
@@ -179,9 +207,17 @@ chrome.runtime.onMessage.addListener(
         }
 
         case "LOGOUT": {
-          await extensionStorage.setToken(null);
-          await extensionStorage.setUser(null);
+          await badgeManager.clearAuthAndBadge();
           return { success: true };
+        }
+
+        case "REFRESH_BADGE": {
+          if (message.payload?.immediate) {
+            const summary = await badgeManager.refreshBadgeNow();
+            return { success: true, data: { summary, debounced: false } };
+          }
+          badgeManager.scheduleDebouncedRefresh();
+          return { success: true, data: { debounced: true } };
         }
 
         case "FETCH_DECKS": {

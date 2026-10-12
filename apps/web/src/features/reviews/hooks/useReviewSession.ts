@@ -244,6 +244,10 @@ export function useReviewSession(deckId?: string) {
               rating,
             });
 
+            if (typeof window !== "undefined") {
+              window.postMessage({ type: "WORDSTREAK_REVIEW_SYNC" }, "*");
+            }
+
             if (response?.xp) {
               setLastXpReward(response.xp);
               dispatchXpUpdated();

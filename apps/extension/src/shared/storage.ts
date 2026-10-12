@@ -4,6 +4,7 @@ import type {
   ExtensionSettingsPayload,
   ExtensionUserSummary,
   RecentCaptureItem,
+  ReviewSummaryCacheState,
 } from "@wordstreak/shared-types";
 
 export const extensionStorage = {
@@ -48,6 +49,57 @@ export const extensionStorage = {
     } else {
       await chrome.storage.local.remove(STORAGE_KEYS.USER);
     }
+  },
+
+  async getReviewSummaryCache(): Promise<ReviewSummaryCacheState | null> {
+    if (typeof chrome === "undefined" || !chrome.storage?.local) {
+      const raw = localStorage.getItem(STORAGE_KEYS.REVIEW_SUMMARY_CACHE);
+      return raw ? JSON.parse(raw) : null;
+    }
+    const result = await chrome.storage.local.get(
+      STORAGE_KEYS.REVIEW_SUMMARY_CACHE,
+    );
+    return (
+      (result[STORAGE_KEYS.REVIEW_SUMMARY_CACHE] as ReviewSummaryCacheState) ||
+      null
+    );
+  },
+
+  async setReviewSummaryCache(
+    cache: ReviewSummaryCacheState | null,
+  ): Promise<void> {
+    if (typeof chrome === "undefined" || !chrome.storage?.local) {
+      if (cache) {
+        localStorage.setItem(
+          STORAGE_KEYS.REVIEW_SUMMARY_CACHE,
+          JSON.stringify(cache),
+        );
+      } else {
+        localStorage.removeItem(STORAGE_KEYS.REVIEW_SUMMARY_CACHE);
+      }
+      return;
+    }
+    if (cache) {
+      await chrome.storage.local.set({
+        [STORAGE_KEYS.REVIEW_SUMMARY_CACHE]: cache,
+      });
+    } else {
+      await chrome.storage.local.remove(STORAGE_KEYS.REVIEW_SUMMARY_CACHE);
+    }
+  },
+
+  async clearAuth(): Promise<void> {
+    if (typeof chrome === "undefined" || !chrome.storage?.local) {
+      localStorage.removeItem(STORAGE_KEYS.TOKEN);
+      localStorage.removeItem(STORAGE_KEYS.USER);
+      localStorage.removeItem(STORAGE_KEYS.REVIEW_SUMMARY_CACHE);
+      return;
+    }
+    await chrome.storage.local.remove([
+      STORAGE_KEYS.TOKEN,
+      STORAGE_KEYS.USER,
+      STORAGE_KEYS.REVIEW_SUMMARY_CACHE,
+    ]);
   },
 
   async getSettings(): Promise<ExtensionSettingsPayload> {
@@ -105,12 +157,14 @@ export const extensionStorage = {
   },
 
   async getAll(): Promise<ExtensionStorageState> {
-    const [token, user, settings, recentCaptures] = await Promise.all([
-      this.getToken(),
-      this.getUser(),
-      this.getSettings(),
-      this.getRecentCaptures(),
-    ]);
-    return { token, user, settings, recentCaptures };
+    const [token, user, settings, recentCaptures, reviewSummaryCache] =
+      await Promise.all([
+        this.getToken(),
+        this.getUser(),
+        this.getSettings(),
+        this.getRecentCaptures(),
+        this.getReviewSummaryCache(),
+      ]);
+    return { token, user, settings, recentCaptures, reviewSummaryCache };
   },
 };

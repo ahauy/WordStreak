@@ -113,4 +113,44 @@ describe("ReconnectionSyncEngine", () => {
     expect(pendingAfter[0].retryCount).toBe(1);
     expect(pendingAfter[0].status).toBe("FAILED");
   });
+
+  it("TC-EDB-014: emits WORDSTREAK_REVIEW_SYNC via window.postMessage upon batch sync completion", async () => {
+    await queueOfflineReview({
+      userId: "user-123",
+      cardId: "card-abc",
+      rating: 3,
+      interval: 1,
+      easeFactor: 2.5,
+      repetitions: 1,
+      reviewedAtClient: new Date().toISOString(),
+      clientTimezone: "Asia/Ho_Chi_Minh",
+    });
+
+    const mockResponseData: SyncReviewResponseDto = {
+      processedCount: 1,
+      syncedCount: 1,
+      failedCount: 0,
+      conflictsResolved: 0,
+      syncedCardIds: ["card-abc"],
+      totalXpAwarded: 10,
+      streakUpdated: true,
+      currentStreak: 5,
+      bestStreak: 7,
+      conflicts: [],
+      serverTimestamp: new Date().toISOString(),
+    };
+
+    vi.spyOn(apiClient, "post").mockResolvedValueOnce({
+      data: mockResponseData,
+    });
+    const postMessageSpy = vi.spyOn(window, "postMessage");
+
+    await reconnectionSyncEngine.syncNow("user-123");
+
+    expect(postMessageSpy).toHaveBeenCalledWith(
+      { type: "WORDSTREAK_REVIEW_SYNC" },
+      "*",
+    );
+  });
 });
+

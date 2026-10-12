@@ -3,6 +3,7 @@ import { ShadowDomManager } from "./shadow-dom";
 import { createFloatingFlameIcon } from "./components/FloatingFlameIcon";
 import { createInPageToast } from "./components/InPageToast";
 import { WEB_APP_URL } from "../shared/constants";
+import { handleWindowMessage } from "./message-relay";
 import type { ExtensionMessage } from "@wordstreak/shared-types";
 
 let currentFloatingIcon: HTMLElement | null = null;
@@ -183,17 +184,5 @@ chrome.runtime.onMessage.addListener((message) => {
   }
 });
 
-// Listen for Web SSO Auth Sync from WordStreak Web App
-window.addEventListener("message", (event) => {
-  if (event.data?.type === "WORDSTREAK_AUTH_SYNC") {
-    const token = event.data.token;
-    if (token) {
-      chrome.runtime.sendMessage({
-        type: "SET_AUTH_TOKEN",
-        payload: { token },
-      });
-    } else {
-      chrome.runtime.sendMessage({ type: "LOGOUT" });
-    }
-  }
-});
+// Listen for Web SSO Auth Sync & Review Sync from WordStreak Web App
+window.addEventListener("message", handleWindowMessage);

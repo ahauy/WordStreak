@@ -162,6 +162,11 @@ export class ReconnectionSyncEngine {
 
   private dispatchSyncCompleted(data: SyncReviewResponseDto): void {
     if (typeof window === "undefined") return;
+
+    if (typeof window !== "undefined") {
+      window.postMessage({ type: "WORDSTREAK_REVIEW_SYNC" }, "*");
+    }
+
     window.dispatchEvent(
       new CustomEvent("wordstreak:sync-completed", {
         detail: data,
