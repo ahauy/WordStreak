@@ -34,6 +34,7 @@ Danh sách tất cả các tính năng đã được deliver (code hoàn chỉnh
 | [User Language Preferences Sync (US-I18N-03)](./i18n-user-preferences-sync/README.md) | `i18n-user-preferences-sync` | 1.0 | Hoàn thành (`Delivered`) | 2026-08-22 |
 | [Progressive Web App (PWA) & Offline Study Mode (US-ECO-04)](./pwa-offline-mode/README.md) | `pwa-offline-mode` | 1.0 | Hoàn thành (`Delivered`) | 2026-08-24 |
 | [Review Summary API for Extension (US-REM-01)](./review-summary-api/README.md) | `review-summary-api` | 1.0 | Hoàn thành (`Delivered`) | 2026-10-12 |
+| [Extension Due Cards Badge (US-ECO-05)](./extension-due-badge/README.md) | `extension-due-badge` | 1.0 | Hoàn thành (`Delivered`) | 2026-10-12 |
 
 ---
 
