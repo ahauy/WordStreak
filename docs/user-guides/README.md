@@ -27,6 +27,8 @@ Tập hợp tất cả các tài liệu hướng dẫn sử dụng trực quan, 
 | 17  | **Cài Đặt Ngôn Ngữ & Đồng Bộ Hồ Sơ Tự Động (Preferences Sync)** |   `US-I18N-03`   | [i18n-user-preferences-sync.md](./i18n-user-preferences-sync.md)           |      ✅ Có       |
 | 18  | **Tiện Ích Mở Rộng Trình Duyệt (WordStreak Extension MV3)**     |   `US-ECO-03`    | [browser-extension.md](./browser-extension.md)                             |      ✅ Có       |
 | 19  | **Ứng Dụng PWA & Chế Độ Học Ngoại Tuyến (Offline Mode)**        |   `US-ECO-04`    | [pwa-offline-mode.md](./pwa-offline-mode.md)                               |      ✅ Có       |
+| 20  | **Huy Hiệu Số Thẻ Đến Hạn Trên Extension (Due Badge)**          |   `US-ECO-05`    | [extension-due-badge.md](./extension-due-badge.md)                         |      ✅ Có       |
+| 21  | **Thông Báo Nhắc Học Thông Minh (Smart Study Reminders)**       |   `US-ECO-06`    | [extension-reminder-notifications.md](./extension-reminder-notifications.md) |  ✅ Có       |
 
 ---
 

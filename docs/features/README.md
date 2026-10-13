@@ -35,6 +35,7 @@ Danh sách tất cả các tính năng đã được deliver (code hoàn chỉnh
 | [Progressive Web App (PWA) & Offline Study Mode (US-ECO-04)](./pwa-offline-mode/README.md) | `pwa-offline-mode` | 1.0 | Hoàn thành (`Delivered`) | 2026-08-24 |
 | [Review Summary API for Extension (US-REM-01)](./review-summary-api/README.md) | `review-summary-api` | 1.0 | Hoàn thành (`Delivered`) | 2026-10-12 |
 | [Extension Due Cards Badge (US-ECO-05)](./extension-due-badge/README.md) | `extension-due-badge` | 1.0 | Hoàn thành (`Delivered`) | 2026-10-12 |
+| [Conditional Study Reminder Notifications (US-ECO-06)](./extension-reminder-notifications/README.md) | `extension-reminder-notifications` | 1.0 | Hoàn thành (`Delivered`) | 2026-10-13 |
 
 ---
 

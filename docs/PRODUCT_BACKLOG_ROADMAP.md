@@ -402,15 +402,15 @@ _Mục tiêu: Giúp người dùng dễ dàng chuyển đổi dữ liệu và m�
     - [x] Extension: dùng `nextDueAt` để đặt alarm đúng lúc thay vì poll liên tục.
     - [x] Extension: khi người dùng ôn xong trên web app, extension làm mới badge qua Web SSO Auth Sync.
 
-- [ ] **US-ECO-06: Thông báo nhắc học theo luật điều kiện**
+- [x] **US-ECO-06: Thông báo nhắc học theo luật điều kiện**
   - **AC:** Thông báo hệ thống có nút **Học ngay** / **Để sau**; bấm "Học ngay" mở `/review` ở tab mới. Tuân thủ giờ yên tĩnh, trần 3 thông báo/ngày và logic giảm tần suất (bỏ qua 3 lần liên tiếp → tối đa 1/ngày).
   - **Tasks:**
-    - [ ] Extension: thêm `notifications` vào `manifest.json`.
-    - [ ] Extension: module `reminderRules.ts` (hàm thuần, dễ unit test) nhận `summary + settings + state` → quyết định có nhắc không.
-    - [ ] Extension: alarm `daily-reminder` đặt theo giờ người dùng chọn.
-    - [ ] Extension: xử lý `onClicked` / `onButtonClicked`, snooze bằng alarm một lần.
-    - [ ] Extension: lưu trạng thái nhắc vào `chrome.storage.local`.
-    - [ ] i18n: chuỗi thông báo EN/VI theo `preferredLanguage`.
+    - [x] Extension: thêm `notifications` vào `manifest.json`.
+    - [x] Extension: module `reminderRules.ts` (hàm thuần, dễ unit test) nhận `summary + settings + state` → quyết định có nhắc không.
+    - [x] Extension: alarm `daily-reminder` đặt theo giờ người dùng chọn.
+    - [x] Extension: xử lý `onClicked` / `onButtonClicked`, snooze bằng alarm một lần.
+    - [x] Extension: lưu trạng thái nhắc vào `chrome.storage.local`.
+    - [x] i18n: chuỗi thông báo EN/VI theo `preferredLanguage`.
 
 - [ ] **US-ECO-07: Cài đặt nhắc học (Options Page)**
   - **AC:** Bật/tắt nhắc, chọn giờ nhắc, giờ yên tĩnh (bắt đầu–kết thúc), bật/tắt "nhắc khi streak sắp mất", bật/tắt badge.
@@ -726,7 +726,7 @@ _Mục tiêu: Xóa bỏ hoàn toàn rào cản "ứng dụng trống" bằng cá
   ├── EPIC-13: US-LIB-08 (Data Attribution & CC BY-SA 4.0 Compliance Page)
   ├── EPIC-09: US-REM-01 (Review Summary API)            ✅
   ├── EPIC-09: US-ECO-05 (Extension Badge)                 ✅
-  ├── EPIC-09: US-ECO-06 (Reminder Notifications)
+  ├── EPIC-09: US-ECO-06 (Reminder Notifications)          ✅
   ├── EPIC-09: US-ECO-07 (Notification Settings)
   └── EPIC-12: US-UX-01 ("Học hôm nay" Button)
 

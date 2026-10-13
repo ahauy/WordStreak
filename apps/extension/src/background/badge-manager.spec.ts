@@ -523,4 +523,105 @@ describe("BadgeManager & Pure Domain Helpers", () => {
       expect(refreshSpy).toHaveBeenCalledTimes(2);
     });
   });
+
+  describe("TC-REMD-INT-001: ReminderManager Integration via BadgeManager", () => {
+    let badgeManager: BadgeManager;
+
+    beforeEach(() => {
+      (globalThis as any).chrome = {
+        action: {
+          setBadgeText: vi.fn().mockResolvedValue(undefined),
+          setBadgeBackgroundColor: vi.fn().mockResolvedValue(undefined),
+          setBadgeTextColor: vi.fn().mockResolvedValue(undefined),
+        },
+        alarms: {
+          create: vi.fn().mockResolvedValue(undefined),
+          clear: vi.fn().mockResolvedValue(true),
+        },
+      };
+      badgeManager = new BadgeManager();
+    });
+
+    afterEach(() => {
+      delete (globalThis as any).chrome;
+    });
+
+    it("invokes reminderManager.handleWebReviewActivity and evaluateFromSummary on success result", async () => {
+      vi.spyOn(extensionStorage, "getToken").mockResolvedValue("jwt-token");
+      vi.spyOn(extensionStorage as any, "getReviewSummaryCache").mockResolvedValue({
+        summary: { ...baseSummary, studiedToday: 5 },
+        etag: null,
+        fetchedAt: new Date().toISOString(),
+      });
+      vi.spyOn(extensionStorage as any, "setReviewSummaryCache").mockResolvedValue(undefined);
+      vi.spyOn(apiClient as any, "getReviewSummary").mockResolvedValue({
+        status: 200,
+        summary: { ...baseSummary, studiedToday: 8 },
+        etag: 'W/"new-etag"',
+      });
+
+      const { reminderManager } = await import("./reminder-manager");
+      const activitySpy = vi
+        .spyOn(reminderManager, "handleWebReviewActivity")
+        .mockResolvedValue(undefined);
+      const evalSpy = vi
+        .spyOn(reminderManager, "evaluateFromSummary")
+        .mockResolvedValue({
+          shouldNotify: false,
+          reason: "COOLDOWN_ACTIVE",
+          effectiveDailyCap: 3,
+          normalizedState: {} as any,
+        });
+
+      await badgeManager.refreshBadgeNow();
+
+      expect(activitySpy).toHaveBeenCalledWith(
+        expect.objectContaining({ studiedToday: 5 }),
+        expect.objectContaining({ studiedToday: 8 }),
+      );
+      expect(evalSpy).toHaveBeenCalledWith(
+        expect.objectContaining({ studiedToday: 8 }),
+        "PERIODIC_SYNC",
+      );
+    });
+
+    it("skips reminder evaluation when skipReminderEval is true", async () => {
+      vi.spyOn(extensionStorage, "getToken").mockResolvedValue("jwt-token");
+      vi.spyOn(extensionStorage as any, "getReviewSummaryCache").mockResolvedValue(null);
+      vi.spyOn(extensionStorage as any, "setReviewSummaryCache").mockResolvedValue(undefined);
+      vi.spyOn(apiClient as any, "getReviewSummary").mockResolvedValue({
+        status: 200,
+        summary: baseSummary,
+        etag: 'W/"etag"',
+      });
+
+      const { reminderManager } = await import("./reminder-manager");
+      const evalSpy = vi
+        .spyOn(reminderManager, "evaluateFromSummary")
+        .mockResolvedValue({
+          shouldNotify: false,
+          reason: "COOLDOWN_ACTIVE",
+          effectiveDailyCap: 3,
+          normalizedState: {} as any,
+        });
+
+      await badgeManager.refreshBadgeNow({ skipReminderEval: true });
+
+      expect(evalSpy).not.toHaveBeenCalled();
+    });
+
+    it("invokes reminderManager.clearRemindersAndAlarms on clearAuthAndBadge", async () => {
+      vi.spyOn(extensionStorage, "clearAuth").mockResolvedValue(undefined);
+
+      const { reminderManager } = await import("./reminder-manager");
+      const clearSpy = vi
+        .spyOn(reminderManager, "clearRemindersAndAlarms")
+        .mockResolvedValue(undefined);
+
+      await badgeManager.clearAuthAndBadge();
+
+      expect(clearSpy).toHaveBeenCalled();
+    });
+  });
 });
+

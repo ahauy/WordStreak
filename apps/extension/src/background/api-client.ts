@@ -5,6 +5,7 @@ import type {
   QuickCaptureResponseDto,
   DeckResponse,
   ReviewSummaryDto,
+  ExtensionUserSummary,
 } from "@wordstreak/shared-types";
 
 export type GetReviewSummaryResult =
@@ -31,6 +32,18 @@ export class ExtensionApiClient {
     this.baseUrl = baseUrl;
   }
 
+  private async extractErrorMessage(
+    response: Response,
+    fallback: string,
+  ): Promise<string> {
+    try {
+      const errorData = await response.json();
+      return errorData.message || errorData.error || fallback;
+    } catch {
+      return fallback;
+    }
+  }
+
   private async request<T>(
     endpoint: string,
     options: RequestInit = {},
@@ -52,13 +65,10 @@ export class ExtensionApiClient {
     });
 
     if (response.status === 401) {
-      let errorMessage = "Email/Username hoặc mật khẩu không chính xác";
-      try {
-        const errorData = await response.json();
-        errorMessage = errorData.message || errorData.error || errorMessage;
-      } catch {
-        // fallback to default
-      }
+      const errorMessage = await this.extractErrorMessage(
+        response,
+        "Email/Username hoặc mật khẩu không chính xác",
+      );
 
       if (endpoint !== "/auth/login") {
         await extensionStorage.setToken(null);
@@ -72,13 +82,10 @@ export class ExtensionApiClient {
     }
 
     if (!response.ok) {
-      let errorMessage = `HTTP Error ${response.status}`;
-      try {
-        const errorData = await response.json();
-        errorMessage = errorData.message || errorData.error || errorMessage;
-      } catch {
-        // use default error message
-      }
+      const errorMessage = await this.extractErrorMessage(
+        response,
+        `HTTP Error ${response.status}`,
+      );
       throw new Error(errorMessage);
     }
 
@@ -100,39 +107,19 @@ export class ExtensionApiClient {
     });
   }
 
-  async getMe(): Promise<{
-    id: string;
-    email: string;
-    username: string;
-    avatarUrl?: string | null;
-  }> {
-    return this.request<{
-      id: string;
-      email: string;
-      username: string;
-      avatarUrl?: string | null;
-    }>("/users/me", {
+  async getMe(): Promise<ExtensionUserSummary> {
+    return this.request<ExtensionUserSummary>("/users/me", {
       method: "GET",
     });
   }
 
   async login(credentials: { identifier: string; password: string }): Promise<{
     accessToken: string;
-    user: {
-      id: string;
-      email: string;
-      username: string;
-      avatarUrl?: string | null;
-    };
+    user: ExtensionUserSummary;
   }> {
     return this.request<{
       accessToken: string;
-      user: {
-        id: string;
-        email: string;
-        username: string;
-        avatarUrl?: string | null;
-      };
+      user: ExtensionUserSummary;
     }>("/auth/login", {
       method: "POST",
       body: JSON.stringify({
