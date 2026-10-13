@@ -48,6 +48,7 @@ export const DEFAULT_SETTINGS = {
   autoShowFloatingIcon: true,
   shortcutKey: "Alt+W",
   blacklistedDomains: [] as string[],
+  badgeEnabled: true,
   remindersEnabled: true,
   dailyReminderTime: "20:00",
   quietHoursStart: "22:00",

@@ -32,6 +32,7 @@ export class ReminderManager {
     if (!token || !settings.remindersEnabled) {
       await chrome.alarms?.clear?.(ALARM_NAMES.DAILY_REMINDER);
       await chrome.alarms?.clear?.(ALARM_NAMES.REMINDER_SNOOZE);
+      await chrome.notifications?.clear?.(REMINDER_NOTIFICATION_ID);
       return;
     }
 

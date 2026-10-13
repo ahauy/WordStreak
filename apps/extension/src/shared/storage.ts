@@ -19,6 +19,38 @@ const getLocalStorage = (): Storage | null => {
   return null;
 };
 
+const TIME_REGEX = /^([01]\d|2[0-3]):([0-5]\d)$/;
+
+export function sanitizeSettings(
+  raw?: Partial<ExtensionSettingsPayload> | Record<string, any> | null,
+): ExtensionSettingsPayload {
+  const merged = { ...DEFAULT_SETTINGS, ...raw };
+  return {
+    ...merged,
+    dailyReminderTime: TIME_REGEX.test(merged.dailyReminderTime)
+      ? merged.dailyReminderTime
+      : DEFAULT_SETTINGS.dailyReminderTime,
+    quietHoursStart: TIME_REGEX.test(merged.quietHoursStart)
+      ? merged.quietHoursStart
+      : DEFAULT_SETTINGS.quietHoursStart,
+    quietHoursEnd: TIME_REGEX.test(merged.quietHoursEnd)
+      ? merged.quietHoursEnd
+      : DEFAULT_SETTINGS.quietHoursEnd,
+    badgeEnabled:
+      typeof merged.badgeEnabled === "boolean"
+        ? merged.badgeEnabled
+        : DEFAULT_SETTINGS.badgeEnabled,
+    remindersEnabled:
+      typeof merged.remindersEnabled === "boolean"
+        ? merged.remindersEnabled
+        : DEFAULT_SETTINGS.remindersEnabled,
+    streakAtRiskReminderEnabled:
+      typeof merged.streakAtRiskReminderEnabled === "boolean"
+        ? merged.streakAtRiskReminderEnabled
+        : DEFAULT_SETTINGS.streakAtRiskReminderEnabled,
+  };
+}
+
 export const extensionStorage = {
   async getToken(): Promise<string | null> {
     if (typeof chrome === "undefined" || !chrome.storage?.local) {
@@ -121,34 +153,79 @@ export const extensionStorage = {
   },
 
   async getSettings(): Promise<ExtensionSettingsPayload> {
-    if (typeof chrome === "undefined" || !chrome.storage?.local) {
+    if (typeof chrome === "undefined") {
       const raw = getLocalStorage()?.getItem(STORAGE_KEYS.SETTINGS);
-      return raw
-        ? { ...DEFAULT_SETTINGS, ...JSON.parse(raw) }
-        : { ...DEFAULT_SETTINGS };
+      return sanitizeSettings(raw ? JSON.parse(raw) : undefined);
     }
-    const result = await chrome.storage.local.get(STORAGE_KEYS.SETTINGS);
-    return result[STORAGE_KEYS.SETTINGS]
-      ? {
-          ...DEFAULT_SETTINGS,
-          ...(result[STORAGE_KEYS.SETTINGS] as ExtensionSettingsPayload),
+
+    if (chrome.storage?.sync) {
+      try {
+        const syncResult = await chrome.storage.sync.get(STORAGE_KEYS.SETTINGS);
+        const syncVal = syncResult?.[STORAGE_KEYS.SETTINGS];
+        if (syncVal !== undefined) {
+          return sanitizeSettings(syncVal);
         }
-      : { ...DEFAULT_SETTINGS };
+
+        if (chrome.storage?.local) {
+          const localResult = await chrome.storage.local.get(STORAGE_KEYS.SETTINGS);
+          const localVal = localResult?.[STORAGE_KEYS.SETTINGS];
+          if (localVal !== undefined) {
+            const migrated = sanitizeSettings(localVal);
+            try {
+              await chrome.storage.sync.set({ [STORAGE_KEYS.SETTINGS]: migrated });
+            } catch {
+              // ignore sync write failure on best-effort migration
+            }
+            return migrated;
+          }
+        }
+
+        return sanitizeSettings();
+      } catch {
+        // Fall back to local storage if sync fails
+      }
+    }
+
+    if (chrome.storage?.local) {
+      const localResult = await chrome.storage.local.get(STORAGE_KEYS.SETTINGS);
+      return sanitizeSettings(localResult?.[STORAGE_KEYS.SETTINGS]);
+    }
+
+    const raw = getLocalStorage()?.getItem(STORAGE_KEYS.SETTINGS);
+    return sanitizeSettings(raw ? JSON.parse(raw) : undefined);
   },
 
   async updateSettings(
     settings: Partial<ExtensionSettingsPayload>,
   ): Promise<ExtensionSettingsPayload> {
     const current = await this.getSettings();
-    const updated = { ...current, ...settings };
-    if (typeof chrome === "undefined" || !chrome.storage?.local) {
+    const updated = sanitizeSettings({ ...current, ...settings });
+
+    if (typeof chrome === "undefined") {
       getLocalStorage()?.setItem(
         STORAGE_KEYS.SETTINGS,
         JSON.stringify(updated),
       );
       return updated;
     }
-    await chrome.storage.local.set({ [STORAGE_KEYS.SETTINGS]: updated });
+
+    if (chrome.storage?.sync) {
+      try {
+        await chrome.storage.sync.set({ [STORAGE_KEYS.SETTINGS]: updated });
+      } catch {
+        // Fall back to local mirroring
+      }
+    }
+
+    if (chrome.storage?.local) {
+      await chrome.storage.local.set({ [STORAGE_KEYS.SETTINGS]: updated });
+    } else {
+      getLocalStorage()?.setItem(
+        STORAGE_KEYS.SETTINGS,
+        JSON.stringify(updated),
+      );
+    }
+
     return updated;
   },
 

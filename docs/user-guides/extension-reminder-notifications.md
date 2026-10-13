@@ -24,7 +24,7 @@ Tính năng này được thiết kế dựa trên nguyên lý: **Nhắc đúng 
 
 Khi bạn đã nỗ lực xây dựng chuỗi ngày học liên tục từ 3 ngày trở lên, việc quên học một ngày có thể làm mất đi toàn bộ thành quả. Hệ thống sẽ theo dõi thầm lặng và gửi cảnh báo trước khi hết ngày.
 
-![Cảnh báo nguy cơ đứt chuỗi học](./assets/extension-reminder-notifications/step-01-streak-at-risk-toast.png)
+![Cảnh báo nguy cơ đứt chuỗi học](./images/extension-reminder-notifications/step-01-streak-at-risk-toast.png)
 
 - **① Hộp thoại cảnh báo khẩn cấp (Streak at Risk Alert):** Xuất hiện khi bạn đang có chuỗi học, chưa hoàn thành bài học hôm nay và đồng hồ điểm sau 21:00 (dưới 3 tiếng trước nửa đêm). Thông báo hiển thị rõ số ngày chuỗi hiện tại và số thẻ từ vựng cần giải quyết để giữ ngọn lửa học tập luôn rực cháy.
 - **② Nút "Học ngay" (Study Now):** Nhấp chuột vào nút này để mở thẳng trang ôn tập từ vựng. Bạn không cần phải mở tab mới hay tự gõ địa chỉ web.
@@ -36,7 +36,7 @@ Khi bạn đã nỗ lực xây dựng chuỗi ngày học liên tục từ 3 ng�
 
 Khoảng 20:00 mỗi tối là "khung giờ vàng" thư giãn và củng cố trí nhớ sau một ngày làm việc. Nếu hôm nay bạn có từ vựng cần ôn tập, WordStreak sẽ gửi lời nhắc nhẹ nhàng kèm con số chính xác.
 
-![Thông báo giờ học định kỳ 20:00](./assets/extension-reminder-notifications/step-02-due-cards-daily-reminder.png)
+![Thông báo giờ học định kỳ 20:00](./images/extension-reminder-notifications/step-02-due-cards-daily-reminder.png)
 
 - **① Huy hiệu số thẻ đến hạn (Toolbar Due Badge):** Ngay trên góc phải thanh công cụ trình duyệt, biểu tượng tiện ích WordStreak luôn hiển thị số lượng thẻ cần ôn trong ngày (ví dụ: số `12` màu tím nổi bật).
 - **② Lời nhắc ôn tập buổi tối (Daily Reminder):** Đúng 20:00, một thông báo trang nhã sẽ xuất hiện ở góc màn hình báo cho bạn biết chính xác số lượng thẻ đang chờ ôn theo thuật toán khoa học SM-2.
@@ -48,7 +48,7 @@ Khoảng 20:00 mỗi tối là "khung giờ vàng" thư giãn và củng cố tr
 
 Khác với các ứng dụng liên tục gửi thông báo làm bạn khó chịu, WordStreak sở hữu bộ quy tắc thông minh đảm bảo bạn luôn có không gian tập trung và giấc ngủ ngon:
 
-![Cơ chế chống làm phiền thông minh](./assets/extension-reminder-notifications/step-03-smart-rules-quiet-hours-backoff.png)
+![Cơ chế chống làm phiền thông minh](./images/extension-reminder-notifications/step-03-smart-rules-quiet-hours-backoff.png)
 
 - **① Khung giờ yên tĩnh (Quiet Hours: 22:00 – 07:00):** Từ 22:00 đêm đến 07:00 sáng hôm sau, tiện ích hoàn toàn "im lặng". Mọi thông báo nhắc học đều bị chặn lại để bảo vệ trọn vẹn giấc ngủ của bạn.
 - **② Cơ chế tự động giảm tần suất (3-Ignore Backoff):** Nếu bạn quá bận rộn và bỏ qua hoặc đóng 3 thông báo liên tiếp mà không vào học, hệ thống sẽ tự hiểu bạn đang bận và tự động giảm số lần nhắc xuống **tối đa chỉ 1 thông báo/ngày** để không gây phiền hà.
@@ -71,7 +71,7 @@ Khác với các ứng dụng liên tục gửi thông báo làm bạn khó ch�
 
 Khi bạn bấm nút **"Học ngay"** hoặc bấm vào thân thông báo, tiện ích sẽ dẫn bạn thẳng tới bài học một cách mượt mà và thông minh nhất:
 
-![Khởi động trang ôn tập thông minh](./assets/extension-reminder-notifications/step-04-smart-tab-launch-review.png)
+![Khởi động trang ôn tập thông minh](./images/extension-reminder-notifications/step-04-smart-tab-launch-review.png)
 
 - **① Tái sử dụng tab thông minh (Smart Tab Reuse):** Tiện ích tự động tìm xem bạn đã mở sẵn tab WordStreak nào trên trình duyệt chưa. Nếu có, trình duyệt sẽ chuyển ngay sang tab đó và trỏ đến địa chỉ `http://localhost:5173/review` thay vì mở thêm một tab mới gây lộn xộn trình duyệt.
 - **② Thẻ từ vựng hiển thị sẵn sàng:** Màn hình ôn tập xuất hiện tức thì với từ vựng cần nhớ, phiên âm quốc tế chuẩn IPA, ngữ cảnh câu giao tiếp thực tế và giải nghĩa súc tích.

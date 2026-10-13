@@ -369,3 +369,123 @@ describe("TC-REMD-001: Reminder State & Default Settings Merge", () => {
   });
 });
 
+describe("US-ECO-07: Reminder Settings & chrome.storage.sync persistence (TC-ERS-001..004)", () => {
+  let syncMap: Record<string, any>;
+  let localMap: Record<string, any>;
+
+  beforeEach(() => {
+    syncMap = {};
+    localMap = {};
+    (globalThis as any).chrome = {
+      storage: {
+        sync: {
+          get: vi.fn(async (keys: string | string[]) => {
+            if (typeof keys === "string") return { [keys]: syncMap[keys] };
+            const res: Record<string, any> = {};
+            for (const k of keys) res[k] = syncMap[k];
+            return res;
+          }),
+          set: vi.fn(async (items: Record<string, any>) => {
+            Object.assign(syncMap, items);
+          }),
+        },
+        local: {
+          get: vi.fn(async (keys: string | string[]) => {
+            if (typeof keys === "string") return { [keys]: localMap[keys] };
+            const res: Record<string, any> = {};
+            for (const k of keys) res[k] = localMap[k];
+            return res;
+          }),
+          set: vi.fn(async (items: Record<string, any>) => {
+            Object.assign(localMap, items);
+          }),
+          remove: vi.fn(async (keys: string | string[]) => {
+            const list = Array.isArray(keys) ? keys : [keys];
+            for (const k of list) delete localMap[k];
+          }),
+        },
+      },
+    };
+  });
+
+  afterEach(() => {
+    delete (globalThis as any).chrome;
+  });
+
+  it("TC-ERS-001: returns DEFAULT_SETTINGS with badgeEnabled: true when sync and local storage are empty", async () => {
+    const settings = await extensionStorage.getSettings();
+    expect(settings).toEqual({
+      ...DEFAULT_SETTINGS,
+      badgeEnabled: true,
+      remindersEnabled: true,
+      dailyReminderTime: "20:00",
+      quietHoursStart: "22:00",
+      quietHoursEnd: "07:00",
+      streakAtRiskReminderEnabled: true,
+    });
+  });
+
+  it("TC-ERS-002: performs one-time read-through migration from chrome.storage.local to chrome.storage.sync", async () => {
+    localMap[STORAGE_KEYS.SETTINGS] = {
+      pinnedDeckId: "deck-legacy",
+      autoShowFloatingIcon: false,
+    };
+
+    const settings = await extensionStorage.getSettings();
+    expect(settings.pinnedDeckId).toBe("deck-legacy");
+    expect(settings.autoShowFloatingIcon).toBe(false);
+    expect(settings.badgeEnabled).toBe(true);
+
+    // Verify sync was populated with merged settings
+    expect((globalThis as any).chrome.storage.sync.set).toHaveBeenCalledWith({
+      [STORAGE_KEYS.SETTINGS]: expect.objectContaining({
+        pinnedDeckId: "deck-legacy",
+        autoShowFloatingIcon: false,
+        badgeEnabled: true,
+      }),
+    });
+    expect(syncMap[STORAGE_KEYS.SETTINGS]).toEqual(settings);
+  });
+
+  it("TC-ERS-003: persists to sync and mirrors to local while sanitizing malformed/empty time strings", async () => {
+    const updated = await extensionStorage.updateSettings({
+      dailyReminderTime: "invalid-time",
+      quietHoursStart: "",
+      quietHoursEnd: "99:99",
+      badgeEnabled: false,
+    });
+
+    expect(updated.dailyReminderTime).toBe("20:00");
+    expect(updated.quietHoursStart).toBe("22:00");
+    expect(updated.quietHoursEnd).toBe("07:00");
+    expect(updated.badgeEnabled).toBe(false);
+
+    expect((globalThis as any).chrome.storage.sync.set).toHaveBeenCalledWith({
+      [STORAGE_KEYS.SETTINGS]: updated,
+    });
+    expect((globalThis as any).chrome.storage.local.set).toHaveBeenCalledWith({
+      [STORAGE_KEYS.SETTINGS]: updated,
+    });
+    expect(syncMap[STORAGE_KEYS.SETTINGS]).toEqual(updated);
+    expect(localMap[STORAGE_KEYS.SETTINGS]).toEqual(updated);
+  });
+
+  it("TC-ERS-004: gracefully falls back to chrome.storage.local when chrome.storage.sync throws/rejects", async () => {
+    // 1. sync.get throws -> falls back to local.get
+    localMap[STORAGE_KEYS.SETTINGS] = {
+      dailyReminderTime: "19:00",
+      badgeEnabled: true,
+    };
+    (globalThis as any).chrome.storage.sync.get = vi.fn().mockRejectedValue(new Error("Sync quota exceeded"));
+
+    const settings = await extensionStorage.getSettings();
+    expect(settings.dailyReminderTime).toBe("19:00");
+
+    // 2. sync.set throws -> still persists to local.set without rejecting
+    (globalThis as any).chrome.storage.sync.set = vi.fn().mockRejectedValue(new Error("Sync write failed"));
+    const updated = await extensionStorage.updateSettings({ dailyReminderTime: "21:30" });
+    expect(updated.dailyReminderTime).toBe("21:30");
+    expect(localMap[STORAGE_KEYS.SETTINGS].dailyReminderTime).toBe("21:30");
+  });
+});
+
