@@ -29,6 +29,7 @@ export interface ExtensionUserSummary {
 }
 
 export interface ReminderSettings {
+  badgeEnabled?: boolean;
   remindersEnabled: boolean;
   dailyReminderTime: string;
   quietHoursStart: string;
@@ -38,6 +39,7 @@ export interface ReminderSettings {
 }
 
 export interface ExtensionSettingsPayload extends ReminderSettings {
+  badgeEnabled: boolean;
   pinnedDeckId: string | null;
   autoShowFloatingIcon: boolean;
   shortcutKey: string;
