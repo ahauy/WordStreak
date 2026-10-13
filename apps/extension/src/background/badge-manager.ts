@@ -1,6 +1,7 @@
 import { BADGE_COLORS, ALARM_NAMES, BADGE_LIMITS } from "../shared/constants";
 import { extensionStorage } from "../shared/storage";
 import { apiClient } from "./api-client";
+import { reminderManager } from "./reminder-manager";
 import type { ReviewSummaryDto, ReviewSummaryCacheState } from "@wordstreak/shared-types";
 
 export function formatBadgeText(
@@ -87,6 +88,7 @@ export class BadgeManager {
       clearTimeout(this.debounceTimer);
       this.debounceTimer = null;
     }
+    await reminderManager.clearRemindersAndAlarms();
     await extensionStorage.clearAuth();
     await chrome.alarms?.clear?.(ALARM_NAMES.BADGE_NEXT_DUE);
     await chrome.action?.setBadgeText?.({ text: "" });
@@ -102,7 +104,11 @@ export class BadgeManager {
     }, BADGE_LIMITS.DEBOUNCE_MS);
   }
 
-  async refreshBadgeNow(): Promise<ReviewSummaryDto | null> {
+  async refreshBadgeNow(options?: {
+    skipReminderEval?: boolean;
+    /** Alias for skipReminderEval for backwards compatibility */
+    skipReminderCheck?: boolean;
+  }): Promise<ReviewSummaryDto | null> {
     if (this.debounceTimer) {
       clearTimeout(this.debounceTimer);
       this.debounceTimer = null;
@@ -113,7 +119,7 @@ export class BadgeManager {
       return this.inFlightPromise;
     }
 
-    this.inFlightPromise = this.executeRefresh();
+    this.inFlightPromise = this.executeRefresh(options);
     try {
       const result = await this.inFlightPromise;
       return result;
@@ -129,6 +135,8 @@ export class BadgeManager {
   private async handleSuccessResult(
     summary: ReviewSummaryDto,
     etag: string | null,
+    previousSummary?: ReviewSummaryDto | null,
+    options?: { skipReminderEval?: boolean; skipReminderCheck?: boolean },
   ): Promise<ReviewSummaryDto> {
     const cacheToStore: ReviewSummaryCacheState = {
       summary,
@@ -138,12 +146,17 @@ export class BadgeManager {
     await extensionStorage.setReviewSummaryCache(cacheToStore);
     await this.applyBadgeVisuals(summary, true);
     await this.syncNextDueAlarm(summary.nextDueAt);
+    await reminderManager.handleWebReviewActivity(previousSummary, summary);
+    if (!options?.skipReminderEval && !options?.skipReminderCheck) {
+      await reminderManager.evaluateFromSummary(summary, "PERIODIC_SYNC");
+    }
     return summary;
   }
 
   private async handleNotModifiedResult(
     cached: ReviewSummaryCacheState,
     etag: string | null,
+    options?: { skipReminderEval?: boolean; skipReminderCheck?: boolean },
   ): Promise<ReviewSummaryDto> {
     const updatedCache: ReviewSummaryCacheState = {
       ...cached,
@@ -153,6 +166,10 @@ export class BadgeManager {
     await extensionStorage.setReviewSummaryCache(updatedCache);
     await this.applyBadgeVisuals(cached.summary, true);
     await this.syncNextDueAlarm(cached.summary.nextDueAt);
+    await reminderManager.handleWebReviewActivity(cached.summary, cached.summary);
+    if (!options?.skipReminderEval && !options?.skipReminderCheck) {
+      await reminderManager.evaluateFromSummary(cached.summary, "PERIODIC_SYNC");
+    }
     return cached.summary;
   }
 
@@ -174,7 +191,10 @@ export class BadgeManager {
     return null;
   }
 
-  private async executeRefresh(): Promise<ReviewSummaryDto | null> {
+  private async executeRefresh(options?: {
+    skipReminderEval?: boolean;
+    skipReminderCheck?: boolean;
+  }): Promise<ReviewSummaryDto | null> {
     const token = await extensionStorage.getToken();
     if (!token) {
       await this.clearAuthAndBadge();
@@ -182,13 +202,19 @@ export class BadgeManager {
     }
 
     const cached = await extensionStorage.getReviewSummaryCache();
+    const previousSummary = cached?.summary ?? null;
     try {
       const result = await apiClient.getReviewSummary({ etag: cached?.etag });
       if (result.status === 200) {
-        return await this.handleSuccessResult(result.summary, result.etag);
+        return await this.handleSuccessResult(
+          result.summary,
+          result.etag,
+          previousSummary,
+          options,
+        );
       }
       if (result.status === 304 && cached?.summary) {
-        return await this.handleNotModifiedResult(cached, result.etag);
+        return await this.handleNotModifiedResult(cached, result.etag, options);
       }
       return null;
     } catch (err: unknown) {

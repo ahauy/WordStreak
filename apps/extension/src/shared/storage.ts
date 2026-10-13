@@ -1,16 +1,28 @@
-import { STORAGE_KEYS, DEFAULT_SETTINGS } from "./constants";
+import {
+  STORAGE_KEYS,
+  DEFAULT_SETTINGS,
+  DEFAULT_REMINDER_STATE,
+} from "./constants";
 import type {
   ExtensionStorageState,
   ExtensionSettingsPayload,
   ExtensionUserSummary,
   RecentCaptureItem,
   ReviewSummaryCacheState,
+  ReminderState,
 } from "@wordstreak/shared-types";
+
+const getLocalStorage = (): Storage | null => {
+  if (typeof localStorage !== "undefined") {
+    return localStorage;
+  }
+  return null;
+};
 
 export const extensionStorage = {
   async getToken(): Promise<string | null> {
     if (typeof chrome === "undefined" || !chrome.storage?.local) {
-      return localStorage.getItem(STORAGE_KEYS.TOKEN);
+      return getLocalStorage()?.getItem(STORAGE_KEYS.TOKEN) ?? null;
     }
     const result = await chrome.storage.local.get(STORAGE_KEYS.TOKEN);
     return (result[STORAGE_KEYS.TOKEN] as string) || null;
@@ -18,8 +30,9 @@ export const extensionStorage = {
 
   async setToken(token: string | null): Promise<void> {
     if (typeof chrome === "undefined" || !chrome.storage?.local) {
-      if (token) localStorage.setItem(STORAGE_KEYS.TOKEN, token);
-      else localStorage.removeItem(STORAGE_KEYS.TOKEN);
+      const storage = getLocalStorage();
+      if (token) storage?.setItem(STORAGE_KEYS.TOKEN, token);
+      else storage?.removeItem(STORAGE_KEYS.TOKEN);
       return;
     }
     if (token) {
@@ -31,7 +44,7 @@ export const extensionStorage = {
 
   async getUser(): Promise<ExtensionUserSummary | null> {
     if (typeof chrome === "undefined" || !chrome.storage?.local) {
-      const raw = localStorage.getItem(STORAGE_KEYS.USER);
+      const raw = getLocalStorage()?.getItem(STORAGE_KEYS.USER);
       return raw ? JSON.parse(raw) : null;
     }
     const result = await chrome.storage.local.get(STORAGE_KEYS.USER);
@@ -40,8 +53,9 @@ export const extensionStorage = {
 
   async setUser(user: ExtensionUserSummary | null): Promise<void> {
     if (typeof chrome === "undefined" || !chrome.storage?.local) {
-      if (user) localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(user));
-      else localStorage.removeItem(STORAGE_KEYS.USER);
+      const storage = getLocalStorage();
+      if (user) storage?.setItem(STORAGE_KEYS.USER, JSON.stringify(user));
+      else storage?.removeItem(STORAGE_KEYS.USER);
       return;
     }
     if (user) {
@@ -53,7 +67,7 @@ export const extensionStorage = {
 
   async getReviewSummaryCache(): Promise<ReviewSummaryCacheState | null> {
     if (typeof chrome === "undefined" || !chrome.storage?.local) {
-      const raw = localStorage.getItem(STORAGE_KEYS.REVIEW_SUMMARY_CACHE);
+      const raw = getLocalStorage()?.getItem(STORAGE_KEYS.REVIEW_SUMMARY_CACHE);
       return raw ? JSON.parse(raw) : null;
     }
     const result = await chrome.storage.local.get(
@@ -69,13 +83,14 @@ export const extensionStorage = {
     cache: ReviewSummaryCacheState | null,
   ): Promise<void> {
     if (typeof chrome === "undefined" || !chrome.storage?.local) {
+      const storage = getLocalStorage();
       if (cache) {
-        localStorage.setItem(
+        storage?.setItem(
           STORAGE_KEYS.REVIEW_SUMMARY_CACHE,
           JSON.stringify(cache),
         );
       } else {
-        localStorage.removeItem(STORAGE_KEYS.REVIEW_SUMMARY_CACHE);
+        storage?.removeItem(STORAGE_KEYS.REVIEW_SUMMARY_CACHE);
       }
       return;
     }
@@ -90,24 +105,27 @@ export const extensionStorage = {
 
   async clearAuth(): Promise<void> {
     if (typeof chrome === "undefined" || !chrome.storage?.local) {
-      localStorage.removeItem(STORAGE_KEYS.TOKEN);
-      localStorage.removeItem(STORAGE_KEYS.USER);
-      localStorage.removeItem(STORAGE_KEYS.REVIEW_SUMMARY_CACHE);
+      const storage = getLocalStorage();
+      storage?.removeItem(STORAGE_KEYS.TOKEN);
+      storage?.removeItem(STORAGE_KEYS.USER);
+      storage?.removeItem(STORAGE_KEYS.REVIEW_SUMMARY_CACHE);
+      storage?.removeItem(STORAGE_KEYS.REMINDER_STATE);
       return;
     }
     await chrome.storage.local.remove([
       STORAGE_KEYS.TOKEN,
       STORAGE_KEYS.USER,
       STORAGE_KEYS.REVIEW_SUMMARY_CACHE,
+      STORAGE_KEYS.REMINDER_STATE,
     ]);
   },
 
   async getSettings(): Promise<ExtensionSettingsPayload> {
     if (typeof chrome === "undefined" || !chrome.storage?.local) {
-      const raw = localStorage.getItem(STORAGE_KEYS.SETTINGS);
+      const raw = getLocalStorage()?.getItem(STORAGE_KEYS.SETTINGS);
       return raw
         ? { ...DEFAULT_SETTINGS, ...JSON.parse(raw) }
-        : DEFAULT_SETTINGS;
+        : { ...DEFAULT_SETTINGS };
     }
     const result = await chrome.storage.local.get(STORAGE_KEYS.SETTINGS);
     return result[STORAGE_KEYS.SETTINGS]
@@ -115,7 +133,7 @@ export const extensionStorage = {
           ...DEFAULT_SETTINGS,
           ...(result[STORAGE_KEYS.SETTINGS] as ExtensionSettingsPayload),
         }
-      : DEFAULT_SETTINGS;
+      : { ...DEFAULT_SETTINGS };
   },
 
   async updateSettings(
@@ -124,7 +142,10 @@ export const extensionStorage = {
     const current = await this.getSettings();
     const updated = { ...current, ...settings };
     if (typeof chrome === "undefined" || !chrome.storage?.local) {
-      localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(updated));
+      getLocalStorage()?.setItem(
+        STORAGE_KEYS.SETTINGS,
+        JSON.stringify(updated),
+      );
       return updated;
     }
     await chrome.storage.local.set({ [STORAGE_KEYS.SETTINGS]: updated });
@@ -133,7 +154,7 @@ export const extensionStorage = {
 
   async getRecentCaptures(): Promise<RecentCaptureItem[]> {
     if (typeof chrome === "undefined" || !chrome.storage?.local) {
-      const raw = localStorage.getItem(STORAGE_KEYS.RECENT_CAPTURES);
+      const raw = getLocalStorage()?.getItem(STORAGE_KEYS.RECENT_CAPTURES);
       return raw ? JSON.parse(raw) : [];
     }
     const result = await chrome.storage.local.get(STORAGE_KEYS.RECENT_CAPTURES);
@@ -147,7 +168,7 @@ export const extensionStorage = {
     );
     const updated = [item, ...filtered].slice(0, 10);
     if (typeof chrome === "undefined" || !chrome.storage?.local) {
-      localStorage.setItem(
+      getLocalStorage()?.setItem(
         STORAGE_KEYS.RECENT_CAPTURES,
         JSON.stringify(updated),
       );
@@ -156,15 +177,69 @@ export const extensionStorage = {
     await chrome.storage.local.set({ [STORAGE_KEYS.RECENT_CAPTURES]: updated });
   },
 
+  async getReminderState(): Promise<ReminderState> {
+    if (typeof chrome === "undefined" || !chrome.storage?.local) {
+      const raw = getLocalStorage()?.getItem(STORAGE_KEYS.REMINDER_STATE);
+      return raw
+        ? { ...DEFAULT_REMINDER_STATE, ...JSON.parse(raw) }
+        : { ...DEFAULT_REMINDER_STATE };
+    }
+    const result = await chrome.storage.local.get(STORAGE_KEYS.REMINDER_STATE);
+    const stored = result[STORAGE_KEYS.REMINDER_STATE] as
+      | Partial<ReminderState>
+      | undefined;
+    return stored
+      ? { ...DEFAULT_REMINDER_STATE, ...stored }
+      : { ...DEFAULT_REMINDER_STATE };
+  },
+
+  async setReminderState(state: ReminderState): Promise<void> {
+    if (typeof chrome === "undefined" || !chrome.storage?.local) {
+      getLocalStorage()?.setItem(
+        STORAGE_KEYS.REMINDER_STATE,
+        JSON.stringify(state),
+      );
+      return;
+    }
+    await chrome.storage.local.set({ [STORAGE_KEYS.REMINDER_STATE]: state });
+  },
+
+  async clearReminderState(): Promise<void> {
+    if (typeof chrome === "undefined" || !chrome.storage?.local) {
+      getLocalStorage()?.removeItem(STORAGE_KEYS.REMINDER_STATE);
+      return;
+    }
+    await chrome.storage.local.remove(STORAGE_KEYS.REMINDER_STATE);
+  },
+
+  async resetReminderState(): Promise<ReminderState> {
+    await this.clearReminderState();
+    return { ...DEFAULT_REMINDER_STATE };
+  },
+
   async getAll(): Promise<ExtensionStorageState> {
-    const [token, user, settings, recentCaptures, reviewSummaryCache] =
-      await Promise.all([
-        this.getToken(),
-        this.getUser(),
-        this.getSettings(),
-        this.getRecentCaptures(),
-        this.getReviewSummaryCache(),
-      ]);
-    return { token, user, settings, recentCaptures, reviewSummaryCache };
+    const [
+      token,
+      user,
+      settings,
+      recentCaptures,
+      reviewSummaryCache,
+      reminderState,
+    ] = await Promise.all([
+      this.getToken(),
+      this.getUser(),
+      this.getSettings(),
+      this.getRecentCaptures(),
+      this.getReviewSummaryCache(),
+      this.getReminderState(),
+    ]);
+    return {
+      token,
+      user,
+      settings,
+      recentCaptures,
+      reviewSummaryCache,
+      reminderState,
+    };
   },
 };

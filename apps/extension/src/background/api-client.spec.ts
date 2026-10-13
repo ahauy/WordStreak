@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import { ExtensionApiClient } from "./api-client";
 import { extensionStorage } from "../shared/storage";
-import type { ReviewSummaryDto } from "@wordstreak/shared-types";
+import type { ReviewSummaryDto, ExtensionUserSummary } from "@wordstreak/shared-types";
 
 describe("ExtensionApiClient.getReviewSummary", () => {
   let apiClient: ExtensionApiClient;
@@ -135,3 +135,76 @@ describe("ExtensionApiClient.getReviewSummary", () => {
     expect(setCacheSpy).toHaveBeenCalledWith(null);
   });
 });
+
+describe("TC-REMD-002: ExtensionApiClient user preferredLanguage preservation", () => {
+  let apiClient: ExtensionApiClient;
+
+  beforeEach(() => {
+    apiClient = new ExtensionApiClient("http://localhost:3000/api");
+    vi.restoreAllMocks();
+    vi.spyOn(extensionStorage, "getToken").mockResolvedValue(null);
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  it("getMe() preserves preferredLanguage: 'vi' on returned ExtensionUserSummary", async () => {
+    vi.spyOn(extensionStorage, "getToken").mockResolvedValue("jwt-token-123");
+
+    const mockFetch = vi.fn().mockResolvedValue({
+      status: 200,
+      ok: true,
+      headers: new Headers(),
+      json: vi.fn().mockResolvedValue({
+        id: "u-123",
+        email: "learner@wordstreak.com",
+        username: "learner",
+        preferredLanguage: "vi",
+      }),
+    });
+    (globalThis as any).fetch = mockFetch;
+
+    const user: ExtensionUserSummary = await apiClient.getMe();
+    expect(user.preferredLanguage).toBe("vi");
+    expect(user).toEqual({
+      id: "u-123",
+      email: "learner@wordstreak.com",
+      username: "learner",
+      preferredLanguage: "vi",
+    });
+  });
+
+  it("login() preserves preferredLanguage: 'en' on returned ExtensionUserSummary", async () => {
+    const mockFetch = vi.fn().mockResolvedValue({
+      status: 200,
+      ok: true,
+      headers: new Headers(),
+      json: vi.fn().mockResolvedValue({
+        accessToken: "login-jwt-token",
+        user: {
+          id: "u-456",
+          email: "en-learner@wordstreak.com",
+          username: "en_learner",
+          preferredLanguage: "en",
+        },
+      }),
+    });
+    (globalThis as any).fetch = mockFetch;
+
+    const result: { accessToken: string; user: ExtensionUserSummary } = await apiClient.login({
+      identifier: "en_learner",
+      password: "secretPassword123",
+    });
+
+    expect(result.accessToken).toBe("login-jwt-token");
+    expect(result.user.preferredLanguage).toBe("en");
+    expect(result.user).toEqual({
+      id: "u-456",
+      email: "en-learner@wordstreak.com",
+      username: "en_learner",
+      preferredLanguage: "en",
+    });
+  });
+});
+
