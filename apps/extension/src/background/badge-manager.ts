@@ -47,7 +47,12 @@ export class BadgeManager {
   async applyBadgeVisuals(
     summary: ReviewSummaryDto | null,
     isAuthenticated: boolean,
+    badgeEnabled = true,
   ): Promise<void> {
+    if (!badgeEnabled) {
+      await chrome.action?.setBadgeText?.({ text: "" });
+      return;
+    }
     const text = summary ? formatBadgeText(summary.dueCount, isAuthenticated) : "";
     await chrome.action?.setBadgeText?.({ text });
 
@@ -63,6 +68,17 @@ export class BadgeManager {
         // Ignored for environments without setBadgeTextColor support
       }
     }
+  }
+
+  async refreshBadgeFromCache(): Promise<void> {
+    const token = await extensionStorage.getToken();
+    const settings = await extensionStorage.getSettings();
+    const cached = await extensionStorage.getReviewSummaryCache();
+    await this.applyBadgeVisuals(
+      cached?.summary ?? null,
+      Boolean(token),
+      settings.badgeEnabled,
+    );
   }
 
   async ensurePeriodicAlarm(): Promise<void> {
@@ -144,7 +160,8 @@ export class BadgeManager {
       fetchedAt: new Date().toISOString(),
     };
     await extensionStorage.setReviewSummaryCache(cacheToStore);
-    await this.applyBadgeVisuals(summary, true);
+    const settings = await extensionStorage.getSettings();
+    await this.applyBadgeVisuals(summary, true, settings.badgeEnabled);
     await this.syncNextDueAlarm(summary.nextDueAt);
     await reminderManager.handleWebReviewActivity(previousSummary, summary);
     if (!options?.skipReminderEval && !options?.skipReminderCheck) {
@@ -164,7 +181,8 @@ export class BadgeManager {
       fetchedAt: new Date().toISOString(),
     };
     await extensionStorage.setReviewSummaryCache(updatedCache);
-    await this.applyBadgeVisuals(cached.summary, true);
+    const settings = await extensionStorage.getSettings();
+    await this.applyBadgeVisuals(cached.summary, true, settings.badgeEnabled);
     await this.syncNextDueAlarm(cached.summary.nextDueAt);
     await reminderManager.handleWebReviewActivity(cached.summary, cached.summary);
     if (!options?.skipReminderEval && !options?.skipReminderCheck) {
@@ -185,7 +203,8 @@ export class BadgeManager {
 
     console.warn("[BadgeManager] Transient fetch failure, retaining cached badge:", err);
     if (cached?.summary) {
-      await this.applyBadgeVisuals(cached.summary, true);
+      const settings = await extensionStorage.getSettings();
+      await this.applyBadgeVisuals(cached.summary, true, settings.badgeEnabled);
       return cached.summary;
     }
     return null;

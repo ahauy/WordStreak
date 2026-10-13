@@ -2,15 +2,16 @@ import { apiClient } from "./api-client";
 import { extensionStorage } from "../shared/storage";
 import { badgeManager } from "./badge-manager";
 import { reminderManager } from "./reminder-manager";
-import { ALARM_NAMES } from "../shared/constants";
+import { ALARM_NAMES, STORAGE_KEYS } from "../shared/constants";
 import type {
   QuickCaptureCardDto,
   ExtensionMessage,
+  ExtensionSettingsPayload,
 } from "@wordstreak/shared-types";
 
 // Register Context Menu, ensure alarms, and inject content script on install/update
-chrome.runtime.onInstalled.addListener(async () => {
-  chrome.contextMenus.create({
+chrome.runtime?.onInstalled?.addListener?.(async () => {
+  chrome.contextMenus?.create?.({
     id: "ws-quick-capture",
     title: 'Thêm "%s" vào WordStreak',
     contexts: ["selection"],
@@ -22,10 +23,10 @@ chrome.runtime.onInstalled.addListener(async () => {
 
   // Automatically inject content script into all active http/https tabs
   try {
-    const tabs = await chrome.tabs.query({
+    const tabs = await chrome.tabs?.query?.({
       url: ["http://*/*", "https://*/*"],
     });
-    for (const tab of tabs) {
+    for (const tab of tabs ?? []) {
       if (
         tab.id &&
         tab.url &&
@@ -34,7 +35,7 @@ chrome.runtime.onInstalled.addListener(async () => {
         !tab.url.startsWith("edge://")
       ) {
         try {
-          await chrome.scripting.executeScript({
+          await chrome.scripting?.executeScript?.({
             target: { tabId: tab.id },
             files: ["content.js"],
           });
@@ -49,14 +50,14 @@ chrome.runtime.onInstalled.addListener(async () => {
 });
 
 // Refresh badge and alarms on browser startup
-chrome.runtime.onStartup.addListener(async () => {
+chrome.runtime?.onStartup?.addListener?.(async () => {
   await badgeManager.ensurePeriodicAlarm();
   void badgeManager.refreshBadgeNow();
   await reminderManager.ensureDailyReminderAlarm();
 });
 
 // Handle scheduled alarms for badge refreshing and reminders
-chrome.alarms.onAlarm.addListener((alarm) => {
+chrome.alarms?.onAlarm?.addListener?.((alarm) => {
   if (
     alarm.name === ALARM_NAMES.BADGE_PERIODIC ||
     alarm.name === ALARM_NAMES.BADGE_NEXT_DUE
@@ -156,7 +157,7 @@ async function handleContextMenuClick(
 }
 
 // Handle Context Menu clicks
-chrome.contextMenus.onClicked.addListener((info, tab) => {
+chrome.contextMenus?.onClicked?.addListener?.((info, tab) => {
   void handleContextMenuClick(info, tab);
 });
 
@@ -268,8 +269,7 @@ async function handleGeneralMessage(message: ExtensionMessage): Promise<any> {
       return { success: true, data: settings };
     }
     case "UPDATE_SETTINGS": {
-      const updated = await extensionStorage.updateSettings(message.payload);
-      await reminderManager.ensureDailyReminderAlarm();
+      const updated = await handleSettingsUpdated(message.payload);
       return { success: true, data: updated };
     }
     default:
@@ -277,8 +277,27 @@ async function handleGeneralMessage(message: ExtensionMessage): Promise<any> {
   }
 }
 
+export async function handleSettingsUpdated(
+  payload: Partial<ExtensionSettingsPayload>,
+): Promise<ExtensionSettingsPayload> {
+  const updated = await extensionStorage.updateSettings(payload);
+  await badgeManager.refreshBadgeFromCache();
+  await reminderManager.ensureDailyReminderAlarm();
+  return updated;
+}
+
+// Handle cross-device settings sync changes
+if (typeof chrome !== "undefined" && chrome.storage?.onChanged) {
+  chrome.storage.onChanged.addListener((changes, areaName) => {
+    if (areaName === "sync" && changes[STORAGE_KEYS.SETTINGS]) {
+      void badgeManager.refreshBadgeFromCache();
+      void reminderManager.ensureDailyReminderAlarm();
+    }
+  });
+}
+
 // Handle Messages from Content Script & Popup
-chrome.runtime.onMessage.addListener(
+chrome.runtime?.onMessage?.addListener?.(
   (message: ExtensionMessage, _sender, sendResponse) => {
     const handleAsyncMessage = async () => {
       const authHandled = await handleAuthMessage(message);

@@ -538,4 +538,64 @@ describe("ReminderManager (TC-REMD-010 .. TC-REMD-016)", () => {
       expect(clearSpy).toHaveBeenCalled();
     });
   });
+
+  describe("US-ECO-07: Options Page Side-Effects & Alarms (TC-ERS-008..010)", () => {
+    it("TC-ERS-008: ensureDailyReminderAlarm clears alarms and active notification when remindersEnabled is false", async () => {
+      vi.spyOn(extensionStorage, "getToken").mockResolvedValue("tok-123");
+      vi.spyOn(extensionStorage, "getSettings").mockResolvedValue({
+        ...defaultSettings,
+        remindersEnabled: false,
+      });
+
+      await manager.ensureDailyReminderAlarm();
+
+      expect(chrome.alarms.clear).toHaveBeenCalledWith(ALARM_NAMES.DAILY_REMINDER);
+      expect(chrome.alarms.clear).toHaveBeenCalledWith(ALARM_NAMES.REMINDER_SNOOZE);
+      expect(chrome.notifications.clear).toHaveBeenCalledWith(REMINDER_NOTIFICATION_ID);
+      expect(chrome.alarms.create).not.toHaveBeenCalled();
+    });
+
+    it("TC-ERS-009: ensureDailyReminderAlarm reschedules daily-reminder alarm at new dailyReminderTime when remindersEnabled is true", async () => {
+      vi.spyOn(extensionStorage, "getToken").mockResolvedValue("tok-123");
+      vi.spyOn(extensionStorage, "getSettings").mockResolvedValue({
+        ...defaultSettings,
+        remindersEnabled: true,
+        dailyReminderTime: "18:45",
+      });
+      vi.spyOn(extensionStorage, "getReviewSummaryCache").mockResolvedValue({
+        summary: baseSummary,
+        etag: null,
+        fetchedAt: "",
+      });
+
+      const fixedNow = new Date("2026-10-13T10:00:00.000Z").getTime();
+      await manager.ensureDailyReminderAlarm(fixedNow);
+
+      expect(chrome.alarms.create).toHaveBeenCalledWith(
+        ALARM_NAMES.DAILY_REMINDER,
+        expect.objectContaining({
+          periodInMinutes: REMINDER_LIMITS.DAILY_PERIOD_MINUTES,
+          when: expect.any(Number),
+        }),
+      );
+    });
+
+    it("TC-ERS-010: handleSettingsUpdated dispatches both refreshBadgeFromCache and ensureDailyReminderAlarm", async () => {
+      const { badgeManager } = await import("./badge-manager");
+      const refreshBadgeSpy = vi.spyOn(badgeManager, "refreshBadgeFromCache").mockResolvedValue(undefined);
+      const ensureAlarmSpy = vi.spyOn(reminderManager, "ensureDailyReminderAlarm").mockResolvedValue(undefined);
+      const updateStorageSpy = vi.spyOn(extensionStorage, "updateSettings").mockResolvedValue({
+        ...defaultSettings,
+        badgeEnabled: false,
+      });
+
+      const { handleSettingsUpdated } = await import("./index");
+      const result = await handleSettingsUpdated({ badgeEnabled: false });
+
+      expect(updateStorageSpy).toHaveBeenCalledWith({ badgeEnabled: false });
+      expect(refreshBadgeSpy).toHaveBeenCalled();
+      expect(ensureAlarmSpy).toHaveBeenCalled();
+      expect(result).toEqual(expect.objectContaining({ badgeEnabled: false }));
+    });
+  });
 });

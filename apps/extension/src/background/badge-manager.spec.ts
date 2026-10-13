@@ -5,7 +5,7 @@ import {
   computeNextDueAlarmTime,
   BadgeManager,
 } from "./badge-manager";
-import { BADGE_COLORS, ALARM_NAMES } from "../shared/constants";
+import { BADGE_COLORS, ALARM_NAMES, DEFAULT_SETTINGS } from "../shared/constants";
 import { extensionStorage } from "../shared/storage";
 import { apiClient } from "./api-client";
 import type { ReviewSummaryDto, ReviewSummaryCacheState } from "@wordstreak/shared-types";
@@ -621,6 +621,103 @@ describe("BadgeManager & Pure Domain Helpers", () => {
       await badgeManager.clearAuthAndBadge();
 
       expect(clearSpy).toHaveBeenCalled();
+    });
+  });
+
+  describe("US-ECO-07: Badge Visibility & refreshBadgeFromCache (TC-ERS-005..007)", () => {
+    it("TC-ERS-005: applyBadgeVisuals sets badge text to empty string when badgeEnabled is false", async () => {
+      (globalThis as any).chrome = {
+        action: {
+          setBadgeText: vi.fn().mockResolvedValue(undefined),
+          setBadgeBackgroundColor: vi.fn().mockResolvedValue(undefined),
+        },
+      };
+
+      const manager = new BadgeManager();
+      await (manager as any).applyBadgeVisuals(baseSummary, true, false);
+
+      expect(chrome.action.setBadgeText).toHaveBeenCalledWith({ text: "" });
+      expect(chrome.action.setBadgeBackgroundColor).not.toHaveBeenCalled();
+    });
+
+    it("TC-ERS-006: refreshBadgeNow fetches and caches summary, runs reminderManager, but leaves badge empty when badgeEnabled is false", async () => {
+      (globalThis as any).chrome = {
+        action: {
+          setBadgeText: vi.fn().mockResolvedValue(undefined),
+          setBadgeBackgroundColor: vi.fn().mockResolvedValue(undefined),
+        },
+        alarms: {
+          create: vi.fn().mockResolvedValue(undefined),
+          clear: vi.fn().mockResolvedValue(true),
+        },
+      };
+
+      vi.spyOn(extensionStorage, "getToken").mockResolvedValue("auth-token");
+      vi.spyOn(extensionStorage, "getSettings").mockResolvedValue({
+        ...DEFAULT_SETTINGS,
+        badgeEnabled: false,
+      });
+      vi.spyOn(extensionStorage, "getReviewSummaryCache").mockResolvedValue(null);
+      const setCacheSpy = vi.spyOn(extensionStorage, "setReviewSummaryCache").mockResolvedValue(undefined);
+      vi.spyOn(apiClient, "getReviewSummary").mockResolvedValue({
+        status: 200,
+        summary: baseSummary,
+        etag: 'W/"new-etag"',
+      });
+
+      const { reminderManager } = await import("./reminder-manager");
+      const evalSpy = vi.spyOn(reminderManager, "evaluateFromSummary").mockResolvedValue({
+        shouldNotify: false,
+        reason: "COOLDOWN_ACTIVE",
+        effectiveDailyCap: 3,
+        normalizedState: {} as any,
+      });
+
+      const manager = new BadgeManager();
+      const result = await manager.refreshBadgeNow();
+
+      expect(result).toEqual(baseSummary);
+      expect(setCacheSpy).toHaveBeenCalledWith(
+        expect.objectContaining({ summary: baseSummary }),
+      );
+      expect(evalSpy).toHaveBeenCalledWith(baseSummary, "PERIODIC_SYNC");
+      expect(chrome.action.setBadgeText).toHaveBeenCalledWith({ text: "" });
+      expect(chrome.action.setBadgeBackgroundColor).not.toHaveBeenCalled();
+    });
+
+    it("TC-ERS-007: refreshBadgeFromCache restores badge text and color from cache when badgeEnabled is true", async () => {
+      (globalThis as any).chrome = {
+        action: {
+          setBadgeText: vi.fn().mockResolvedValue(undefined),
+          setBadgeBackgroundColor: vi.fn().mockResolvedValue(undefined),
+          setBadgeTextColor: vi.fn().mockResolvedValue(undefined),
+        },
+      };
+
+      const cachedSummary: ReviewSummaryDto = {
+        ...baseSummary,
+        dueCount: 15,
+        streakAtRisk: true,
+      };
+
+      vi.spyOn(extensionStorage, "getToken").mockResolvedValue("auth-token");
+      vi.spyOn(extensionStorage, "getSettings").mockResolvedValue({
+        ...DEFAULT_SETTINGS,
+        badgeEnabled: true,
+      });
+      vi.spyOn(extensionStorage, "getReviewSummaryCache").mockResolvedValue({
+        summary: cachedSummary,
+        etag: 'W/"cache"',
+        fetchedAt: new Date().toISOString(),
+      });
+
+      const manager = new BadgeManager();
+      await (manager as any).refreshBadgeFromCache();
+
+      expect(chrome.action.setBadgeText).toHaveBeenCalledWith({ text: "15" });
+      expect(chrome.action.setBadgeBackgroundColor).toHaveBeenCalledWith({
+        color: BADGE_COLORS.AT_RISK_RED,
+      });
     });
   });
 });
