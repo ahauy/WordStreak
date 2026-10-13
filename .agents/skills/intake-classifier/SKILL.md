@@ -35,6 +35,22 @@ ID conventions — this skill creates that folder structure.
 Ask yourself these measurable questions about the request. Don't classify on
 vibes — count.
 
+**Step 0 — Micro Task fast-path (check this first):**
+
+A request is a **Micro Task** if ALL four conditions hold:
+
+1. Changes ≤ 1 existing file (no new files created)
+2. Estimated diff < 50 lines
+3. No new DB schema column/table/migration required
+4. No new API endpoint or route required
+
+If it qualifies as a Micro Task → **skip the BA pipeline entirely**, go straight
+to code. No feature folder, no elicitation, no gates. Just implement & verify.
+
+---
+
+**For everything else**, use the signals table:
+
 | Signal                                           | Spike             | Bounded Task          | Full Feature        |
 | ------------------------------------------------ | ----------------- | --------------------- | ------------------- |
 | New or changed domain entities                   | 0                 | 0–1                   | 2+                  |
@@ -48,6 +64,7 @@ If signals disagree (e.g. 1 entity but cross-cutting), classify up, not down.
 When genuinely on the boundary, say so explicitly to the user and give your
 default with the reasoning — don't silently pick one.
 
+- **Micro Task** — ≤1 file changed, <50 lines, no new DB/API. Zero gates. Straight to code.
 - **Spike / Feasibility** — a research question, technical exploration, or
   "is this even possible" ask. No lasting product commitment yet.
 - **Bounded Task** — a small, well-scoped change to an existing flow (add a
@@ -58,11 +75,14 @@ default with the reasoning — don't silently pick one.
 
 ## 2. Select the protocol
 
-| Classification | Required protocol                                                                                                                              |
-| -------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
-| Spike          | Short technical summary + trade-off note. **Pipeline stops here** — do not create a feature folder, do not proceed to `elicitation-interview`. |
-| Bounded Task   | Rapid interview (2–3 targeted questions), then stages 4, 5 (light), 6 (User Story only), 7, 8. Stage 3 (`gap-analysis`) is skipped.            |
-| Full Feature   | Full pipeline, stages 1–8, all at full depth.                                                                                                  |
+| Classification | Gates | Required protocol                                                                                                  |
+| -------------- | ----- | ------------------------------------------------------------------------------------------------------------------ |
+| Micro Task     | 0     | **No pipeline.** Implement directly. Run `pnpm test` after. No feature folder created.                             |
+| Spike          | 0     | Short technical summary + trade-off note. **Pipeline stops here** — no feature folder, no `elicitation-interview`. |
+| Bounded Task   | 1     | Rapid interview (2–3 questions) + draft spec shown together → **single Gate** for user confirm → implement.        |
+| Full Feature   | 2     | Full pipeline, stages 1–8. Gate 1 (elicitation) + Gate 2 (spec/plan sign-off).                                     |
+
+> **Bounded Task optimization**: After elicitation, the system-architect drafts `spec.md` + `plan.md` in the **same turn** and presents a combined summary for user approval — eliminating the second separate stop.
 
 State the classification and protocol out loud to the user before doing
 anything else, e.g.:
@@ -129,6 +149,7 @@ See `00-intake.md`.
 
 ## 4. Hand off
 
+- **Micro Task** → implement directly in this turn. No feature folder. Verify with `pnpm test` after.
 - **Spike** → answer directly in this turn. Nothing to hand off.
 - **Bounded Task / Full Feature** → tell the user you're proceeding to
   `elicitation-interview`, and note which protocol depth it should use (this
@@ -139,6 +160,7 @@ See `00-intake.md`.
 
 - [ ] Classification stated out loud with the signals that drove it
 - [ ] Protocol selected and stage list is unambiguous
+- [ ] **Micro Task**: no feature folder created, code implemented, `pnpm test` passed
 - [ ] If the user overrode the classification, the override and reason are
       logged in `00-intake.md`, not silently applied
 - [ ] For Bounded/Full: feature folder created with `00-intake.md`,
