@@ -54,7 +54,7 @@ Run a fast, non-blocking local check before starting:
 #### Case A: No Elicitation / Domain Baseline Yet (Start of Story)
 
 - **Single-Pass Intake + Elicitation Prep**:
-  - Dispatch `business-analyst` (`claude-opus-4.6` / `inherit`) via `invoke_subagent` to:
+  - Dispatch `business-analyst` (`pro` / `inherit`) via `invoke_subagent` to:
     1. Classify complexity (`Spike` | `Bounded Task` | `Full Feature`) and inspect existing relevant files/types in the repo.
     2. Identify genuine ambiguities not yet covered by `PRODUCT_BACKLOG_ROADMAP.md` or existing code.
     3. Formulate **2–3 targeted Elicitation Questions** with `(Recommended)` default options grounded in the codebase.
@@ -68,7 +68,7 @@ Run a fast, non-blocking local check before starting:
 #### Case B: Elicitation Answered → Unified Spec, Tech Plan & Test Plan
 
 - **Unified Specification & Architecture Pass (with `ponytail` Architecture Ladder)**:
-  - Once the user answers Gate 1, dispatch `business-analyst` / `system-architect` (`claude-sonnet-4.6` / `inherit`) via `invoke_subagent` to generate the complete, non-duplicated planning set in `.specify/features/<slug>/`:
+  - Once the user answers Gate 1, dispatch `business-analyst` / `system-architect` (`pro` / `inherit`) via `invoke_subagent` to generate the complete, non-duplicated planning set in `.specify/features/<slug>/`:
     1. `baseline.md` (`Status: DRAFT v0.9`, containing confirmed `ASM-`, `BR-`, State Machine, `RISK-`, MoSCoW Won't-Have).
     2. `spec.md` (`REQ-`, `US-` Given-When-Then scenarios, Edge Case Matrix, IEEE 29148 check, Traceability Matrix).
     3. `plan.md` (Architecture, Data Model/DTOs, `/api/v1/...` or Extension contracts, and ordered implementation tasks). **Apply the `ponytail` 7-rung ladder during planning**: reuse existing monorepo helpers/types first, prefer stdlib & native platform APIs (`Intl`, native DOM/CSS, Prisma/DB constraints) over new dependencies, avoid single-implementation abstractions/wrappers, and minimize the number of new files.
@@ -111,7 +111,7 @@ Run a fast, non-blocking local check before starting:
 #### Case D: Implementation Green → Parallel Review & Documentation
 
 1. **Batch 1 — Parallel Adversarial Review (`invoke_subagent` single call)**:
-   - Always dispatch `code-reviewer` (`claude-sonnet-4.6` / `inherit`) in a fresh context (passing only the git diff, `spec.md`, `baseline.md`, and `test-plan.md`) to audit:
+   - Always dispatch `code-reviewer` (`flash` / `inherit`) in a fresh context (passing only the git diff, `spec.md`, `baseline.md`, and `test-plan.md`) to audit:
      1. Code quality, security, `BR-`/`REQ-` compliance, and DoD scorecard.
      2. **`ponytail-review` Over-Engineering Pass**: Flag unnecessary complexity using `delete:`, `stdlib:`, `native:`, `yagni:`, and `shrink:` tags so bloat is cut before merge.
         Record all findings in `review-report.md`.

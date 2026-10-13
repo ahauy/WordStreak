@@ -9,13 +9,13 @@
 ```mermaid
 graph TD
     subgraph P1 ["PHASE 1: Intake & Interactive Elicitation"]
-        BA["🍉 business-analyst (claude-opus-4.6 / inherit)"]
+        BA["🍉 business-analyst (pro / inherit — 5h Pool)"]
         G1{"🛑 Gate 1: Customer Elicitation"}
         BA --> G1
     end
 
     subgraph P2 ["PHASE 2-4: Unified Spec, Tech Plan & Test Plan"]
-        SA["🏗️ system-architect (claude-sonnet-4.6 / inherit)"]
+        SA["🏗️ system-architect (pro / inherit — 5h Pool)"]
         G2{"🛑 Gate 2: Unified Spec & Plan Sign-Off"}
         G1 --> SA --> G2
     end
@@ -35,7 +35,7 @@ graph TD
     end
 
     subgraph P6A ["PHASE 6A: Parallel Adversarial Review (Single Call)"]
-        CR["🛡️ code-reviewer + DoD Audit (claude-sonnet-4.6 / inherit)"]
+        CR["🛡️ code-reviewer + DoD Audit (flash / inherit — 5h Pool)"]
         UR["👁️ ui-ux-reviewer (conditional: UI stories only)"]
     end
 
@@ -67,7 +67,7 @@ To maximize execution speed without sacrificing traceability (`BR-`, `REQ-`, `US
 
 #### Phase 1: Single-Pass Intake & Interactive Elicitation (Gate 1)
 
-- **Single-Pass Intake + Elicitation Prep**: Dispatch `business-analyst` to classify complexity (`Spike` | `Bounded Task` | `Full Feature`), inspect existing code/types, and prepare **2–3 targeted Elicitation Questions** with `(Recommended)` defaults.
+- **Single-Pass Intake + Elicitation Prep**: Dispatch `business-analyst` (`pro` / `inherit`) to classify complexity (`Spike` | `Bounded Task` | `Full Feature`), inspect existing code/types, and prepare **2–3 targeted Elicitation Questions** with `(Recommended)` defaults.
 - **🛑 GATE 1 — MANDATORY INTERACTIVE CUSTOMER INTERVIEW**:
   - Pause and present the 2–3 clarification questions to the user via `ask_question` or chat.
   - **Strict Zero-Hallucination & Zero-Silent-Assumption Policy**: Never invent business rules, default configurations, or edge-case behaviors silently. Record confirmed decisions as `ASM-<SLUG>-###`.
@@ -96,7 +96,7 @@ To maximize execution speed without sacrificing traceability (`BR-`, `REQ-`, `US
 #### Phase 6: Parallel Review, Tech Docs & Delivery
 
 - **Batch 1: Parallel Adversarial Review (Single `invoke_subagent` Call)**:
-  - Dispatch `code-reviewer` (`claude-sonnet-4.6` / `inherit`) in a fresh context to audit code quality, security, `BR-`/`REQ-` compliance, DoD scorecard, and a **`ponytail-review` over-engineering pass** (`delete:`, `stdlib:`, `native:`, `yagni:`, `shrink:`) into `review-report.md`.
+  - Dispatch `code-reviewer` (`flash` / `inherit`) in a fresh context to audit code quality, security, `BR-`/`REQ-` compliance, DoD scorecard, and a **`ponytail-review` over-engineering pass** (`delete:`, `stdlib:`, `native:`, `yagni:`, `shrink:`) into `review-report.md`.
   - **Conditionally** include `ui-ux-reviewer` (`gemini-3.7-flash`) in the **same parallel call** **only if** UI files were modified.
   - Enforce **Bug Severity Gate**: Zero `Critical` bugs permitted.
 - **Batch 2: Parallel Technical Documentation & User Guides (Single `invoke_subagent` Call — `ponytail` OFF)**:
@@ -111,39 +111,40 @@ To maximize execution speed without sacrificing traceability (`BR-`, `REQ-`, `US
 
 **CRITICAL: Before writing ANY code or documentation, AI MUST read the corresponding skill BEFORE execution.**
 
-| Context / File type                                           | MANDATORY Skill / Reference                                    |
-| ------------------------------------------------------------- | -------------------------------------------------------------- |
-| **Mandatory Design System Tokens (ALL UI in `apps/web/`)**    | `apps/web/DESIGN.md` (MUST read before any UI work)            |
-| **Product Nature, Flame Mascot & Animation Physics**          | `apps/web/MEMORY.md` (MUST read before any UI work)            |
-| **Architecture & Production Code Simplicity (Phase 3 & 5)**   | `ponytail` (Production code only — NEVER skip `TC-###` tests)  |
-| **Adversarial Over-Engineering Code Review (Phase 6A)**       | `ponytail-review` (`delete:`, `stdlib:`, `yagni:`, `shrink:`)  |
-| **New feature intake / complexity classification**            | `intake-classifier`                                            |
-| **Business value & 6-pillar domain elicitation**              | `elicitation-interview`                                        |
-| **AS-IS / TO-BE / gap analysis (Full Feature)**               | `gap-analysis`                                                 |
-| **RBAC, state machines, business rules, ERD**                 | `domain-modeling`                                              |
-| **Risk register, contradiction scan, MoSCoW**                 | `risk-contradiction-scanner`                                   |
-| **Spec documents (BRD, PRD, SRS, user stories)**              | `spec-writer`                                                  |
-| **IEEE 29148 quality gate & traceability matrix**             | `spec-validator`                                               |
-| **Baseline sign-off & dev handover**                          | `handover`                                                     |
-| **Feature execution, slice delegation & review**              | `implementation-orchestrator`                                  |
-| Technical documentation, feature README, architecture, AGENTS | `technical-documentation` (Agent: `tech-doc-architect`)        |
-| Any `.tsx`, `.jsx` file, React component                      | `frontend-patterns` + `frontend-a11y`                          |
-| **UI Design: Landing, Marketing, Public surfaces**            | `frontend-design` + `design-taste-frontend` + `ui-taste-pro`   |
-| **UI Design: In-App, Dashboard, Study/Flashcards, Decks**     | `frontend-design` + `design-taste-product` + `ui-taste-pro`    |
-| **UI Animation, Motion, Micro-interactions**                  | `motion-design`                                                |
-| **UI visual review & component QA**                           | `ui-design-review`                                             |
-| **User guide / end-user docs with screenshots**               | `user-guide-with-screenshots` (Agent: `user-guide-creator`)    |
-| iOS Native UI / Widgets (SwiftUI/UIKit only)                  | `liquid-glass-design` (iOS ONLY)                               |
-| Any NestJS file (controller, service, module, DTO)            | `nestjs-patterns` + `backend-patterns`                         |
-| API endpoint, REST resource                                   | `api-design` + `backend-patterns`                              |
-| Prisma schema, query, migration                               | `prisma-patterns`                                              |
-| PostgreSQL query, index, RLS policy                           | `postgres-patterns`                                            |
-| Dockerfile, docker-compose.yml                                | `docker-patterns`                                              |
-| E2E test, Playwright test                                     | `e2e-testing`                                                  |
-| Git branch, commit, merge                                     | `git-workflow`                                                 |
-| **Command: Resume project development from roadmap**          | `/command-continue-project` (`command-continue-project` skill) |
-| **Command: Automated modular commit & push**                  | `/command-git-push` (`command-git-push` skill)                 |
-| **Command: Generate end-user guide with real screenshots**    | `/command-user-guide` (`command-user-guide` skill)             |
+| Context / File type                                                           | MANDATORY Skill / Reference                                    |
+| ----------------------------------------------------------------------------- | -------------------------------------------------------------- |
+| **Mandatory Design System Tokens (ALL UI in `apps/web/`)**                    | `apps/web/DESIGN.md` (MUST read before any UI work)            |
+| **Product Nature, Flame Mascot & Animation Physics**                          | `apps/web/MEMORY.md` (MUST read before any UI work)            |
+| **Architecture & Production Code Simplicity (Phase 3 & 5)**                   | `ponytail` (Production code only — NEVER skip `TC-###` tests)  |
+| **Adversarial Over-Engineering Code Review (Phase 6A)**                       | `ponytail-review` (`delete:`, `stdlib:`, `yagni:`, `shrink:`)  |
+| **New feature intake / complexity classification**                            | `intake-classifier`                                            |
+| **Business value & 6-pillar domain elicitation**                              | `elicitation-interview`                                        |
+| **AS-IS / TO-BE / gap analysis (Full Feature)**                               | `gap-analysis`                                                 |
+| **RBAC, state machines, business rules, ERD**                                 | `domain-modeling`                                              |
+| **Risk register, contradiction scan, MoSCoW**                                 | `risk-contradiction-scanner`                                   |
+| **Spec documents (BRD, PRD, SRS, user stories)**                              | `spec-writer`                                                  |
+| **IEEE 29148 quality gate & traceability matrix**                             | `spec-validator`                                               |
+| **Baseline sign-off & dev handover**                                          | `handover`                                                     |
+| **Feature execution, slice delegation & review**                              | `implementation-orchestrator`                                  |
+| Technical documentation, feature README, architecture, AGENTS                 | `technical-documentation` (Agent: `tech-doc-architect`)        |
+| **Interactive Architecture, Sequence, Dataflow, State Lifecycle & Diff Maps** | `archify` (`node .agents/skills/archify/bin/archify.mjs`)      |
+| Any `.tsx`, `.jsx` file, React component                                      | `frontend-patterns` + `frontend-a11y`                          |
+| **UI Design: Landing, Marketing, Public surfaces**                            | `frontend-design` + `design-taste-frontend` + `ui-taste-pro`   |
+| **UI Design: In-App, Dashboard, Study/Flashcards, Decks**                     | `frontend-design` + `design-taste-product` + `ui-taste-pro`    |
+| **UI Animation, Motion, Micro-interactions**                                  | `motion-design`                                                |
+| **UI visual review & component QA**                                           | `ui-design-review`                                             |
+| **User guide / end-user docs with screenshots**                               | `user-guide-with-screenshots` (Agent: `user-guide-creator`)    |
+| iOS Native UI / Widgets (SwiftUI/UIKit only)                                  | `liquid-glass-design` (iOS ONLY)                               |
+| Any NestJS file (controller, service, module, DTO)                            | `nestjs-patterns` + `backend-patterns`                         |
+| API endpoint, REST resource                                                   | `api-design` + `backend-patterns`                              |
+| Prisma schema, query, migration                                               | `prisma-patterns`                                              |
+| PostgreSQL query, index, RLS policy                                           | `postgres-patterns`                                            |
+| Dockerfile, docker-compose.yml                                                | `docker-patterns`                                              |
+| E2E test, Playwright test                                                     | `e2e-testing`                                                  |
+| Git branch, commit, merge                                                     | `git-workflow`                                                 |
+| **Command: Resume project development from roadmap**                          | `/command-continue-project` (`command-continue-project` skill) |
+| **Command: Automated modular commit & push**                                  | `/command-git-push` (`command-git-push` skill)                 |
+| **Command: Generate end-user guide with real screenshots**                    | `/command-user-guide` (`command-user-guide` skill)             |
 
 ---
 
@@ -166,6 +167,7 @@ To maximize execution speed without sacrificing traceability (`BR-`, `REQ-`, `US
 - **Zero Code Before Approved Spec**: Never write code or create mockups without an approved domain baseline and specification.
 - **Mandatory Automatic Subagent Delegation (STRICT)**: The orchestrator AI MUST NOT execute implementation slices or documentation directly in the primary context. Once Gate 2 (Technical Plan & Tasks) is approved, the orchestrator MUST automatically decompose tasks and dispatch dedicated subagents (`backend-developer`, `frontend-developer`, `ui-ux-reviewer`, `tech-doc-architect`, `user-guide-creator`) via `invoke_subagent`.
 - **Subagent Transparency & Notification Protocol (MANDATORY)**: Whenever a subagent (e.g. `implementation-orchestrator`, `ui-design-review`, `tech-doc-writer`, `browser_subagent`) is dispatched or finishes, the AI MUST explicitly notify the user in chat with a clear announcement block specifying: (1) Subagent Name & Role, (2) Active Model Name (e.g. `Gemini 3.7 Flash`), (3) Exact Task Scope, and (4) Output Artifact / Report Link.
+- **5-Hour Quota Pool Priority & Early Warning Gate**: Prioritize Gemini 5-hour rolling pool models (`flash`, `pro`, `inherit`) across all subagent delegations. Whenever the `PreInvocation` quota monitor (`session-context-init.js`) flags `WARNING` (≥ 75%) or `CRITICAL` (≥ 90%), the AI MUST surface an immediate warning banner in chat with the exact 5h reset time and mitigation options.
 - **Design System & Anti-AI-Slop Gate (STRICT)**: Before creating or modifying any UI in `apps/web/`, AI MUST read [apps/web/DESIGN.md](file:///Users/vutuanhau/Documents/PROJECT/WordStreak/apps/web/DESIGN.md) and [apps/web/MEMORY.md](file:///Users/vutuanhau/Documents/PROJECT/WordStreak/apps/web/MEMORY.md). All UI must strictly adhere to the document-first minimal canvas (`#ffffff`), 1px hairline borders (`#e5e5e5`), Obsidian pure black pills (`#000000`, `rounded-full`), Nunito/Inter/JetBrains Mono typography, and stable outer anchor hover physics. Generic AI slop (unrequested multi-color gradients, neon blobs, glassmorphism, fake pricing tiers) is strictly forbidden.
 - **UI Visual Review Gate**: Every UI slice must undergo an independent anti-slop verification using `ui-design-review` before closing.
 - **Bug Severity Gate**: No feature branch can be merged or marked complete with unresolved `Critical` bugs.

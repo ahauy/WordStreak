@@ -11,8 +11,8 @@ See `.agents/AGENTS.md` for the unified pipeline and mandatory quality gates.
 
 | Subagent                 | Role                                                                              |   Lifecycle Phase   | Model               |
 | :----------------------- | :-------------------------------------------------------------------------------- | :-----------------: | :------------------ |
-| **`business-analyst`**   | 8-Stage BA Pipeline, IEEE 29148, BR- rules, SRS/US, Baseline Sign-off             |     **Phase 1**     | `claude-opus-4.6`   |
-| **`system-architect`**   | Speckit Specify/Plan/Tasks, API DTO contracts, Prisma migrations, ADRs            |    **Phase 2–4**    | `claude-sonnet-4.6` |
+| **`business-analyst`**   | 8-Stage BA Pipeline, IEEE 29148, BR- rules, SRS/US, Baseline Sign-off             |     **Phase 1**     | `pro / inherit (5h Pool)` |
+| **`system-architect`**   | Speckit Specify/Plan/Tasks, API DTO contracts, Prisma migrations, ADRs            |    **Phase 2–4**    | `pro / inherit (5h Pool)` |
 | **`code-explorer`**      | Read-only codebase research, execution path tracing, dependency mapping           |     **Phase 5**     | `gemini-3.7-flash`  |
 | **`backend-developer`**  | NestJS 11, Prisma ORM, PostgreSQL, shared-types DTOs, Jest unit/integration tests |     **Phase 5**     | `gemini-3.7-flash`  |
 | **`frontend-developer`** | React 19, Vite, Tailwind CSS, 4 UX states, WCAG AA a11y, Vitest component tests   |     **Phase 5**     | `gemini-3.7-flash`  |
@@ -29,8 +29,10 @@ See `.agents/AGENTS.md` for the unified pipeline and mandatory quality gates.
 
 ## Model Allocation Policy
 
-- **Deep Reasoning, Analysis & System Design** (`Phase 1–4`): Prioritize `claude-opus-4.6` or `claude-sonnet-4.6` for multi-step domain modeling, risk scanning, architectural trade-offs, and contract design.
-- **Fast Execution, Coding, Review & Docs** (`Phase 5–6`): Prioritize `gemini-3.7-flash` for high-throughput TDD iteration, diagnostic commands, multi-lane checklist reviews, and screenshot/documentation generation.
+All phases prioritize the **5-Hour Rolling Quota Pool**:
+
+- **Deep Reasoning, Analysis & System Design** (`Phase 1–4`): Prioritize `pro` or `inherit` (Gemini 5h Pool) for multi-step domain modeling, risk scanning, architectural trade-offs, and contract design.
+- **Fast Execution, Coding, Review & Docs** (`Phase 5–6`): Prioritize `flash` (`gemini-3.7-flash` / `gemini-3.8-flash`) for high-throughput TDD iteration, diagnostic commands, multi-lane checklist reviews, and screenshot/documentation generation.
 
 ---
 

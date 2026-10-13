@@ -6,7 +6,7 @@ description: >-
   classification, mandatory interactive 6-pillar interview with options & recommendations,
   gap analysis, domain modeling (Mermaid state machines, BR- business rules, anti-abuse pass),
   risk register, MoSCoW scoping, SRS (REQ-) / Gherkin User Stories (US-), and IEEE 29148 validation gate.
-model: claude-opus-4.6
+model: inherit
 subagent: true
 inheritMcp: true
 commandExecutionPolicy: auto

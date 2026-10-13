@@ -33,13 +33,13 @@ This skill orchestrates the end-to-end development pipeline for WordStreak, plac
 ```mermaid
 graph TD
     subgraph P1 ["PHASE 1: Intake & Interactive Elicitation"]
-        BA["🍉 business-analyst (claude-opus-4.6 / inherit)"]
+        BA["🍉 business-analyst (pro / inherit — 5h Pool)"]
         G1{"🛑 Gate 1: Customer Elicitation"}
         BA --> G1
     end
 
     subgraph P2 ["PHASE 2-4: Unified Spec, Tech Plan & Test Plan"]
-        SA["🏗️ system-architect (claude-sonnet-4.6 / inherit)"]
+        SA["🏗️ system-architect (pro / inherit — 5h Pool)"]
         G2{"🛑 Gate 2: Unified Spec & Plan Sign-Off"}
         G1 --> SA --> G2
     end
@@ -59,7 +59,7 @@ graph TD
     end
 
     subgraph P6A ["PHASE 6A: Parallel Adversarial Review (Single Call)"]
-        CR["🛡️ code-reviewer + DoD Audit (claude-sonnet-4.6 / inherit)"]
+        CR["🛡️ code-reviewer + DoD Audit (flash / inherit — 5h Pool)"]
         UR["👁️ ui-ux-reviewer (conditional: UI stories only)"]
     end
 
@@ -116,7 +116,7 @@ To prevent LLM token bloat while preserving 100% traceability (`BR-`, `REQ-`, `U
 ### Stage Execution Rules
 
 1. **Single-Pass Intake + Elicitation Preparation**:
-   - `business-analyst` classifies complexity, inspects existing codebase/schema, and immediately prepares **2–3 targeted Elicitation Questions** with `(Recommended)` options.
+   - `business-analyst` (`pro` / `inherit`) classifies complexity, inspects existing codebase/schema, and immediately prepares **2–3 targeted Elicitation Questions** with `(Recommended)` options.
 2. **🛑 GATE 1 — Interactive Elicitation Interview (MANDATORY CUSTOMER GATE)**:
    - AI pauses and asks the user 2–3 targeted questions via `ask_question` or chat covering ambiguities in business rules, state transitions, or edge cases.
    - **Strict Zero-Hallucination Policy**: Never invent or silently assume business logic; all ambiguities must be confirmed by the customer and logged as `ASM-<SLUG>-###`.
@@ -127,7 +127,7 @@ To prevent LLM token bloat while preserving 100% traceability (`BR-`, `REQ-`, `U
 
 ## Phases 2–4: Unified Specify, Plan & Tasks (with `ponytail` Architecture Ladder)
 
-For **Bounded Tasks** and standard Backlog User Stories, `system-architect` runs in the same planning phase right after Gate 1 answers to produce:
+For **Bounded Tasks** and standard Backlog User Stories, `system-architect` (`pro` / `inherit`) runs in the same planning phase right after Gate 1 answers to produce:
 
 1. **`spec.md`** — Formal requirements (`REQ-`), scenarios (`US-`), edge cases, and traceability matrix.
 2. **`plan.md`** — Technical architecture, data model (`erDiagram`), `/api/v1/...` or Extension contracts, and dependency-ordered implementation tasks. **Enforce the `ponytail` 7-rung ladder in architecture planning**: reuse existing helpers/types first, prefer stdlib & native platform APIs over new libraries or custom classes, forbid single-implementation interfaces/factories, and minimize touched/created files.
@@ -158,7 +158,7 @@ For **Bounded Tasks** and standard Backlog User Stories, `system-architect` runs
 ## Phase 6: Parallel Quality Review, Docs & Delivery
 
 1. **Batch 1 — Parallel Adversarial Review (Single `invoke_subagent` Call)**:
-   - Dispatch `code-reviewer` (`claude-sonnet-4.6` / `inherit`) in a fresh context (no implementer reasoning) to audit:
+   - Dispatch `code-reviewer` (`flash` / `inherit`) in a fresh context (no implementer reasoning) to audit:
      - Code quality, security, `BR-`/`REQ-` compliance, and DoD scorecard.
      - **`ponytail-review` Over-Engineering Audit**: Hunt unnecessary complexity using `delete:`, `stdlib:`, `native:`, `yagni:`, and `shrink:` tags in `review-report.md`.
    - **Conditionally** dispatch `ui-ux-reviewer` (`gemini-3.7-flash`) in the **same parallel call** **only if** UI files were modified.
