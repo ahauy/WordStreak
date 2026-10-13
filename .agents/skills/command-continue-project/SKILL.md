@@ -20,126 +20,118 @@ This command skill automatically inspects project progress in [PRODUCT_BACKLOG_R
 
 ---
 
-## Execution Workflow
+## Execution Workflow (Fast-Accurate Unified Pipeline)
 
-### Step 0: Pre-flight Git Sync & Environment Refresh
+### Step 0: Smart Pre-flight Git & Environment Check
 
-Before starting analysis or code, ensure the working environment is synced with the latest codebase:
+Run a fast, non-blocking local check before starting:
 
-1. **Check Branch & Sync with Remote**:
-   - Fetch remote main: `git fetch origin main`.
-   - If on `main`: Prompt/switch to the designated feature/chore branch (`git checkout -b feat/<slug> origin/main`).
-   - If on an active feature branch: Safely rebase onto latest `origin/main` (`git rebase origin/main`).
-   - _Working tree protection_: If uncommitted changes exist, run `git stash push -m "pre-sync-stash"`, execute rebase, and restore with `git stash pop`.
-
-2. **Monorepo Ecosystem Drift Check**:
-   - If `pnpm-lock.yaml` or `package.json` was updated during sync: Run `pnpm install`.
-   - If `prisma/schema.prisma` or `prisma/migrations/` was updated during sync: Run `pnpm --filter api prisma generate`.
-
-### Step 1: Scan Backlog & Roadmap
-
-1. Read `docs/PRODUCT_BACKLOG_ROADMAP.md`.
-2. Determine the current active Sprint and find the first User Story with status:
-   - `[/]` (In Progress / Partially completed)
-   - Or `[ ]` (To Do / Next in backlog)
-3. Extract the US ID (e.g., `US-CARD-02`, `US-SRS-01`), story title, and Acceptance Criteria (AC).
-
-### Step 2: Inspect Current Story Deliverables
-
-1. Check `.specify/features/<slug>/` and `specs/<num>-<slug>/` to determine the current state:
-   - Domain Baseline (`baseline.md` - is it `SIGNED-OFF`?)
-   - Speckit artifacts (`spec.md`, `plan.md`, `tasks.md`)
-   - Test Plan (`test-plan.md`)
-   - Source code and test implementation progress.
-
-### Step 3: Route & Execute the Appropriate Phase
-
-#### Case A: No Domain Baseline (Net-New Feature)
-
-- **MANDATORY AUTOMATIC SUBAGENT DELEGATION**:
-  - The Orchestrator MUST NEVER run BA stages directly on the primary context.
-  - **Step 1 (Intake)**: Dispatch `business-analyst` via `invoke_subagent` (`claude-opus-4.6` / `inherit`) to run `intake-classifier` and create `.specify/features/<slug>/`.
-
-- **🛑 INTERACTIVE ELICITATION INTERVIEW GATE (Stage 2 — MANDATORY CUSTOMER INTERVIEW)**:
-  - The AI **MUST PAUSE** before domain modeling, gap analysis, or spec writing.
-  - AI MUST present 2–3 targeted clarification questions directly to the user (via chat or `ask_question`) covering business goals, key state machine transitions, business rules/formulas, and edge cases.
-  - **Strict Zero-Hallucination Policy**: AI is strictly prohibited from inventing business rules or silently making assumptions. Anything ambiguous or unspecified must be asked and confirmed by the user.
-
-- **Step 2 (Domain Modeling & Spec Generation — Stages 3–8)**:
-  - Once the user answers the elicitation questions, dispatch `business-analyst` to execute Stages 3–8 (`gap-analysis`, `domain-modeling`, `risk-contradiction-scanner`, `spec-writer`, `spec-validator`, `handover`) and compile `baseline.md`.
-
-- **🛑 CONFIRMATION GATE 1 — Spec Sign-Off (MANDATORY)**:
-  After `business-analyst` completes and `baseline.md` is drafted, the Orchestrator **MUST STOP** and present a structured summary of the Domain Baseline to the user for review. The AI may **not** proceed to Speckit or any implementation work until the user gives explicit approval.
-
-  **Present to user:**
-  - A concise summary of: scope, key business rules (`BR-`), user stories drafted, risks identified, and anything marked Won't-Have.
-  - Any open questions or assumptions (`ASM-`) that are still unresolved.
-  - Concrete proposals for unresolved items, formatted as selectable options where possible.
-
-  **If the user does NOT confirm (asks questions, requests changes, or is unsure):**
-  - Do NOT proceed.
-  - Identify the specific blocker and dispatch follow-up questions or concrete proposals.
-  - Re-present the updated spec summary and loop back to this gate until the user explicitly says "approve", "confirmed", "let's proceed", or equivalent.
-
-  **Only when the user explicitly approves**: mark `baseline.md` as `SIGNED-OFF v1.0` and advance to Case B.
+1. **Fast Branch & Working Tree Check**:
+   - Run `git status -sb` to inspect the active branch and uncommitted changes.
+   - **Skip redundant network sync**: Do **not** run `git fetch` or `git rebase` if already working on an active feature branch in the same session. Only fetch/checkout a new branch (`git checkout -b feat/<slug>`) when starting a net-new scope from `main` or when explicitly requested.
+2. **Conditional Drift Refresh (On-Change Only)**:
+   - Run `pnpm install` **only** if `pnpm-lock.yaml` or `package.json` was modified.
+   - Run `pnpm --filter api prisma generate` **only** if `prisma/schema.prisma` was modified.
 
 ---
 
-#### Case B: Domain Baseline SIGNED-OFF but Technical Plan Missing
+### Step 1: Scan Backlog & Inspect Deliverables
 
-- **MANDATORY AUTOMATIC SUBAGENT DELEGATION**:
-  - Dispatch `system-architect` via `invoke_subagent` (`claude-sonnet-4.6` / `inherit`) to run the Speckit Pipeline:
-    - Run `speckit-specify` -> create `spec.md`.
-    - Run `speckit-plan` -> create `plan.md`, `data-model.md`, `contracts/`.
-    - Run `speckit-tasks` -> create `tasks.md`.
-
-- **🛑 CONFIRMATION GATE 2 — Technical Plan & Task Sign-Off (MANDATORY)**:
-  After `system-architect` completes, the Orchestrator **MUST STOP** and present the technical plan summary to the user for review. The AI may **not** begin any code writing until the user explicitly approves.
-
-  **Present to user:**
-  - A concise summary of: architecture decisions, data model changes, API contracts, implementation phases from `tasks.md`.
-  - Any technical risks or trade-offs identified during planning.
-  - Proposals for any unresolved design questions.
-
-  **If the user does NOT confirm (asks questions, requests changes, or is unsure):**
-  - Do NOT proceed.
-  - Identify the specific blocker, update the plan with the architect subagent, and re-present for approval.
-  - Loop back to this gate until the user explicitly approves.
-
-  **Only when the user explicitly approves**: advance to Case C.
+1. Read `docs/PRODUCT_BACKLOG_ROADMAP.md` to find the first User Story with status `[/]` (In Progress) or `[ ]` (To Do) in the active Sprint.
+2. Extract the **US ID** (e.g., `US-ECO-07`), **Title**, and **Acceptance Criteria (AC)**.
+3. Check `.specify/features/<slug>/` for the **Lean Canonical Artifact Set (max 6 files, zero duplication)**:
+   - `baseline.md` — Unified Intake, Elicitation (`ASM-`), RBAC, State Machine, Business Rules (`BR-`), Risk Register (`RISK-`), MoSCoW, and `SIGNED-OFF` status.
+   - `spec.md` — Single canonical specification containing `REQ-<SLUG>-###`, `US-<SLUG>-###` (Given-When-Then happy + edge cases), Edge Case Matrix, and Traceability Matrix (`Goal -> REQ -> US -> TC`). _(Do NOT generate duplicate `spec/srs.md`, `spec/user-stories.md`, `00-intake.md`, `01-elicitation.md`, `03-domain-model.md`, or `04-risk-scope.md` for Bounded Tasks)._
+   - `plan.md` — Unified Technical Plan, Data Model (`erDiagram` + types), API/Storage Contracts, and dependency-ordered Tasks. _(Do NOT generate separate `data-model.md`, `contracts/`, or `tasks.md` unless the feature is a massive Full Feature > 500 lines)._
+   - `test-plan.md` — Maps every `US-` scenario and edge case to a concrete `TC-###` test case and test file path.
+   - `review-report.md` — Unified Adversarial Code Review, UI/UX Review (if UI touched), and DoD Scorecard.
+   - `CHANGELOG.md` — Version history (`v0.1-draft` → `v1.0 SIGNED-OFF` → `v1.1 Verified`).
 
 ---
 
-#### Case C: Technical Plan Complete & Approved, Ready to Implement
+### Step 2: Route & Execute by Current State
 
-- **MANDATORY AUTOMATIC SUBAGENT DELEGATION**:
-  - The Orchestrator is **STRICTLY PROHIBITED** from coding directly.
-  - Create `test-plan.md` mapping User Stories to `TC-###` test cases.
-  - Dispatch `backend-developer` (`gemini-3.7-flash`) via `invoke_subagent` for Backend API, DTOs, Services, and Jest tests.
-  - Dispatch `frontend-developer` (`gemini-3.7-flash`) via `invoke_subagent` for React components, state hooks, pages, and Vitest tests.
-  - Dispatch `slice-implementer` (`gemini-3.7-flash`) to wire fullstack integration.
-  - Dispatch `build-resolver` (`gemini-3.7-flash`) to fix any compilation / lint errors.
-  - Follow TDD cycle in each slice: Write failing tests (Red) -> Implement minimal passing code (Green) -> Refactor.
+#### Case A: No Elicitation / Domain Baseline Yet (Start of Story)
 
-#### Case D: Implementation Finished, Final Review & Documentation
+- **Single-Pass Intake + Elicitation Prep**:
+  - Dispatch `business-analyst` (`claude-opus-4.6` / `inherit`) via `invoke_subagent` to:
+    1. Classify complexity (`Spike` | `Bounded Task` | `Full Feature`) and inspect existing relevant files/types in the repo.
+    2. Identify genuine ambiguities not yet covered by `PRODUCT_BACKLOG_ROADMAP.md` or existing code.
+    3. Formulate **2–3 targeted Elicitation Questions** with `(Recommended)` default options grounded in the codebase.
 
-- **MANDATORY AUTOMATIC SUBAGENT DELEGATION**:
-  - Dispatch `code-reviewer` (`claude-sonnet-4.6` / `inherit`) via `invoke_subagent` for adversarial code quality & security audit.
-  - Dispatch `ui-ux-reviewer` (`gemini-3.7-flash`) via `invoke_subagent` for adversarial UI, anti-slop, and WCAG AA review.
-  - Dispatch `user-guide-creator` (`gemini-3.7-flash`) via `invoke_subagent` to generate [docs/user-guides/<slug>.md](../../docs/user-guides/) with real Playwright screenshots.
-  - Dispatch `tech-doc-architect` (`gemini-3.7-flash`) via `invoke_subagent` to update [docs/features/<slug>/README.md](../../docs/features/).
-  - Run full test suites (`pnpm test`).
-  - Mark the User Story as `[x]` in `docs/PRODUCT_BACKLOG_ROADMAP.md`.
+- **🛑 GATE 1 — Interactive Elicitation Interview (MANDATORY CUSTOMER GATE)**:
+  - Present the 2–3 clarification questions to the user via `ask_question` (or chat).
+  - **Strict Zero-Hallucination Policy**: Never invent business rules, formulas, or edge-case behaviors silently. Wait for the user's answers before drafting the spec and plan.
+
+---
+
+#### Case B: Elicitation Answered → Unified Spec, Tech Plan & Test Plan
+
+- **Unified Specification & Architecture Pass (with `ponytail` Architecture Ladder)**:
+  - Once the user answers Gate 1, dispatch `business-analyst` / `system-architect` (`claude-sonnet-4.6` / `inherit`) via `invoke_subagent` to generate the complete, non-duplicated planning set in `.specify/features/<slug>/`:
+    1. `baseline.md` (`Status: DRAFT v0.9`, containing confirmed `ASM-`, `BR-`, State Machine, `RISK-`, MoSCoW Won't-Have).
+    2. `spec.md` (`REQ-`, `US-` Given-When-Then scenarios, Edge Case Matrix, IEEE 29148 check, Traceability Matrix).
+    3. `plan.md` (Architecture, Data Model/DTOs, `/api/v1/...` or Extension contracts, and ordered implementation tasks). **Apply the `ponytail` 7-rung ladder during planning**: reuse existing monorepo helpers/types first, prefer stdlib & native platform APIs (`Intl`, native DOM/CSS, Prisma/DB constraints) over new dependencies, avoid single-implementation abstractions/wrappers, and minimize the number of new files.
+    4. `test-plan.md` (`TC-###` test cases mapped 1:1 to every `US-` scenario and edge case — **never apply `ponytail` YAGNI to skip required `TC-###` tests**).
+    5. `CHANGELOG.md`.
+  - _(Note: For net-new, multi-entity **Full Features / Epics** where technical architecture cannot be planned until complex domain modeling is reviewed, you may pause for a separate BA Baseline sign-off first. For all **Bounded Tasks** and standard Backlog User Stories, present them together in Gate 2 below)._
+
+- **🛑 GATE 2 — Unified Spec & Technical Plan Sign-Off (MANDATORY)**:
+  - Present a concise, structured summary to the user covering:
+    1. **Scope & Business Rules**: Key `BR-` rules, confirmed `ASM-` decisions, `RISK-` mitigations, and explicit Won't-Have items.
+    2. **Technical Plan & Contracts**: Data model/type changes, API/storage contracts, and files to be created/modified.
+    3. **TDD Verification Plan**: Summary of `TC-###` test cases in `test-plan.md`.
+  - **STOP and wait for explicit user approval** ("approve", "ok", "triển khai", etc.).
+  - Upon approval, mark `baseline.md` as `SIGNED-OFF v1.0` and immediately proceed to Case C.
+
+---
+
+#### Case C: Approved Plan → Scope-Aware Parallel TDD Implementation (with Scoped `ponytail`)
+
+- **Strict Orchestrator Invariant**: The Orchestrator MUST NOT write feature code or test files directly; delegate via `invoke_subagent`.
+- **Scoped `ponytail` Rules for Implementers (`backend-developer`, `frontend-developer`, `slice-implementer`)**:
+  - **Production Code (`ponytail` ON)**: Follow the `ponytail` ladder — reuse existing repo utilities/types, use stdlib/native platform features before custom classes, zero speculative abstractions/wrappers/configs, fewest files, shortest working diff. Mark deliberate simplifications with a `// ponytail: <ceiling & upgrade path>` comment when applicable.
+  - **Tests & Requirements (`ponytail` OFF)**: Never use `ponytail` to skip approved `REQ-`/`BR-` rules, boundary validation, or `TC-###` test cases in `test-plan.md`. Full unit/edge-case test coverage is mandatory.
+- **Smart Scope-Aware Dispatch (Minimize Cold-Start Handoffs)**:
+  - **Do NOT spawn a separate `code-explorer`** (file paths and patterns are already documented in `plan.md`).
+  - **Single-App / Single-Layer Story** (e.g., `apps/extension` only, `apps/api` only, or `apps/web` only):
+    - Dispatch **1 scoped implementer subagent** (`slice-implementer`, `backend-developer`, or `frontend-developer` using `gemini-3.7-flash`) to complete the full TDD cycle in a single turn:
+      1. Update shared types in `packages/shared-types` (if needed) and build `shared-types`.
+      2. Write failing unit/integration tests (`Red`) matching `test-plan.md` (`TC-###`).
+      3. Implement minimal passing code (`Green` with `ponytail` simplicity) and refactor (`Refactor`).
+      4. Run `pnpm test`, `pnpm lint`, and `pnpm build` within its own turn until green.
+  - **Multi-App Fullstack Story (`apps/api` + `apps/web`)**:
+    1. Update and build `packages/shared-types` first.
+    2. Dispatch **`backend-developer` and `frontend-developer` concurrently in a SINGLE `invoke_subagent` call** (parallel array).
+    3. Dispatch `slice-implementer` / `e2e-runner` only if cross-app wiring or Playwright E2E tests are required.
+  - **On-Demand `build-resolver`**: Only invoke `build-resolver` if a build/type error remains unresolved after the implementer subagent finishes.
+
+---
+
+#### Case D: Implementation Green → Parallel Review & Documentation
+
+1. **Batch 1 — Parallel Adversarial Review (`invoke_subagent` single call)**:
+   - Always dispatch `code-reviewer` (`claude-sonnet-4.6` / `inherit`) in a fresh context (passing only the git diff, `spec.md`, `baseline.md`, and `test-plan.md`) to audit:
+     1. Code quality, security, `BR-`/`REQ-` compliance, and DoD scorecard.
+     2. **`ponytail-review` Over-Engineering Pass**: Flag unnecessary complexity using `delete:`, `stdlib:`, `native:`, `yagni:`, and `shrink:` tags so bloat is cut before merge.
+        Record all findings in `review-report.md`.
+   - **Conditionally** include `ui-ux-reviewer` (`gemini-3.7-flash`) in the **same parallel `invoke_subagent` call** **ONLY IF** the story modified UI files (`.tsx`, `.jsx`, `.css` in `apps/web` or `apps/extension/src/popup|options|content`). Skip `ui-ux-reviewer` for pure backend, service-worker, or algorithm stories.
+   - If any `Critical` or `High` issues are found, dispatch a targeted fix to the implementer subagent and re-verify.
+
+2. **Batch 2 — Parallel Documentation & User Guide (`invoke_subagent` single call — `ponytail` OFF)**:
+   - Dispatch `tech-doc-architect` (`gemini-3.7-flash`) to create `docs/features/<slug>/README.md` and update `docs/features/README.md` (plus `docs/architecture/` or `docs/algorithms/` if applicable).
+   - **Conditionally** include `user-guide-creator` (`gemini-3.7-flash`) in the **same parallel `invoke_subagent` call** to generate `docs/user-guides/<slug>.md` with real Playwright screenshots **if** the story has user-facing UI/UX behavior.
+   - Update `.specify/features/<slug>/CHANGELOG.md` and mark the User Story as `[x]` in `docs/PRODUCT_BACKLOG_ROADMAP.md`.
 
 ---
 
 ## Output Format for User
 
-When `/command-continue-project` runs, output a concise status summary:
+When `/command-continue-project` runs, output a concise status header:
 
 ```markdown
 🎯 **Target User Story:** [<US ID> - <Story Title>]
-📌 **Epic / Sprint:** [<Epic Name> | Sprint <Number>]
-📊 **Current Stage:** [<Not Started / BA Analysis / Technical Planning / TDD Implementation / Quality Review & Docs>]
-🚀 **Next Immediate Action:** [<Specific step the agent is executing now>]
+📌 **Epic / Sprint:** [<Epic Name> | Sprint <Number>] (Protocol: <Bounded Task | Full Feature>)
+📊 **Current Stage:** [<Gate 1: Elicitation | Gate 2: Unified Spec & Plan | Phase 5: TDD Implementation | Phase 6: Parallel Review & Docs>]
+🚀 **Next Immediate Action:** [<Specific step executing now>]
 ```
