@@ -412,10 +412,10 @@ _Mục tiêu: Giúp người dùng dễ dàng chuyển đổi dữ liệu và m�
     - [x] Extension: lưu trạng thái nhắc vào `chrome.storage.local`.
     - [x] i18n: chuỗi thông báo EN/VI theo `preferredLanguage`.
 
-- [ ] **US-ECO-07: Cài đặt nhắc học (Options Page)**
+- [x] **US-ECO-07: Cài đặt nhắc học (Options Page)**
   - **AC:** Bật/tắt nhắc, chọn giờ nhắc, giờ yên tĩnh (bắt đầu–kết thúc), bật/tắt "nhắc khi streak sắp mất", bật/tắt badge.
   - **Tasks:**
-    - [ ] Extension: trang options/popup tab cài đặt, lưu bằng `chrome.storage.sync`.
+    - [x] Extension: trang options/popup tab cài đặt, lưu bằng `chrome.storage.sync`.
     - [~] Giai đoạn sau: đồng bộ cài đặt lên profile người dùng để web app và PWA dùng chung.
 
 - [ ] **US-ECO-08: Ôn nhanh trong Popup (Micro-review)**
@@ -727,7 +727,7 @@ _Mục tiêu: Xóa bỏ hoàn toàn rào cản "ứng dụng trống" bằng cá
   ├── EPIC-09: US-REM-01 (Review Summary API)            ✅
   ├── EPIC-09: US-ECO-05 (Extension Badge)                 ✅
   ├── EPIC-09: US-ECO-06 (Reminder Notifications)          ✅
-  ├── EPIC-09: US-ECO-07 (Notification Settings)
+  ├── EPIC-09: US-ECO-07 (Notification Settings)           ✅
   └── EPIC-12: US-UX-01 ("Học hôm nay" Button)
 
 [ Sprint 10 - TSL Expansion, Retention & Learning Quality ] ──► [ PLANNED 📋 ]

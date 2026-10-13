@@ -29,6 +29,7 @@ Tập hợp tất cả các tài liệu hướng dẫn sử dụng trực quan, 
 | 19  | **Ứng Dụng PWA & Chế Độ Học Ngoại Tuyến (Offline Mode)**        |   `US-ECO-04`    | [pwa-offline-mode.md](./pwa-offline-mode.md)                               |      ✅ Có       |
 | 20  | **Huy Hiệu Số Thẻ Đến Hạn Trên Extension (Due Badge)**          |   `US-ECO-05`    | [extension-due-badge.md](./extension-due-badge.md)                         |      ✅ Có       |
 | 21  | **Thông Báo Nhắc Học Thông Minh (Smart Study Reminders)**       |   `US-ECO-06`    | [extension-reminder-notifications.md](./extension-reminder-notifications.md) |  ✅ Có       |
+| 22  | **Cài Đặt Nhắc Học & Huy Hiệu Trên Extension (Options Page)**   |   `US-ECO-07`    | [extension-reminder-settings.md](./extension-reminder-settings.md)         |  ✅ Có       |
 
 ---
 
