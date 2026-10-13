@@ -89,93 +89,92 @@ Whenever a subagent is dispatched (e.g. for adversarial UI review, technical doc
 - The agent MUST explicitly display a notification card in chat.
 - It MUST indicate the **Subagent Name**, the **Active Model Name** (e.g. `Gemini 3.7 Flash`), the **Goal**, and the **Final Artifact/Report Link**.
 
-## 7. Mandatory Automatic Subagent Delegation Protocol
+## 7. Mandatory Automatic Subagent Delegation Protocol (Fast-Accurate Unified Pipeline)
 
 **AUTOMATIC MULTI-AGENT LIFECYCLE (MANDATORY & NON-NEGOTIABLE):**
-The primary orchestrator agent MUST strictly follow the standard multi-agent execution pipeline without waiting for manual user prompting. Every phase MUST automatically dispatch its dedicated subagents via `invoke_subagent`:
+The primary orchestrator agent MUST strictly follow the Fast-Accurate Multi-Agent Pipeline without waiting for manual user prompting, delegating specialized tasks via `invoke_subagent`:
 
 ```mermaid
 graph TD
-    subgraph P1 ["PHASE 1: BA & Domain Elicitation"]
+    subgraph P1 ["PHASE 1: Intake & Interactive Elicitation"]
         BA["🍉 business-analyst (pro / inherit — 5h Pool)"]
+        G1{"🛑 Gate 1: Customer Elicitation"}
+        BA --> G1
     end
 
-    subgraph P2 ["PHASE 2-4: Tech Spec & Architecture Planning"]
+    subgraph P2 ["PHASE 2-4: Unified Spec, Tech Plan & Test Plan"]
         SA["🏗️ system-architect (pro / inherit — 5h Pool)"]
+        G2{"🛑 Gate 2: Unified Spec & Plan Sign-Off"}
+        G1 --> SA --> G2
     end
 
-    subgraph P5 ["PHASE 5: Fullstack Implementation & TDD"]
-        CE["🔍 code-explorer (gemini-3.7-flash)"]
+    subgraph P5 ["PHASE 5: Scope-Aware Parallel TDD Implementation"]
         BE["⚙️ backend-developer (gemini-3.7-flash)"]
         FE["🎨 frontend-developer (gemini-3.7-flash)"]
         SI["⚡ slice-implementer (gemini-3.7-flash)"]
-        BR["🔧 build-resolver (gemini-3.7-flash)"]
-        E2E["🧪 e2e-runner (gemini-3.7-flash)"]
+        BR["🔧 build-resolver (on-demand only)"]
 
-        CE --> BE
-        CE --> FE
-        BE --> SI
-        FE --> SI
-        SI --> BR
-        BR --> E2E
+        G2 --> BE
+        G2 --> FE
+        G2 --> SI
+        BE -.-> BR
+        FE -.-> BR
+        SI -.-> BR
     end
 
-    subgraph P6A ["PHASE 6A: Adversarial Quality Review"]
-        CR["🛡️ code-reviewer (flash / inherit — 5h Pool)"]
-        UR["👁️ ui-ux-reviewer (gemini-3.7-flash)"]
+    subgraph P6A ["PHASE 6A: Parallel Adversarial Review (Single Call)"]
+        CR["🛡️ code-reviewer + DoD Audit (flash / inherit — 5h Pool)"]
+        UR["👁️ ui-ux-reviewer (conditional: UI stories only)"]
     end
 
-    subgraph P6B ["PHASE 6B: Standard Documentation"]
+    subgraph P6B ["PHASE 6B: Parallel Documentation (Single Call)"]
         TD["📚 tech-doc-architect (gemini-3.7-flash)"]
-        UG["💼 user-guide-creator (gemini-3.7-flash)"]
-        AE["⚖️ agent-evaluator (flash / inherit — 5h Pool)"]
+        UG["💼 user-guide-creator (conditional: UI stories only)"]
     end
 
-    BA --> SA
-    SA --> CE
-    E2E --> CR
-    E2E --> UR
+    BE --> CR
+    FE --> CR
+    SI --> CR
+    FE --> UR
     CR --> TD
     CR --> UG
-    CR --> AE
     UR --> TD
     UR --> UG
-    UR --> AE
 ```
 
 ### Strict Orchestrator Invariants & Hard Coding Ban (NON-NEGOTIABLE):
 
 - **Zero Direct Feature Coding by Orchestrator**: The primary orchestrator agent is **STRICTLY PROHIBITED** from calling `write_to_file` or `replace_file_content` directly for any feature code, specifications, database schemas, or unit/E2E test files.
 - **Mandatory Delegation via `invoke_subagent`**: All domain elicitation, architecture planning, backend/frontend implementation, code review, and user guide generation MUST be delegated to dedicated subagents spawned via `invoke_subagent`.
+- **Lean 6-File Canonical Artifact Set (Zero Duplication)**:
+  In `.specify/features/<slug>/`, produce ONLY `baseline.md`, `spec.md`, `plan.md`, `test-plan.md`, `review-report.md`, and `CHANGELOG.md` (do NOT generate duplicate `spec/srs.md`, `spec/user-stories.md`, `00-intake.md`, `01-elicitation.md`, `03-domain-model.md`, `04-risk-scope.md`, `data-model.md`, `tasks.md`, or `08-dod-scorecard.md` for Bounded Tasks).
 - **Model Allocation Matrix**:
   - **5-Hour Rolling Pool Priority (Default)**: Always prioritize Gemini models (`flash`, `pro`, `flash_lite`, or `inherit` when the main chat is on Gemini) so 100% of orchestration and subagents consume the 5-hour rolling quota pool instead of external weekly caps.
-  - `Model: "pro" / "inherit"` (Deep Domain Elicitation & Architecture — 5h Pool): `business-analyst`, `system-architect`.
-  - `Model: "flash"` (Fast Execution, Adversarial Review & Testing — 5h Pool): `code-explorer`, `backend-developer`, `frontend-developer`, `slice-implementer`, `build-resolver`, `e2e-runner`, `code-reviewer`, `ui-ux-reviewer`, `tech-doc-architect`, `user-guide-creator`, `agent-evaluator`.
+  - `Model: "pro" / "inherit"` (Deep Domain Elicitation & Unified Architecture — 5h Pool): `business-analyst`, `system-architect`.
+  - `Model: "flash" / "inherit"` (Fast TDD Execution, Adversarial Review, UI Review & Docs — 5h Pool): `backend-developer`, `frontend-developer`, `slice-implementer`, `build-resolver` (on-demand), `code-reviewer`, `ui-ux-reviewer` (conditional on UI changes), `tech-doc-architect`, `user-guide-creator` (conditional on UI changes).
 - **Pre-execution Catalog Definition**: Before running any phase, the orchestrator MUST ensure subagents are defined via `define_subagent` with specialized system prompts.
 
 ### Protocol Execution Chain:
 
-1. **Phase 1 (BA & Domain Elicitation — 8-Stage Pipeline)**:
-   - **Stage 1 (Intake)**: Auto-dispatch `business-analyst` to run `intake-classifier` and create `.specify/features/<slug>/`.
-   - **🛑 STAGE 2 INTERACTIVE ELICITATION INTERVIEW (MANDATORY CUSTOMER GATE)**:
-     - The AI / `business-analyst` **MUST PAUSE** and conduct a live, interactive interview with the User (batched 2–3 questions at a time covering Business Value & the 6 Domain Pillars: RBAC, State Machine, Business Rules/Formulas, Workflows/Edge cases, Data/Privacy, UX/NFRs) using direct chat turns or `ask_question`.
-     - **Strict No-Hallucination Policy**: AI is STRICTLY FORBIDDEN from inventing business rules, error behaviors, default parameters, or edge cases. If anything is unknown or ambiguous, AI MUST ask the customer directly. Silent auto-generation of unconfirmed `ASM-` assumptions without user interaction is strictly prohibited.
-   - **Stage 3–8 (Domain Modeling to Handover)**: Only after the user confirms elicitation answers, `business-analyst` executes gap analysis, domain modeling, risk scanning, spec writing, IEEE 29148 validation, and handover brief to produce `baseline.md`.
-   - **🛑 Confirmation Gate 1**: Present Domain Baseline summary to User for sign-off.
-2. **Phase 2–4 (Spec & Architecture)**: Auto-dispatch `system-architect` (`pro` / `inherit`) to produce `spec.md`, `plan.md`, `data-model.md`, `contracts/`, and `tasks.md`. Present Confirmation Gate 2 to User.
-3. **Phase 5 (Fullstack Implementation & TDD)**:
-   - Auto-dispatch `code-explorer` (`gemini-3.7-flash`) to inspect existing patterns.
-   - Auto-dispatch `backend-developer` (`gemini-3.7-flash`) & `frontend-developer` (`gemini-3.7-flash`) in parallel or sequenced slices.
-   - Auto-dispatch `slice-implementer` (`gemini-3.7-flash`) to wire integration.
-   - Auto-dispatch `build-resolver` (`gemini-3.7-flash`) to eliminate type/lint build errors.
-   - Auto-dispatch `e2e-runner` (`gemini-3.7-flash`) to verify test suites.
-4. **Phase 6A (Adversarial Review)**:
-   - Auto-dispatch `code-reviewer` (`flash` / `inherit`) for adversarial code quality & security review.
-   - Auto-dispatch `ui-ux-reviewer` (`gemini-3.7-flash`) for Anti-AI-Slop, `DESIGN.md`, `MEMORY.md`, and WCAG AA verification.
-5. **Phase 6B (Documentation & Sign-off)**:
-   - Auto-dispatch `tech-doc-architect` (`gemini-3.7-flash`) (`docs/features/<slug>/README.md`).
-   - Auto-dispatch `user-guide-creator` (`gemini-3.7-flash`) (`docs/user-guides/<slug>.md`).
-   - Auto-dispatch `agent-evaluator` (`flash` / `inherit`) (Final DoD & Quality Scorecard).
+1. **Phase 1 (Single-Pass Intake & Interactive Elicitation)**:
+   - **Intake + Elicitation Prep**: Auto-dispatch `business-analyst` (`pro` / `inherit`) to classify complexity, inspect existing code/types, and formulate **2–3 targeted Elicitation Questions** with `(Recommended)` defaults.
+   - **🛑 GATE 1 — INTERACTIVE ELICITATION INTERVIEW (MANDATORY CUSTOMER GATE)**:
+     - The AI **MUST PAUSE** and present the 2–3 clarification questions to the User via `ask_question` or direct chat turns.
+     - **Strict No-Hallucination Policy**: AI is STRICTLY FORBIDDEN from inventing business rules, error behaviors, default parameters, or edge cases. Silent auto-generation of unconfirmed `ASM-` assumptions without user interaction is strictly prohibited.
+2. **Phases 2–4 (Unified Spec, Tech Plan & Test Plan — with `ponytail` Architecture Ladder)**:
+   - Once the user answers Gate 1, auto-dispatch `system-architect` (`pro` / `inherit`) to compile `baseline.md` (`ASM-`, `BR-`, State Machine, `RISK-`, MoSCoW), `spec.md` (`REQ-`, `US-` Given-When-Then, Traceability Matrix), `plan.md` (Architecture, Data Model, Contracts, Tasks — applying the `ponytail` 7-rung ladder to reuse existing code, prefer stdlib/native APIs, and avoid single-use abstractions), and `test-plan.md` (`TC-###`).
+   - **🛑 GATE 2 — Unified Spec & Technical Plan Sign-Off**: Present the unified summary to the User for approval. Upon approval, mark `baseline.md` as `SIGNED-OFF v1.0`.
+3. **Phase 5 (Scope-Aware Parallel TDD Implementation — with Scoped `ponytail`)**:
+   - **Scoped `ponytail` Rule**: Apply `ponytail` simplicity to **production code** (fewest files, shortest working diff, stdlib/native first, zero speculative abstractions), while keeping `ponytail` **OFF for test coverage** (100% of `TC-###` tests in `test-plan.md` and 100% of approved `REQ-`/`BR-` rules are mandatory).
+   - **Single-App Story** (`apps/extension`, `apps/api`, or `apps/web` only): Dispatch **1 scoped implementer subagent** (`slice-implementer`, `backend-developer`, or `frontend-developer`) to complete the full TDD cycle (`Red` tests → `Green` minimal `ponytail` code → `Refactor` → `pnpm test && pnpm build`) in a single turn.
+   - **Fullstack Story (`apps/api` + `apps/web`)**: Update `packages/shared-types` first, then dispatch **`backend-developer` & `frontend-developer` concurrently in a single parallel `invoke_subagent` call**.
+   - **On-Demand `build-resolver`**: Only invoke if a build/lint error remains unresolved.
+4. **Phase 6A (Parallel Adversarial Review — Single `invoke_subagent` Call)**:
+   - Auto-dispatch `code-reviewer` (`flash` / `inherit`) in a fresh context for adversarial code quality, security, `BR-`/`REQ-`, DoD scorecard, and **`ponytail-review` over-engineering audit** (`delete:`, `stdlib:`, `native:`, `yagni:`, `shrink:`) into `review-report.md`.
+   - Conditionally include `ui-ux-reviewer` (`gemini-3.7-flash`) in the **same parallel call** **only if** UI files were modified.
+5. **Phase 6B (Parallel Documentation — Single `invoke_subagent` Call — `ponytail` OFF)**:
+   - Auto-dispatch `tech-doc-architect` (`gemini-3.7-flash`) (`docs/features/<slug>/README.md` + `docs/features/README.md` index).
+   - Conditionally include `user-guide-creator` (`gemini-3.7-flash`) (`docs/user-guides/<slug>.md`) in the **same parallel call** if user-facing UI changed.
 
 ## 8. 5-Hour Quota Pool Monitoring & Early Warning Protocol
 
@@ -183,6 +182,7 @@ WordStreak utilizes the Gemini 5-hour rolling quota window to maintain continuou
 
 **MANDATORY EARLY WARNING GATE:**
 Whenever the hook injects a `🟡 WARNING (≥ 75%)` or `🔴 CRITICAL (≥ 90%)` alert, the AI MUST display a prominent notice at the top of its response in Vietnamese:
+
 - **Thông tin hạn mức 5h**: Tỷ lệ sử dụng hiện tại (`%`), số turns (`turns/150`), tokens đã dùng (`activeTokens`, `cachedTokens`) và thời điểm reset chính xác theo giờ địa phương (`HH:MM`).
 - **Khuyến nghị hành động**:
   - Ưu tiên ủy thác công việc nặng cho các subagent `flash` / `flash_lite`.

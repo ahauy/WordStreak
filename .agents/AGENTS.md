@@ -4,124 +4,106 @@
 
 **Core Principle:** BA Skill Pack gates all work with a signed-off domain baseline. Speckit handles technical planning. Superpowers executes code.
 
-### Pipeline for New Features (Multi-Agent Lifecycle)
+### Pipeline for New Features (Fast-Accurate Multi-Agent Lifecycle)
 
 ```mermaid
 graph TD
-    subgraph P1 ["PHASE 1: BA & Domain Elicitation"]
+    subgraph P1 ["PHASE 1: Intake & Interactive Elicitation"]
         BA["🍉 business-analyst (pro / inherit — 5h Pool)"]
+        G1{"🛑 Gate 1: Customer Elicitation"}
+        BA --> G1
     end
 
-    subgraph P2 ["PHASE 2-4: Tech Spec & Architecture Planning"]
+    subgraph P2 ["PHASE 2-4: Unified Spec, Tech Plan & Test Plan"]
         SA["🏗️ system-architect (pro / inherit — 5h Pool)"]
+        G2{"🛑 Gate 2: Unified Spec & Plan Sign-Off"}
+        G1 --> SA --> G2
     end
 
-    subgraph P5 ["PHASE 5: Fullstack Implementation & TDD"]
-        CE["🔍 code-explorer (gemini-3.7-flash)"]
+    subgraph P5 ["PHASE 5: Scope-Aware Parallel TDD Implementation"]
         BE["⚙️ backend-developer (gemini-3.7-flash)"]
         FE["🎨 frontend-developer (gemini-3.7-flash)"]
         SI["⚡ slice-implementer (gemini-3.7-flash)"]
-        BR["🔧 build-resolver (gemini-3.7-flash)"]
-        E2E["🧪 e2e-runner (gemini-3.7-flash)"]
+        BR["🔧 build-resolver (on-demand only)"]
 
-        CE --> BE
-        CE --> FE
-        BE --> SI
-        FE --> SI
-        SI --> BR
-        BR --> E2E
+        G2 --> BE
+        G2 --> FE
+        G2 --> SI
+        BE -.-> BR
+        FE -.-> BR
+        SI -.-> BR
     end
 
-    subgraph P6A ["PHASE 6A: Adversarial Quality Review"]
-        CR["🛡️ code-reviewer (flash / inherit — 5h Pool)"]
-        UR["👁️ ui-ux-reviewer (gemini-3.7-flash)"]
+    subgraph P6A ["PHASE 6A: Parallel Adversarial Review (Single Call)"]
+        CR["🛡️ code-reviewer + DoD Audit (flash / inherit — 5h Pool)"]
+        UR["👁️ ui-ux-reviewer (conditional: UI stories only)"]
     end
 
-    subgraph P6B ["PHASE 6B: Standard Documentation"]
+    subgraph P6B ["PHASE 6B: Parallel Documentation (Single Call)"]
         TD["📚 tech-doc-architect (gemini-3.7-flash)"]
-        UG["💼 user-guide-creator (gemini-3.7-flash)"]
-        AE["⚖️ agent-evaluator (flash / inherit — 5h Pool)"]
+        UG["💼 user-guide-creator (conditional: UI stories only)"]
     end
 
-    BA --> SA
-    SA --> CE
-    E2E --> CR
-    E2E --> UR
+    BE --> CR
+    FE --> CR
+    SI --> CR
+    FE --> UR
     CR --> TD
     CR --> UG
-    CR --> AE
     UR --> TD
     UR --> UG
-    UR --> AE
 ```
 
-#### Phase 1: Business Analysis & Domain Elicitation (8-Stage BA Pipeline)
+#### Lean Canonical Artifact Set in `.specify/features/<slug>/` (Zero-Duplication Rule)
 
-- **MANDATORY**: Start every new feature or significant change with `intake-classifier`. This is the entry point to the BA pipeline — never skip straight to elicitation, spec, or code.
-- **Protocol routing by complexity** (decided by `intake-classifier`):
-  - **Spike**: Research note only. No feature folder, no downstream stages.
-  - **Bounded Task**: Stages 1 → 2 (interactive, 2–3 questions) → 4 (light) → 5 (light) → 6 (user-stories only) → 7 → 8. Stage 3 skipped.
-  - **Full Feature / Epic**: All 8 stages at full depth with interactive interview at Stage 2.
-- **Stage descriptions**:
-  1. `intake-classifier` — classifies complexity with measurable signals; creates `.specify/features/<slug>/` folder.
-  2. `elicitation-interview` — **🛑 MANDATORY INTERACTIVE CUSTOMER INTERVIEW GATE**:
-     - The AI / BA subagent **MUST PAUSE** and conduct a live, interactive interview with the User (2–3 questions per batch regarding Problem/Pain points and the 6 Domain Pillars: RBAC, State Machine, Business Rules/Formulas, Workflows/Edge Cases, Data/Privacy, UX/NFRs) using direct chat or `ask_question`.
-     - **Strict Zero-Hallucination & Zero-Silent-Assumption Policy**: AI is STRICTLY FORBIDDEN from inventing or hallucinating business rules, default configurations, or edge-case behaviors. If something is unknown or ambiguous, AI MUST ask the customer directly. Never proceed autonomously to Stages 3–8 without the user answering the elicitation interview.
-     - Records confirmed answers and explicit `ASM-` IDs to `01-elicitation.md`.
-  3. `gap-analysis` — (Full Feature only) self-inspects existing code/schema; documents AS-IS, TO-BE, and 4 gap categories including transition/migration requirements.
-  4. `domain-modeling` — produces RBAC matrix, Mermaid state diagrams, numbered `BR-<SLUG>-###` business rules (with mandatory anti-abuse pass for streak/XP rules), ERD, i18n/a11y/observability NFRs.
-  5. `risk-contradiction-scanner` — analytical scan for logic contradictions, state deadlocks, backward-compatibility breaks; builds `RISK-` register; consolidates all `ASM-` entries; locks scope with MoSCoW (must include explicit Won't-Have).
-  6. `spec-writer` — compiles BRD / PRD / SRS (`REQ-<SLUG>-###` with mandatory **Derived from** traceability) / User Stories (`US-<SLUG>-###` with Given-When-Then happy + edge-case scenarios).
-  7. `spec-validator` — adversarial IEEE 29148 quality check (8 criteria per REQ/US); builds requirement traceability matrix; loops back to `spec-writer` on failure.
-  8. `handover` — verifies all exit gates; marks `baseline.md` as `SIGNED-OFF v1.0`; produces dev-facing Handover Brief; hands off to `speckit-specify`.
-- **STRICT RULE**: Zero code or spec before `handover` completes and `baseline.md` is `SIGNED-OFF`. No silent business assumptions. Any post-sign-off scope change bumps version in `CHANGELOG.md` — never edits signed-off content in place.
-- **Working files**: `.specify/features/<feature-slug>/` — see `wordstreak-ba-skills/README.md` for full file layout and ID conventions.
-  - `test-plan.md` is created in **Phase 5 (before coding)** from `spec/user-stories.md` using the template at `.specify/templates/test-plan.md`.
+To maximize execution speed without sacrificing traceability (`BR-`, `REQ-`, `US-`, `ASM-`, `RISK-`, `TC-`), features use a **Lean 6-File Structure** (avoiding duplicate BA vs. Speckit files):
 
-#### Phase 2: Specify
+1. **`baseline.md`** — Unified Intake classification, confirmed `ASM-` elicitation decisions, RBAC matrix, Mermaid `stateDiagram-v2`, `BR-` business rules (with anti-abuse pass), `RISK-` register, MoSCoW scope (with Won't-Have), and `SIGNED-OFF v1.0` status.
+2. **`spec.md`** — Single canonical specification combining `REQ-` requirements (`Derived from`), `US-` Given-When-Then scenarios (happy + edge cases), Edge Case Matrix, IEEE 29148 validation, and Traceability Matrix (`Goal → REQ → US → TC`).
+3. **`plan.md`** — Unified Technical Architecture, Data Model (`erDiagram` + types), API/Storage Contracts (`/api/v1/...`), and dependency-ordered Tasks.
+4. **`test-plan.md`** — Maps every `US-` scenario and edge case to a concrete `TC-###` test case and test file path before coding begins.
+5. **`review-report.md`** — Unified fresh-context Adversarial Code Review, UI/UX Anti-Slop Review (if UI touched), and DoD Scorecard.
+6. **`CHANGELOG.md`** — Version history (`v0.1-draft` → `v1.0 SIGNED-OFF` → `v1.1 Verified`).
 
-- Use `speckit-specify` to create official spec in `.specify/features/<feature-name>/spec.md`
-- Input: Approved domain decisions & business rules from Phase 1
+#### Phase 1: Single-Pass Intake & Interactive Elicitation (Gate 1)
 
-#### Phase 3: Plan
+- **Single-Pass Intake + Elicitation Prep**: Dispatch `business-analyst` (`pro` / `inherit`) to classify complexity (`Spike` | `Bounded Task` | `Full Feature`), inspect existing code/types, and prepare **2–3 targeted Elicitation Questions** with `(Recommended)` defaults.
+- **🛑 GATE 1 — MANDATORY INTERACTIVE CUSTOMER INTERVIEW**:
+  - Pause and present the 2–3 clarification questions to the user via `ask_question` or chat.
+  - **Strict Zero-Hallucination & Zero-Silent-Assumption Policy**: Never invent business rules, default configurations, or edge-case behaviors silently. Record confirmed decisions as `ASM-<SLUG>-###`.
 
-- Use `speckit-plan` to generate plan.md, data-model.md, contracts/
-- Enforce API versioning (`/api/v1/...`) and structured DTO contracts
-- **DO NOT use `writing-plans`** — speckit-plan already generates a complete plan
+#### Phases 2–4: Unified Spec, Technical Plan & Test Plan (Gate 2 — with `ponytail` Architecture Ladder)
 
-#### Phase 4: Tasks
+- Once Gate 1 is answered, generate `baseline.md`, `spec.md`, `plan.md`, and `test-plan.md` in one unified pass without duplicating `spec/srs.md`, `spec/user-stories.md`, `data-model.md`, or `tasks.md`.
+- **Enforce `ponytail` Architecture Ladder in `plan.md`**: Reuse existing monorepo types/helpers first, prefer stdlib & native platform APIs (`Intl`, native DOM/CSS, Prisma constraints) over new dependencies, forbid single-implementation interfaces/wrappers, and minimize new files.
+- **🛑 GATE 2 — UNIFIED SPEC & TECHNICAL PLAN SIGN-OFF**:
+  - Present a concise summary covering: (1) Scope & `BR-` Business Rules, (2) Technical Architecture & Contracts, and (3) `TC-###` Test Plan.
+  - Wait for explicit user approval, then mark `baseline.md` as `SIGNED-OFF v1.0` and proceed to Phase 5.
 
-- Use `speckit-tasks` to generate detailed tasks.md with dependency ordering
+#### Phase 5: Scope-Aware Parallel TDD Implementation (with Scoped `ponytail`)
 
-#### Phase 5: Implement
+- **Zero Direct Feature Coding by Orchestrator**: Delegate all feature and test coding via `invoke_subagent`.
+- **Scoped `ponytail` Rules**:
+  - **Production Code (`ponytail` ON)**: Apply the `ponytail` 7-rung ladder — reuse existing utilities, use stdlib/native features before custom classes, zero speculative abstractions/configs, fewest files, shortest working diff.
+  - **Tests & Requirements (`ponytail` OFF)**: Never apply `ponytail` YAGNI to skip approved `REQ-`/`BR-` rules or `TC-###` test cases in `test-plan.md`.
+- **No Redundant `code-explorer`**: File paths and existing patterns are already documented in `plan.md`.
+- **Scope-Aware Dispatch**:
+  - **Single-App Story** (`apps/extension`, `apps/api`, or `apps/web` only): Dispatch **1 scoped implementer subagent** to execute the full TDD loop (`Red` failing tests from `test-plan.md` → `Green` minimal `ponytail` code → `Refactor` → `pnpm test && pnpm build`) in a single turn.
+  - **Fullstack Story (`apps/api` + `apps/web`)**: Update `packages/shared-types` first, then dispatch **`backend-developer` and `frontend-developer` concurrently in a single parallel `invoke_subagent` call**.
+  - **On-Demand `build-resolver`**: Invoke only if a build/lint error remains unresolved.
+- **MANDATORY**: Read and comply with Mandatory Tech Skills (below).
 
-- Use `implementation-orchestrator` (Stage 9) or `subagent-driven-development` to execute tasks from speckit
-- Decompose implementation into vertical slices (Data → Logic → API → UI) and delegate each slice to a scoped subagent
-- Enforce independent adversarial review in a fresh context with no visibility into the implementer's reasoning
-- Follow TDD (Red → Green → Refactor):
-  1. **Write `test-plan.md` first** — create `.specify/features/<slug>/test-plan.md` from the template at `.specify/templates/test-plan.md`. Map every `US-<SLUG>-###` scenario to a `TC-###` test case.
-  2. **Write failing tests** (Red) — implement test files based on `test-plan.md`
-  3. **Write minimum code to pass** (Green)
-  4. **Refactor** — clean up without breaking tests
-- **MANDATORY**: Read and comply with Mandatory Tech Skills (below)
+#### Phase 6: Parallel Review, Tech Docs & Delivery
 
-#### Phase 6: Quality Verification, Review, Tech Docs & Delivery
-
-- **Step 1: Quality Gates & Adversarial Code Review**:
-  - Run `speckit-analyze` to check spec/plan/task alignment.
-  - Run `requesting-code-review` and `ui-design-review` (for UI slices).
-  - Enforce **Bug Severity Gates**: `Critical` bugs strictly block completion / release. Zero `Critical` bugs permitted.
-- **Step 2: Technical Documentation & User Guides (MANDATORY immediately after review — delegate to `tech-doc-architect` and `user-guide-creator` subagents)**:
-  - Create `docs/features/<feature-slug>/README.md` using the template in [docs/features/README.md](../docs/features/README.md)
-  - Update `docs/features/README.md` index table with the new feature entry.
-  - If the feature changes architecture (new entity, new service, new API contract) — update the relevant file in `docs/architecture/`.
-  - If algorithms or formulas change (e.g. SuperMemo-2, Streak, XP) — update `docs/algorithms/`.
-  - Maintain Diataxis quadrants (Tutorial, How-To, Reference, Explanation) and apply Matt Palmer / OpenAI Cookbook standards.
-  - Generate user-facing visual guide with real Playwright screenshots via `user-guide-creator` (`user-guide-with-screenshots` skill) into `docs/user-guides/<slug>.md`.
-  - Keep `AGENTS.md` / `CONTRIBUTING.md` / governance files synchronized.
-- **Step 3: Verification Evidence & Delivery**:
-  - Run `verification-before-completion` with passing test evidence (Vitest, Jest, Playwright).
-  - Validate database migrations (`prisma migrate`), rollback strategy, and update `.specify/features/<slug>/CHANGELOG.md`.
+- **Batch 1: Parallel Adversarial Review (Single `invoke_subagent` Call)**:
+  - Dispatch `code-reviewer` (`flash` / `inherit`) in a fresh context to audit code quality, security, `BR-`/`REQ-` compliance, DoD scorecard, and a **`ponytail-review` over-engineering pass** (`delete:`, `stdlib:`, `native:`, `yagni:`, `shrink:`) into `review-report.md`.
+  - **Conditionally** include `ui-ux-reviewer` (`gemini-3.7-flash`) in the **same parallel call** **only if** UI files were modified.
+  - Enforce **Bug Severity Gate**: Zero `Critical` bugs permitted.
+- **Batch 2: Parallel Technical Documentation & User Guides (Single `invoke_subagent` Call — `ponytail` OFF)**:
+  - Dispatch `tech-doc-architect` (`gemini-3.7-flash`) to create `docs/features/<feature-slug>/README.md` and update `docs/features/README.md` (plus `docs/architecture/` or `docs/algorithms/` if applicable).
+  - **Conditionally** include `user-guide-creator` (`gemini-3.7-flash`) in the **same parallel call** to generate `docs/user-guides/<slug>.md` with real Playwright screenshots if user-facing UI changed.
+- **Close-Out**:
+  - Verify passing test evidence, update `.specify/features/<slug>/CHANGELOG.md`, and mark the User Story `[x]` in `docs/PRODUCT_BACKLOG_ROADMAP.md`.
 
 ---
 
@@ -129,38 +111,40 @@ graph TD
 
 **CRITICAL: Before writing ANY code or documentation, AI MUST read the corresponding skill BEFORE execution.**
 
-| Context / File type                                           | MANDATORY Skill / Reference                                    |
-| ------------------------------------------------------------- | -------------------------------------------------------------- |
-| **Mandatory Design System Tokens (ALL UI in `apps/web/`)**    | `apps/web/DESIGN.md` (MUST read before any UI work)            |
-| **Product Nature, Flame Mascot & Animation Physics**          | `apps/web/MEMORY.md` (MUST read before any UI work)            |
-| **New feature intake / complexity classification**            | `intake-classifier`                                            |
-| **Business value & 6-pillar domain elicitation**              | `elicitation-interview`                                        |
-| **AS-IS / TO-BE / gap analysis (Full Feature)**               | `gap-analysis`                                                 |
-| **RBAC, state machines, business rules, ERD**                 | `domain-modeling`                                              |
-| **Risk register, contradiction scan, MoSCoW**                 | `risk-contradiction-scanner`                                   |
-| **Spec documents (BRD, PRD, SRS, user stories)**              | `spec-writer`                                                  |
-| **IEEE 29148 quality gate & traceability matrix**             | `spec-validator`                                               |
-| **Baseline sign-off & dev handover**                          | `handover`                                                     |
-| **Feature execution, slice delegation & review**              | `implementation-orchestrator`                                  |
-| Technical documentation, feature README, architecture, AGENTS | `technical-documentation` (Agent: `tech-doc-architect`)        |
-| **Interactive Architecture, Sequence, Dataflow, State Lifecycle & Diff Maps** | `archify` (`node .agents/skills/archify/bin/archify.mjs`) |
-| Any `.tsx`, `.jsx` file, React component                      | `frontend-patterns` + `frontend-a11y`                          |
-| **UI Design: Landing, Marketing, Public surfaces**            | `frontend-design` + `design-taste-frontend` + `ui-taste-pro`   |
-| **UI Design: In-App, Dashboard, Study/Flashcards, Decks**     | `frontend-design` + `design-taste-product` + `ui-taste-pro`    |
-| **UI Animation, Motion, Micro-interactions**                  | `motion-design`                                                |
-| **UI visual review & component QA**                           | `ui-design-review`                                             |
-| **User guide / end-user docs with screenshots**               | `user-guide-with-screenshots` (Agent: `user-guide-creator`)    |
-| iOS Native UI / Widgets (SwiftUI/UIKit only)                  | `liquid-glass-design` (iOS ONLY)                               |
-| Any NestJS file (controller, service, module, DTO)            | `nestjs-patterns` + `backend-patterns`                         |
-| API endpoint, REST resource                                   | `api-design` + `backend-patterns`                              |
-| Prisma schema, query, migration                               | `prisma-patterns`                                              |
-| PostgreSQL query, index, RLS policy                           | `postgres-patterns`                                            |
-| Dockerfile, docker-compose.yml                                | `docker-patterns`                                              |
-| E2E test, Playwright test                                     | `e2e-testing`                                                  |
-| Git branch, commit, merge                                     | `git-workflow`                                                 |
-| **Command: Resume project development from roadmap**          | `/command-continue-project` (`command-continue-project` skill) |
-| **Command: Automated modular commit & push**                  | `/command-git-push` (`command-git-push` skill)                 |
-| **Command: Generate end-user guide with real screenshots**    | `/command-user-guide` (`command-user-guide` skill)             |
+| Context / File type                                                           | MANDATORY Skill / Reference                                    |
+| ----------------------------------------------------------------------------- | -------------------------------------------------------------- |
+| **Mandatory Design System Tokens (ALL UI in `apps/web/`)**                    | `apps/web/DESIGN.md` (MUST read before any UI work)            |
+| **Product Nature, Flame Mascot & Animation Physics**                          | `apps/web/MEMORY.md` (MUST read before any UI work)            |
+| **Architecture & Production Code Simplicity (Phase 3 & 5)**                   | `ponytail` (Production code only — NEVER skip `TC-###` tests)  |
+| **Adversarial Over-Engineering Code Review (Phase 6A)**                       | `ponytail-review` (`delete:`, `stdlib:`, `yagni:`, `shrink:`)  |
+| **New feature intake / complexity classification**                            | `intake-classifier`                                            |
+| **Business value & 6-pillar domain elicitation**                              | `elicitation-interview`                                        |
+| **AS-IS / TO-BE / gap analysis (Full Feature)**                               | `gap-analysis`                                                 |
+| **RBAC, state machines, business rules, ERD**                                 | `domain-modeling`                                              |
+| **Risk register, contradiction scan, MoSCoW**                                 | `risk-contradiction-scanner`                                   |
+| **Spec documents (BRD, PRD, SRS, user stories)**                              | `spec-writer`                                                  |
+| **IEEE 29148 quality gate & traceability matrix**                             | `spec-validator`                                               |
+| **Baseline sign-off & dev handover**                                          | `handover`                                                     |
+| **Feature execution, slice delegation & review**                              | `implementation-orchestrator`                                  |
+| Technical documentation, feature README, architecture, AGENTS                 | `technical-documentation` (Agent: `tech-doc-architect`)        |
+| **Interactive Architecture, Sequence, Dataflow, State Lifecycle & Diff Maps** | `archify` (`node .agents/skills/archify/bin/archify.mjs`)      |
+| Any `.tsx`, `.jsx` file, React component                                      | `frontend-patterns` + `frontend-a11y`                          |
+| **UI Design: Landing, Marketing, Public surfaces**                            | `frontend-design` + `design-taste-frontend` + `ui-taste-pro`   |
+| **UI Design: In-App, Dashboard, Study/Flashcards, Decks**                     | `frontend-design` + `design-taste-product` + `ui-taste-pro`    |
+| **UI Animation, Motion, Micro-interactions**                                  | `motion-design`                                                |
+| **UI visual review & component QA**                                           | `ui-design-review`                                             |
+| **User guide / end-user docs with screenshots**                               | `user-guide-with-screenshots` (Agent: `user-guide-creator`)    |
+| iOS Native UI / Widgets (SwiftUI/UIKit only)                                  | `liquid-glass-design` (iOS ONLY)                               |
+| Any NestJS file (controller, service, module, DTO)                            | `nestjs-patterns` + `backend-patterns`                         |
+| API endpoint, REST resource                                                   | `api-design` + `backend-patterns`                              |
+| Prisma schema, query, migration                                               | `prisma-patterns`                                              |
+| PostgreSQL query, index, RLS policy                                           | `postgres-patterns`                                            |
+| Dockerfile, docker-compose.yml                                                | `docker-patterns`                                              |
+| E2E test, Playwright test                                                     | `e2e-testing`                                                  |
+| Git branch, commit, merge                                                     | `git-workflow`                                                 |
+| **Command: Resume project development from roadmap**                          | `/command-continue-project` (`command-continue-project` skill) |
+| **Command: Automated modular commit & push**                                  | `/command-git-push` (`command-git-push` skill)                 |
+| **Command: Generate end-user guide with real screenshots**                    | `/command-user-guide` (`command-user-guide` skill)             |
 
 ---
 

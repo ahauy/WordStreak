@@ -35,9 +35,9 @@ No step can be skipped. Each is a hard gate.
 Before running any test suite, confirm the following documents exist and
 are complete for `.specify/features/<slug>/`:
 
-- [ ] `spec/user-stories.md` — acceptance criteria source of truth
+- [ ] `spec.md` (or `spec/user-stories.md`) — acceptance criteria & traceability matrix (`REQ-` → `US-` → `TC-`) source of truth
+- [ ] `plan.md` — technical architecture, contracts, and implementation tasks
 - [ ] `test-plan.md` — maps every `US-<SLUG>-###` scenario to a `TC-###`
-- [ ] `traceability-matrix.md` — `REQ-` → `US-` chain is recorded
 - [ ] `baseline.md` is marked `SIGNED-OFF` (not DRAFT)
 
 **Gate:** If any of the above is missing or `baseline.md` is still DRAFT,
