@@ -65,14 +65,25 @@ To maximize execution speed without sacrificing traceability (`BR-`, `REQ-`, `US
 5. **`review-report.md`** — Unified fresh-context Adversarial Code Review, UI/UX Anti-Slop Review (if UI touched), and DoD Scorecard.
 6. **`CHANGELOG.md`** — Version history (`v0.1-draft` → `v1.0 SIGNED-OFF` → `v1.1 Verified`).
 
-#### Phase 1: Single-Pass Intake & Interactive Elicitation (Gate 1)
+#### Step 0: Classify First (Always)
 
-- **Single-Pass Intake + Elicitation Prep**: Dispatch `business-analyst` (`pro` / `inherit`) to classify complexity (`Spike` | `Bounded Task` | `Full Feature`), inspect existing code/types, and prepare **2–3 targeted Elicitation Questions** with `(Recommended)` defaults.
-- **🛑 GATE 1 — MANDATORY INTERACTIVE CUSTOMER INTERVIEW**:
-  - Pause and present the 2–3 clarification questions to the user via `ask_question` or chat.
-  - **Strict Zero-Hallucination & Zero-Silent-Assumption Policy**: Never invent business rules, default configurations, or edge-case behaviors silently. Record confirmed decisions as `ASM-<SLUG>-###`.
+Run `intake-classifier` on every incoming request before anything else:
 
-#### Phases 2–4: Unified Spec, Technical Plan & Test Plan (Gate 2 — with `ponytail` Architecture Ladder)
+| Track            | Criteria                          | Gates | Action                                                      |
+| ---------------- | --------------------------------- | ----- | ----------------------------------------------------------- |
+| **Micro Task**   | ≤1 file, <50 lines, no new DB/API | **0** | Implement directly → `pnpm test`                            |
+| **Spike**        | Research / feasibility only       | **0** | Answer inline, no feature folder                            |
+| **Bounded Task** | 1 module, additive changes        | **1** | Elicitation + draft spec in same turn → confirm → implement |
+| **Full Feature** | Multi-module, new entities/DB     | **2** | Gate 1 elicitation → Gate 2 sign-off → implement            |
+
+#### Phase 1: Single-Pass Intake & Interactive Elicitation (Bounded + Full Feature)
+
+- **Single-Pass Intake + Elicitation Prep**: Dispatch `business-analyst` (`pro` / `inherit`) to classify complexity, inspect existing code/types, and prepare **2–3 targeted Elicitation Questions** with `(Recommended)` defaults.
+- **Bounded Task — 🛑 SINGLE GATE**: After elicitation, present a draft `spec.md` + `plan.md` summary in **the same turn**. User confirms once → straight to implementation. No second stop.
+- **Full Feature — 🛑 GATE 1**: Present only elicitation questions. Wait for user answers before drafting spec.
+- **Strict Zero-Hallucination & Zero-Silent-Assumption Policy**: Never invent business rules, default configurations, or edge-case behaviors silently. Record confirmed decisions as `ASM-<SLUG>-###`.
+
+#### Phases 2–4: Unified Spec, Technical Plan & Test Plan (Full Feature only — with `ponytail` Architecture Ladder)
 
 - Once Gate 1 is answered, generate `baseline.md`, `spec.md`, `plan.md`, and `test-plan.md` in one unified pass without duplicating `spec/srs.md`, `spec/user-stories.md`, `data-model.md`, or `tasks.md`.
 - **Enforce `ponytail` Architecture Ladder in `plan.md`**: Reuse existing monorepo types/helpers first, prefer stdlib & native platform APIs (`Intl`, native DOM/CSS, Prisma constraints) over new dependencies, forbid single-implementation interfaces/wrappers, and minimize new files.
@@ -93,15 +104,20 @@ To maximize execution speed without sacrificing traceability (`BR-`, `REQ-`, `US
   - **On-Demand `build-resolver`**: Invoke only if a build/lint error remains unresolved.
 - **MANDATORY**: Read and comply with Mandatory Tech Skills (below).
 
-#### Phase 6: Parallel Review, Tech Docs & Delivery
+#### Phase 6: Proportional Review, Tech Docs & Delivery
 
-- **Batch 1: Parallel Adversarial Review (Single `invoke_subagent` Call)**:
-  - Dispatch `code-reviewer` (`flash` / `inherit`) in a fresh context to audit code quality, security, `BR-`/`REQ-` compliance, DoD scorecard, and a **`ponytail-review` over-engineering pass** (`delete:`, `stdlib:`, `native:`, `yagni:`, `shrink:`) into `review-report.md`.
-  - **Conditionally** include `ui-ux-reviewer` (`gemini-3.7-flash`) in the **same parallel call** **only if** UI files were modified.
-  - Enforce **Bug Severity Gate**: Zero `Critical` bugs permitted.
-- **Batch 2: Parallel Technical Documentation & User Guides (Single `invoke_subagent` Call — `ponytail` OFF)**:
-  - Dispatch `tech-doc-architect` (`gemini-3.7-flash`) to create `docs/features/<feature-slug>/README.md` and update `docs/features/README.md` (plus `docs/architecture/` or `docs/algorithms/` if applicable).
-  - **Conditionally** include `user-guide-creator` (`gemini-3.7-flash`) in the **same parallel call** to generate `docs/user-guides/<slug>.md` with real Playwright screenshots if user-facing UI changed.
+**Proportional review — match subagent overhead to change size:**
+
+- **Micro Task / Bounded Task (≤3 files changed)**:
+  - `code-reviewer` inline review (no subagent spawn for trivial changes)
+  - Technical docs updated inline (no `tech-doc-architect` subagent needed)
+- **Full Feature (no UI changes)**:
+  - `code-reviewer` subagent → `review-report.md`
+  - `tech-doc-architect` subagent → `docs/features/<slug>/README.md`
+- **Full Feature (UI changed) — Single `invoke_subagent` calls**:
+  - **Batch 1 (Parallel)**: `code-reviewer` + `ui-ux-reviewer` → `review-report.md`
+  - **Batch 2 (Parallel)**: `tech-doc-architect` + `user-guide-creator` → `docs/user-guides/<slug>.md`
+- **Bug Severity Gate**: Zero `Critical` bugs permitted before closing.
 - **Close-Out**:
   - Verify passing test evidence, update `.specify/features/<slug>/CHANGELOG.md`, and mark the User Story `[x]` in `docs/PRODUCT_BACKLOG_ROADMAP.md`.
 
@@ -125,7 +141,7 @@ To maximize execution speed without sacrificing traceability (`BR-`, `REQ-`, `US
 | **Spec documents (BRD, PRD, SRS, user stories)**                              | `spec-writer`                                                  |
 | **IEEE 29148 quality gate & traceability matrix**                             | `spec-validator`                                               |
 | **Baseline sign-off & dev handover**                                          | `handover`                                                     |
-| **Feature execution, slice delegation & review**                              | `implementation-orchestrator`                                  |
+| **Pipeline entry-point & routing (single orchestrator)**                      | `wordstreak-ba-skills` ← use this, NOT wordstreak-workflow     |
 | Technical documentation, feature README, architecture, AGENTS                 | `technical-documentation` (Agent: `tech-doc-architect`)        |
 | **Interactive Architecture, Sequence, Dataflow, State Lifecycle & Diff Maps** | `archify` (`node .agents/skills/archify/bin/archify.mjs`)      |
 | Any `.tsx`, `.jsx` file, React component                                      | `frontend-patterns` + `frontend-a11y`                          |
@@ -166,7 +182,7 @@ To maximize execution speed without sacrificing traceability (`BR-`, `REQ-`, `US
 
 - **Zero Code Before Approved Spec**: Never write code or create mockups without an approved domain baseline and specification.
 - **Mandatory Automatic Subagent Delegation (STRICT)**: The orchestrator AI MUST NOT execute implementation slices or documentation directly in the primary context. Once Gate 2 (Technical Plan & Tasks) is approved, the orchestrator MUST automatically decompose tasks and dispatch dedicated subagents (`backend-developer`, `frontend-developer`, `ui-ux-reviewer`, `tech-doc-architect`, `user-guide-creator`) via `invoke_subagent`.
-- **Subagent Transparency & Notification Protocol (MANDATORY)**: Whenever a subagent (e.g. `implementation-orchestrator`, `ui-design-review`, `tech-doc-writer`, `browser_subagent`) is dispatched or finishes, the AI MUST explicitly notify the user in chat with a clear announcement block specifying: (1) Subagent Name & Role, (2) Active Model Name (e.g. `Gemini 3.7 Flash`), (3) Exact Task Scope, and (4) Output Artifact / Report Link.
+- **Subagent Transparency & Notification Protocol (MANDATORY)**: Whenever a subagent (e.g. `slice-implementer`, `ui-ux-reviewer`, `tech-doc-architect`, `user-guide-creator`, `code-reviewer`) is dispatched or finishes, the AI MUST explicitly notify the user in chat with a clear announcement block specifying: (1) Subagent Name & Role, (2) Active Model Name (e.g. `Gemini 3.7 Flash`), (3) Exact Task Scope, and (4) Output Artifact / Report Link.
 - **5-Hour Quota Pool Priority & Early Warning Gate**: Prioritize Gemini 5-hour rolling pool models (`flash`, `pro`, `inherit`) across all subagent delegations. Whenever the `PreInvocation` quota monitor (`session-context-init.js`) flags `WARNING` (≥ 75%) or `CRITICAL` (≥ 90%), the AI MUST surface an immediate warning banner in chat with the exact 5h reset time and mitigation options.
 - **Design System & Anti-AI-Slop Gate (STRICT)**: Before creating or modifying any UI in `apps/web/`, AI MUST read [apps/web/DESIGN.md](file:///Users/vutuanhau/Documents/PROJECT/WordStreak/apps/web/DESIGN.md) and [apps/web/MEMORY.md](file:///Users/vutuanhau/Documents/PROJECT/WordStreak/apps/web/MEMORY.md). All UI must strictly adhere to the document-first minimal canvas (`#ffffff`), 1px hairline borders (`#e5e5e5`), Obsidian pure black pills (`#000000`, `rounded-full`), Nunito/Inter/JetBrains Mono typography, and stable outer anchor hover physics. Generic AI slop (unrequested multi-color gradients, neon blobs, glassmorphism, fake pricing tiers) is strictly forbidden.
 - **UI Visual Review Gate**: Every UI slice must undergo an independent anti-slop verification using `ui-design-review` before closing.
