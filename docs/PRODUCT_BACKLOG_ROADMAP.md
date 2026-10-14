@@ -418,12 +418,12 @@ _Mục tiêu: Giúp người dùng dễ dàng chuyển đổi dữ liệu và m�
     - [x] Extension: trang options/popup tab cài đặt, lưu bằng `chrome.storage.sync`.
     - [~] Giai đoạn sau: đồng bộ cài đặt lên profile người dùng để web app và PWA dùng chung.
 
-- [ ] **US-ECO-08: Ôn nhanh trong Popup (Micro-review)**
+- [x] **US-ECO-08: Ôn nhanh trong Popup (Micro-review)**
   - **AC:** Từ popup, người dùng ôn tối đa 5 thẻ với 4 nút Again/Hard/Good/Easy, kết quả gửi qua `POST /api/v1/reviews/submit`. Cuối phiên hiển thị tiến độ và nút "Mở app để học tiếp".
   - **Tasks:**
-    - [ ] Extension: UI thẻ mini (lật thẻ, phát âm), tái dùng logic có sẵn.
-    - [ ] Extension: gọi `GET /api/v1/reviews/due?limit=5`.
-    - [ ] Extension: sau khi ôn xong làm mới badge.
+    - [x] Extension: UI thẻ mini (lật thẻ, phát âm), tái dùng logic có sẵn.
+    - [x] Extension: gọi `GET /api/v1/reviews/due?limit=5`.
+    - [x] Extension: sau khi ôn xong làm mới badge.
 
 - [~] **US-ECO-09: Web Push & Email nhắc học (mobile / PWA)**
   - **AC:** Người dùng mobile nhận nhắc qua Web Push từ PWA; có email dự phòng khi streak sắp mất.
@@ -739,7 +739,7 @@ _Mục tiêu: Xóa bỏ hoàn toàn rào cản "ứng dụng trống" bằng cá
   ├── EPIC-13: US-LIB-16 (Habit Milestones & 5-minute Express Session)
   ├── EPIC-13: US-LIB-09 (Card Feedback Modal & Content Versioning)
   ├── EPIC-13: US-LIB-10 (Library & Path Retention Analytics)
-  ├── EPIC-09: US-ECO-08 (Micro-review in Popup)
+  ├── EPIC-09: US-ECO-08 (Micro-review in Popup)          ✅
   ├── EPIC-12: US-UX-02 (Quiz auto-grade → SRS)
   ├── EPIC-12: US-UX-03 (Backlog Guard)
   ├── EPIC-12: US-GROW-02 (Chrome Web Store Submission)
