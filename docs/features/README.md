@@ -37,6 +37,8 @@ Danh sách tất cả các tính năng đã được deliver (code hoàn chỉnh
 | [Extension Due Cards Badge (US-ECO-05)](./extension-due-badge/README.md) | `extension-due-badge` | 1.0 | Hoàn thành (`Delivered`) | 2026-10-12 |
 | [Conditional Study Reminder Notifications (US-ECO-06)](./extension-reminder-notifications/README.md) | `extension-reminder-notifications` | 1.0 | Hoàn thành (`Delivered`) | 2026-10-13 |
 | [Study Reminder & Badge Settings (US-ECO-07)](./extension-reminder-settings/README.md) | `extension-reminder-settings` | 1.0 | Hoàn thành (`Delivered`) | 2026-10-13 |
+| [Micro-Review in Popup (US-ECO-08)](./extension-micro-review/README.md) | `extension-micro-review` | 1.0 | Hoàn thành (`Delivered`) | 2026-10-14 |
+
 
 ---
 

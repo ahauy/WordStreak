@@ -3,6 +3,8 @@ import { Settings, Plus, Loader2, Sparkles } from "lucide-react";
 import { AuthStatusCard } from "./components/AuthStatusCard";
 import { DeckSelector } from "./components/DeckSelector";
 import { RecentCapturesList } from "./components/RecentCapturesList";
+import { MicroReviewBanner } from "./components/MicroReviewBanner";
+import { MicroReviewSession } from "./components/MicroReviewSession";
 import { extensionStorage } from "../shared/storage";
 import { WEB_APP_URL } from "../shared/constants";
 import type {
@@ -10,6 +12,7 @@ import type {
   ExtensionSettingsPayload,
   RecentCaptureItem,
   DeckResponse,
+  ReviewSummaryDto,
 } from "@wordstreak/shared-types";
 
 export const PopupApp: React.FC = () => {
@@ -19,6 +22,8 @@ export const PopupApp: React.FC = () => {
   );
   const [recentCaptures, setRecentCaptures] = useState<RecentCaptureItem[]>([]);
   const [decks, setDecks] = useState<DeckResponse[]>([]);
+  const [viewMode, setViewMode] = useState<"home" | "review">("home");
+  const [summary, setSummary] = useState<ReviewSummaryDto | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   // Manual Quick Add state
@@ -40,6 +45,10 @@ export const PopupApp: React.FC = () => {
       setSettings(state.settings);
       setRecentCaptures(state.recentCaptures);
 
+      if (state.reviewSummaryCache?.summary) {
+        setSummary(state.reviewSummaryCache.summary);
+      }
+
       if (state.user) {
         setUser(state.user);
       }
@@ -53,9 +62,18 @@ export const PopupApp: React.FC = () => {
               setDecks(deckRes.data);
             }
           });
+          chrome.runtime.sendMessage(
+            { type: "REFRESH_BADGE", payload: { immediate: true } },
+            (badgeRes) => {
+              if (badgeRes?.success && badgeRes.data?.summary) {
+                setSummary(badgeRes.data.summary);
+              }
+            },
+          );
         } else if (!state.token && !authRes?.data?.token) {
           setUser(null);
           setDecks([]);
+          setSummary(null);
         }
       });
     } catch (e) {
@@ -69,6 +87,8 @@ export const PopupApp: React.FC = () => {
     chrome.runtime.sendMessage({ type: "LOGOUT" }, () => {
       setUser(null);
       setDecks([]);
+      setSummary(null);
+      setViewMode("home");
     });
   };
 
@@ -112,6 +132,27 @@ export const PopupApp: React.FC = () => {
       },
     );
   };
+
+  if (viewMode === "review") {
+    return (
+      <div
+        style={{
+          padding: "16px",
+          display: "flex",
+          flexDirection: "column",
+          minHeight: "480px",
+        }}
+      >
+        <MicroReviewSession
+          onExit={() => {
+            setViewMode("home");
+            loadData();
+          }}
+          streak={summary?.currentStreak || 0}
+        />
+      </div>
+    );
+  }
 
   return (
     <div
@@ -160,6 +201,7 @@ export const PopupApp: React.FC = () => {
         <button
           onClick={() => chrome.runtime.openOptionsPage()}
           title="Cài đặt"
+          aria-label="Cài đặt"
           style={{
             background: "none",
             border: "none",
@@ -181,6 +223,15 @@ export const PopupApp: React.FC = () => {
         onLoginSuccess={loadData}
         onLogout={handleLogout}
       />
+
+      {/* Micro Review Banner */}
+      {user && summary && (
+        <MicroReviewBanner
+          dueCount={summary.dueCount}
+          isAuthenticated={Boolean(user)}
+          onStartReview={() => setViewMode("review")}
+        />
+      )}
 
       {/* Deck Selector */}
       {user && (
@@ -212,6 +263,7 @@ export const PopupApp: React.FC = () => {
             />
             <button
               type="submit"
+              aria-label="Lưu nhanh từ vựng"
               disabled={!quickWord.trim() || isSubmitting}
               style={{
                 backgroundColor: "#000000",
