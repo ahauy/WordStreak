@@ -1,6 +1,6 @@
 import type { AppLanguage } from "./auth.js";
 import type { CardResponse } from "./cards.js";
-import type { ReviewSummaryDto } from "./reviews.js";
+import type { ReviewSummaryDto, SubmitReviewDto } from "./reviews.js";
 
 export interface QuickCaptureCardDto {
   word: string;
@@ -156,4 +156,6 @@ export type ExtensionMessage =
   | { type: "FETCH_DECKS" }
   | { type: "GET_SETTINGS" }
   | { type: "UPDATE_SETTINGS"; payload: Partial<ExtensionSettingsPayload> }
-  | { type: "REFRESH_BADGE"; payload?: { immediate?: boolean } };
+  | { type: "REFRESH_BADGE"; payload?: { immediate?: boolean } }
+  | { type: "FETCH_DUE_CARDS"; payload?: { limit?: number; deckId?: string } }
+  | { type: "SUBMIT_MICRO_REVIEW"; payload: SubmitReviewDto };
