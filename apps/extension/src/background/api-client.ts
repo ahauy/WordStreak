@@ -6,6 +6,8 @@ import type {
   DeckResponse,
   ReviewSummaryDto,
   ExtensionUserSummary,
+  DueCardItem,
+  SubmitReviewDto,
 } from "@wordstreak/shared-types";
 
 export type GetReviewSummaryResult =
@@ -206,6 +208,34 @@ export class ExtensionApiClient {
     const body = await response.json();
     const summary: ReviewSummaryDto = body?.data ?? body;
     return { status: 200, summary, etag: responseEtag };
+  }
+
+  async getDueCards(
+    limit: number = 5,
+    deckId?: string,
+  ): Promise<DueCardItem[]> {
+    const params = new URLSearchParams();
+    if (limit) params.set("limit", String(limit));
+    if (deckId) params.set("deckId", deckId);
+    const queryString = params.toString() ? `?${params.toString()}` : "";
+    const response = await this.request<any>(`/reviews/due${queryString}`, {
+      method: "GET",
+    });
+    return response?.data ?? response;
+  }
+
+  async submitReview(dto: SubmitReviewDto): Promise<any> {
+    const timezone =
+      typeof Intl !== "undefined"
+        ? Intl.DateTimeFormat().resolvedOptions().timeZone
+        : "UTC";
+    return this.request<any>("/reviews/submit", {
+      method: "POST",
+      headers: {
+        "x-timezone": timezone,
+      },
+      body: JSON.stringify(dto),
+    });
   }
 }
 

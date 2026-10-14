@@ -120,11 +120,20 @@ export class BadgeManager {
     }, BADGE_LIMITS.DEBOUNCE_MS);
   }
 
-  async refreshBadgeNow(options?: {
-    skipReminderEval?: boolean;
-    /** Alias for skipReminderEval for backwards compatibility */
-    skipReminderCheck?: boolean;
-  }): Promise<ReviewSummaryDto | null> {
+  async refreshBadgeNow(
+    options?:
+      | {
+          skipReminderEval?: boolean;
+          /** Alias for skipReminderEval for backwards compatibility */
+          skipReminderCheck?: boolean;
+        }
+      | boolean,
+  ): Promise<ReviewSummaryDto | null> {
+    const normalizedOptions =
+      typeof options === "boolean"
+        ? { skipReminderEval: options }
+        : options;
+
     if (this.debounceTimer) {
       clearTimeout(this.debounceTimer);
       this.debounceTimer = null;
@@ -135,7 +144,7 @@ export class BadgeManager {
       return this.inFlightPromise;
     }
 
-    this.inFlightPromise = this.executeRefresh(options);
+    this.inFlightPromise = this.executeRefresh(normalizedOptions);
     try {
       const result = await this.inFlightPromise;
       return result;

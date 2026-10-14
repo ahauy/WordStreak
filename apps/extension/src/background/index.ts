@@ -272,6 +272,18 @@ async function handleGeneralMessage(message: ExtensionMessage): Promise<any> {
       const updated = await handleSettingsUpdated(message.payload);
       return { success: true, data: updated };
     }
+    case "FETCH_DUE_CARDS": {
+      const cards = await apiClient.getDueCards(
+        message.payload?.limit || 5,
+        message.payload?.deckId,
+      );
+      return { success: true, data: cards };
+    }
+    case "SUBMIT_MICRO_REVIEW": {
+      const result = await apiClient.submitReview(message.payload);
+      void badgeManager.refreshBadgeNow(true);
+      return { success: true, data: result };
+    }
     default:
       throw new Error(`Unknown message type: ${(message as any).type}`);
   }
