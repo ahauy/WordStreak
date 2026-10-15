@@ -532,17 +532,17 @@ _Mục tiêu: Giảm ma sát, tăng tỉ lệ quay lại ngày 1/ngày 7, và đ
 
 _Mục tiêu: Xóa bỏ hoàn toàn rào cản "ứng dụng trống" bằng cách cung cấp kho từ vựng học thuật chuẩn hóa khoa học (NGSL 1.2 + TSL 1.2), lộ trình TOEIC hẹp-mà-sâu với độ phủ ~98.5%, thẻ ngữ cảnh chất lượng cao cho người Việt, và Chặng Khởi động chuyên biệt cho người mất gốc._
 
-- [ ] **US-LIB-01: Pipeline nạp và làm giàu nội dung (Content Enrichment Pipeline)**
+- [x] **US-LIB-01: Pipeline nạp và làm giàu nội dung (Content Enrichment Pipeline)**
   - **AC:** Pipeline tự động hóa gồm 7 giai đoạn (`Import` → `Normalize` → `Enrich` → `Validate` → `Review` → `Build Decks` → `Publish`). Chạy độc lập từng giai đoạn qua file checkpoint JSON tại `scripts/seed/data/stages/`. Cơ chế gọi AI theo batch 10 từ/lô kèm retry và rate-limit. Đảm bảo tính idempotent qua khóa `(listCode, headword, pos)`. Xuất báo cáo validation và file CSV duyệt thủ công.
   - **Tasks:**
-    - [ ] Script: Tải và xác thực tệp gốc từ newgeneralservicelist.com (TSL 1.2 stats, definitions; NGSL 1.2 stats, definitions). Lưu vào `scripts/seed/data/raw/`.
-    - [ ] Script: Viết `01-import.ts` đọc file Excel/CSV, trích xuất `freqRank`, `freqValue`, `entryCount`, ghi nhận `WordList.version = "1.2"`.
-    - [ ] Script: Viết `02-normalize.ts` chuẩn hóa chữ thường, dedupe chéo NGSL ↔ TSL, phân cấp `level` (T1: 1–400, T2: 401–800, T3: 801–1.200).
-    - [ ] Script: Viết `03-enrich.ts` tích hợp Gemini LLM theo batch 10 từ, cấu hình `temperature = 0.2`, lưu checkpoint lũy tiến; ghi nhận `promptVersion` và `modelName`.
-    - [ ] Script: Viết `04-validate.ts` kiểm tra luật tự động (đầy đủ trường bắt buộc, regex IPA `/.../`, câu ví dụ chứa lemma, độ phủ từ vựng).
-    - [ ] Script: Viết `05-review-export.ts` xuất CSV (OK/Sửa/Loại) và nạp lại kết quả duyệt, chuyển `status: DRAFT → REVIEWED → PUBLISHED`.
-    - [ ] Script: Viết `06-build-decks.ts` phân 10 chủ đề, cắt deck 25 từ, sinh slug và tiêu đề song ngữ chuẩn SEO.
-    - [ ] Script: Viết `07-publish.ts` upsert nguyên tử vào database production.
+    - [x] Script: Tải và xác thực tệp gốc từ newgeneralservicelist.com (TSL 1.2 stats, definitions; NGSL 1.2 stats, definitions). Lưu vào `scripts/seed/data/raw/`.
+    - [x] Script: Viết `01-import.ts` đọc file Excel/CSV, trích xuất `freqRank`, `freqValue`, `entryCount`, ghi nhận `WordList.version = "1.2"`.
+    - [x] Script: Viết `02-normalize.ts` chuẩn hóa chữ thường, dedupe chéo NGSL ↔ TSL, phân cấp `level` (T1: 1–400, T2: 401–800, T3: 801–1.200).
+    - [x] Script: Viết `03-enrich.ts` tích hợp Gemini LLM theo batch 10 từ, cấu hình `temperature = 0.2`, lưu checkpoint lũy tiến; ghi nhận `promptVersion` và `modelName`.
+    - [x] Script: Viết `04-validate.ts` kiểm tra luật tự động (đầy đủ trường bắt buộc, regex IPA `/.../`, câu ví dụ chứa lemma, độ phủ từ vựng).
+    - [x] Script: Viết `05-review-export.ts` xuất CSV (OK/Sửa/Loại) và nạp lại kết quả duyệt, chuyển `status: DRAFT → REVIEWED → PUBLISHED`.
+    - [x] Script: Viết `06-build-decks.ts` phân 10 chủ đề, cắt deck 25 từ, sinh slug và tiêu đề song ngữ chuẩn SEO.
+    - [x] Script: Viết `07-publish.ts` upsert nguyên tử vào database production.
 
 - [ ] **US-LIB-02: Mô hình dữ liệu Official & Enrollment (Data Architecture)**
   - **AC:** Chuyển đổi từ mô hình Deep Copy sang mô hình Thẻ Official dùng chung (`OfficialCard`, `OfficialDeck`) và tiến độ cá nhân lazy-loaded (`UserOfficialCardProgress`). Bản ghi tiến độ chỉ được tạo khi thẻ thực sự vào phiên học/ôn. Hàng đợi ôn tập `GET /api/v1/reviews/due` hợp nhất thẻ tự tạo và thẻ Official qua `UNION ALL`. Hỗ trợ tính năng "Sao chép thành thẻ của tôi" khi muốn sửa đổi sâu.
@@ -717,7 +717,7 @@ _Mục tiêu: Xóa bỏ hoàn toàn rào cản "ứng dụng trống" bằng cá
   └── EPIC-09: PWA & Offline Caching (Service Workers)   ✅
 
 [ Sprint 9 - Activation & Starter Library Soft Launch ] ──► [ PLANNED 📋 ]
-  ├── EPIC-13: US-LIB-01 (Content Enrichment Pipeline: TSL Top 200 & NGSL Top 300)
+  ├── EPIC-13: US-LIB-01 (Content Enrichment Pipeline: TSL Top 200 & NGSL Top 300)   ✅
   ├── EPIC-13: US-LIB-02 (Shared Official Cards & Lazy Progress Model)
   ├── EPIC-13: US-LIB-03 (Library Discovery Page & Deck Details)
   ├── EPIC-13: US-LIB-04 & US-LIB-11 (60s Goal Onboarding & Adaptive Beginner Entry)
