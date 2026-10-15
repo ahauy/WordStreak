@@ -1,0 +1,267 @@
+[
+  {
+    "idempotencyKey": "TSL:accommodate:verb",
+    "word": "accommodate",
+    "partOfSpeech": "verb",
+    "freqRank": 120,
+    "level": "T1",
+    "topicCategory": "Office & Administration",
+    "crossListRef": "NGSL"
+  },
+  {
+    "idempotencyKey": "TSL:beneficial:adjective",
+    "word": "beneficial",
+    "partOfSpeech": "adjective",
+    "freqRank": 350,
+    "level": "T1",
+    "topicCategory": "Office & Administration"
+  },
+  {
+    "idempotencyKey": "TSL:agenda:noun",
+    "word": "agenda",
+    "partOfSpeech": "noun",
+    "freqRank": 410,
+    "level": "T2",
+    "topicCategory": "Office & Administration"
+  },
+  {
+    "idempotencyKey": "TSL:invoice:noun",
+    "word": "invoice",
+    "partOfSpeech": "noun",
+    "freqRank": 420,
+    "level": "T2",
+    "topicCategory": "Finance & Accounting"
+  },
+  {
+    "idempotencyKey": "TSL:quarterly:adjective",
+    "word": "quarterly",
+    "partOfSpeech": "adjective",
+    "freqRank": 450,
+    "level": "T2",
+    "topicCategory": "Finance & Accounting"
+  },
+  {
+    "idempotencyKey": "TSL:negotiate:verb",
+    "word": "negotiate",
+    "partOfSpeech": "verb",
+    "freqRank": 490,
+    "level": "T2",
+    "topicCategory": "Office & Administration"
+  },
+  {
+    "idempotencyKey": "TSL:collaboration:noun",
+    "word": "collaboration",
+    "partOfSpeech": "noun",
+    "freqRank": 510,
+    "level": "T2",
+    "topicCategory": "Office & Administration"
+  },
+  {
+    "idempotencyKey": "TSL:revenue:noun",
+    "word": "revenue",
+    "partOfSpeech": "noun",
+    "freqRank": 540,
+    "level": "T2",
+    "topicCategory": "Finance & Accounting"
+  },
+  {
+    "idempotencyKey": "TSL:deadline:noun",
+    "word": "deadline",
+    "partOfSpeech": "noun",
+    "freqRank": 620,
+    "level": "T2",
+    "topicCategory": "Office & Administration"
+  },
+  {
+    "idempotencyKey": "TSL:strategy:noun",
+    "word": "strategy",
+    "partOfSpeech": "noun",
+    "freqRank": 650,
+    "level": "T2",
+    "topicCategory": "Management & Strategy"
+  },
+  {
+    "idempotencyKey": "TSL:workplace:noun",
+    "word": "workplace",
+    "partOfSpeech": "noun",
+    "freqRank": 670,
+    "level": "T2",
+    "topicCategory": "Office & Administration"
+  },
+  {
+    "idempotencyKey": "TSL:compensation:noun",
+    "word": "compensation",
+    "partOfSpeech": "noun",
+    "freqRank": 710,
+    "level": "T2",
+    "topicCategory": "HR & Recruitment"
+  },
+  {
+    "idempotencyKey": "TSL:competitor:noun",
+    "word": "competitor",
+    "partOfSpeech": "noun",
+    "freqRank": 730,
+    "level": "T2",
+    "topicCategory": "Sales & Marketing"
+  },
+  {
+    "idempotencyKey": "TSL:deficit:noun",
+    "word": "deficit",
+    "partOfSpeech": "noun",
+    "freqRank": 850,
+    "level": "T3",
+    "topicCategory": "Finance & Accounting"
+  },
+  {
+    "idempotencyKey": "TSL:shareholder:noun",
+    "word": "shareholder",
+    "partOfSpeech": "noun",
+    "freqRank": 920,
+    "level": "T3",
+    "topicCategory": "Finance & Accounting"
+  },
+  {
+    "idempotencyKey": "TSL:procurement:noun",
+    "word": "procurement",
+    "partOfSpeech": "noun",
+    "freqRank": 950,
+    "level": "T3",
+    "topicCategory": "Logistics & Operations"
+  },
+  {
+    "idempotencyKey": "TSL:reimbursement:noun",
+    "word": "reimbursement",
+    "partOfSpeech": "noun",
+    "freqRank": 990,
+    "level": "T3",
+    "topicCategory": "HR & Recruitment"
+  },
+  {
+    "idempotencyKey": "TSL:restructure:verb",
+    "word": "restructure",
+    "partOfSpeech": "verb",
+    "freqRank": 1020,
+    "level": "T3",
+    "topicCategory": "Management & Strategy"
+  },
+  {
+    "idempotencyKey": "TSL:compliance:noun",
+    "word": "compliance",
+    "partOfSpeech": "noun",
+    "freqRank": 1050,
+    "level": "T3",
+    "topicCategory": "Legal & Compliance"
+  },
+  {
+    "idempotencyKey": "TSL:monopoly:noun",
+    "word": "monopoly",
+    "partOfSpeech": "noun",
+    "freqRank": 1080,
+    "level": "T3",
+    "topicCategory": "Management & Strategy"
+  },
+  {
+    "idempotencyKey": "TSL:synergy:noun",
+    "word": "synergy",
+    "partOfSpeech": "noun",
+    "freqRank": 1110,
+    "level": "T3",
+    "topicCategory": "Management & Strategy"
+  },
+  {
+    "idempotencyKey": "TSL:feasibility:noun",
+    "word": "feasibility",
+    "partOfSpeech": "noun",
+    "freqRank": 1130,
+    "level": "T3",
+    "topicCategory": "Management & Strategy"
+  },
+  {
+    "idempotencyKey": "TSL:diversification:noun",
+    "word": "diversification",
+    "partOfSpeech": "noun",
+    "freqRank": 1160,
+    "level": "T3",
+    "topicCategory": "Management & Strategy"
+  },
+  {
+    "idempotencyKey": "TSL:merger:noun",
+    "word": "merger",
+    "partOfSpeech": "noun",
+    "freqRank": 1180,
+    "level": "T3",
+    "topicCategory": "Management & Strategy"
+  },
+  {
+    "idempotencyKey": "TSL:contingency:noun",
+    "word": "contingency",
+    "partOfSpeech": "noun",
+    "freqRank": 1195,
+    "level": "T3",
+    "topicCategory": "Office & Administration"
+  },
+  {
+    "idempotencyKey": "TSL:up-to-date:adjective",
+    "word": "up-to-date",
+    "partOfSpeech": "adjective",
+    "freqRank": 1200,
+    "level": "T3",
+    "topicCategory": "Office & Administration"
+  },
+  {
+    "idempotencyKey": "NGSL:time:noun",
+    "word": "time",
+    "partOfSpeech": "noun",
+    "freqRank": 1,
+    "level": "T1",
+    "topicCategory": "Office & Administration"
+  },
+  {
+    "idempotencyKey": "NGSL:person:noun",
+    "word": "person",
+    "partOfSpeech": "noun",
+    "freqRank": 2,
+    "level": "T1",
+    "topicCategory": "HR & Recruitment"
+  },
+  {
+    "idempotencyKey": "NGSL:year:noun",
+    "word": "year",
+    "partOfSpeech": "noun",
+    "freqRank": 3,
+    "level": "T1",
+    "topicCategory": "Office & Administration"
+  },
+  {
+    "idempotencyKey": "NGSL:market:noun",
+    "word": "market",
+    "partOfSpeech": "noun",
+    "freqRank": 200,
+    "level": "T1",
+    "topicCategory": "Sales & Marketing"
+  },
+  {
+    "idempotencyKey": "NGSL:service:noun",
+    "word": "service",
+    "partOfSpeech": "noun",
+    "freqRank": 250,
+    "level": "T1",
+    "topicCategory": "Customer Service"
+  },
+  {
+    "idempotencyKey": "NGSL:business:noun",
+    "word": "business",
+    "partOfSpeech": "noun",
+    "freqRank": 300,
+    "level": "T1",
+    "topicCategory": "Office & Administration"
+  },
+  {
+    "idempotencyKey": "NGSL:report:noun",
+    "word": "report",
+    "partOfSpeech": "noun",
+    "freqRank": 400,
+    "level": "T1",
+    "topicCategory": "Office & Administration"
+  }
+]

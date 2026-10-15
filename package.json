@@ -9,7 +9,8 @@
     "build": "pnpm -r run build",
     "typecheck": "pnpm -r run typecheck",
     "lint": "pnpm -r run lint",
-    "test": "pnpm --filter api test && pnpm --filter web test"
+    "test": "pnpm --filter api test && pnpm --filter web test",
+    "seed:pipeline": "tsx scripts/seed/run-pipeline.ts"
   },
   "pnpm": {
     "onlyBuiltDependencies": [
@@ -22,6 +23,8 @@
     ]
   },
   "devDependencies": {
-    "playwright": "^1.62.1"
+    "playwright": "^1.62.1",
+    "tsx": "^4.23.15",
+    "vitest": "^4.1.11"
   }
 }
