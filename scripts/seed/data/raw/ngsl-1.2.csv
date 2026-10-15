@@ -1,0 +1,9 @@
+headword,pos,freq_rank,freq_value
+time,n,1,1000.0
+person,n,2,950.0
+year,n,3,900.0
+market,n,200,80.0
+accommodate,v,1500,10.0
+service,n,250,70.0
+business,n,300,65.0
+report,n,400,50.0

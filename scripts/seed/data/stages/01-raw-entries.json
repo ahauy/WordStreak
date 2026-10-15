@@ -1,0 +1,240 @@
+[
+  {
+    "headword": "accommodate",
+    "pos": "v",
+    "freqRank": 120,
+    "freqValue": 45.2,
+    "listCode": "TSL"
+  },
+  {
+    "headword": "beneficial",
+    "pos": "adj",
+    "freqRank": 350,
+    "freqValue": 22.1,
+    "listCode": "TSL"
+  },
+  {
+    "headword": "agenda",
+    "pos": "n",
+    "freqRank": 410,
+    "freqValue": 20.5,
+    "listCode": "TSL"
+  },
+  {
+    "headword": "invoice",
+    "pos": "n",
+    "freqRank": 420,
+    "freqValue": 20.1,
+    "listCode": "TSL"
+  },
+  {
+    "headword": "quarterly",
+    "pos": "adj",
+    "freqRank": 450,
+    "freqValue": 18.7,
+    "listCode": "TSL"
+  },
+  {
+    "headword": "negotiate",
+    "pos": "v",
+    "freqRank": 490,
+    "freqValue": 17.2,
+    "listCode": "TSL"
+  },
+  {
+    "headword": "collaboration",
+    "pos": "n",
+    "freqRank": 510,
+    "freqValue": 16.5,
+    "listCode": "TSL"
+  },
+  {
+    "headword": "revenue",
+    "pos": "n",
+    "freqRank": 540,
+    "freqValue": 15.8,
+    "listCode": "TSL"
+  },
+  {
+    "headword": "deadline",
+    "pos": "n",
+    "freqRank": 620,
+    "freqValue": 13.4,
+    "listCode": "TSL"
+  },
+  {
+    "headword": "strategy",
+    "pos": "n",
+    "freqRank": 650,
+    "freqValue": 12.9,
+    "listCode": "TSL"
+  },
+  {
+    "headword": "workplace",
+    "pos": "n",
+    "freqRank": 670,
+    "freqValue": 12.1,
+    "listCode": "TSL"
+  },
+  {
+    "headword": "compensation",
+    "pos": "n",
+    "freqRank": 710,
+    "freqValue": 11.3,
+    "listCode": "TSL"
+  },
+  {
+    "headword": "competitor",
+    "pos": "n",
+    "freqRank": 730,
+    "freqValue": 10.9,
+    "listCode": "TSL"
+  },
+  {
+    "headword": "deficit",
+    "pos": "n",
+    "freqRank": 850,
+    "freqValue": 8.4,
+    "listCode": "TSL"
+  },
+  {
+    "headword": "shareholder",
+    "pos": "n",
+    "freqRank": 920,
+    "freqValue": 7.3,
+    "listCode": "TSL"
+  },
+  {
+    "headword": "procurement",
+    "pos": "n",
+    "freqRank": 950,
+    "freqValue": 6.9,
+    "listCode": "TSL"
+  },
+  {
+    "headword": "reimbursement",
+    "pos": "n",
+    "freqRank": 990,
+    "freqValue": 6.2,
+    "listCode": "TSL"
+  },
+  {
+    "headword": "restructure",
+    "pos": "v",
+    "freqRank": 1020,
+    "freqValue": 5.8,
+    "listCode": "TSL"
+  },
+  {
+    "headword": "compliance",
+    "pos": "n",
+    "freqRank": 1050,
+    "freqValue": 5.4,
+    "listCode": "TSL"
+  },
+  {
+    "headword": "monopoly",
+    "pos": "n",
+    "freqRank": 1080,
+    "freqValue": 5,
+    "listCode": "TSL"
+  },
+  {
+    "headword": "synergy",
+    "pos": "n",
+    "freqRank": 1110,
+    "freqValue": 4.7,
+    "listCode": "TSL"
+  },
+  {
+    "headword": "feasibility",
+    "pos": "n",
+    "freqRank": 1130,
+    "freqValue": 4.5,
+    "listCode": "TSL"
+  },
+  {
+    "headword": "diversification",
+    "pos": "n",
+    "freqRank": 1160,
+    "freqValue": 4.2,
+    "listCode": "TSL"
+  },
+  {
+    "headword": "merger",
+    "pos": "n",
+    "freqRank": 1180,
+    "freqValue": 4,
+    "listCode": "TSL"
+  },
+  {
+    "headword": "contingency",
+    "pos": "n",
+    "freqRank": 1195,
+    "freqValue": 3.9,
+    "listCode": "TSL"
+  },
+  {
+    "headword": "up-to-date",
+    "pos": "adj",
+    "freqRank": 1200,
+    "freqValue": 3.8,
+    "listCode": "TSL"
+  },
+  {
+    "headword": "time",
+    "pos": "n",
+    "freqRank": 1,
+    "freqValue": 1000,
+    "listCode": "NGSL"
+  },
+  {
+    "headword": "person",
+    "pos": "n",
+    "freqRank": 2,
+    "freqValue": 950,
+    "listCode": "NGSL"
+  },
+  {
+    "headword": "year",
+    "pos": "n",
+    "freqRank": 3,
+    "freqValue": 900,
+    "listCode": "NGSL"
+  },
+  {
+    "headword": "market",
+    "pos": "n",
+    "freqRank": 200,
+    "freqValue": 80,
+    "listCode": "NGSL"
+  },
+  {
+    "headword": "accommodate",
+    "pos": "v",
+    "freqRank": 1500,
+    "freqValue": 10,
+    "listCode": "NGSL"
+  },
+  {
+    "headword": "service",
+    "pos": "n",
+    "freqRank": 250,
+    "freqValue": 70,
+    "listCode": "NGSL"
+  },
+  {
+    "headword": "business",
+    "pos": "n",
+    "freqRank": 300,
+    "freqValue": 65,
+    "listCode": "NGSL"
+  },
+  {
+    "headword": "report",
+    "pos": "n",
+    "freqRank": 400,
+    "freqValue": 50,
+    "listCode": "NGSL"
+  }
+]
