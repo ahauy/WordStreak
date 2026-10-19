@@ -32,6 +32,37 @@ If any answer is "no", **downgrade or drop the finding**. Zero findings is a val
 
 ---
 
+## 4 Strict Review Execution & Stopping Rules (MANDATORY)
+
+To prevent infinite review-fix loops, token exhaustion, and review fatigue, the reviewer MUST strictly follow these 4 operational rules:
+
+1. **Rule 1: Giới hạn review trong tối đa 3 vòng (Max 3 Iterations Stopping Gate)**:
+   - The entire review-fix cycle is hard-capped at **3 rounds maximum** (`Round 1` $\rightarrow$ `Round 2` $\rightarrow$ `Round 3`).
+   - **Round 1 (Initial)**: Review changed files against the checklist and baseline.
+   - **Round 2 (Incremental)**: Verify fixes from Round 1 and inspect only newly touched lines.
+   - **Round 3 (Final Gate)**: Review **ONLY** remaining `CRITICAL` / Security blockers. All remaining `MEDIUM`, `LOW`, or stylistic nits MUST be downgraded to informational notes and marked as `PASS WITH ACCEPTED NITS`. The reviewer **CANNOT** block execution after Round 3 unless a true production-breaking `CRITICAL` bug persists.
+
+2. **Rule 2: Chỉ review diff mới (Incremental Diff Only)**:
+   - In Round 2 and Round 3, **NEVER re-review untouched files or re-scan the entire codebase**.
+   - Review **ONLY the latest git diff** (`git diff HEAD~1` or changes introduced to fix previous findings).
+   - Do NOT expand scope to pre-existing code, adjacent functions, or clean files that were not altered in the latest fix commit.
+
+3. **Rule 3: Gom bug theo loại (Categorized & Batched Findings)**:
+   - Do NOT scatter fragmented, one-off comments across multiple files.
+   - Consolidate all findings into **4 clear categories**:
+     1. **Security & Vulnerabilities** (Injection, Auth, Secrets, XSS, CSRF)
+     2. **Logic & Business Requirements** (Edge cases, Spec deviations, State bugs)
+     3. **Performance & Architecture** (N+1 queries, unindexed filters, over-engineering, memory leaks)
+     4. **Code Cleanliness & Type Safety** (Unjustified `any`, dead code, unhandled promises)
+   - For each category, provide a concise summary and concrete, actionable code diffs.
+
+4. **Rule 4: Không báo lại bug cũ (No Regurgitation of Resolved or Accepted Issues)**:
+   - Before emitting findings, check prior review history and previous reports in `review-report.md`.
+   - If an issue was resolved in the latest commit, or if the user/orchestrator explicitly accepted the tradeoff, **NEVER mention or re-raise it**.
+   - Only flag net-new regressions directly proven by the incremental diff.
+
+---
+
 ## Multi-Lane Review Checklist
 
 ### 1. Security (CRITICAL)
@@ -97,15 +128,29 @@ Fix: Precise recommended code change.
 ```markdown
 ## Code Review Report
 
+- **Iteration**: Round [1 | 2 | 3] of 3 (Final Gate)
+- **Review Scope**: [Initial changed files | Incremental diff from commit <hash>]
+- **Status of Previous Issues**: [All resolved | N/A (Round 1) | <N> resolved, 0 regurgitated]
+
 | Severity     | Count | Status |
 | :----------- | :---: | :----: |
 | **CRITICAL** |   0   |  PASS  |
 | **HIGH**     |   0   |  PASS  |
 | **MEDIUM**   |   0   |  PASS  |
 
-**Verdict**: APPROVE / WARNING / BLOCK
+**Verdict**: APPROVE / WARNING / BLOCK (Note: On Round 3, only CRITICAL can BLOCK; non-critical nits are passed as accepted)
 
-### Findings Detail
+### Findings Grouped by Category
 
-[List of findings or "No issues identified. Code meets all quality and security standards."]
+#### 1. Security & Vulnerabilities
+[List findings or "None"]
+
+#### 2. Logic & Business Requirements
+[List findings or "None"]
+
+#### 3. Performance & Architecture
+[List findings or "None"]
+
+#### 4. Code Cleanliness & Type Safety
+[List findings or "None"]
 ```

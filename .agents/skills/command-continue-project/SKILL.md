@@ -20,7 +20,7 @@ This command skill automatically inspects project progress in [PRODUCT_BACKLOG_R
 
 ---
 
-## Execution Workflow (Fast-Accurate Unified Pipeline)
+## Execution Workflow (Adaptive 2-Tier Pipeline)
 
 ### Step 0: Smart Pre-flight Git & Environment Check
 
@@ -35,93 +35,70 @@ Run a fast, non-blocking local check before starting:
 
 ---
 
-### Step 1: Scan Backlog & Inspect Deliverables
+### Step 1: Scan Backlog & Classify Execution Tier
 
 1. Read `docs/PRODUCT_BACKLOG_ROADMAP.md` to find the first User Story with status `[/]` (In Progress) or `[ ]` (To Do) in the active Sprint.
 2. Extract the **US ID** (e.g., `US-ECO-07`), **Title**, and **Acceptance Criteria (AC)**.
-3. Check `.specify/features/<slug>/` for the **Lean Canonical Artifact Set (max 6 files, zero duplication)**:
-   - `baseline.md` — Unified Intake, Elicitation (`ASM-`), RBAC, State Machine, Business Rules (`BR-`), Risk Register (`RISK-`), MoSCoW, and `SIGNED-OFF` status.
-   - `spec.md` — Single canonical specification containing `REQ-<SLUG>-###`, `US-<SLUG>-###` (Given-When-Then happy + edge cases), Edge Case Matrix, and Traceability Matrix (`Goal -> REQ -> US -> TC`). _(Do NOT generate duplicate `spec/srs.md`, `spec/user-stories.md`, `00-intake.md`, `01-elicitation.md`, `03-domain-model.md`, or `04-risk-scope.md` for Bounded Tasks)._
-   - `plan.md` — Unified Technical Plan, Data Model (`erDiagram` + types), API/Storage Contracts, and dependency-ordered Tasks. _(Do NOT generate separate `data-model.md`, `contracts/`, or `tasks.md` unless the feature is a massive Full Feature > 500 lines)._
-   - `test-plan.md` — Maps every `US-` scenario and edge case to a concrete `TC-###` test case and test file path.
-   - `review-report.md` — Unified Adversarial Code Review, UI/UX Review (if UI touched), and DoD Scorecard.
-   - `CHANGELOG.md` — Version history (`v0.1-draft` → `v1.0 SIGNED-OFF` → `v1.1 Verified`).
+3. **Classify Execution Tier**:
+   - **⚡ Tier 1: Fast-Track (Default)**:
+     - Single-app changes (`apps/api`, `apps/web`, or `apps/extension` only).
+     - Standard Bounded Tasks, bug fixes, or any story whose Acceptance Criteria in the Roadmap are already concrete and actionable.
+     - Expected LOC $\le$ 150 lines, no major database schema overhaul.
+   - **🏗️ Tier 2: Deep-Track**:
+     - Net-new Epics or cross-cutting fullstack features modifying database schema and multiple apps.
+     - Ambiguous business requirements requiring architectural clarification.
 
 ---
 
-### Step 2: Route & Execute by Current State
+### Step 2: Route & Execute by Tier
 
-#### Case A: No Elicitation / Domain Baseline Yet (Start of Story)
+#### ⚡ TIER 1: Fast-Track Execution (High Speed, Zero Token Waste)
 
-- **Single-Pass Intake + Elicitation Prep**:
-  - Dispatch `business-analyst` (`pro` / `inherit`) via `invoke_subagent` to:
-    1. Classify complexity (`Spike` | `Bounded Task` | `Full Feature`) and inspect existing relevant files/types in the repo.
-    2. Identify genuine ambiguities not yet covered by `PRODUCT_BACKLOG_ROADMAP.md` or existing code.
-    3. Formulate **2–3 targeted Elicitation Questions** with `(Recommended)` default options grounded in the codebase.
+1. **Smart Clarification**:
+   - If Acceptance Criteria (AC) in `PRODUCT_BACKLOG_ROADMAP.md` are concrete and actionable: **DO NOT pause for artificial questions**. Automatically convert AC into confirmed assumptions (`ASM-<slug>-001`) and inform the user:
+     > *"🎯 Đã nhận diện đủ Acceptance Criteria từ Roadmap cho [<US ID>]. Tiến hành tạo Living Spec và triển khai TDD..."*
+   - Only ask questions if there is a genuine technical contradiction or missing required credential/config.
 
-- **🛑 GATE 1 — Interactive Elicitation Interview (MANDATORY CUSTOMER GATE)**:
-  - Present the 2–3 clarification questions to the user via `ask_question` (or chat).
-  - **Strict Zero-Hallucination Policy**: Never invent business rules, formulas, or edge-case behaviors silently. Wait for the user's answers before drafting the spec and plan.
+2. **Single Living Spec (Zero Duplication)**:
+   - Create or update only **1 file** in `.specify/features/<slug>/spec.md`:
+     - **Section 1: Requirements & Acceptance Criteria** (Mapped to `US-` and `REQ-`).
+     - **Section 2: Technical Approach** (Files to touch, types/contracts, `ponytail` simplicity).
+     - **Section 3: Test Plan & Test Cases** (`TC-001`, `TC-002`, etc.).
+   - Create `.specify/features/<slug>/CHANGELOG.md` with initial entry.
+   - *(Strictly avoid creating duplicate `baseline.md`, `plan.md`, `test-plan.md`, or `review-report.md`).*
 
----
+3. **Direct TDD Implementation & Verification**:
+   - Execute directly in the primary context (or spawn 1 scoped `slice-implementer` subagent if context preservation is desired):
+     1. Write failing tests (`Red`) covering all `TC-###` cases.
+     2. Implement minimal passing code (`Green`) following `ponytail` simplicity (standard library and native APIs first, no unneeded abstractions).
+     3. Refactor and verify passing by running `pnpm test` and `pnpm build`.
 
-#### Case B: Elicitation Answered → Unified Spec, Tech Plan & Test Plan
-
-- **Unified Specification & Architecture Pass (with `ponytail` Architecture Ladder)**:
-  - Once the user answers Gate 1, dispatch `business-analyst` / `system-architect` (`pro` / `inherit`) via `invoke_subagent` to generate the complete, non-duplicated planning set in `.specify/features/<slug>/`:
-    1. `baseline.md` (`Status: DRAFT v0.9`, containing confirmed `ASM-`, `BR-`, State Machine, `RISK-`, MoSCoW Won't-Have).
-    2. `spec.md` (`REQ-`, `US-` Given-When-Then scenarios, Edge Case Matrix, IEEE 29148 check, Traceability Matrix).
-    3. `plan.md` (Architecture, Data Model/DTOs, `/api/v1/...` or Extension contracts, and ordered implementation tasks). **Apply the `ponytail` 7-rung ladder during planning**: reuse existing monorepo helpers/types first, prefer stdlib & native platform APIs (`Intl`, native DOM/CSS, Prisma/DB constraints) over new dependencies, avoid single-implementation abstractions/wrappers, and minimize the number of new files.
-    4. `test-plan.md` (`TC-###` test cases mapped 1:1 to every `US-` scenario and edge case — **never apply `ponytail` YAGNI to skip required `TC-###` tests**).
-    5. `CHANGELOG.md`.
-  - _(Note: For net-new, multi-entity **Full Features / Epics** where technical architecture cannot be planned until complex domain modeling is reviewed, you may pause for a separate BA Baseline sign-off first. For all **Bounded Tasks** and standard Backlog User Stories, present them together in Gate 2 below)._
-
-- **🛑 GATE 2 — Unified Spec & Technical Plan Sign-Off (MANDATORY)**:
-  - Present a concise, structured summary to the user covering:
-    1. **Scope & Business Rules**: Key `BR-` rules, confirmed `ASM-` decisions, `RISK-` mitigations, and explicit Won't-Have items.
-    2. **Technical Plan & Contracts**: Data model/type changes, API/storage contracts, and files to be created/modified.
-    3. **TDD Verification Plan**: Summary of `TC-###` test cases in `test-plan.md`.
-  - **STOP and wait for explicit user approval** ("approve", "ok", "triển khai", etc.).
-  - Upon approval, mark `baseline.md` as `SIGNED-OFF v1.0` and immediately proceed to Case C.
+4. **Streamlined Close-Out**:
+   - Verify all tests pass cleanly.
+   - Update `.specify/features/<slug>/CHANGELOG.md` (`v1.0 Done`).
+   - Mark the story as `[x]` in `docs/PRODUCT_BACKLOG_ROADMAP.md`.
+   - Complete in 1 pass! *(User guides with screenshots are batched at the Epic/Release milestone level).*
 
 ---
 
-#### Case C: Approved Plan → Scope-Aware Parallel TDD Implementation (with Scoped `ponytail`)
+#### 🏗️ TIER 2: Deep-Track Execution (For Complex Epics & Schema Overhauls)
 
-- **Strict Orchestrator Invariant**: The Orchestrator MUST NOT write feature code or test files directly; delegate via `invoke_subagent`.
-- **Scoped `ponytail` Rules for Implementers (`backend-developer`, `frontend-developer`, `slice-implementer`)**:
-  - **Production Code (`ponytail` ON)**: Follow the `ponytail` ladder — reuse existing repo utilities/types, use stdlib/native platform features before custom classes, zero speculative abstractions/wrappers/configs, fewest files, shortest working diff. Mark deliberate simplifications with a `// ponytail: <ceiling & upgrade path>` comment when applicable.
-  - **Tests & Requirements (`ponytail` OFF)**: Never use `ponytail` to skip approved `REQ-`/`BR-` rules, boundary validation, or `TC-###` test cases in `test-plan.md`. Full unit/edge-case test coverage is mandatory.
-- **Smart Scope-Aware Dispatch (Minimize Cold-Start Handoffs)**:
-  - **Do NOT spawn a separate `code-explorer`** (file paths and patterns are already documented in `plan.md`).
-  - **Single-App / Single-Layer Story** (e.g., `apps/extension` only, `apps/api` only, or `apps/web` only):
-    - Dispatch **1 scoped implementer subagent** (`slice-implementer`, `backend-developer`, or `frontend-developer` using `gemini-3.7-flash`) to complete the full TDD cycle in a single turn:
-      1. Update shared types in `packages/shared-types` (if needed) and build `shared-types`.
-      2. Write failing unit/integration tests (`Red`) matching `test-plan.md` (`TC-###`).
-      3. Implement minimal passing code (`Green` with `ponytail` simplicity) and refactor (`Refactor`).
-      4. Run `pnpm test`, `pnpm lint`, and `pnpm build` within its own turn until green.
-  - **Multi-App Fullstack Story (`apps/api` + `apps/web`)**:
-    1. Update and build `packages/shared-types` first.
-    2. Dispatch **`backend-developer` and `frontend-developer` concurrently in a SINGLE `invoke_subagent` call** (parallel array).
-    3. Dispatch `slice-implementer` / `e2e-runner` only if cross-app wiring or Playwright E2E tests are required.
-  - **On-Demand `build-resolver`**: Only invoke `build-resolver` if a build/type error remains unresolved after the implementer subagent finishes.
+##### Case A: Intake & Elicitation (Gate 1)
+- Dispatch `business-analyst` (`pro` / `inherit`) via `invoke_subagent` to inspect domain models and formulate **2–3 targeted Elicitation Questions**.
+- **🛑 GATE 1 — Interactive Elicitation**: Present clarification questions via `ask_question` and wait for user reply.
 
----
+##### Case B: Unified Spec, Architecture & Test Plan (Gate 2)
+- Once Gate 1 is answered, dispatch `system-architect` (`pro` / `inherit`) via `invoke_subagent` to produce the full specification and technical plan.
+- **🛑 GATE 2 — Technical Plan Sign-Off**: Present a concise architectural summary and wait for user approval.
 
-#### Case D: Implementation Green → Parallel Review & Documentation
+##### Case C: Parallel Implementation
+- If modifying both API and Web: dispatch **`backend-developer` and `frontend-developer` concurrently in a single parallel `invoke_subagent` call**.
+- Run `pnpm test` and `pnpm build` until green.
 
-1. **Batch 1 — Parallel Adversarial Review (`invoke_subagent` single call)**:
-   - Always dispatch `code-reviewer` (`flash` / `inherit`) in a fresh context (passing only the git diff, `spec.md`, `baseline.md`, and `test-plan.md`) to audit:
-     1. Code quality, security, `BR-`/`REQ-` compliance, and DoD scorecard.
-     2. **`ponytail-review` Over-Engineering Pass**: Flag unnecessary complexity using `delete:`, `stdlib:`, `native:`, `yagni:`, and `shrink:` tags so bloat is cut before merge.
-        Record all findings in `review-report.md`.
-   - **Conditionally** include `ui-ux-reviewer` (`gemini-3.7-flash`) in the **same parallel `invoke_subagent` call** **ONLY IF** the story modified UI files (`.tsx`, `.jsx`, `.css` in `apps/web` or `apps/extension/src/popup|options|content`). Skip `ui-ux-reviewer` for pure backend, service-worker, or algorithm stories.
-   - If any `Critical` or `High` issues are found, dispatch a targeted fix to the implementer subagent and re-verify.
-
-2. **Batch 2 — Parallel Documentation & User Guide (`invoke_subagent` single call — `ponytail` OFF)**:
-   - Dispatch `tech-doc-architect` (`gemini-3.7-flash`) to create `docs/features/<slug>/README.md` and update `docs/features/README.md` (plus `docs/architecture/` or `docs/algorithms/` if applicable).
-   - **Conditionally** include `user-guide-creator` (`gemini-3.7-flash`) in the **same parallel `invoke_subagent` call** to generate `docs/user-guides/<slug>.md` with real Playwright screenshots **if** the story has user-facing UI/UX behavior.
-   - Update `.specify/features/<slug>/CHANGELOG.md` and mark the User Story as `[x]` in `docs/PRODUCT_BACKLOG_ROADMAP.md`.
+##### Case D: Batch Review & Documentation
+- **Batch 1 (Review)**: Dispatch `code-reviewer` + `ui-ux-reviewer` in a single parallel call.
+- **Batch 2 (Docs)**: Dispatch `tech-doc-architect` + `user-guide-creator` in a single parallel call.
+- Close out in `docs/PRODUCT_BACKLOG_ROADMAP.md` and `CHANGELOG.md`.
 
 ---
 
@@ -131,7 +108,7 @@ When `/command-continue-project` runs, output a concise status header:
 
 ```markdown
 🎯 **Target User Story:** [<US ID> - <Story Title>]
-📌 **Epic / Sprint:** [<Epic Name> | Sprint <Number>] (Protocol: <Bounded Task | Full Feature>)
-📊 **Current Stage:** [<Gate 1: Elicitation | Gate 2: Unified Spec & Plan | Phase 5: TDD Implementation | Phase 6: Parallel Review & Docs>]
-🚀 **Next Immediate Action:** [<Specific step executing now>]
+📌 **Epic / Sprint:** [<Epic Name> | Sprint <Number>]
+⚡ **Execution Tier:** [Tier 1: Fast-Track | Tier 2: Deep-Track]
+🚀 **Next Action:** [Đang thực thi TDD trực tiếp / Đang tổng hợp Living Spec...]
 ```

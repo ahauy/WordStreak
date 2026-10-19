@@ -28,90 +28,57 @@ This skill orchestrates the end-to-end development pipeline for WordStreak, plac
 
 ---
 
-## Pipeline Overview (Fast-Accurate Multi-Agent Lifecycle)
+## Pipeline Overview (Adaptive 2-Tier Fast-Accurate Lifecycle)
 
 ```mermaid
 graph TD
-    subgraph P1 ["PHASE 1: Intake & Interactive Elicitation"]
-        BA["🍉 business-analyst (pro / inherit — 5h Pool)"]
-        G1{"🛑 Gate 1: Customer Elicitation"}
-        BA --> G1
+    TASK["🎯 Backlog User Story Intake"] --> CLASSIFY{"Complexity Classification"}
+
+    subgraph TIER1 ["TIER 1: Fast-Track (Bounded Tasks / Single-App / Clear AC < 150 LOC)"]
+        T1_AC["⚡ Smart Clarification: AC already concrete? Skip Gate 1"]
+        T1_SPEC["📄 Single Living Spec (.specify/features/<slug>/spec.md)"]
+        T1_TDD["🧪 Direct TDD Execution (Orchestrator or 1 Scoped Implementer)"]
+        T1_VERIFY["✅ Automated Verification (pnpm test && pnpm build)"]
+        T1_CLOSE["📋 Update CHANGELOG.md & PRODUCT_BACKLOG_ROADMAP.md"]
+        T1_AC --> T1_SPEC --> T1_TDD --> T1_VERIFY --> T1_CLOSE
     end
 
-    subgraph P2 ["PHASE 2-4: Unified Spec, Tech Plan & Test Plan"]
-        SA["🏗️ system-architect (pro / inherit — 5h Pool)"]
-        G2{"🛑 Gate 2: Unified Spec & Plan Sign-Off"}
-        G1 --> SA --> G2
+    subgraph TIER2 ["TIER 2: Deep-Track (Full Features / Multi-App / Schema Migration)"]
+        T2_BA["🍉 business-analyst (pro / inherit)"]
+        T2_G1{"🛑 Gate 1: Customer Elicitation"}
+        T2_SA["🏗️ system-architect (pro / inherit)"]
+        T2_G2{"🛑 Gate 2: Unified Spec & Plan Sign-Off"}
+        T2_PAR["⚙️ Parallel Implementers (backend + frontend in single call)"]
+        T2_REV["🛡️ Batch Review & Docs"]
+        T2_BA --> T2_G1 --> T2_SA --> T2_G2 --> T2_PAR --> T2_REV
     end
 
-    subgraph P5 ["PHASE 5: Scope-Aware Parallel TDD Implementation"]
-        BE["⚙️ backend-developer (gemini-3.7-flash)"]
-        FE["🎨 frontend-developer (gemini-3.7-flash)"]
-        SI["⚡ slice-implementer (gemini-3.7-flash)"]
-        BR["🔧 build-resolver (on-demand only)"]
-
-        G2 --> BE
-        G2 --> FE
-        G2 --> SI
-        BE -.-> BR
-        FE -.-> BR
-        SI -.-> BR
-    end
-
-    subgraph P6A ["PHASE 6A: Parallel Adversarial Review (Single Call)"]
-        CR["🛡️ code-reviewer + DoD Audit (flash / inherit — 5h Pool)"]
-        UR["👁️ ui-ux-reviewer (conditional: UI stories only)"]
-    end
-
-    subgraph P6B ["PHASE 6B: Parallel Documentation (Single Call)"]
-        TD["📚 tech-doc-architect (gemini-3.7-flash)"]
-        UG["💼 user-guide-creator (conditional: UI stories only)"]
-    end
-
-    BE --> CR
-    FE --> CR
-    SI --> CR
-    FE --> UR
-    CR --> TD
-    CR --> UG
-    UR --> TD
-    UR --> UG
+    CLASSIFY -->|Single component, API, or clear AC| TIER1
+    CLASSIFY -->|Multi-entity DB schema, new epic, ambiguous rules| TIER2
 ```
 
 ---
 
-## Lean Canonical Artifact Set (Zero-Duplication Rule)
+## Artifact Governance (Zero-Duplication Rule)
 
-To prevent LLM token bloat while preserving 100% traceability (`BR-`, `REQ-`, `US-`, `ASM-`, `RISK-`, `TC-`), every feature in `.specify/features/<slug>/` uses a **Lean 6-File Canonical Structure**:
+- **Tier 1 (Fast-Track - Default for standard stories)**:
+  Maintain only **2 files** in `.specify/features/<slug>/`:
+  1. **`spec.md`** — Single living specification combining Acceptance Criteria (`REQ-`), Technical Design/Contracts, and `TC-###` Test Cases.
+  2. **`CHANGELOG.md`** — Version audit trail (`v1.0 Done`).
+  *(Do NOT generate separate `baseline.md`, `plan.md`, `test-plan.md`, or `review-report.md` for Tier 1 tasks).*
 
-1. **`baseline.md`** — Unified BA & Domain Decision Baseline:
-   - Combines Intake classification (`Spike` | `Bounded Task` | `Full Feature`), confirmed Elicitation decisions (`ASM-<SLUG>-###`), RBAC matrix, Mermaid `stateDiagram-v2`, Business Rules (`BR-<SLUG>-###` with anti-abuse pass), Risk Register (`RISK-<SLUG>-###`), MoSCoW scope (with mandatory Won't-Have), and `Status: SIGNED-OFF v1.0`.
-   - _(Replaces separate `00-intake.md`, `01-elicitation.md`, `03-domain-model.md`, `04-risk-scope.md` for Bounded Tasks)._
-2. **`spec.md`** — Single Canonical Specification & Traceability Matrix:
-   - Combines Functional/Non-Functional Requirements (`REQ-<SLUG>-###` with `Derived from`), User Stories (`US-<SLUG>-###` with Given-When-Then happy + edge cases), Edge Case Matrix, IEEE 29148 validation checklist, and Traceability Matrix (`Goal → REQ → US → TC`).
-   - _(Eliminates duplicate `spec/srs.md`, `spec/user-stories.md`, `06-validation-report.md`, and `checklists/requirements.md`)._
-3. **`plan.md`** — Unified Technical Architecture, Data Model, Contracts & Tasks:
-   - Combines Technical Plan, Data Model (`erDiagram` + DTO/schema definitions), API/Storage Contracts (`/api/v1/...`), and dependency-ordered implementation tasks.
-   - _(Eliminates separate `data-model.md`, `contracts/`, and `tasks.md` unless a Full Feature exceeds 500 lines)._
-4. **`test-plan.md`** — TDD Test Specification:
-   - Maps every `US-<SLUG>-###` scenario (happy + edge cases) to a numbered `TC-###` test case and concrete test file path before any code is written.
-5. **`review-report.md`** — Unified Adversarial Review & DoD Scorecard:
-   - Records fresh-context `code-reviewer` findings, Bug Severity check, `ui-ux-reviewer` audit (when UI touched), and DoD verification (`08-dod-scorecard.md`).
-6. **`CHANGELOG.md`** — Version audit trail (`v0.1-draft` → `v1.0 SIGNED-OFF` → `v1.1 Verified`).
+- **Tier 2 (Deep-Track - For complex epics & schema migrations)**:
+  Maintain the Lean 6-File canonical set (`baseline.md`, `spec.md`, `plan.md`, `test-plan.md`, `review-report.md`, `CHANGELOG.md`).
 
 ---
 
-## Phase 1: Business Analysis & Domain Elicitation
+## Protocol Routing
 
-**Entry Point:** Always classify complexity first (`intake-classifier` logic).
-
-### Protocol Routing
-
-| Protocol                | Execution Path                                                                 | When                                                   |
-| ----------------------- | ------------------------------------------------------------------------------ | ------------------------------------------------------ |
-| **Spike**               | Intake + short technical note in chat. No folder, no spec.                     | Research / "is this even possible?"                    |
-| **Bounded Task**        | Single-pass Intake+Elicitation (Gate 1) → Unified Spec+Plan+TestPlan (Gate 2)  | Well-scoped User Story or change to existing flow      |
-| **Full Feature / Epic** | Full 8-stage depth (may separate Gate 1B BA Sign-off and Gate 2 Plan Sign-off) | New flow, new entity, cross-cutting, gamification core |
+| Protocol | Execution Path | When |
+| :--- | :--- | :--- |
+| **Spike** | Intake + short technical note in chat. No folder, no spec. | Research / "is this even possible?" |
+| **Tier 1 (Fast-Track)** | Smart Clarification (skip Gate 1 if AC clear) $\rightarrow$ Single Living `spec.md` $\rightarrow$ Direct TDD loop $\rightarrow$ Automated test verification | Bounded Task, single-app change, or well-scoped User Story with clear AC |
+| **Tier 2 (Deep-Track)** | Full Multi-Agent Pipeline: BA (Gate 1) $\rightarrow$ Architect (Gate 2) $\rightarrow$ Parallel Implementers $\rightarrow$ Batch Review & Docs | New flow, new entity, cross-cutting multi-app, DB schema change |
 
 ### Stage Execution Rules
 
@@ -161,6 +128,11 @@ For **Bounded Tasks** and standard Backlog User Stories, `system-architect` (`pr
    - Dispatch `code-reviewer` (`flash` / `inherit`) in a fresh context (no implementer reasoning) to audit:
      - Code quality, security, `BR-`/`REQ-` compliance, and DoD scorecard.
      - **`ponytail-review` Over-Engineering Audit**: Hunt unnecessary complexity using `delete:`, `stdlib:`, `native:`, `yagni:`, and `shrink:` tags in `review-report.md`.
+   - **Enforce 4 Review Stopping Rules**:
+     1. *Max 3 Iterations*: Review-fix cycle hard-capped at 3 rounds; non-critical nits auto-accepted on Round 3.
+     2. *Incremental Diff Only*: In Rounds 2 & 3, audit only the latest git diff (`git diff HEAD~1`).
+     3. *Categorized Findings*: Group findings into Security, Logic, Performance, and Cleanliness.
+     4. *No Regurgitation*: Never re-report resolved or accepted issues.
    - **Conditionally** dispatch `ui-ux-reviewer` (`gemini-3.7-flash`) in the **same parallel call** **only if** UI files were modified.
    - **Bug Severity Gate**: Zero `Critical` bugs permitted prior to completion.
 2. **Batch 2 — Parallel Technical Docs & User Guide (Single `invoke_subagent` Call — `ponytail` OFF)**:

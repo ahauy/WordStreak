@@ -89,86 +89,65 @@ Whenever a subagent is dispatched (e.g. for adversarial UI review, technical doc
 - The agent MUST explicitly display a notification card in chat.
 - It MUST indicate the **Subagent Name**, the **Active Model Name** (e.g. `Gemini 3.7 Flash`), the **Goal**, and the **Final Artifact/Report Link**.
 
-## 7. Mandatory Automatic Subagent Delegation Protocol (Fast-Accurate Unified Pipeline)
+## 7. Adaptive 2-Tier Execution Pipeline (Fast-Accurate Governance)
 
-**AUTOMATIC MULTI-AGENT LIFECYCLE (MANDATORY & NON-NEGOTIABLE):**
-The primary orchestrator agent MUST strictly follow the 4-Track Pipeline below. The single entry-point orchestrator skill is **`wordstreak-ba-skills`** — do NOT use `wordstreak-workflow` or `implementation-orchestrator` (both archived).
-
-### 4-Track Pipeline
+To prevent severe token inflation and cold-start latency while maintaining 100% test and architectural rigor, development follows the **Adaptive 2-Tier Pipeline**. The single entry-point orchestrator skill is **`wordstreak-ba-skills`** (`wordstreak-workflow` and `implementation-orchestrator` are archived in `_archived/`).
 
 ```mermaid
-flowchart TD
-    R["📨 User Request"] --> CL["🔍 intake-classifier\n(Classify first — always)"]
+graph TD
+    TASK["🎯 Backlog User Story Intake"] --> CLASSIFY{"Complexity Classification"}
 
-    CL -->|"Micro Task\n≤1 file, <50 lines\nno DB/API new"| MT["⚡ Code directly\n→ pnpm test\nNo gates, no folder"]
-
-    CL -->|Spike| SP["📋 Short answer\nNo folder, no pipeline"]
-
-    CL -->|Bounded Task| BT["🍉 business-analyst\n2–3 elicitation questions\n+ draft spec in same turn"]
-    BT --> BG{"🛑 1 Gate\nUser confirms\nelicitation + spec"}
-    BG --> SI["⚡ slice-implementer\n(1 scoped subagent)"]
-
-    CL -->|Full Feature| FF["🍉 business-analyst\nGate 1: Elicitation"]
-    FF --> G1{"🛑 Gate 1\nUser answers"}
-    G1 --> SA["🏗️ system-architect\n6-file artifacts only"]
-    SA --> G2{"🛑 Gate 2\nSign-Off"}
-    G2 --> IMPL["⚙️ BE + FE parallel\nor slice-implementer"]
-
-    SI --> REV6
-    IMPL --> REV6
-
-    subgraph REV6 ["Phase 6 — Proportional Review"]
-        R1["Micro/Bounded: inline code-reviewer only"]
-        R2["Full Feature: code-reviewer + ui-ux-reviewer\n+ tech-doc + user-guide"]
+    subgraph TIER1 ["TIER 1: Fast-Track (Micro Tasks & Bounded Tasks < 150 LOC)"]
+        T1_MICRO["⚡ Micro Task (≤1 file, <50 LOC): Direct code → pnpm test"]
+        T1_AC["⚡ Smart Clarification: AC already concrete? Skip Gate 1"]
+        T1_SPEC["📄 Single Living Spec (.specify/features/<slug>/spec.md)"]
+        T1_TDD["🧪 Direct TDD Execution (Orchestrator or 1 Scoped Implementer)"]
+        T1_VERIFY["✅ Automated Verification (pnpm test && pnpm build)"]
+        T1_CLOSE["📋 Update CHANGELOG.md & PRODUCT_BACKLOG_ROADMAP.md"]
+        T1_AC --> T1_SPEC --> T1_TDD --> T1_VERIFY --> T1_CLOSE
     end
+
+    subgraph TIER2 ["TIER 2: Deep-Track (Full Features / Multi-App / Schema Migration)"]
+        T2_BA["🍉 business-analyst (pro / inherit)"]
+        T2_G1{"🛑 Gate 1: Customer Elicitation"}
+        T2_SA["🏗️ system-architect (pro / inherit)"]
+        T2_G2{"🛑 Gate 2: Unified Spec & Plan Sign-Off"}
+        T2_PAR["⚙️ Parallel Implementers (backend + frontend in single call)"]
+        T2_REV["🛡️ Batch Review & Docs"]
+        T2_BA --> T2_G1 --> T2_SA --> T2_G2 --> T2_PAR --> T2_REV
+    end
+
+    CLASSIFY -->|Micro Task / Single component / Clear AC| TIER1
+    CLASSIFY -->|Multi-entity DB schema / New epic / Ambiguous rules| TIER2
 ```
 
-### Strict Orchestrator Invariants & Hard Coding Ban (NON-NEGOTIABLE):
+### Protocol Tiers Breakdown:
 
-- **Zero Direct Feature Coding by Orchestrator**: The primary orchestrator agent is **STRICTLY PROHIBITED** from calling `write_to_file` or `replace_file_content` directly for any feature code, specifications, database schemas, or unit/E2E test files.
-- **Mandatory Delegation via `invoke_subagent`**: All domain elicitation, architecture planning, backend/frontend implementation, code review, and user guide generation MUST be delegated to dedicated subagents spawned via `invoke_subagent`.
-- **Single Orchestrator Rule**: Use **only `wordstreak-ba-skills`** as the pipeline entry-point. Skills `wordstreak-workflow` and `implementation-orchestrator` are archived — do not reference or invoke them.
-- **Lean 6-File Canonical Artifact Set (Zero Duplication)**:
-  In `.specify/features/<slug>/`, produce ONLY `baseline.md`, `spec.md`, `plan.md`, `test-plan.md`, `review-report.md`, and `CHANGELOG.md` (do NOT generate duplicate `spec/srs.md`, `spec/user-stories.md`, `00-intake.md`, `01-elicitation.md`, `03-domain-model.md`, `04-risk-scope.md`, `data-model.md`, `tasks.md`, or `08-dod-scorecard.md` for Bounded Tasks).
-- **Model Allocation Matrix**:
-  - **5-Hour Rolling Pool Priority (Default)**: Always prioritize Gemini models (`flash`, `pro`, `flash_lite`, or `inherit` when the main chat is on Gemini) so 100% of orchestration and subagents consume the 5-hour rolling quota pool instead of external weekly caps.
-  - `Model: "pro" / "inherit"` (Deep Domain Elicitation & Unified Architecture — 5h Pool): `business-analyst`, `system-architect`.
-  - `Model: "flash" / "inherit"` (Fast TDD Execution, Adversarial Review, UI Review & Docs — 5h Pool): `backend-developer`, `frontend-developer`, `slice-implementer`, `build-resolver` (on-demand), `code-reviewer`, `ui-ux-reviewer` (conditional on UI changes), `tech-doc-architect`, `user-guide-creator` (conditional on UI changes).
-- **Pre-execution Catalog Definition**: Before running any phase, the orchestrator MUST ensure subagents are defined via `define_subagent` with specialized system prompts.
+#### ⚡ TIER 1: Fast-Track Execution (Default for standard Backlog Stories)
+1. **Scope Eligibility**:
+   - **Micro Tasks** ($\le 1$ file, $< 50$ lines, no new DB/API): Implement directly in the primary context $\rightarrow$ `pnpm test`. No spec folder needed.
+   - **Bounded Tasks** (single-app changes in `apps/api`, `apps/web`, or `apps/extension`, bug fixes, or clear AC $\le 150$ LOC).
+2. **Direct Execution Authorization**: The orchestrator is **AUTHORIZED** to execute directly in the primary context (or dispatch a single scoped `slice-implementer` subagent) without cold-starting 5–7 separate subagents.
+3. **Smart Clarification (Zero Redundant Questions)**: If the Backlog AC is clear, do NOT pause for artificial Gate 1 questions. Automatically treat confirmed AC as `ASM-` and proceed immediately.
+4. **Single Living Spec (Zero Duplication)**: Maintain only `.specify/features/<slug>/spec.md` (combining Requirements, Technical Design, and `TC-###` Test Cases) and `CHANGELOG.md`. Do NOT generate separate duplicate `baseline.md`, `plan.md`, `test-plan.md`, or `review-report.md`.
+5. **Direct TDD Loop**: Write failing tests (`Red`) $\rightarrow$ Implement minimal code (`Green` with `ponytail` simplicity) $\rightarrow$ Refactor $\rightarrow$ Verify passing with `pnpm test` and `pnpm build`.
+6. **Milestone-Level Docs**: Deep adversarial review reports and user guide screenshots with Playwright are batched at the Epic/Release milestone level rather than executed for every micro-story.
 
-### Protocol Execution Chain:
+#### 🏗️ TIER 2: Deep-Track Execution (For complex, cross-cutting Epics)
+1. **Scope Eligibility**: Net-new Epics, cross-cutting fullstack features modifying database schema and multiple apps, or features with genuinely ambiguous business rules.
+2. **Phase 1 (Intake & Elicitation)**: Dispatch `business-analyst` (`pro` / `inherit`) to inspect domain models and ask 2–3 targeted questions at **Gate 1**.
+3. **Phases 2–4 (Unified Spec & Plan)**: Dispatch `system-architect` (`pro` / `inherit`) to produce a comprehensive spec & technical plan, presenting a summary for **Gate 2 Sign-Off**.
+4. **Phase 5 (Parallel Implementation)**: If modifying both API and Web, dispatch `backend-developer` and `frontend-developer` concurrently in a **single parallel `invoke_subagent` call**.
+5. **Phase 6 (Batch Review & Documentation)**: Dispatch `code-reviewer` + `ui-ux-reviewer` in batch 1 (strictly enforcing the 4 Review Stopping Rules below), and `tech-doc-architect` + `user-guide-creator` in batch 2.
 
-1. **Step 0 — Classify (ALWAYS FIRST)**:
-   - Run `intake-classifier` mentally. Determine track: Micro Task / Spike / Bounded Task / Full Feature.
-   - **Micro Task** (≤1 file, <50 lines, no new DB/API): Implement directly. Run `pnpm test`. Done — no further phases.
-   - **Spike**: Answer inline. No pipeline. Done.
+### 4 Strict Review Stopping Rules (Enforced across all reviews):
+1. **Max 3 Iterations**: The review-fix cycle is hard-capped at 3 rounds; on Round 3, only blocking `CRITICAL` issues can halt execution; remaining nits are accepted.
+2. **Incremental Diff Only**: In Rounds 2 & 3, review **ONLY the latest git diff** (`git diff HEAD~1`).
+3. **Categorized Findings**: Consolidate findings into Security, Logic, Performance, and Cleanliness.
+4. **No Regurgitation**: Never re-report resolved or accepted issues.
 
-2. **Phase 1 — Intake & Elicitation (Bounded Task + Full Feature)**:
-   - **Intake + Elicitation Prep**: Auto-dispatch `business-analyst` (`pro` / `inherit`) to classify complexity, inspect existing code/types, and formulate **2–3 targeted Elicitation Questions** with `(Recommended)` defaults.
-   - **Bounded Task — 🛑 SINGLE GATE**: Present elicitation answers + a draft `spec.md` + `plan.md` summary in **one combined turn**. User confirms once → go straight to implementation.
-   - **Full Feature — 🛑 GATE 1**: Present only elicitation questions. Wait for user answers before drafting spec.
-
-3. **Phases 2–4 — Unified Spec, Tech Plan & Test Plan (Full Feature only)**:
-   - Once Gate 1 is answered, auto-dispatch `system-architect` (`pro` / `inherit`) to compile `baseline.md` (`ASM-`, `BR-`, State Machine, `RISK-`, MoSCoW), `spec.md` (`REQ-`, `US-` Given-When-Then, Traceability Matrix), `plan.md` (Architecture, Data Model, Contracts, Tasks — applying the `ponytail` 7-rung ladder), and `test-plan.md` (`TC-###`).
-   - **🛑 GATE 2 — Unified Spec & Technical Plan Sign-Off**: Present the unified summary to the User for approval. Upon approval, mark `baseline.md` as `SIGNED-OFF v1.0`.
-
-4. **Phase 5 — Scope-Aware Parallel TDD Implementation**:
-   - **Scoped `ponytail` Rule**: Production code = ponytail ON. Tests = ponytail OFF (all `TC-###` mandatory).
-   - **Single-App Story**: Dispatch **1 scoped implementer subagent** for full TDD cycle (`Red` → `Green` → `Refactor` → `pnpm test && pnpm build`).
-   - **Fullstack Story**: Update `packages/shared-types` first, then dispatch **`backend-developer` & `frontend-developer` concurrently**.
-   - **On-Demand `build-resolver`**: Only if build/lint error remains unresolved.
-
-5. **Phase 6 — Proportional Review & Documentation**:
-   - **Micro Task / Bounded Task (≤3 files changed)**:
-     - `code-reviewer` inline (no subagent spawn needed for trivial changes)
-     - Technical docs updated inline (no `tech-doc-architect` subagent)
-   - **Full Feature (UI changed)**:
-     - **6A Parallel**: `code-reviewer` + `ui-ux-reviewer` (single `invoke_subagent` call)
-     - **6B Parallel**: `tech-doc-architect` + `user-guide-creator` (single `invoke_subagent` call)
-   - **Full Feature (no UI change)**:
-     - **6A**: `code-reviewer` only
-     - **6B**: `tech-doc-architect` only
-   - **Bug Severity Gate**: Zero `Critical` bugs before closing.
+### Model Allocation Matrix:
+- **Gemini 5-Hour Pool Priority**: Use `flash` or `inherit` for standard TDD, reviews, and documentation to protect rolling quota. Reserve `pro` solely for Tier 2 complex domain elicitation and system architecture.
 
 ## 8. 5-Hour Quota Pool Monitoring & Early Warning Protocol
 

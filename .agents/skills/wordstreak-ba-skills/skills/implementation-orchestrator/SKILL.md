@@ -126,14 +126,19 @@ Record in `implementation/review-report.md`:
 | ------ | ----- | -------- |
 ```
 
-## 5. Scoped fix loop
+## 5. Scoped fix loop (Enforcing 4 Review Rules)
 
 For each failing test or review finding, delegate a **new, narrowly scoped**
 subagent with just that finding and the specific file(s) involved — not the
-whole codebase, not the full review report. Loop review → fix → review
-until clean. Log each pass briefly in `implementation/test-fix-log.md`
-(pass number, what failed, what changed) — not the full output of each
-attempt.
+whole codebase, not the full review report.
+
+**Enforce the 4 Review Stopping Rules:**
+1. **Max 3 Review Iterations (Giới hạn review trong 3 vòng)**: Hard-cap the review $\rightarrow$ fix loop at **3 passes maximum**. If Round 3 finishes with no `CRITICAL` issues, mark remaining nits as accepted tech debt and proceed directly to close out.
+2. **Incremental Diff Only (Chỉ review diff mới)**: In passes 2 and 3, feed the reviewer ONLY the latest incremental git diff (`git diff HEAD~1`). Do NOT re-audit untouched files.
+3. **Categorized Findings (Gom bug theo loại)**: Group issues into 4 buckets (Security, Logic, Performance, Cleanliness) and fix each bucket as a cohesive batch.
+4. **No Regurgitation (Không báo lại bug cũ)**: Verify and exclude previously fixed or accepted findings. Never loop on previously waived nits.
+
+Log each pass briefly in `implementation/test-fix-log.md` (pass number [1/3, 2/3, 3/3], what failed, what changed).
 
 ## 6. Record and close out
 
