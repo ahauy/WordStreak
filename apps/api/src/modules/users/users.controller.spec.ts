@@ -26,6 +26,7 @@ describe('UsersController', () => {
   const mockUsersService = {
     getProfile: jest.fn(),
     updateProfile: jest.fn(),
+    completeOnboarding: jest.fn(),
     changePassword: jest.fn(),
   };
 
@@ -75,6 +76,41 @@ describe('UsersController', () => {
         {
           dailyGoal: 20,
           preferredLanguage: 'en',
+        },
+      );
+    });
+  });
+
+  describe('PATCH /onboarding', () => {
+    it('should complete onboarding via service', async () => {
+      const mockOnboardingResponse = {
+        success: true,
+        enrolledDeckId: 'deck-123',
+        enrolledDeckTitle: 'TSL Office',
+        user: {
+          ...mockProfile,
+          learningGoal: 'TOEIC',
+          startingLevel: 'BEGINNER',
+          onboardingCompleted: true,
+        },
+      };
+      mockUsersService.completeOnboarding.mockResolvedValue(
+        mockOnboardingResponse,
+      );
+
+      const result = await controller.completeOnboarding(mockUserPayload, {
+        learningGoal: 'TOEIC',
+        startingLevel: 'BEGINNER',
+        dailyGoal: 10,
+      });
+
+      expect(result).toEqual(mockOnboardingResponse);
+      expect(mockUsersService.completeOnboarding).toHaveBeenCalledWith(
+        'user-uuid-1',
+        {
+          learningGoal: 'TOEIC',
+          startingLevel: 'BEGINNER',
+          dailyGoal: 10,
         },
       );
     });

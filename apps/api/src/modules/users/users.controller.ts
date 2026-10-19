@@ -13,7 +13,12 @@ import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import { UpdateProfileDto } from './dto/update-profile.dto';
 import { ChangePasswordDto } from './dto/change-password.dto';
-import type { JwtPayload, AuthUser } from '@wordstreak/shared-types';
+import { OnboardingDto } from './dto/onboarding.dto';
+import type {
+  JwtPayload,
+  AuthUser,
+  OnboardingResponse,
+} from '@wordstreak/shared-types';
 
 @Controller('users')
 @UseGuards(JwtAuthGuard)
@@ -31,6 +36,14 @@ export class UsersController {
     @Body() dto: UpdateProfileDto,
   ): Promise<AuthUser> {
     return this.usersService.updateProfile(user.sub, dto);
+  }
+
+  @Patch('onboarding')
+  async completeOnboarding(
+    @CurrentUser() user: JwtPayload,
+    @Body() dto: OnboardingDto,
+  ): Promise<OnboardingResponse> {
+    return this.usersService.completeOnboarding(user.sub, dto);
   }
 
   @Post('change-password')

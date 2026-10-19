@@ -28,8 +28,27 @@ export interface AuthUser {
   dailyGoal: number;
   avatarUrl?: string | null;
   preferredLanguage?: AppLanguage;
+  learningGoal?: string | null;
+  startingLevel?: string | null;
+  onboardingCompleted?: boolean;
   createdAt: string | Date;
   updatedAt?: string | Date;
+}
+
+export type LearningGoal = "TOEIC" | "IELTS" | "COMMUNICATION" | "WORK";
+export type StartingLevel = "ZERO" | "BEGINNER" | "INTERMEDIATE" | "ADVANCED";
+
+export interface OnboardingDto {
+  learningGoal: LearningGoal;
+  startingLevel: StartingLevel;
+  dailyGoal?: number;
+}
+
+export interface OnboardingResponse {
+  success: boolean;
+  enrolledDeckId?: string;
+  enrolledDeckTitle?: string;
+  user: AuthUser;
 }
 
 export interface AuthResponse {

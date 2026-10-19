@@ -3,6 +3,8 @@ import type {
   AuthUser,
   UpdateProfileDto,
   ChangePasswordDto,
+  OnboardingDto,
+  OnboardingResponse,
 } from "@wordstreak/shared-types";
 
 export const userService = {
@@ -13,6 +15,14 @@ export const userService = {
 
   async updateProfile(dto: UpdateProfileDto): Promise<AuthUser> {
     const response = await apiClient.patch<AuthUser>("/users/profile", dto);
+    return response.data;
+  },
+
+  async completeOnboarding(dto: OnboardingDto): Promise<OnboardingResponse> {
+    const response = await apiClient.patch<OnboardingResponse>(
+      "/users/onboarding",
+      dto,
+    );
     return response.data;
   },
 

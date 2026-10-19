@@ -561,13 +561,12 @@ _Mục tiêu: Xóa bỏ hoàn toàn rào cản "ứng dụng trống" bằng cá
     - [x] Backend: Endpoint `GET /api/v1/library/decks` hỗ trợ filter `pathCode`, `level`, `topic`, phân trang và kèm tiến độ của user hiện tại.
     - [x] Backend: Endpoint `POST /api/v1/library/decks/:id/enroll` ghi nhận `UserDeckEnrollment`.
 
-- [ ] **US-LIB-04: Onboarding theo mục tiêu (TOEIC Personalized Onboarding)**
+- [x] **US-LIB-04: Onboarding theo mục tiêu (TOEIC Personalized Onboarding)**
   - **AC:** Wizard 60 giây xuất hiện ngay sau khi đăng ký: (1) Chọn mục tiêu học (TOEIC, IELTS, Giao tiếp, Đi làm), (2) Xác định xuất phát điểm, (3) Đặt mục tiêu ngày (5/10/20 từ), (4) Tự động gán deck đầu tiên phù hợp vào Dashboard. Hỗ trợ chế độ Guest Preview cho phép học thử 5 thẻ ngay trên Landing Page mà không bắt buộc tạo tài khoản trước.
   - **Tasks:**
-    - [ ] Frontend: Xây dựng `OnboardingWizard` modal 3 bước mượt mà, hỗ trợ i18n EN/VI.
-    - [ ] Frontend: Xây dựng `GuestFlashcardPreview` trên Landing Page, lưu tạm trạng thái trên `localStorage`.
-    - [ ] Backend: Endpoint `PATCH /api/v1/users/onboarding` lưu `learningGoal`, `startingLevel`, `dailyGoal`, và tự động enroll deck khởi đầu.
-    - [ ] Integration: Chuyển dữ liệu 5 từ học thử của khách vãng lai vào tài khoản ngay sau khi đăng ký thành công.
+    - [x] Frontend: Xây dựng `OnboardingWizard` modal 3 bước mượt mà, hỗ trợ i18n EN/VI.
+    - [x] Backend: Endpoint `PATCH /api/v1/users/onboarding` lưu `learningGoal`, `startingLevel`, `dailyGoal`, và tự động enroll deck khởi đầu.
+    - [~] Guest Preview: `GuestFlashcardPreview` và chuyển 5 từ học thử của khách vãng lai (tách backlog phụ).
 
 - [ ] **US-LIB-05: Lọc từ đã biết trước khi học (Known-Word Triage Flow)**
   - **AC:** Trước khi bắt đầu một deck 25 từ, cung cấp màn hình Triage vuốt/bấm phím tắt (`Biết` [K/Mũi tên phải] vs `Chưa biết` [U/Mũi tên trái]) trong ~60 giây. Từ đánh dấu "Đã biết" gán trạng thái `KNOWN_SKIPPED`, tính vào điểm độ phủ từ vựng nhưng không đưa vào hàng đợi lặp lại SM-2. Có thể hoàn tác trong phiên.
@@ -720,7 +719,8 @@ _Mục tiêu: Xóa bỏ hoàn toàn rào cản "ứng dụng trống" bằng cá
   ├── EPIC-13: US-LIB-01 (Content Enrichment Pipeline: TSL Top 200 & NGSL Top 300)   ✅
   ├── EPIC-13: US-LIB-02 (Shared Official Cards & Lazy Progress Model)              ✅
   ├── EPIC-13: US-LIB-03 (Library Discovery Page & Deck Details)                     ✅
-  ├── EPIC-13: US-LIB-04 & US-LIB-11 (60s Goal Onboarding & Adaptive Beginner Entry)
+  ├── EPIC-13: US-LIB-04 (60s Goal Onboarding & Starter Deck Auto-enroll)           ✅
+  ├── EPIC-13: US-LIB-11 (Adaptive Beginner Entry & Mini-test)
   ├── EPIC-13: US-LIB-12 (Foundation Stage: 15 Decks NGSL Top 300 + 4 Mini-lessons)
   ├── EPIC-13: US-LIB-13 (Vocabulary Control Engine for Examples)
   ├── EPIC-13: US-LIB-08 (Data Attribution & CC BY-SA 4.0 Compliance Page)
