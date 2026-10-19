@@ -7,7 +7,7 @@ export const SrsRating = {
 
 export type SrsRating = (typeof SrsRating)[keyof typeof SrsRating];
 
-export type CardLearningStatus = "NEW" | "LEARNING" | "MASTERED";
+export type CardLearningStatus = "NEW" | "LEARNING" | "MASTERED" | "KNOWN_SKIPPED";
 
 export interface SrsCalculationInput {
   rating: SrsRating;
@@ -43,6 +43,8 @@ export interface DueCardItem {
   repetitions: number;
   easeFactor: number;
   nextReviewDate: string;
+  isOfficial?: boolean;
+  officialCardId?: string;
 }
 
 export interface SubmitReviewDto {
