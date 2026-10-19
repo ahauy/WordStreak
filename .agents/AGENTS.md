@@ -48,13 +48,27 @@ graph TD
 
 #### Execution Modes by Tier:
 
-- **⚡ Tier 1: Fast-Track Execution**:
-  1. **Smart Clarification**: If Acceptance Criteria in `PRODUCT_BACKLOG_ROADMAP.md` are clear and actionable, do NOT pause for artificial Gate 1 questions. Automatically treat confirmed AC as `ASM-` and begin.
-  2. **Direct TDD Loop**: Write failing tests (`Red`) $\rightarrow$ Implement minimal code (`Green` with `ponytail` simplicity) $\rightarrow$ Refactor $\rightarrow$ Verify passing with `pnpm test` and `pnpm build`.
-  3. **Streamlined Review & Verification**: Automated verification through test suite execution and type-checking; update `CHANGELOG.md` and check off `[x]` in `docs/PRODUCT_BACKLOG_ROADMAP.md`.
+- **⚡ Tier 1: Fast-Track Execution (Micro Tasks & Bounded Tasks)**:
+  1. **Micro Tasks** (≤1 file, <50 lines, no new DB/API): Implement directly $\rightarrow$ `pnpm test`. Zero spec files needed.
+  2. **Bounded Tasks** (single-app changes, additive changes, or clear AC $\le 150$ LOC):
+     - **Smart Clarification**: If Acceptance Criteria in `PRODUCT_BACKLOG_ROADMAP.md` are clear and actionable, do NOT pause for artificial Gate 1 questions. Automatically treat confirmed AC as `ASM-` and begin.
+     - **Direct TDD Loop**: Write failing tests (`Red`) $\rightarrow$ Implement minimal code (`Green` with `ponytail` simplicity) $\rightarrow$ Refactor $\rightarrow$ Verify passing with `pnpm test` and `pnpm build`.
+     - **Single Living Spec**: Maintain only `.specify/features/<slug>/spec.md` and `CHANGELOG.md`.
+     - **Streamlined Review & Verification**: Automated verification through test suite execution and type-checking; update `CHANGELOG.md` and check off `[x]` in `docs/PRODUCT_BACKLOG_ROADMAP.md`.
 
-- **🏗️ Tier 2: Deep-Track Execution**:
+- **🏗️ Tier 2: Deep-Track Execution (Full Features / Multi-App / Schema Migration)**:
   Follow the full multi-agent pipeline: Phase 1 (BA + Gate 1) $\rightarrow$ Phases 2–4 (Architect + Gate 2) $\rightarrow$ Phase 5 (Parallel implementers) $\rightarrow$ Phase 6 (Batch Review & Documentation).
+
+#### Phase 6: Proportional Review & 4 Stopping Rules
+1. **Match Review Overhead to Change Size**:
+   - Micro / Bounded Tasks: Inline review or test suite verification.
+   - Full Feature (no UI changes): `code-reviewer` + `tech-doc-architect`.
+   - Full Feature (with UI changes): `code-reviewer` + `ui-ux-reviewer` in batch 1, `tech-doc-architect` + `user-guide-creator` in batch 2.
+2. **4 Strict Review Stopping Rules**:
+   - **Max 3 Iterations**: Hard stop at Round 3; non-critical nits auto-accepted.
+   - **Incremental Diff Only**: Rounds 2 & 3 review only `git diff HEAD~1`.
+   - **Categorized Findings**: Group issues into Security, Logic, Performance, Cleanliness.
+   - **No Regurgitation**: Never re-report resolved or accepted issues.
 
 ---
 
@@ -76,7 +90,7 @@ graph TD
 | **Spec documents (BRD, PRD, SRS, user stories)**                              | `spec-writer`                                                  |
 | **IEEE 29148 quality gate & traceability matrix**                             | `spec-validator`                                               |
 | **Baseline sign-off & dev handover**                                          | `handover`                                                     |
-| **Feature execution, slice delegation & review**                              | `implementation-orchestrator`                                  |
+| **Pipeline entry-point & routing (single orchestrator)**                      | `wordstreak-ba-skills` ← use this, NOT wordstreak-workflow     |
 | Technical documentation, feature README, architecture, AGENTS                 | `technical-documentation` (Agent: `tech-doc-architect`)        |
 | **Interactive Architecture, Sequence, Dataflow, State Lifecycle & Diff Maps** | `archify` (`node .agents/skills/archify/bin/archify.mjs`)      |
 | Any `.tsx`, `.jsx` file, React component                                      | `frontend-patterns` + `frontend-a11y`                          |

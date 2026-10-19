@@ -91,13 +91,14 @@ Whenever a subagent is dispatched (e.g. for adversarial UI review, technical doc
 
 ## 7. Adaptive 2-Tier Execution Pipeline (Fast-Accurate Governance)
 
-To prevent severe token inflation and cold-start latency while maintaining 100% test and architectural rigor, the orchestrator classifies every story from `PRODUCT_BACKLOG_ROADMAP.md` into one of two execution tiers:
+To prevent severe token inflation and cold-start latency while maintaining 100% test and architectural rigor, development follows the **Adaptive 2-Tier Pipeline**. The single entry-point orchestrator skill is **`wordstreak-ba-skills`** (`wordstreak-workflow` and `implementation-orchestrator` are archived in `_archived/`).
 
 ```mermaid
 graph TD
     TASK["🎯 Backlog User Story Intake"] --> CLASSIFY{"Complexity Classification"}
 
-    subgraph TIER1 ["TIER 1: Fast-Track (Bounded Tasks / Single-App / Clear AC < 150 LOC)"]
+    subgraph TIER1 ["TIER 1: Fast-Track (Micro Tasks & Bounded Tasks < 150 LOC)"]
+        T1_MICRO["⚡ Micro Task (≤1 file, <50 LOC): Direct code → pnpm test"]
         T1_AC["⚡ Smart Clarification: AC already concrete? Skip Gate 1"]
         T1_SPEC["📄 Single Living Spec (.specify/features/<slug>/spec.md)"]
         T1_TDD["🧪 Direct TDD Execution (Orchestrator or 1 Scoped Implementer)"]
@@ -116,14 +117,16 @@ graph TD
         T2_BA --> T2_G1 --> T2_SA --> T2_G2 --> T2_PAR --> T2_REV
     end
 
-    CLASSIFY -->|Single component, API, or clear AC| TIER1
-    CLASSIFY -->|Multi-entity DB schema, new epic, ambiguous rules| TIER2
+    CLASSIFY -->|Micro Task / Single component / Clear AC| TIER1
+    CLASSIFY -->|Multi-entity DB schema / New epic / Ambiguous rules| TIER2
 ```
 
 ### Protocol Tiers Breakdown:
 
 #### ⚡ TIER 1: Fast-Track Execution (Default for standard Backlog Stories)
-1. **Scope Eligibility**: Bounded Tasks, bug fixes, single-app modifications (`apps/api`, `apps/web`, or `apps/extension`), or any User Story whose Acceptance Criteria (AC) in `PRODUCT_BACKLOG_ROADMAP.md` are already concrete and unambiguous.
+1. **Scope Eligibility**:
+   - **Micro Tasks** ($\le 1$ file, $< 50$ lines, no new DB/API): Implement directly in the primary context $\rightarrow$ `pnpm test`. No spec folder needed.
+   - **Bounded Tasks** (single-app changes in `apps/api`, `apps/web`, or `apps/extension`, bug fixes, or clear AC $\le 150$ LOC).
 2. **Direct Execution Authorization**: The orchestrator is **AUTHORIZED** to execute directly in the primary context (or dispatch a single scoped `slice-implementer` subagent) without cold-starting 5–7 separate subagents.
 3. **Smart Clarification (Zero Redundant Questions)**: If the Backlog AC is clear, do NOT pause for artificial Gate 1 questions. Automatically treat confirmed AC as `ASM-` and proceed immediately.
 4. **Single Living Spec (Zero Duplication)**: Maintain only `.specify/features/<slug>/spec.md` (combining Requirements, Technical Design, and `TC-###` Test Cases) and `CHANGELOG.md`. Do NOT generate separate duplicate `baseline.md`, `plan.md`, `test-plan.md`, or `review-report.md`.
@@ -135,7 +138,13 @@ graph TD
 2. **Phase 1 (Intake & Elicitation)**: Dispatch `business-analyst` (`pro` / `inherit`) to inspect domain models and ask 2–3 targeted questions at **Gate 1**.
 3. **Phases 2–4 (Unified Spec & Plan)**: Dispatch `system-architect` (`pro` / `inherit`) to produce a comprehensive spec & technical plan, presenting a summary for **Gate 2 Sign-Off**.
 4. **Phase 5 (Parallel Implementation)**: If modifying both API and Web, dispatch `backend-developer` and `frontend-developer` concurrently in a **single parallel `invoke_subagent` call**.
-5. **Phase 6 (Batch Review & Documentation)**: Dispatch `code-reviewer` + `ui-ux-reviewer` in batch 1 (strictly enforcing the 4 Review Stopping Rules: max 3 iterations, incremental diff only, categorized findings, no regurgitation of old/resolved bugs), and `tech-doc-architect` + `user-guide-creator` in batch 2.
+5. **Phase 6 (Batch Review & Documentation)**: Dispatch `code-reviewer` + `ui-ux-reviewer` in batch 1 (strictly enforcing the 4 Review Stopping Rules below), and `tech-doc-architect` + `user-guide-creator` in batch 2.
+
+### 4 Strict Review Stopping Rules (Enforced across all reviews):
+1. **Max 3 Iterations**: The review-fix cycle is hard-capped at 3 rounds; on Round 3, only blocking `CRITICAL` issues can halt execution; remaining nits are accepted.
+2. **Incremental Diff Only**: In Rounds 2 & 3, review **ONLY the latest git diff** (`git diff HEAD~1`).
+3. **Categorized Findings**: Consolidate findings into Security, Logic, Performance, and Cleanliness.
+4. **No Regurgitation**: Never re-report resolved or accepted issues.
 
 ### Model Allocation Matrix:
 - **Gemini 5-Hour Pool Priority**: Use `flash` or `inherit` for standard TDD, reviews, and documentation to protect rolling quota. Reserve `pro` solely for Tier 2 complex domain elicitation and system architecture.
