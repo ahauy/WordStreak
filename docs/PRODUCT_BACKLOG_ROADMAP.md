@@ -553,13 +553,13 @@ _Mục tiêu: Xóa bỏ hoàn toàn rào cản "ứng dụng trống" bằng cá
     - [x] Backend: Endpoint `POST /api/v1/library/cards/:id/fork` sao chép thẻ Official thành thẻ cá nhân độc lập (`Card`).
     - [x] Performance: Viết load test xác nhận truy vấn phản hồi < 100ms với 1.200 thẻ Official × 10.000 users ảo.
 
-- [ ] **US-LIB-03: Trang Thư viện và Chi tiết Deck (Library Discovery UI)**
+- [x] **US-LIB-03: Trang Thư viện và Chi tiết Deck (Library Discovery UI)**
   - **AC:** Trang Thư viện (`/library`) hiển thị danh mục theo Lộ trình: TOEIC (TSL), Nền tảng (NGSL), IELTS (NAWL), Giao tiếp (NGSL-S). Bộ lọc theo Cấp độ và Chủ đề. Thẻ Deck hiển thị: Tên, số từ (25 từ), thời gian ước tính, thanh tiến độ cá nhân, huy hiệu bản quyền "NGSL Project Official · CC BY-SA 4.0". Nút "Học ngay" hoặc "Thêm vào thư viện" một chạm. Trang Chi tiết Deck (`/library/decks/:slug`) cho xem trước toàn bộ danh sách từ.
   - **Tasks:**
-    - [ ] Frontend: Xây dựng `LibraryPage` (`/library`) với tab bar Lộ trình và lưới `OfficialDeckCardItem`.
-    - [ ] Frontend: Xây dựng `OfficialDeckDetailPage` (`/library/decks/:slug`) với danh sách xem trước thẻ từ vựng và bảng âm thanh phát âm mẫu.
-    - [ ] Backend: Endpoint `GET /api/v1/library/decks` hỗ trợ filter `pathCode`, `level`, `topic`, phân trang và kèm tiến độ của user hiện tại.
-    - [ ] Backend: Endpoint `POST /api/v1/library/decks/:id/enroll` ghi nhận `UserDeckEnrollment`.
+    - [x] Frontend: Xây dựng `LibraryPage` (`/library`) với tab bar Lộ trình và lưới `OfficialDeckCardItem`.
+    - [x] Frontend: Xây dựng `OfficialDeckDetailPage` (`/library/decks/:slug`) với danh sách xem trước thẻ từ vựng và bảng âm thanh phát âm mẫu.
+    - [x] Backend: Endpoint `GET /api/v1/library/decks` hỗ trợ filter `pathCode`, `level`, `topic`, phân trang và kèm tiến độ của user hiện tại.
+    - [x] Backend: Endpoint `POST /api/v1/library/decks/:id/enroll` ghi nhận `UserDeckEnrollment`.
 
 - [ ] **US-LIB-04: Onboarding theo mục tiêu (TOEIC Personalized Onboarding)**
   - **AC:** Wizard 60 giây xuất hiện ngay sau khi đăng ký: (1) Chọn mục tiêu học (TOEIC, IELTS, Giao tiếp, Đi làm), (2) Xác định xuất phát điểm, (3) Đặt mục tiêu ngày (5/10/20 từ), (4) Tự động gán deck đầu tiên phù hợp vào Dashboard. Hỗ trợ chế độ Guest Preview cho phép học thử 5 thẻ ngay trên Landing Page mà không bắt buộc tạo tài khoản trước.
@@ -719,7 +719,7 @@ _Mục tiêu: Xóa bỏ hoàn toàn rào cản "ứng dụng trống" bằng cá
 [ Sprint 9 - Activation & Starter Library Soft Launch ] ──► [ PLANNED 📋 ]
   ├── EPIC-13: US-LIB-01 (Content Enrichment Pipeline: TSL Top 200 & NGSL Top 300)   ✅
   ├── EPIC-13: US-LIB-02 (Shared Official Cards & Lazy Progress Model)              ✅
-  ├── EPIC-13: US-LIB-03 (Library Discovery Page & Deck Details)
+  ├── EPIC-13: US-LIB-03 (Library Discovery Page & Deck Details)                     ✅
   ├── EPIC-13: US-LIB-04 & US-LIB-11 (60s Goal Onboarding & Adaptive Beginner Entry)
   ├── EPIC-13: US-LIB-12 (Foundation Stage: 15 Decks NGSL Top 300 + 4 Mini-lessons)
   ├── EPIC-13: US-LIB-13 (Vocabulary Control Engine for Examples)
