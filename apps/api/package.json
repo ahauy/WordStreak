@@ -17,6 +17,7 @@
     "prisma": "prisma",
     "prisma:generate": "prisma generate",
     "prisma:push": "prisma db push",
+    "pretest": "pnpm --filter @wordstreak/shared-types build",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",

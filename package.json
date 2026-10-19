@@ -9,7 +9,7 @@
     "build": "pnpm -r run build",
     "typecheck": "pnpm -r run typecheck",
     "lint": "pnpm -r run lint",
-    "test": "pnpm --filter api test && pnpm --filter web test",
+    "test": "pnpm --filter @wordstreak/shared-types build && pnpm --filter api test && pnpm --filter web test",
     "seed:pipeline": "tsx scripts/seed/run-pipeline.ts"
   },
   "pnpm": {

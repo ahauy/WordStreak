@@ -14,6 +14,7 @@ import type {
   ReviewStatsResponse,
   CardLearningStatus,
   ReviewSummaryDto,
+  OfficialCardContent,
 } from '@wordstreak/shared-types';
 
 export const STREAK_RISK_MIN_DAYS = 3;
@@ -157,7 +158,7 @@ export class ReviewsService {
       ? { deckId, deck: { userId, isArchived: false } }
       : { deck: { userId, isArchived: false } };
 
-    // 3. Query progress records that are due (nextReviewDate <= now) or NEW
+    // 3. Query custom progress records that are due (nextReviewDate <= now) or NEW
     const progressList = await this.prisma.userCardProgress.findMany({
       where: {
         userId,
@@ -181,7 +182,35 @@ export class ReviewsService {
       take: limit,
     });
 
-    // 4. Separate and sort: Overdue -> Due Today -> New cards (capped by dailyGoal)
+    // 4. Query official cards progress if not scoped to a custom deck
+    const officialProgressList = !deckId
+      ? await this.prisma.userOfficialCardProgress.findMany({
+          where: {
+            userId,
+            OR: [{ nextReviewDate: { lte: now } }, { status: 'NEW' }],
+          },
+          include: {
+            card: {
+              include: {
+                deckCards: {
+                  include: {
+                    deck: {
+                      select: {
+                        id: true,
+                        title: true,
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+          orderBy: [{ nextReviewDate: 'asc' }],
+          take: limit,
+        })
+      : [];
+
+    // 5. Separate and sort: Overdue -> Due Today -> New cards (capped by dailyGoal)
     const todayStart = new Date(
       now.getFullYear(),
       now.getMonth(),
@@ -224,6 +253,59 @@ export class ReviewsService {
       }
     }
 
+    for (const item of officialProgressList) {
+      const content =
+        (item.card.content as unknown as Partial<OfficialCardContent>) || {};
+      const officialDeck = item.card.deckCards?.[0]?.deck;
+      const cardItem: DueCardItem = {
+        id: item.id,
+        cardId: item.cardId,
+        deckId: officialDeck?.id || 'official-library',
+        deckTitle: officialDeck?.title || 'Official Library',
+        deckColor: '#6366F1',
+        word: item.card.headword,
+        meaning: content.meaning_vi ?? item.card.headword,
+        phonetic: content.ipa_us ?? null,
+        audioUrl: null,
+        exampleSentence: content.example_en ?? null,
+        collocations: Array.isArray(content.collocations)
+          ? content.collocations.join(', ')
+          : typeof content.collocations === 'string'
+            ? content.collocations
+            : null,
+        mnemonic: content.tip_vi ?? null,
+        imageUrl: null,
+        status: item.status as CardLearningStatus,
+        interval: item.interval,
+        repetitions: item.repetitions,
+        easeFactor: item.easeFactor,
+        nextReviewDate: (item.nextReviewDate ?? now).toISOString(),
+        isOfficial: true,
+        officialCardId: item.cardId,
+      };
+
+      if (item.status === 'NEW') {
+        if (newCards.length < dailyGoal) {
+          newCards.push(cardItem);
+        }
+      } else if (item.nextReviewDate && item.nextReviewDate < todayStart) {
+        overdue.push(cardItem);
+      } else {
+        dueToday.push(cardItem);
+      }
+    }
+
+    overdue.sort(
+      (a, b) =>
+        new Date(a.nextReviewDate).getTime() -
+        new Date(b.nextReviewDate).getTime(),
+    );
+    dueToday.sort(
+      (a, b) =>
+        new Date(a.nextReviewDate).getTime() -
+        new Date(b.nextReviewDate).getTime(),
+    );
+
     const resultQueue = [...overdue, ...dueToday, ...newCards].slice(0, limit);
 
     return {
@@ -247,32 +329,114 @@ export class ReviewsService {
   ) {
     const { cardId, rating } = dto;
 
-    // 1. Fetch card and verify ownership
+    // 1. Fetch custom card and verify ownership
     const card = await this.prisma.card.findUnique({
       where: { id: cardId },
       include: { deck: true },
     });
 
-    if (!card) {
+    if (card) {
+      if (card.deck.userId !== userId) {
+        throw new ForbiddenException('You do not have access to this card');
+      }
+
+      let progress = await this.prisma.userCardProgress.findUnique({
+        where: {
+          userId_cardId: {
+            userId,
+            cardId,
+          },
+        },
+      });
+
+      if (!progress) {
+        progress = await this.prisma.userCardProgress.create({
+          data: {
+            userId,
+            cardId,
+            interval: 0,
+            easeFactor: 2.5,
+            repetitions: 0,
+            status: 'NEW',
+            nextReviewDate: new Date(),
+          },
+        });
+      }
+
+      const sm2Result = this.srsService.calculateSm2({
+        rating,
+        repetitions: progress.repetitions,
+        easeFactor: progress.easeFactor,
+        interval: progress.interval,
+      });
+
+      const updated = await this.prisma.userCardProgress.update({
+        where: { id: progress.id },
+        data: {
+          interval: sm2Result.interval,
+          easeFactor: sm2Result.easeFactor,
+          repetitions: sm2Result.repetitions,
+          nextReviewDate: sm2Result.nextReviewDate,
+          status: sm2Result.status,
+          lastReviewedAt: new Date(),
+        },
+      });
+
+      await this.prisma.reviewLog.create({
+        data: {
+          userId,
+          cardId,
+          rating,
+          interval: sm2Result.interval,
+          reviewedAt: new Date(),
+        },
+      });
+
+      const streakResult = await this.streakService.recordActivity(userId, {
+        timezone: clientTimezone,
+      });
+
+      const xpResult = await this.xpService.awardReviewXp(userId, {
+        cardId,
+        rating,
+        streakResult,
+        clientTimezone,
+      });
+
+      return {
+        cardId: updated.cardId,
+        status: updated.status,
+        interval: updated.interval,
+        repetitions: updated.repetitions,
+        easeFactor: updated.easeFactor,
+        lastReviewedAt: updated.lastReviewedAt,
+        nextReviewDate: updated.nextReviewDate,
+        streak: streakResult,
+        xp: xpResult,
+      };
+    }
+
+    // 2. Fallback to OfficialCard if not a custom card
+    const officialCard = await this.prisma.officialCard.findUnique({
+      where: { id: cardId },
+    });
+
+    if (!officialCard) {
       throw new NotFoundException(`Card with ID ${cardId} not found`);
     }
 
-    if (card.deck.userId !== userId) {
-      throw new ForbiddenException('You do not have access to this card');
-    }
-
-    // 2. Fetch or initialize progress record
-    let progress = await this.prisma.userCardProgress.findUnique({
-      where: {
-        userId_cardId: {
-          userId,
-          cardId,
+    let officialProgress =
+      await this.prisma.userOfficialCardProgress.findUnique({
+        where: {
+          userId_cardId: {
+            userId,
+            cardId,
+          },
         },
-      },
-    });
+      });
 
-    if (!progress) {
-      progress = await this.prisma.userCardProgress.create({
+    if (!officialProgress) {
+      officialProgress = await this.prisma.userOfficialCardProgress.create({
         data: {
           userId,
           cardId,
@@ -285,17 +449,15 @@ export class ReviewsService {
       });
     }
 
-    // 3. Compute SM-2 update
     const sm2Result = this.srsService.calculateSm2({
       rating,
-      repetitions: progress.repetitions,
-      easeFactor: progress.easeFactor,
-      interval: progress.interval,
+      repetitions: officialProgress.repetitions,
+      easeFactor: officialProgress.easeFactor,
+      interval: officialProgress.interval,
     });
 
-    // 4. Update progress record in DB
-    const updated = await this.prisma.userCardProgress.update({
-      where: { id: progress.id },
+    const updated = await this.prisma.userOfficialCardProgress.update({
+      where: { id: officialProgress.id },
       data: {
         interval: sm2Result.interval,
         easeFactor: sm2Result.easeFactor,
@@ -303,17 +465,6 @@ export class ReviewsService {
         nextReviewDate: sm2Result.nextReviewDate,
         status: sm2Result.status,
         lastReviewedAt: new Date(),
-      },
-    });
-
-    // 5. Log immutable review event for analytics
-    await this.prisma.reviewLog.create({
-      data: {
-        userId,
-        cardId,
-        rating,
-        interval: sm2Result.interval,
-        reviewedAt: new Date(),
       },
     });
 
@@ -342,39 +493,67 @@ export class ReviewsService {
   }
 
   /**
-   * Aggregates review metrics and card counts for the user.
+   * Aggregates review metrics and card counts for the user across custom and official cards.
    */
   async getReviewStats(userId: string): Promise<ReviewStatsResponse> {
     const now = new Date();
 
-    const [totalCards, dueCount, newCount, learningCount, masteredCount] =
-      await Promise.all([
-        this.prisma.userCardProgress.count({
-          where: { userId },
-        }),
-        this.prisma.userCardProgress.count({
-          where: {
-            userId,
-            OR: [{ nextReviewDate: { lte: now } }, { status: 'NEW' }],
-          },
-        }),
-        this.prisma.userCardProgress.count({
-          where: { userId, status: 'NEW' },
-        }),
-        this.prisma.userCardProgress.count({
-          where: { userId, status: 'LEARNING' },
-        }),
-        this.prisma.userCardProgress.count({
-          where: { userId, status: 'MASTERED' },
-        }),
-      ]);
+    const [
+      customTotal,
+      customDue,
+      customNew,
+      customLearning,
+      customMastered,
+      officialTotal,
+      officialDue,
+      officialNew,
+      officialLearning,
+      officialMastered,
+    ] = await Promise.all([
+      this.prisma.userCardProgress.count({
+        where: { userId },
+      }),
+      this.prisma.userCardProgress.count({
+        where: {
+          userId,
+          OR: [{ nextReviewDate: { lte: now } }, { status: 'NEW' }],
+        },
+      }),
+      this.prisma.userCardProgress.count({
+        where: { userId, status: 'NEW' },
+      }),
+      this.prisma.userCardProgress.count({
+        where: { userId, status: 'LEARNING' },
+      }),
+      this.prisma.userCardProgress.count({
+        where: { userId, status: 'MASTERED' },
+      }),
+      this.prisma.userOfficialCardProgress.count({
+        where: { userId },
+      }),
+      this.prisma.userOfficialCardProgress.count({
+        where: {
+          userId,
+          OR: [{ nextReviewDate: { lte: now } }, { status: 'NEW' }],
+        },
+      }),
+      this.prisma.userOfficialCardProgress.count({
+        where: { userId, status: 'NEW' },
+      }),
+      this.prisma.userOfficialCardProgress.count({
+        where: { userId, status: 'LEARNING' },
+      }),
+      this.prisma.userOfficialCardProgress.count({
+        where: { userId, status: 'MASTERED' },
+      }),
+    ]);
 
     return {
-      totalCards,
-      dueCount,
-      newCount,
-      learningCount,
-      masteredCount,
+      totalCards: customTotal + officialTotal,
+      dueCount: customDue + officialDue,
+      newCount: customNew + officialNew,
+      learningCount: customLearning + officialLearning,
+      masteredCount: customMastered + officialMastered,
     };
   }
 
@@ -386,7 +565,17 @@ export class ReviewsService {
     timezone: string,
   ) {
     const activeDeckCardFilter = { deck: { userId, isArchived: false } };
-    return Promise.all([
+    const [
+      user,
+      customDue,
+      customNew,
+      studiedToday,
+      customNextDue,
+      streak,
+      officialDue,
+      officialNew,
+      officialNextDue,
+    ] = await Promise.all([
       this.prisma.user.findUnique({
         where: { id: userId },
         select: { dailyGoal: true },
@@ -423,7 +612,45 @@ export class ReviewsService {
         select: { nextReviewDate: true },
       }),
       this.streakService.getStreak(userId, timezone),
+      this.prisma.userOfficialCardProgress.count({
+        where: {
+          userId,
+          status: { not: 'NEW' },
+          nextReviewDate: { lte: now },
+        },
+      }),
+      this.prisma.userOfficialCardProgress.count({
+        where: {
+          userId,
+          status: 'NEW',
+        },
+      }),
+      this.prisma.userOfficialCardProgress.findFirst({
+        where: {
+          userId,
+          status: { not: 'NEW' },
+          nextReviewDate: { gt: now },
+        },
+        orderBy: { nextReviewDate: 'asc' },
+        select: { nextReviewDate: true },
+      }),
     ]);
+
+    const nextDueDates = [
+      customNextDue?.nextReviewDate,
+      officialNextDue?.nextReviewDate,
+    ]
+      .filter((d): d is Date => Boolean(d))
+      .sort((a, b) => a.getTime() - b.getTime());
+
+    return [
+      user,
+      customDue + officialDue,
+      customNew + officialNew,
+      studiedToday,
+      nextDueDates[0] ? { nextReviewDate: nextDueDates[0] } : null,
+      streak,
+    ] as const;
   }
 
   /**

@@ -544,14 +544,14 @@ _Mục tiêu: Xóa bỏ hoàn toàn rào cản "ứng dụng trống" bằng cá
     - [x] Script: Viết `06-build-decks.ts` phân 10 chủ đề, cắt deck 25 từ, sinh slug và tiêu đề song ngữ chuẩn SEO.
     - [x] Script: Viết `07-publish.ts` upsert nguyên tử vào database production.
 
-- [ ] **US-LIB-02: Mô hình dữ liệu Official & Enrollment (Data Architecture)**
+- [x] **US-LIB-02: Mô hình dữ liệu Official & Enrollment (Data Architecture)**
   - **AC:** Chuyển đổi từ mô hình Deep Copy sang mô hình Thẻ Official dùng chung (`OfficialCard`, `OfficialDeck`) và tiến độ cá nhân lazy-loaded (`UserOfficialCardProgress`). Bản ghi tiến độ chỉ được tạo khi thẻ thực sự vào phiên học/ôn. Hàng đợi ôn tập `GET /api/v1/reviews/due` hợp nhất thẻ tự tạo và thẻ Official qua `UNION ALL`. Hỗ trợ tính năng "Sao chép thành thẻ của tôi" khi muốn sửa đổi sâu.
   - **Tasks:**
-    - [ ] Database: Tạo Prisma migration cho 7 bảng: `WordList`, `WordListEntry`, `OfficialCard`, `OfficialDeck`, `OfficialDeckCard`, `UserDeckEnrollment`, `UserOfficialCardProgress`, `OfficialCardFeedback`.
-    - [ ] Backend: Cập nhật `ReviewsService` gộp hàng đợi ôn tập từ cả 2 nguồn thẻ (Custom Cards và Official Cards).
-    - [ ] Backend: Đồng bộ logic tính Daily Streak, XP, và Dashboard Stats cho cả thẻ Official.
-    - [ ] Backend: Endpoint `POST /api/v1/library/cards/:id/fork` sao chép thẻ Official thành thẻ cá nhân độc lập (`Card`).
-    - [ ] Performance: Viết load test xác nhận truy vấn phản hồi < 100ms với 1.200 thẻ Official × 10.000 users ảo.
+    - [x] Database: Tạo Prisma migration cho 7 bảng: `WordList`, `WordListEntry`, `OfficialCard`, `OfficialDeck`, `OfficialDeckCard`, `UserDeckEnrollment`, `UserOfficialCardProgress`, `OfficialCardFeedback`.
+    - [x] Backend: Cập nhật `ReviewsService` gộp hàng đợi ôn tập từ cả 2 nguồn thẻ (Custom Cards và Official Cards).
+    - [x] Backend: Đồng bộ logic tính Daily Streak, XP, và Dashboard Stats cho cả thẻ Official.
+    - [x] Backend: Endpoint `POST /api/v1/library/cards/:id/fork` sao chép thẻ Official thành thẻ cá nhân độc lập (`Card`).
+    - [x] Performance: Viết load test xác nhận truy vấn phản hồi < 100ms với 1.200 thẻ Official × 10.000 users ảo.
 
 - [ ] **US-LIB-03: Trang Thư viện và Chi tiết Deck (Library Discovery UI)**
   - **AC:** Trang Thư viện (`/library`) hiển thị danh mục theo Lộ trình: TOEIC (TSL), Nền tảng (NGSL), IELTS (NAWL), Giao tiếp (NGSL-S). Bộ lọc theo Cấp độ và Chủ đề. Thẻ Deck hiển thị: Tên, số từ (25 từ), thời gian ước tính, thanh tiến độ cá nhân, huy hiệu bản quyền "NGSL Project Official · CC BY-SA 4.0". Nút "Học ngay" hoặc "Thêm vào thư viện" một chạm. Trang Chi tiết Deck (`/library/decks/:slug`) cho xem trước toàn bộ danh sách từ.
@@ -718,7 +718,7 @@ _Mục tiêu: Xóa bỏ hoàn toàn rào cản "ứng dụng trống" bằng cá
 
 [ Sprint 9 - Activation & Starter Library Soft Launch ] ──► [ PLANNED 📋 ]
   ├── EPIC-13: US-LIB-01 (Content Enrichment Pipeline: TSL Top 200 & NGSL Top 300)   ✅
-  ├── EPIC-13: US-LIB-02 (Shared Official Cards & Lazy Progress Model)
+  ├── EPIC-13: US-LIB-02 (Shared Official Cards & Lazy Progress Model)              ✅
   ├── EPIC-13: US-LIB-03 (Library Discovery Page & Deck Details)
   ├── EPIC-13: US-LIB-04 & US-LIB-11 (60s Goal Onboarding & Adaptive Beginner Entry)
   ├── EPIC-13: US-LIB-12 (Foundation Stage: 15 Decks NGSL Top 300 + 4 Mini-lessons)

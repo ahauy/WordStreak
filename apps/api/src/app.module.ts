@@ -14,6 +14,7 @@ import { AiVocabularyModule } from './modules/ai-vocabulary/ai-vocabulary.module
 import { AnalyticsModule } from './modules/analytics/analytics.module';
 import { GamificationModule } from './modules/gamification/gamification.module';
 import { CommunityModule } from './modules/community/community.module';
+import { LibraryModule } from './modules/library/library.module';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { CommunityModule } from './modules/community/community.module';
     AnalyticsModule,
     GamificationModule,
     CommunityModule,
+    LibraryModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -27,6 +27,17 @@ describe('ReviewsService', () => {
       count: jest.Mock;
       findFirst: jest.Mock;
     };
+    officialCard: {
+      findUnique: jest.Mock;
+    };
+    userOfficialCardProgress: {
+      findMany: jest.Mock;
+      findUnique: jest.Mock;
+      create: jest.Mock;
+      update: jest.Mock;
+      count: jest.Mock;
+      findFirst: jest.Mock;
+    };
     reviewLog: { create: jest.Mock; count: jest.Mock };
   };
 
@@ -92,6 +103,17 @@ describe('ReviewsService', () => {
         update: jest.fn(),
         count: jest.fn(),
         findFirst: jest.fn(),
+      },
+      officialCard: {
+        findUnique: jest.fn(),
+      },
+      userOfficialCardProgress: {
+        findMany: jest.fn().mockResolvedValue([]),
+        findUnique: jest.fn(),
+        create: jest.fn(),
+        update: jest.fn(),
+        count: jest.fn().mockResolvedValue(0),
+        findFirst: jest.fn().mockResolvedValue(null),
       },
       reviewLog: {
         create: jest.fn().mockResolvedValue({
@@ -587,6 +609,120 @@ describe('ReviewsService', () => {
       expect(summary.streakAtRisk).toBe(false);
       expect(summary.nextDueAt).toBeNull();
       expect(summary.timezone).toBe('UTC');
+    });
+  });
+
+  describe('Official Cards & Unified Review Operations (US-LIB-02)', () => {
+    it('TC-ODA-002: getDueCards merges custom and official cards into a single prioritized queue', async () => {
+      prisma.user.findUnique.mockResolvedValue({ dailyGoal: 10 });
+      prisma.userCardProgress.findMany.mockResolvedValue([
+        {
+          id: 'prog-custom-1',
+          cardId: 'card-1',
+          status: 'LEARNING',
+          interval: 3,
+          repetitions: 2,
+          easeFactor: 2.5,
+          nextReviewDate: new Date('2026-10-10T00:00:00.000Z'),
+          card: {
+            deckId: 'deck-1',
+            word: 'custom-word',
+            meaning: 'custom-meaning',
+            deck: { id: 'deck-1', title: 'My Deck', color: '#10B981' },
+          },
+        },
+      ]);
+      prisma.userOfficialCardProgress.findMany.mockResolvedValue([
+        {
+          id: 'prog-official-1',
+          cardId: 'official-card-1',
+          status: 'LEARNING',
+          interval: 2,
+          repetitions: 1,
+          easeFactor: 2.4,
+          nextReviewDate: new Date('2026-10-09T00:00:00.000Z'),
+          card: {
+            headword: 'reimburse',
+            content: { meaning_vi: 'hoàn tiền' },
+            deckCards: [{ deck: { id: 'off-deck-1', title: 'TSL 1A' } }],
+          },
+        },
+      ]);
+
+      const result = await service.getDueCards(mockUserId);
+      expect(result.data).toHaveLength(2);
+      expect(result.meta.totalDue).toBe(2);
+      expect(result.data[0].word).toBe('reimburse');
+      expect(result.data[0].isOfficial).toBe(true);
+      expect(result.data[1].word).toBe('custom-word');
+      expect(result.data[1].isOfficial).toBeUndefined();
+    });
+
+    it('TC-ODA-003: submitReview processes official card, creates lazy progress, and updates SM-2', async () => {
+      prisma.card.findUnique.mockResolvedValue(null);
+      prisma.officialCard.findUnique.mockResolvedValue({
+        id: 'official-card-1',
+        headword: 'reimburse',
+      });
+      prisma.userOfficialCardProgress.findUnique.mockResolvedValue(null);
+      prisma.userOfficialCardProgress.create.mockResolvedValue({
+        id: 'prog-off-new',
+        userId: mockUserId,
+        cardId: 'official-card-1',
+        repetitions: 0,
+        easeFactor: 2.5,
+        interval: 0,
+        status: 'NEW',
+      });
+      prisma.userOfficialCardProgress.update.mockResolvedValue({
+        id: 'prog-off-new',
+        userId: mockUserId,
+        cardId: 'official-card-1',
+        repetitions: 1,
+        easeFactor: 2.5,
+        interval: 1,
+        status: 'LEARNING',
+        lastReviewedAt: new Date(),
+        nextReviewDate: new Date(),
+      });
+
+      const result = await service.submitReview(mockUserId, {
+        cardId: 'official-card-1',
+        rating: 3,
+      });
+
+      expect(prisma.userOfficialCardProgress.create).toHaveBeenCalled();
+      expect(prisma.userOfficialCardProgress.update).toHaveBeenCalled();
+      expect(result.cardId).toBe('official-card-1');
+      expect(result.status).toBe('LEARNING');
+      expect(streakService.recordActivity).toHaveBeenCalledWith(mockUserId, {
+        timezone: undefined,
+      });
+      expect(xpService.awardReviewXp).toHaveBeenCalled();
+    });
+
+    it('TC-ODA-004: getReviewStats aggregates counts from both custom and official cards', async () => {
+      prisma.userCardProgress.count
+        .mockResolvedValueOnce(10) // total
+        .mockResolvedValueOnce(3) // due
+        .mockResolvedValueOnce(2) // new
+        .mockResolvedValueOnce(5) // learning
+        .mockResolvedValueOnce(3); // mastered
+
+      prisma.userOfficialCardProgress.count
+        .mockResolvedValueOnce(20) // total
+        .mockResolvedValueOnce(5) // due
+        .mockResolvedValueOnce(8) // new
+        .mockResolvedValueOnce(7) // learning
+        .mockResolvedValueOnce(5); // mastered
+
+      const stats = await service.getReviewStats(mockUserId);
+
+      expect(stats.totalCards).toBe(30);
+      expect(stats.dueCount).toBe(8);
+      expect(stats.newCount).toBe(10);
+      expect(stats.learningCount).toBe(12);
+      expect(stats.masteredCount).toBe(8);
     });
   });
 });
