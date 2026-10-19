@@ -122,10 +122,10 @@ export const DashboardNavbar: React.FC<DashboardNavbarProps> = ({
   return (
     <>
       <header className="sticky top-0 z-30 w-full border-b border-[#e5e5e5] bg-white/95 backdrop-blur-md transition-colors">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-2">
           {/* Brand Logo & Nav links */}
-          <div className="flex items-center gap-3 sm:gap-4 lg:gap-8 shrink-0">
-            {/* Mobile Hamburger Toggle (< sm) — BR-MOBILE-002 */}
+          <div className="flex items-center gap-2 sm:gap-3 lg:gap-6 shrink-0">
+            {/* Mobile Hamburger Toggle (< xl) — BR-MOBILE-002 */}
             <button
               type="button"
               onClick={() => setIsMobileMenuOpen((prev) => !prev)}
@@ -136,7 +136,7 @@ export const DashboardNavbar: React.FC<DashboardNavbarProps> = ({
                   ? t("actions.closeMenu", "Close menu")
                   : t("actions.openMenu", "Open menu")
               }
-              className="sm:hidden w-9 h-9 rounded-full border border-[#e5e5e5] bg-white flex items-center justify-center text-black cursor-pointer hover:bg-[#fafafa] transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 shrink-0 apple-tap-active"
+              className="xl:hidden w-9 h-9 rounded-full border border-[#e5e5e5] bg-white flex items-center justify-center text-black cursor-pointer hover:bg-[#fafafa] transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 shrink-0 apple-tap-active"
             >
               {isMobileMenuOpen ? (
                 <X className="w-[18px] h-[18px]" />
@@ -147,7 +147,7 @@ export const DashboardNavbar: React.FC<DashboardNavbarProps> = ({
 
             <Link
               to="/dashboard"
-              className="flex items-center gap-2.5 group focus:outline-none shrink-0"
+              className="flex items-center gap-2 group focus:outline-none shrink-0"
             >
               <StreakFlame
                 streakDays={currentStreak}
@@ -163,7 +163,7 @@ export const DashboardNavbar: React.FC<DashboardNavbarProps> = ({
                 >
                   WordStreak
                 </span>
-                <span className="hidden sm:inline-block text-[10px] uppercase font-mono font-bold tracking-wider text-[#7e22ce] mt-0.5 whitespace-nowrap">
+                <span className="hidden 2xl:inline-block text-[10px] uppercase font-mono font-bold tracking-wider text-[#7e22ce] mt-0.5 whitespace-nowrap">
                   {t("brand.tagline", "100% Free Spaced Repetition")}
                 </span>
               </div>
@@ -171,7 +171,7 @@ export const DashboardNavbar: React.FC<DashboardNavbarProps> = ({
 
             {/* Navigation links */}
             <nav
-              className="hidden sm:flex items-center gap-1 shrink-0"
+              className="hidden xl:flex items-center gap-1 shrink-0"
               aria-label="Main Navigation"
             >
               <Link
@@ -286,7 +286,7 @@ export const DashboardNavbar: React.FC<DashboardNavbarProps> = ({
                 showGlow={false}
                 isActiveToday={isActiveToday}
               />
-              <span className="font-mono">
+              <span className="font-mono hidden sm:inline">
                 {t("dashboard:streak.daysStreak", {
                   count: currentStreak,
                   defaultValue: `${currentStreak} Day Streak`,
@@ -295,7 +295,7 @@ export const DashboardNavbar: React.FC<DashboardNavbarProps> = ({
             </button>
 
             {/* Offline Sync State Pill */}
-            <div className="hidden sm:flex">
+            <div className="hidden 2xl:flex">
               <OfflineSyncPill userId={storeUser?.id} />
             </div>
 
@@ -318,7 +318,7 @@ export const DashboardNavbar: React.FC<DashboardNavbarProps> = ({
                 size="sm"
                 className="ring-1 ring-[#e5e5e5]"
               />
-              <span className="hidden md:inline-block text-xs font-bold text-black pr-1 truncate max-w-[100px]">
+              <span className="hidden 2xl:inline-block text-xs font-bold text-black pr-1 truncate max-w-[100px]">
                 {user?.username || "Learner"}
               </span>
             </button>
@@ -336,12 +336,12 @@ export const DashboardNavbar: React.FC<DashboardNavbarProps> = ({
           </div>
         </div>
 
-        {/* Mobile Navigation Drawer (< sm) — BR-MOBILE-003 */}
+        {/* Mobile Navigation Drawer (< xl) — BR-MOBILE-003 */}
         {isMobileMenuOpen && (
           <nav
             id="mobile-nav-menu"
             aria-label="Main Navigation"
-            className="sm:hidden absolute inset-x-0 top-full border-b border-[#e5e5e5] bg-white/95 backdrop-blur-md shadow-lg px-3 py-3 flex flex-col gap-1"
+            className="xl:hidden absolute inset-x-0 top-full border-b border-[#e5e5e5] bg-white/95 backdrop-blur-md shadow-lg px-3 py-3 flex flex-col gap-1"
           >
             <Link
               to="/dashboard"

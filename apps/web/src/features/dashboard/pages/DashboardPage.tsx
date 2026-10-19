@@ -11,6 +11,7 @@ import { StreakHeatmapTracker } from "../components/StreakHeatmapTracker";
 import { DecksPreviewSection } from "../components/DecksPreviewSection";
 import { DashboardAnalyticsWidget } from "../../analytics/components/DashboardAnalyticsWidget";
 import { CreateDeckModal } from "../../decks/components/CreateDeckModal";
+import { OnboardingWizard } from "../../onboarding/components/OnboardingWizard";
 import { useStreak } from "../hooks/useStreak";
 import { useAnalytics } from "../../analytics/hooks/useAnalytics";
 import { useDecks } from "../../decks/hooks/useDecks";
@@ -40,6 +41,7 @@ export const DashboardPage: React.FC = () => {
 
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isCreateDeckOpen, setIsCreateDeckOpen] = useState(false);
+  const [isOnboardingDismissed, setIsOnboardingDismissed] = useState(false);
   const [settingsTab, setSettingsTab] = useState<
     "profile" | "avatar" | "security" | "gamification"
   >("profile");
@@ -194,6 +196,15 @@ export const DashboardPage: React.FC = () => {
           isOpen={isSettingsOpen}
           onClose={() => setIsSettingsOpen(false)}
           initialTab={settingsTab}
+        />
+
+        {/* Onboarding Wizard Modal */}
+        <OnboardingWizard
+          isOpen={Boolean(
+            user && user.onboardingCompleted === false && !isOnboardingDismissed,
+          )}
+          onClose={() => setIsOnboardingDismissed(true)}
+          onSuccess={() => setIsOnboardingDismissed(true)}
         />
       </div>
     </PageTransition>

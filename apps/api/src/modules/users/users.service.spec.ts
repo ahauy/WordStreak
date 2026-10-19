@@ -6,6 +6,7 @@ import { UsersService } from './users.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { PasswordUtil } from '../auth/utils/password.util';
 import { UpdateProfileDto } from './dto/update-profile.dto';
+import { OnboardingDto } from './dto/onboarding.dto';
 
 describe('UsersService', () => {
   let service: UsersService;
@@ -31,6 +32,12 @@ describe('UsersService', () => {
     },
     session: {
       updateMany: jest.fn(),
+    },
+    officialDeck: {
+      findFirst: jest.fn(),
+    },
+    userDeckEnrollment: {
+      upsert: jest.fn(),
     },
   };
 
@@ -299,6 +306,132 @@ describe('UsersService', () => {
       });
       const errors = await validate(dto);
       expect(errors.length).toBe(0);
+    });
+  });
+
+  describe('completeOnboarding', () => {
+    const mockOfficialDeck = {
+      id: 'deck-toeic-1',
+      title: 'TSL Part 1',
+      pathCode: 'TOEIC',
+      order: 1,
+    };
+
+    it('should complete onboarding, auto-enroll user into recommended deck, and return user profile', async () => {
+      mockPrismaService.user.findUnique.mockResolvedValue(mockUser);
+      mockPrismaService.officialDeck.findFirst.mockResolvedValue(
+        mockOfficialDeck,
+      );
+      mockPrismaService.userDeckEnrollment.upsert.mockResolvedValue({});
+      mockPrismaService.user.update.mockResolvedValue({
+        ...mockUser,
+        learningGoal: 'TOEIC',
+        startingLevel: 'BEGINNER',
+        dailyGoal: 20,
+        onboardingCompleted: true,
+      });
+
+      const result = await service.completeOnboarding('user-uuid-1', {
+        learningGoal: 'TOEIC',
+        startingLevel: 'BEGINNER',
+        dailyGoal: 20,
+      });
+
+      expect(result.success).toBe(true);
+      expect(result.enrolledDeckId).toBe('deck-toeic-1');
+      expect(result.enrolledDeckTitle).toBe('TSL Part 1');
+      expect(result.user.learningGoal).toBe('TOEIC');
+      expect(result.user.startingLevel).toBe('BEGINNER');
+      expect(result.user.onboardingCompleted).toBe(true);
+      expect(result.user.dailyGoal).toBe(20);
+      expect(mockPrismaService.officialDeck.findFirst).toHaveBeenCalledWith({
+        where: { pathCode: 'TOEIC' },
+        orderBy: { order: 'asc' },
+      });
+      expect(mockPrismaService.userDeckEnrollment.upsert).toHaveBeenCalledWith({
+        where: {
+          userId_deckId: {
+            userId: 'user-uuid-1',
+            deckId: 'deck-toeic-1',
+          },
+        },
+        create: {
+          userId: 'user-uuid-1',
+          deckId: 'deck-toeic-1',
+        },
+        update: {},
+      });
+    });
+
+    it('should target FOUNDATION path when startingLevel is ZERO', async () => {
+      mockPrismaService.user.findUnique.mockResolvedValue(mockUser);
+      mockPrismaService.officialDeck.findFirst.mockResolvedValue({
+        id: 'deck-foundation-1',
+        title: 'NGSL Foundation',
+        pathCode: 'FOUNDATION',
+        order: 1,
+      });
+      mockPrismaService.userDeckEnrollment.upsert.mockResolvedValue({});
+      mockPrismaService.user.update.mockResolvedValue({
+        ...mockUser,
+        learningGoal: 'TOEIC',
+        startingLevel: 'ZERO',
+        onboardingCompleted: true,
+      });
+
+      const result = await service.completeOnboarding('user-uuid-1', {
+        learningGoal: 'TOEIC',
+        startingLevel: 'ZERO',
+      });
+
+      expect(result.success).toBe(true);
+      expect(mockPrismaService.officialDeck.findFirst).toHaveBeenCalledWith({
+        where: { pathCode: 'FOUNDATION' },
+        orderBy: { order: 'asc' },
+      });
+    });
+
+    it('should throw NotFoundException if user does not exist', async () => {
+      mockPrismaService.user.findUnique.mockResolvedValue(null);
+
+      await expect(
+        service.completeOnboarding('non-existent', {
+          learningGoal: 'TOEIC',
+          startingLevel: 'BEGINNER',
+        }),
+      ).rejects.toThrow(NotFoundException);
+    });
+  });
+
+  describe('OnboardingDto validation', () => {
+    it('should validate valid OnboardingDto payload', async () => {
+      const dto = plainToInstance(OnboardingDto, {
+        learningGoal: 'TOEIC',
+        startingLevel: 'BEGINNER',
+        dailyGoal: 10,
+      });
+      const errors = await validate(dto);
+      expect(errors.length).toBe(0);
+    });
+
+    it('should fail validation when learningGoal is invalid', async () => {
+      const dto = plainToInstance(OnboardingDto, {
+        learningGoal: 'INVALID_GOAL',
+        startingLevel: 'BEGINNER',
+      });
+      const errors = await validate(dto);
+      expect(errors.length).toBeGreaterThan(0);
+      expect(errors[0].constraints).toHaveProperty('isIn');
+    });
+
+    it('should fail validation when startingLevel is invalid', async () => {
+      const dto = plainToInstance(OnboardingDto, {
+        learningGoal: 'TOEIC',
+        startingLevel: 'INVALID_LEVEL',
+      });
+      const errors = await validate(dto);
+      expect(errors.length).toBeGreaterThan(0);
+      expect(errors[0].constraints).toHaveProperty('isIn');
     });
   });
 });

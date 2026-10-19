@@ -8,7 +8,12 @@ import { User } from '@prisma/client';
 import { PasswordUtil } from '../auth/utils/password.util';
 import { UpdateProfileDto } from './dto/update-profile.dto';
 import { ChangePasswordDto } from './dto/change-password.dto';
-import { AuthUser, AppLanguage } from '@wordstreak/shared-types';
+import {
+  AuthUser,
+  AppLanguage,
+  OnboardingDto,
+  OnboardingResponse,
+} from '@wordstreak/shared-types';
 
 export interface CreateUserData {
   email: string;
@@ -31,6 +36,9 @@ export class UsersService {
       dailyGoal: user.dailyGoal,
       avatarUrl: user.avatarUrl,
       preferredLanguage: (user.preferredLanguage as AppLanguage) ?? 'vi',
+      learningGoal: user.learningGoal,
+      startingLevel: user.startingLevel,
+      onboardingCompleted: user.onboardingCompleted,
       createdAt: user.createdAt,
       updatedAt: user.updatedAt,
     };
@@ -148,5 +156,74 @@ export class UsersService {
     }
 
     return { message: 'Password updated successfully' };
+  }
+
+  async completeOnboarding(
+    userId: string,
+    dto: OnboardingDto,
+  ): Promise<OnboardingResponse> {
+    const user = await this.findById(userId);
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    // Determine target pathCode for initial deck recommendation
+    let targetPath = 'CORE';
+    if (dto.startingLevel === 'ZERO') {
+      targetPath = 'FOUNDATION';
+    } else if (dto.learningGoal === 'TOEIC') {
+      targetPath = 'TOEIC';
+    } else if (dto.learningGoal === 'IELTS') {
+      targetPath = 'ACADEMIC';
+    }
+
+    let recommendedDeck = await this.prisma.officialDeck.findFirst({
+      where: { pathCode: targetPath },
+      orderBy: { order: 'asc' },
+    });
+
+    if (!recommendedDeck && targetPath !== 'CORE') {
+      recommendedDeck = await this.prisma.officialDeck.findFirst({
+        where: { pathCode: 'CORE' },
+        orderBy: { order: 'asc' },
+      });
+    }
+
+    let enrolledDeckId: string | undefined;
+    let enrolledDeckTitle: string | undefined;
+    if (recommendedDeck) {
+      await this.prisma.userDeckEnrollment.upsert({
+        where: {
+          userId_deckId: {
+            userId,
+            deckId: recommendedDeck.id,
+          },
+        },
+        create: {
+          userId,
+          deckId: recommendedDeck.id,
+        },
+        update: {},
+      });
+      enrolledDeckId = recommendedDeck.id;
+      enrolledDeckTitle = recommendedDeck.title;
+    }
+
+    const updatedUser = await this.prisma.user.update({
+      where: { id: userId },
+      data: {
+        learningGoal: dto.learningGoal,
+        startingLevel: dto.startingLevel,
+        onboardingCompleted: true,
+        ...(dto.dailyGoal ? { dailyGoal: dto.dailyGoal } : {}),
+      },
+    });
+
+    return {
+      success: true,
+      enrolledDeckId,
+      enrolledDeckTitle,
+      user: this.mapToProfile(updatedUser),
+    };
   }
 }
