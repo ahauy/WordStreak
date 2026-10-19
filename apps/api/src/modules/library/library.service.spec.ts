@@ -8,6 +8,14 @@ describe('LibraryService', () => {
   let service: LibraryService;
   let prisma: {
     officialCard: { findUnique: jest.Mock };
+    officialDeck: {
+      findMany: jest.Mock;
+      count: jest.Mock;
+      findUnique: jest.Mock;
+    };
+    officialDeckCard: { findMany: jest.Mock };
+    userOfficialCardProgress: { findMany: jest.Mock };
+    userDeckEnrollment: { upsert: jest.Mock; findMany: jest.Mock };
     deck: { findFirst: jest.Mock; create: jest.Mock };
     card: { create: jest.Mock };
   };
@@ -18,6 +26,14 @@ describe('LibraryService', () => {
   beforeEach(async () => {
     prisma = {
       officialCard: { findUnique: jest.fn() },
+      officialDeck: {
+        findMany: jest.fn(),
+        count: jest.fn(),
+        findUnique: jest.fn(),
+      },
+      officialDeckCard: { findMany: jest.fn() },
+      userOfficialCardProgress: { findMany: jest.fn() },
+      userDeckEnrollment: { upsert: jest.fn(), findMany: jest.fn() },
       deck: { findFirst: jest.fn(), create: jest.fn() },
       card: { create: jest.fn() },
     };
@@ -135,6 +151,137 @@ describe('LibraryService', () => {
       );
       expect(result.deckId).toBe('auto-deck-1');
       expect(result.word).toBe('collaborate');
+    });
+  });
+
+  describe('getDecks (TC-LIB-03-001 & TC-LIB-03-002)', () => {
+    it('returns paginated decks with enrollment and mastery computed', async () => {
+      prisma.officialDeck.count.mockResolvedValue(1);
+      prisma.officialDeck.findMany.mockResolvedValue([
+        {
+          id: 'deck-1',
+          slug: 'tsl-1a-office',
+          title: 'Office Operations',
+          titleVi: 'Nghiệp vụ văn phòng',
+          description: 'Top words in office context',
+          pathCode: 'TOEIC',
+          level: 'T1',
+          order: 1,
+          listCode: 'TSL',
+          cardCount: 25,
+          enrollments: [{ id: 'enr-1' }],
+        },
+      ]);
+      prisma.userDeckEnrollment.findMany.mockResolvedValue([
+        { deckId: 'deck-1' },
+      ]);
+      prisma.officialDeckCard.findMany.mockResolvedValue([
+        { deckId: 'deck-1', cardId: 'card-1' },
+      ]);
+      prisma.userOfficialCardProgress.findMany.mockResolvedValue([
+        { cardId: 'card-1' },
+      ]);
+
+      const result = await service.getDecks(mockUserId, {
+        pathCode: 'TOEIC',
+        level: 'T1',
+        page: 1,
+        limit: 10,
+      });
+
+      expect(prisma.officialDeck.findMany).toHaveBeenCalledWith(
+        expect.objectContaining({
+          where: { pathCode: 'TOEIC', level: 'T1' },
+          skip: 0,
+          take: 10,
+        }),
+      );
+      expect(result.total).toBe(1);
+      expect(result.decks[0].isEnrolled).toBe(true);
+      expect(result.decks[0].masteredCount).toBe(1);
+    });
+  });
+
+  describe('getDeckBySlug (TC-LIB-03-003)', () => {
+    it('throws NotFoundException when slug does not exist', async () => {
+      prisma.officialDeck.findUnique.mockResolvedValue(null);
+
+      await expect(
+        service.getDeckBySlug(mockUserId, 'unknown-slug'),
+      ).rejects.toThrow(NotFoundException);
+    });
+
+    it('returns deck details with cards and user progress', async () => {
+      prisma.officialDeck.findUnique.mockResolvedValue({
+        id: 'deck-1',
+        slug: 'tsl-1a-office',
+        title: 'Office Operations',
+        titleVi: 'Nghiệp vụ văn phòng',
+        description: 'Office words',
+        pathCode: 'TOEIC',
+        level: 'T1',
+        order: 1,
+        listCode: 'TSL',
+        cardCount: 25,
+        enrollments: [{ id: 'enr-1' }],
+        cards: [
+          {
+            cardId: 'card-1',
+            order: 1,
+            card: {
+              headword: 'agenda',
+              pos: 'n',
+              content: {
+                meaning_vi: 'chương trình nghị sự',
+                ipa_us: '/əˈdʒen.də/',
+                example_en: 'The next item on the agenda is budget.',
+              },
+            },
+          },
+        ],
+      });
+      prisma.userOfficialCardProgress.findMany.mockResolvedValue([
+        { cardId: 'card-1', status: 'MASTERED' },
+      ]);
+
+      const result = await service.getDeckBySlug(mockUserId, 'tsl-1a-office');
+
+      expect(result.deck.slug).toBe('tsl-1a-office');
+      expect(result.isEnrolled).toBe(true);
+      expect(result.masteredCount).toBe(1);
+      expect(result.cards.length).toBe(1);
+      expect(result.cards[0].headword).toBe('agenda');
+      expect(result.cards[0].userStatus).toBe('MASTERED');
+    });
+  });
+
+  describe('enrollDeck (TC-LIB-03-004)', () => {
+    it('throws NotFoundException if deck does not exist', async () => {
+      prisma.officialDeck.findUnique.mockResolvedValue(null);
+
+      await expect(
+        service.enrollDeck(mockUserId, 'non-existent-deck'),
+      ).rejects.toThrow(NotFoundException);
+    });
+
+    it('successfully enrolls user in official deck', async () => {
+      prisma.officialDeck.findUnique.mockResolvedValue({
+        id: 'deck-1',
+        title: 'Office Operations',
+      });
+      const mockStartedAt = new Date();
+      prisma.userDeckEnrollment.upsert.mockResolvedValue({
+        id: 'enr-1',
+        userId: mockUserId,
+        deckId: 'deck-1',
+        startedAt: mockStartedAt,
+      });
+
+      const result = await service.enrollDeck(mockUserId, 'deck-1');
+
+      expect(result.success).toBe(true);
+      expect(result.deckId).toBe('deck-1');
+      expect(result.enrolledAt).toEqual(mockStartedAt);
     });
   });
 });
