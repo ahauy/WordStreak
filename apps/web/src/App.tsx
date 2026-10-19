@@ -20,6 +20,8 @@ import { WordMatchingPage } from "./features/practice/pages/WordMatchingPage";
 import { LandingPage } from "./features/landing/pages/LandingPage";
 import { AnalyticsPage } from "./features/analytics/pages/AnalyticsPage";
 import { CommunityDecksPage } from "./features/community/pages/CommunityDecksPage";
+import { LibraryPage } from "./features/library/pages/LibraryPage";
+import { OfficialDeckDetailPage } from "./features/library/pages/OfficialDeckDetailPage";
 import { ProtectedRoute } from "./features/auth/components/ProtectedRoute";
 import { GlobalFlameMascot } from "./features/dashboard/components/GlobalFlameMascot";
 import { useAuthStore } from "./store/useAuthStore";
@@ -56,6 +58,24 @@ function AnimatedRoutes() {
           element={
             <ProtectedRoute>
               <DecksListPage />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/library"
+          element={
+            <ProtectedRoute>
+              <LibraryPage />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/library/decks/:slug"
+          element={
+            <ProtectedRoute>
+              <OfficialDeckDetailPage />
             </ProtectedRoute>
           }
         />

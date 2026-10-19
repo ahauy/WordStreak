@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { LogOut, Layers, Home, BarChart2, Globe, Menu, X } from "lucide-react";
+import { LogOut, Layers, Home, BarChart2, Globe, BookOpen, Menu, X } from "lucide-react";
 import { UserAvatar } from "../../user-profile/components/UserAvatar";
 import { SettingsModal } from "../../user-profile/components/SettingsModal";
 import { StreakFlame } from "./StreakFlame";
@@ -201,6 +201,21 @@ export const DashboardNavbar: React.FC<DashboardNavbarProps> = ({
               </Link>
 
               <Link
+                to="/library"
+                aria-current={
+                  location.pathname.startsWith("/library") ? "page" : undefined
+                }
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition-all focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 focus:outline-none whitespace-nowrap shrink-0 ${
+                  location.pathname.startsWith("/library")
+                    ? "bg-black text-white"
+                    : "text-[#737373] hover:text-black hover:bg-[#fafafa]"
+                }`}
+              >
+                <BookOpen className="w-3.5 h-3.5" />
+                <span>{t("nav.library", "Library")}</span>
+              </Link>
+
+              <Link
                 to="/community"
                 aria-current={
                   location.pathname.startsWith("/community")
@@ -346,6 +361,20 @@ export const DashboardNavbar: React.FC<DashboardNavbarProps> = ({
             >
               <Layers className="w-4 h-4 shrink-0" />
               <span>{t("nav.decks", "Decks")}</span>
+            </Link>
+
+            <Link
+              to="/library"
+              onClick={() => setIsMobileMenuOpen(false)}
+              aria-current={
+                location.pathname.startsWith("/library") ? "page" : undefined
+              }
+              className={mobileNavLinkClass(
+                location.pathname.startsWith("/library"),
+              )}
+            >
+              <BookOpen className="w-4 h-4 shrink-0" />
+              <span>{t("nav.library", "Library")}</span>
             </Link>
 
             <Link

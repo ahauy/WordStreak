@@ -60,3 +60,43 @@ export interface ForkOfficialCardResponse {
   meaning: string;
   status: string;
 }
+
+export interface GetOfficialDecksQuery {
+  pathCode?: string;
+  level?: string;
+  topic?: string;
+  page?: number;
+  limit?: number;
+}
+
+export interface PaginatedOfficialDecksResponse {
+  decks: OfficialDeckDto[];
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
+}
+
+export interface OfficialDeckCardItemDto {
+  cardId: string;
+  order: number;
+  headword: string;
+  pos: string;
+  content: OfficialCardContent;
+  userStatus?: string | null;
+}
+
+export interface OfficialDeckDetailResponse {
+  deck: OfficialDeckDto;
+  cards: OfficialDeckCardItemDto[];
+  isEnrolled: boolean;
+  masteredCount: number;
+  totalCards: number;
+}
+
+export interface EnrollOfficialDeckResponse {
+  success: boolean;
+  deckId: string;
+  enrolledAt: string | Date;
+}
+
