@@ -2,9 +2,8 @@
 name: command-git-push
 description: >-
   Activated when the user types /command-git-push (or shortcuts /push, /ship, /auto-git-push).
-  Verifies the Pre-Commit User Guide Gate (for UI changes), splits changes into Modular Commits
-  (Spec -> Shared Types -> Backend -> Frontend -> Docs) using Single-Line English Conventional Commits,
-  and pushes to the active branch.
+  Executes high-speed, 1-pass compound git commit & push with adaptive logical commit grouping
+  (Code vs Docs), non-blocking milestone checks, and instant English PR brief generation.
 triggers:
   - "/command-git-push"
   - "/git-push"
@@ -16,136 +15,123 @@ triggers:
   - "sync to remote"
 ---
 
-# Command: Git Commit & Push Workflow (/command-git-push)
+# Command: High-Speed Git Commit & Push Workflow (/command-git-push)
 
-This command skill automates git staging, validates quality and user guide gates, creates **Modular Commits** adhering to project conventions, and pushes code to the remote repository.
+This command skill provides a fast, token-efficient, 1-pass execution for staging, creating clean Conventional Commits, pushing to the active branch, and generating an English PR brief.
 
 ---
 
-## Execution Workflow
+## Core Principles (Speed & Token Efficiency)
 
-### Step 1: Check Git Status & Strict Domain-To-Branch Routing
+1. **1-Pass Compound Execution**: Run staging, committing, and remote push in **one single compound shell command** (`git add ... && git commit ... && git push ...`) instead of fragmented multi-turn round trips.
+2. **Adaptive 1-to-2 Logical Commits**: Avoid artificial 6-layer micro-commits. Group changes cleanly into at most 2 cohesive commits:
+   - **Code & Core Tests**: `feat(<scope>): <concise message>` (or `fix(...)`)
+   - **Docs & Specifications**: `docs(<scope>): <concise message>` (or `chore(...)`)
+   *(If changes only touch one layer, produce 1 single cohesive commit).*
+3. **Active Branch Priority**: Commit directly onto the current working branch (`CURRENT_BRANCH`). Never perform unnecessary stashing or branch hopping unless explicitly requested or when currently on `main`.
+4. **Milestone-Level User Guide Gate**: Check for UI changes and surface non-blocking reminders for milestone user guides without halting routine commits.
 
-1. Run `git status` and `CURRENT_BRANCH=$(git branch --show-current)`.
-2. If the working tree is clean with no changes, notify the user and exit.
-3. **Automated Domain & Scope Classification**:
-   Every changed file is strictly mapped to its legitimate target branch domain:
-   - **Global Governance, Agent Rules & Skill References** (`.agents/**`, `GEMINI.md`, `.specify/templates/**`, `package.json`, root configs):
-     - **Target Domain**: `chore/governance-<slug>` or `chore/agent-skills` (or `main` if merged).
-     - **STRICT PROHIBITION**: NEVER commit global governance or agent configs into domain feature branches (e.g. `feat/card-management`, `feat/auth-*`, `feat/deck-*`).
-   - **Feature-Specific Code & Documents** (`apps/web/src/features/<domain>/**`, `apps/api/src/modules/<domain>/**`, `specs/<slug>/**`, `docs/features/<slug>/**`, `docs/user-guides/<slug>.md`):
-     - **Target Domain**: `feat/<domain>-<feature-slug>` (e.g. `feat/card-management`, `feat/deck-crud-management`). All specs and user guides for a feature live together on the feature branch.
-   - **Global Architecture, Roadmaps & Product References** (`docs/architecture/**`, `docs/algorithms/**`, `docs/PRODUCT_BACKLOG_ROADMAP.md`, `README.md`, `vocabulary-app-feature-ideas*.md`):
-     - **When modified alongside a feature**: Commit on that feature's branch (`feat/<slug>`).
-     - **When updated independently (standalone roadmap/architecture update)**: `docs/<topic-slug>` (e.g. `docs/update-roadmap`, `docs/sm2-algorithm-reference`).
-   - **Shared Libraries & Packages** (`packages/shared-types/**`):
-     - Belongs to the feature branch that introduced/modified the DTOs, or `chore/shared-types` if standalone.
+---
 
-4. **Strict Branch Compatibility & Auto-Routing Gate**:
-   - **Case A: Perfect Match**: Changed files belong exclusively to `CURRENT_BRANCH`'s domain $\rightarrow$ Proceed to Step 2.
-   - **Case B: Domain Mismatch (Cross-Contamination Prevention)**:
-     - If changed files do NOT belong to `CURRENT_BRANCH` (e.g., modifying `GEMINI.md` while on `feat/card-management`):
-       > 📢 **Domain-Branch Mismatch Detected:** Modified files belong to `[Governance/Config]` but active branch is `[feat/card-management]`.
-       > 🛡️ **Auto-Branch Routing:** Isolating changes into target branch `chore/<topic>` (or creating new dedicated branch) to protect `feat/card-management` from contamination.
-     - **Auto-Routing Steps**:
-       1. Stash changes: `git stash push -m "domain-routing-stash"`.
-       2. Check out / create legitimate target branch (e.g. `git checkout -b chore/<topic>`).
-       3. Pop/restore files: `git stash pop` (or `git checkout stash@{0} -- <files>`).
-       4. Execute Modular Commits (Step 3) and Smart Push (Step 4) on the target branch.
-       5. Return to `CURRENT_BRANCH`.
-   - **Case C: Multi-Scope (Multiple Domains Modified Simultaneously)**:
-     - Group files by domain target branch.
-     - Process each group sequentially onto its own branch, keeping every feature branch 100% clean.
+## Execution Workflow (1-to-2 Turns Maximum)
 
-### Step 2: Pre-Commit User Guide Gate (UI Changes Only - 100% Mandatory Real Screenshots)
+### Step 1: Fast Status & Scope Assessment
 
-1. Check changed files: Do any changes touch user-facing screens in `apps/web/`?
-2. If UI changes exist:
-   - **Verification 1 (File Existence)**: Check if `docs/user-guides/<slug>.md` exists.
-   - **Verification 2 (100% Real Screenshots Check)**:
-     - Scan `docs/user-guides/<slug>.md` for embedded screenshot links (e.g. `![...](./images/<slug>/...)`).
-     - Verify that the image files physically exist on disk in `docs/user-guides/images/<slug>/` or `docs/user-guides/assets/<slug>/`.
-     - Verify images are **100% real high-resolution screenshots with visual highlights/callouts** captured via Playwright/browser, NOT placeholders or mockups.
-   - **Strict Gate Enforcement**:
-     - If the user guide is missing, empty, text-only without images, or the image files do not exist:
-       > ⚠️ **User Guide Gate BLOCKED:** UI changes detected without a verified screenshot-backed user guide in `docs/user-guides/<slug>.md`.
-       > 👉 **Action Required:** Run `/command-user-guide <slug>` to capture real screenshots with visual highlights before committing/pushing.
-     - **AI MUST STOP IMMEDIATELY** and notify the user. NEVER auto-create a text-only guide or bypass this gate silently!
+Run `git status -s` and `git branch --show-current` to assess changed files:
 
-### Step 3: Modular Commits Breakdown
+1. **Clean Tree Check**: If no changes are detected, notify the user and exit immediately.
+2. **Main Branch Protection**:
+   - Direct push to `main` is restricted.
+   - If `CURRENT_BRANCH == "main"`, automatically create or prompt for a feature/chore branch:
+     `git checkout -b feat/<slug>` or `chore/<slug>` before proceeding.
 
-Never combine unrelated layers into a single monolithic commit. Group files and commit sequentially:
+---
 
-1. **Layer 1 - Specifications & BA Documents**:
-   - Files: `.specify/**`, `specs/**`, `docs/spec/**`
-   - Command: `git add .specify/ specs/ && git commit -m "docs(spec): add specification and test plan for <feature-name>"`
+### Step 2: Adaptive Logical Commit Grouping
 
-2. **Layer 2 - Shared Types & DTOs**:
-   - Files: `packages/shared-types/**`
-   - Command: `git add packages/shared-types/ && git commit -m "feat(shared-types): define DTOs and contracts for <feature-name>"`
+Analyze changed files and categorize them into at most **2 logical groups**:
 
-3. **Layer 3 - Backend API & Services**:
-   - Files: `apps/api/**`, `prisma/**`
-   - Command: `git add apps/api/ prisma/ && git commit -m "feat(api): implement <feature-name> service and endpoints"`
-
-4. **Layer 4 - Frontend Web UI & Components**:
-   - Files: `apps/web/**`
-   - Command: `git add apps/web/ && git commit -m "feat(web): implement <feature-name> UI components and views"`
-
-5. **Layer 5 - Technical Docs, User Guides & Roadmap**:
-   - Files: `docs/**`, `README.md`, `CHANGELOG.md`
-   - Command: `git add docs/ CHANGELOG.md && git commit -m "docs: update feature documentation, user guide, and roadmap"`
-
-6. **Layer 6 - Chores, Configs, Tooling (if any)**:
-   - Files: `.agents/**`, `package.json`, `pnpm-lock.yaml`, root configs
-   - Command: `git add .agents/ package.json pnpm-lock.yaml && git commit -m "chore: update configs and agent skills"`
+- **Group 1: Feature / Code Layer (`feat` or `fix`)**:
+  - Paths: `apps/**`, `packages/**`, `prisma/**`, test files (`*.spec.ts`, `*.test.tsx`).
+  - Message: `feat(<domain>): <concise single-line description in English>`
+- **Group 2: Docs / Governance / Chore Layer (`docs` or `chore`)**:
+  - Paths: `.specify/**`, `docs/**`, `CHANGELOG.md`, `README.md`, `.agents/**`, `GEMINI.md`, root configs.
+  - Message: `docs(<domain>): <concise description>` or `chore: update configurations and rules`
 
 > [!IMPORTANT]
 > **Single-Line English Commit Rules:**
->
-> - All commit messages **MUST be strictly single-line in English**.
-> - Conventional Commits standard: `<type>(<scope>): <subject>` (under 72 chars, imperative mood, no trailing period).
-> - Do not include newlines `\n` or markdown backticks inside `-m "..."`.
+> - Strictly single-line English Conventional Commits: `<type>(<scope>): <subject>`.
+> - Imperative mood, under 72 characters, no trailing period.
+> - Never include unescaped newlines `\n` or markdown backticks inside `-m "..."`.
 
-### Step 4: Smart Push & Auto Conflict Resolution
+---
 
-1. Retrieve current branch name: `CURRENT_BRANCH=$(git branch --show-current)`.
-2. **Main Branch Protection**:
-   - Direct push to `main` is restricted. If currently on `main`, checkout a feature branch (`feat/<slug>`, `chore/<slug>`) before committing/pushing.
-3. **Execute Push & Handle Non-Fast-Forward**:
-   - Attempt push: `git push origin <CURRENT_BRANCH>` (or `git push -u origin <CURRENT_BRANCH>`).
-   - If rejected due to remote updates (`[rejected - non-fast-forward]`):
-     1. Run `git fetch origin <CURRENT_BRANCH>`.
-     2. Rebase onto remote branch: `git rebase origin/<CURRENT_BRANCH>`.
-4. **Automatic Semantic Conflict Resolution**:
-   - If a merge/rebase conflict occurs (`<<<<<<<`, `=======`, `>>>>>>>`):
-     1. Identify conflicted files: `git diff --name-only --diff-filter=U`.
-     2. **Semantic Resolution**: Intelligently merge both sets of changes, preserving domain logic, typing contracts, and updated code.
-     3. Remove all conflict markers.
-     4. **Verification Gate**: Run test suite (`pnpm test`) and typecheck to verify resolution integrity.
-     5. Stage resolved files: `git add <resolved-files>`.
-     6. Complete rebase: `git rebase --continue`.
-     7. Retry `git push origin <CURRENT_BRANCH>`.
-   - _Safety Fallback_: If conflict logic has irreconcilable domain ambiguity, run `git rebase --abort` and present the exact conflicting sections for user decision.
+### Step 3: High-Speed Compound Execution (Single Tool Call)
 
-### Step 5: Report Results & Generate English PR Brief
+Execute staging, committing, and push in a **single compound command** to minimize API round trips:
 
-1. Display a summary table of created commits and remote push status.
-2. Provide a ready-to-copy **Pull Request Title & Description in English** inside a markdown code block so the user can immediately paste it into GitHub:
-   - **PR Title**: `<type>(<scope>): <concise description>`
-   - **PR Body Format**:
-     ```markdown
-     ## What & Why
+```bash
+CURRENT_BRANCH=$(git branch --show-current)
 
-     [Brief description of motivation and what this PR accomplishes]
+# If only Group 1 exists:
+git add apps/ packages/ && git commit -m "feat(scope): concise description" && git push origin $CURRENT_BRANCH
 
-     ## Key Changes
+# If only Group 2 exists:
+git add .agents/ docs/ .specify/ GEMINI.md && git commit -m "docs: update specifications and rules" && git push origin $CURRENT_BRANCH
 
-     - **[Layer/Scope]**: [Bullet points of specific changes]
+# If both Group 1 and Group 2 exist (Adaptive 2-commit split):
+git add apps/ packages/ && git commit -m "feat(scope): concise description" && \
+git add .specify/ docs/ .agents/ GEMINI.md CHANGELOG.md && git commit -m "docs: update feature documentation and roadmap" && \
+git push origin $CURRENT_BRANCH
+```
 
-     ## Verification
+#### Handling Remote Divergence (Non-Fast-Forward)
+If push is rejected due to remote commits, automatically recover within the same turn:
+```bash
+git pull --rebase origin $CURRENT_BRANCH && git push origin $CURRENT_BRANCH
+```
 
-     - [ ] Automated tests passed (unit/integration/e2e)
-     - [ ] Manual verification completed
-     - [ ] User Guide verified/updated (if UI changes)
-     ```
+---
+
+### Step 4: Non-Blocking Milestone User Guide Reminder
+
+- If changes touched `apps/web/` screens:
+  - Check if `docs/user-guides/<slug>.md` exists.
+  - If missing, include a friendly reminder in the summary:
+    > 💡 **Milestone Note:** UI changes detected. When completing this Epic/Release milestone, remember to run `/command-user-guide <slug>` to generate end-user docs with real Playwright screenshots.
+
+---
+
+### Step 5: Instant Report & Ready-to-Copy PR Brief
+
+Directly output the push result and ready-to-copy PR Brief in the final response:
+
+```markdown
+### 🚀 Git Push Completed Successfully!
+
+- **Branch**: `<CURRENT_BRANCH>`
+- **Commits Created**:
+  1. `<commit-hash>` — `<commit-message-1>`
+  2. `<commit-hash>` — `<commit-message-2>` (if applicable)
+
+---
+
+### 📋 Pull Request Brief (Ready to copy to GitHub)
+
+#### PR Title:
+`<type>(<scope>): <concise PR title>`
+
+#### PR Description:
+```markdown
+## What & Why
+[Brief 1-2 sentence description of the motivation and changes]
+
+## Key Changes
+- **[Layer/Scope]**: [Key updates]
+- **[Docs/Governance]**: [Documentation or configuration updates]
+
+## Verification
+- [x] Automated tests passed (`pnpm test && pnpm build`)
+- [x] Tested against acceptance criteria
+```
+```
