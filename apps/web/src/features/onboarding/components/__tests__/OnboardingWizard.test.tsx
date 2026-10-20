@@ -145,4 +145,55 @@ describe("OnboardingWizard Component (US-LIB-04)", () => {
       expect(mockOnClose).toHaveBeenCalled();
     }
   });
+
+  it("should support selecting ZERO level without requiring test (US-LIB-11)", () => {
+    render(
+      <OnboardingWizard isOpen={true} onClose={mockOnClose} />,
+    );
+
+    // Step 1 -> Step 2
+    const nextBtn = screen
+      .getAllByRole("button")
+      .find((b) => b.textContent?.includes("Tiếp tục") || b.textContent?.includes("Next"));
+    if (nextBtn) fireEvent.click(nextBtn);
+
+    // Select "Mất gốc / Bắt đầu từ số 0"
+    const zeroOption = screen
+      .getAllByRole("button")
+      .find((b) => b.textContent?.includes("Mất gốc") || b.textContent?.includes("Starting Fresh"));
+    expect(zeroOption).toBeDefined();
+    if (zeroOption) fireEvent.click(zeroOption);
+
+    // Should display the zero-test note
+    expect(
+      screen.getByText(/Bắt đầu từ số 0 không cần làm bài kiểm tra|Starting from zero requires no test/i),
+    ).toBeDefined();
+  });
+
+  it("should allow launching adaptive mini-test from Step 2 (US-LIB-11)", () => {
+    render(
+      <OnboardingWizard isOpen={true} onClose={mockOnClose} />,
+    );
+
+    // Step 1 -> Step 2
+    const nextBtn = screen
+      .getAllByRole("button")
+      .find((b) => b.textContent?.includes("Tiếp tục") || b.textContent?.includes("Next"));
+    if (nextBtn) fireEvent.click(nextBtn);
+
+    // Default level is BEGINNER -> Should see 60s test prompt
+    expect(
+      screen.getByText(/Bạn chưa chắc chắn về trình độ|Not sure about your exact level/i),
+    ).toBeDefined();
+
+    const startTestBtn = screen.getByRole("button", {
+      name: /Kiểm tra 60s|Start Test/i,
+    });
+    expect(startTestBtn).toBeDefined();
+    fireEvent.click(startTestBtn);
+
+    // Mini test should be rendered
+    expect(screen.getByTestId("adaptive-mini-test")).toBeDefined();
+  });
 });
+
