@@ -17,6 +17,7 @@ import type {
 } from "@wordstreak/shared-types";
 import { userService } from "../../user-profile/services/userService";
 import { useAuthStore } from "../../../store/useAuthStore";
+import { AdaptiveMiniTest } from "./AdaptiveMiniTest";
 
 interface OnboardingWizardProps {
   isOpen: boolean;
@@ -37,6 +38,7 @@ export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
   const [selectedGoal, setSelectedGoal] = useState<LearningGoal>("TOEIC");
   const [selectedLevel, setSelectedLevel] = useState<StartingLevel>("BEGINNER");
   const [selectedDailyGoal, setSelectedDailyGoal] = useState<number>(10);
+  const [isTakingMiniTest, setIsTakingMiniTest] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [enrolledDeckTitle, setEnrolledDeckTitle] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
@@ -288,77 +290,130 @@ export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
 
         {/* STEP 2: Select Level */}
         {step === 2 && (
-          <div className="space-y-6">
-            <div className="text-center space-y-1">
-              <h2
-                id="onboarding-wizard-title"
-                className="text-2xl font-bold tracking-tight"
-                style={{ fontFamily: "Nunito, sans-serif" }}
-              >
-                {isVi ? "Trình độ tiếng Anh hiện tại của bạn?" : "What is your current English level?"}
-              </h2>
-              <p className="text-sm text-[#737373]">
-                {isVi
-                  ? "Đừng lo lắng! WordStreak sẽ điều chỉnh độ khó phù hợp với bạn."
-                  : "No worries! WordStreak will adapt vocabulary difficulty to your level."}
-              </p>
-            </div>
+          isTakingMiniTest ? (
+            <AdaptiveMiniTest
+              isVi={isVi}
+              onComplete={(recommendedLevel) => {
+                setSelectedLevel(recommendedLevel);
+                if (recommendedLevel === "ZERO") {
+                  setSelectedDailyGoal(5);
+                }
+                setIsTakingMiniTest(false);
+                setStep(3);
+              }}
+              onSkip={() => setIsTakingMiniTest(false)}
+            />
+          ) : (
+            <div className="space-y-6">
+              <div className="text-center space-y-1">
+                <h2
+                  id="onboarding-wizard-title"
+                  className="text-2xl font-bold tracking-tight"
+                  style={{ fontFamily: "Nunito, sans-serif" }}
+                >
+                  {isVi ? "Trình độ tiếng Anh hiện tại của bạn?" : "What is your current English level?"}
+                </h2>
+                <p className="text-sm text-[#737373]">
+                  {isVi
+                    ? "Đừng lo lắng! WordStreak sẽ điều chỉnh độ khó phù hợp với bạn."
+                    : "No worries! WordStreak will adapt vocabulary difficulty to your level."}
+                </p>
+              </div>
 
-            <div className="space-y-2.5">
-              {levels.map((lvl) => {
-                const isSelected = selectedLevel === lvl.id;
-                return (
-                  <button
-                    key={lvl.id}
-                    type="button"
-                    onClick={() => setSelectedLevel(lvl.id)}
-                    className={`w-full p-4 rounded-2xl border text-left flex items-start justify-between gap-3 transition-all cursor-pointer ${
-                      isSelected
-                        ? "border-black bg-[#fafafa] ring-1 ring-black"
-                        : "border-[#e5e5e5] hover:border-[#d4d4d4] bg-white"
-                    }`}
-                  >
-                    <div className="space-y-1 flex-1">
-                      <div className="flex items-center gap-2">
-                        <span className="font-semibold text-sm text-black">
-                          {lvl.title}
-                        </span>
-                        {lvl.badge && (
-                          <span className="px-2 py-0.5 text-[11px] font-medium rounded-full bg-purple-50 text-purple-700 border border-purple-200">
-                            {lvl.badge}
+              <div className="space-y-2.5">
+                {levels.map((lvl) => {
+                  const isSelected = selectedLevel === lvl.id;
+                  return (
+                    <button
+                      key={lvl.id}
+                      type="button"
+                      onClick={() => {
+                        setSelectedLevel(lvl.id);
+                        if (lvl.id === "ZERO") {
+                          setSelectedDailyGoal(5);
+                        }
+                      }}
+                      className={`w-full p-4 rounded-2xl border text-left flex items-start justify-between gap-3 transition-all cursor-pointer ${
+                        isSelected
+                          ? "border-black bg-[#fafafa] ring-1 ring-black"
+                          : "border-[#e5e5e5] hover:border-[#d4d4d4] bg-white"
+                      }`}
+                    >
+                      <div className="space-y-1 flex-1">
+                        <div className="flex items-center gap-2">
+                          <span className="font-semibold text-sm text-black">
+                            {lvl.title}
                           </span>
-                        )}
+                          {lvl.badge && (
+                            <span className="px-2 py-0.5 text-[11px] font-medium rounded-full bg-purple-50 text-purple-700 border border-purple-200">
+                              {lvl.badge}
+                            </span>
+                          )}
+                        </div>
+                        <p className="text-xs text-[#737373] leading-relaxed">
+                          {lvl.desc}
+                        </p>
                       </div>
-                      <p className="text-xs text-[#737373] leading-relaxed">
-                        {lvl.desc}
-                      </p>
-                    </div>
-                    {isSelected && (
-                      <CheckCircle2 className="w-5 h-5 text-black shrink-0 mt-0.5" />
-                    )}
-                  </button>
-                );
-              })}
-            </div>
+                      {isSelected && (
+                        <CheckCircle2 className="w-5 h-5 text-black shrink-0 mt-0.5" />
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
 
-            <div className="flex items-center justify-between pt-2">
-              <button
-                type="button"
-                onClick={() => setStep(1)}
-                className="text-sm text-[#737373] hover:text-black cursor-pointer font-medium"
-              >
-                {isVi ? "Quay lại" : "Back"}
-              </button>
-              <button
-                type="button"
-                onClick={() => setStep(3)}
-                className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-black text-white text-sm font-semibold hover:bg-neutral-800 transition-colors cursor-pointer"
-              >
-                <span>{isVi ? "Tiếp tục" : "Next"}</span>
-                <ArrowRight className="w-4 h-4" />
-              </button>
+              {selectedLevel === "BEGINNER" && (
+                <div className="p-3.5 rounded-2xl border border-dashed border-[#d4d4d4] bg-[#fafafa] flex items-center justify-between gap-3">
+                  <div className="space-y-0.5">
+                    <p className="text-xs font-semibold text-black">
+                      {isVi ? "🎯 Bạn chưa chắc chắn về trình độ của mình?" : "🎯 Not sure about your exact level?"}
+                    </p>
+                    <p className="text-[11px] text-[#737373]">
+                      {isVi
+                        ? "Làm bài test thích ứng 60s để WordStreak xếp lớp chuẩn xác."
+                        : "Take a 60s adaptive test to find your optimal starting point."}
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setIsTakingMiniTest(true)}
+                    className="shrink-0 px-3.5 py-1.5 rounded-full bg-black text-white text-xs font-semibold hover:bg-neutral-800 transition-colors cursor-pointer"
+                  >
+                    {isVi ? "Kiểm tra 60s" : "Start Test"}
+                  </button>
+                </div>
+              )}
+
+              {selectedLevel === "ZERO" && (
+                <div className="p-3.5 rounded-2xl border border-purple-200 bg-purple-50/50 flex items-center gap-2.5">
+                  <Sparkles className="w-4 h-4 text-purple-700 shrink-0" />
+                  <p className="text-xs text-purple-900 leading-relaxed">
+                    {isVi
+                      ? "Bắt đầu từ số 0 không cần làm bài kiểm tra. Bạn sẽ được hướng dẫn từng bước nhỏ với tốc độ 5 từ/ngày."
+                      : "Starting from zero requires no test. You'll take gentle steps with 5 words/day pace."}
+                  </p>
+                </div>
+              )}
+
+              <div className="flex items-center justify-between pt-2">
+                <button
+                  type="button"
+                  onClick={() => setStep(1)}
+                  className="text-sm text-[#737373] hover:text-black cursor-pointer font-medium"
+                >
+                  {isVi ? "Quay lại" : "Back"}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setStep(3)}
+                  className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-black text-white text-sm font-semibold hover:bg-neutral-800 transition-colors cursor-pointer"
+                >
+                  <span>{isVi ? "Tiếp tục" : "Next"}</span>
+                  <ArrowRight className="w-4 h-4" />
+                </button>
+              </div>
             </div>
-          </div>
+          )
         )}
 
         {/* STEP 3: Daily Goal */}

@@ -611,19 +611,19 @@ _Mục tiêu: Xóa bỏ hoàn toàn rào cản "ứng dụng trống" bằng cá
     - [ ] Backend: Aggregation service tổng hợp số liệu retention và hoàn thành theo từng mã `pathCode` và `slug`.
     - [ ] Dashboard: Tích hợp widget theo dõi hiệu quả nội dung vào trang quản trị.
 
-- [ ] **US-LIB-11: Lối vào Người mất gốc & Mini-test thích ứng (Beginner Adaptive Entry)**
+- [x] **US-LIB-11: Lối vào Người mất gốc & Mini-test thích ứng (Beginner Adaptive Entry)**
   - **AC:** Onboarding phân loại rõ 3 nhóm: "Mất gốc hoàn toàn", "Biết cơ bản", "Đã khá". Lựa chọn "Mất gốc hoàn toàn" đưa thẳng vào Chặng Khởi động (Foundation Stage) mà không bắt buộc làm bài kiểm tra để tránh gây nản lòng. Lựa chọn "Biết cơ bản" kích hoạt mini-test thích ứng bắt đầu từ các từ rất dễ trong NGSL Top 300 và dừng sớm nếu sai liên tiếp 3 câu. Thông điệp kết quả mang tính khích lệ, thực tế.
   - **Tasks:**
-    - [ ] Frontend: Thiết kế giao diện chọn trình độ trực quan, thân thiện cho người mất gốc.
-    - [ ] Backend: Thuật toán chọn từ mini-test phân tầng theo `freqRank`, lưu `startingLevel = "FOUNDATION"` vào profile.
-    - [ ] Content: Bộ thông điệp định hướng tâm lý sau test giúp người học giải tỏa tự ti.
+    - [x] Frontend: Thiết kế giao diện chọn trình độ trực quan, thân thiện cho người mất gốc (`OnboardingWizard.tsx`, `AdaptiveMiniTest.tsx`).
+    - [x] Backend: Thuật toán chọn từ mini-test phân tầng theo `freqRank`, lưu `startingLevel = "ZERO"` vào profile và tự động enroll Foundation deck.
+    - [x] Content: Bộ thông điệp định hướng tâm lý sau test giúp người học giải tỏa tự ti.
 
-- [ ] **US-LIB-12: Chặng Khởi động cho người mất gốc (Foundation Stage Decks)**
+- [x] **US-LIB-12: Chặng Khởi động cho người mất gốc (Foundation Stage Decks)**
   - **AC:** Trích xuất NGSL Top 300 đóng gói thành 15 deck đặc biệt (20 từ/deck), ưu tiên nhóm từ vựng sinh tồn (đại từ, số đếm, ngày tháng, động từ cơ bản). Xen kẽ 4 bài học ngắn (Mini-lessons) thời lượng $\le 2$ phút (1 màn hình) về: Từ loại (N/V/Adj/Adv), Trật tự từ trong câu (S+V+O), Dạng động từ (-ed, -ing), và Số ít/Số nhiều (-s/-es). Nội dung tự biên soạn, duyệt tay 100%, gán mã `pathCode = "FOUNDATION"`.
   - **Tasks:**
-    - [ ] Content: Soạn thảo 4 bài học ngữ pháp nền tảng cực ngắn bằng tiếng Việt kèm ví dụ minh họa trực quan.
-    - [ ] Script: Đóng gói 15 deck Foundation từ NGSL Top 300, tích hợp liên kết bài học ngắn trước khi học từ vựng.
-    - [ ] Frontend: Giao diện `FoundationPathView` với lộ trình hình bậc thang thân thiện cho người mới bắt đầu.
+    - [x] Content: Soạn thảo 4 bài học ngữ pháp nền tảng cực ngắn bằng tiếng Việt kèm ví dụ minh họa trực quan (`foundationLessons.ts`).
+    - [x] Script: Đóng gói 15 deck Foundation từ NGSL Top 300, tích hợp liên kết bài học ngắn trước khi học từ vựng (`foundationDecks.ts`).
+    - [x] Frontend: Giao diện `FoundationPathView` với lộ trình hình bậc thang thân thiện cho người mới bắt đầu (`FoundationPathView.tsx`, `MiniLessonModal.tsx`).
 
 - [ ] **US-LIB-13: Động cơ kiểm soát độ phủ từ vựng trong ví dụ (Vocabulary Control Engine)**
   - **AC:** Luật tự động kiểm tra nghiêm ngặt độ phủ từ vựng câu ví dụ: Trường `example_easy_en` (dành riêng cho Beginner Mode) chỉ dài 5–8 từ, 100% từ bổ trợ phải nằm trong NGSL Top 500. Trường `example_en` (chuẩn TOEIC) phải có $\ge 95\%$ số từ thuộc NGSL + TSL. Báo cáo validate liệt kê chi tiết các thẻ có ví dụ quá khó để AI sinh lại tự động.
@@ -720,8 +720,8 @@ _Mục tiêu: Xóa bỏ hoàn toàn rào cản "ứng dụng trống" bằng cá
   ├── EPIC-13: US-LIB-02 (Shared Official Cards & Lazy Progress Model)              ✅
   ├── EPIC-13: US-LIB-03 (Library Discovery Page & Deck Details)                     ✅
   ├── EPIC-13: US-LIB-04 (60s Goal Onboarding & Starter Deck Auto-enroll)           ✅
-  ├── EPIC-13: US-LIB-11 (Adaptive Beginner Entry & Mini-test)
-  ├── EPIC-13: US-LIB-12 (Foundation Stage: 15 Decks NGSL Top 300 + 4 Mini-lessons)
+  ├── EPIC-13: US-LIB-11 (Adaptive Beginner Entry & Mini-test)                       ✅
+  ├── EPIC-13: US-LIB-12 (Foundation Stage: 15 Decks NGSL Top 300 + 4 Mini-lessons)  ✅
   ├── EPIC-13: US-LIB-13 (Vocabulary Control Engine for Examples)
   ├── EPIC-13: US-LIB-08 (Data Attribution & CC BY-SA 4.0 Compliance Page)
   ├── EPIC-09: US-REM-01 (Review Summary API)            ✅
