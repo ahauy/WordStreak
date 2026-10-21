@@ -646,12 +646,12 @@ _Mục tiêu: Xóa bỏ hoàn toàn rào cản "ứng dụng trống" bằng cá
     - [x] Frontend: Quản lý hàng đợi thẻ lặp lại ngắn hạn trong phiên học `ReviewSessionPage`.
     - [x] Frontend: Popover quiz kiểm tra nhanh khi bấm "Biết" ở chế độ sàng lọc.
 
-- [ ] **US-LIB-16: Cột mốc nhỏ, Phiên 5 phút & Khôi phục sau khi nghỉ (Habit Milestones)**
+- [x] **US-LIB-16: Cột mốc nhỏ, Phiên 5 phút & Khôi phục sau khi nghỉ (Habit Milestones)**
   - **AC:** Thiết lập các cột mốc động lực thực tế: 50 từ, 100 từ, 300 từ, 500 từ kèm thông điệp giải thích ý nghĩa bằng ngôn ngữ đời thường (ví dụ: "Bạn đã nắm 100 từ xuất hiện nhiều nhất trong mọi bài thi TOEIC"). Hỗ trợ chế độ "Phiên học 5 phút" cho những ngày bận rộn (chỉ ôn 5–7 thẻ quan trọng nhất). Khi người học quay lại sau nhiều ngày nghỉ, hệ thống kích hoạt logic "Welcome Back" chỉ hiển thị 5–10 thẻ ôn tập đầu tiên kèm bảo vệ streak freeze, tránh phơi bày hàng trăm thẻ dồn ứ gây nản lòng.
   - **Tasks:**
-    - [ ] Frontend: Modal chúc mừng khi chạm các cột mốc 50/100/300/500 từ.
-    - [ ] Frontend: Chế độ "Phiên học 5 phút" trên DashboardNavbar và StudyToday button.
-    - [ ] Backend: Logic phân phối lại thẻ backlog quá hạn trong `ReviewsService` khi phát hiện user không hoạt động > 7 ngày.
+    - [x] Frontend: Modal chúc mừng khi chạm các cột mốc 50/100/300/500 từ.
+    - [x] Frontend: Chế độ "Phiên học 5 phút" trên DashboardNavbar và StudyToday button.
+    - [x] Backend: Logic phân phối lại thẻ backlog quá hạn trong `ReviewsService` khi phát hiện user không hoạt động > 7 ngày.
 
 - [~] **US-LIB-17: Thẻ cụm từ cố định, Mẹo đoán từ loại & Deck tranh Part 1 (Advanced Content)**
   - **AC:** Xây dựng các deck nâng cao bổ trợ cho kỳ thi TOEIC: (1) Deck các cụm từ cố định và giới từ hay gặp (`be responsible for`, `look forward to + V-ing`), (2) Mini-lesson hướng dẫn mẹo đoán từ loại dựa trên vị trí đứng trong câu Part 5, (3) Deck từ vựng mô tả tranh Part 1 kèm hình ảnh minh họa bản quyền mở.
@@ -736,7 +736,7 @@ _Mục tiêu: Xóa bỏ hoàn toàn rào cản "ứng dụng trống" bằng cá
   ├── EPIC-13: US-LIB-07 (TOEIC Quizzes: Mini Part 5 & Word Family)        ✅
   ├── EPIC-13: US-LIB-14 (Audio-First Mode & Vietnamese Ending Sound Tips) ✅
   ├── EPIC-13: US-LIB-15 (Intra-session Learning Steps & 5 words/day default) ✅
-  ├── EPIC-13: US-LIB-16 (Habit Milestones & 5-minute Express Session)
+  ├── EPIC-13: US-LIB-16 (Habit Milestones & 5-minute Express Session)       ✅
   ├── EPIC-13: US-LIB-09 (Card Feedback Modal & Content Versioning)
   ├── EPIC-13: US-LIB-10 (Library & Path Retention Analytics)
   ├── EPIC-09: US-ECO-08 (Micro-review in Popup)          ✅
