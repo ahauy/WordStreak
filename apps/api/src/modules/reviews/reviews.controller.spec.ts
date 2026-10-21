@@ -192,11 +192,11 @@ describe('ReviewsController', () => {
       };
       service.getTodaySession.mockResolvedValue(mockTodaySession);
 
-      const response = await controller.getTodaySession(mockUser);
+      const response = await controller.getTodaySession(mockUser, {});
 
       expect(response.success).toBe(true);
       expect(response.data).toEqual(mockTodaySession);
-      expect(service.getTodaySession).toHaveBeenCalledWith(mockUser.sub);
+      expect(service.getTodaySession).toHaveBeenCalledWith(mockUser.sub, {});
     });
   });
 

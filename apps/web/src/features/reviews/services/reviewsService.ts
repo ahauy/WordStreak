@@ -24,8 +24,11 @@ export const reviewsService = {
   async getDueCards(
     deckId?: string,
     limit: number = 50,
+    mode?: "express" | "standard",
   ): Promise<{ data: DueCardItem[]; meta?: Record<string, unknown> }> {
-    const params = deckId ? { deckId, limit } : { limit };
+    const params: Record<string, unknown> = { limit };
+    if (deckId) params.deckId = deckId;
+    if (mode) params.mode = mode;
     const response = await apiClient.get<ApiResponse<DueCardItem[]>>(
       "/reviews/due",
       { params },
@@ -60,9 +63,15 @@ export const reviewsService = {
     );
   },
 
-  async getTodaySession(): Promise<TodaySessionResponse> {
+  async getTodaySession(
+    mode?: "express" | "standard",
+  ): Promise<TodaySessionResponse> {
+    const params = mode ? { mode } : {};
     const response =
-      await apiClient.get<ApiResponse<TodaySessionResponse>>("/reviews/today-session");
+      await apiClient.get<ApiResponse<TodaySessionResponse>>(
+        "/reviews/today-session",
+        { params },
+      );
     return (
       response.data.data || {
         cards: [],

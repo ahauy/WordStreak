@@ -139,5 +139,37 @@
     "copyright": "© {{year}} WordStreak. 100% Miễn phí & Mã nguồn mở.",
     "settings": "Cài đặt",
     "security": "Bảo mật"
+  },
+  "expressSession": {
+    "button": "Phiên 5 phút",
+    "tooltip": "Ôn nhanh 5–7 thẻ ưu tiên cao nhất cho ngày bận rộn",
+    "badge": "5 phút",
+    "subtitle": "Chế độ ôn tập cấp tốc (5–7 thẻ quan trọng nhất)"
+  },
+  "welcomeBack": {
+    "title": "Chào mừng bạn quay lại! 👋",
+    "message": "Chúng mình đã chuẩn bị một phiên học nhẹ nhàng 5–7 từ để bạn bắt nhịp lại dễ dàng, không lo dồn ứ thẻ.",
+    "action": "Bắt đầu phiên nhẹ nhàng"
+  },
+  "milestones": {
+    "badge": "Cột mốc thói quen",
+    "congrats": "Chúc mừng bạn đạt cột mốc mới! 🎉",
+    "cta": "Tiếp tục học",
+    "m50": {
+      "title": "50 từ vựng đã ghi nhớ!",
+      "desc": "Bạn đã vượt qua mốc 50 từ đầu tiên! Nền tảng ghi nhớ đang dần hình thành vững chắc."
+    },
+    "m100": {
+      "title": "100 từ vựng cốt lõi!",
+      "desc": "Bạn đã nắm 100 từ xuất hiện nhiều nhất trong mọi bài thi TOEIC và giao tiếp hằng ngày!"
+    },
+    "m300": {
+      "title": "300 từ vựng dài hạn!",
+      "desc": "300 từ cốt lõi đã nằm trong trí nhớ dài hạn của bạn! Bạn có thể hiểu hơn 65% văn bản thông thường."
+    },
+    "m500": {
+      "title": "500 từ vựng — Cột mốc phi thường!",
+      "desc": "Cột mốc phi thường: 500 từ vựng! Bạn đã làm chủ toàn bộ nền tảng NGSL Top 500."
+    }
   }
 }

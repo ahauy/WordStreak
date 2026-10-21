@@ -15,6 +15,8 @@ import { DecksPreviewSection } from "../components/DecksPreviewSection";
 import { DashboardAnalyticsWidget } from "../../analytics/components/DashboardAnalyticsWidget";
 import { CreateDeckModal } from "../../decks/components/CreateDeckModal";
 import { OnboardingWizard } from "../../onboarding/components/OnboardingWizard";
+import { HabitMilestoneModal } from "../components/HabitMilestoneModal";
+import { useHabitMilestones } from "../hooks/useHabitMilestones";
 import { useStreak } from "../hooks/useStreak";
 import { useAnalytics } from "../../analytics/hooks/useAnalytics";
 import { useDecks } from "../../decks/hooks/useDecks";
@@ -49,6 +51,10 @@ export const DashboardPage: React.FC = () => {
     "profile" | "avatar" | "security" | "gamification"
   >("profile");
   const [todaySession, setTodaySession] = useState<TodaySessionResponse | null>(null);
+
+  const masteredWords = analyticsOverview?.masterySummary?.masteredCount || 0;
+  const { activeMilestone, closeModal: closeMilestoneModal } =
+    useHabitMilestones(masteredWords);
 
   useEffect(() => {
     let ignore = false;
@@ -142,6 +148,7 @@ export const DashboardPage: React.FC = () => {
                 totalCount={todaySession?.summary.totalCount ?? cardsDueToday}
                 dueCount={todaySession?.summary.dueCount ?? cardsDueToday}
                 newCount={todaySession?.summary.newCount ?? 0}
+                isWelcomeBack={Boolean(todaySession?.summary.isWelcomeBack)}
                 isCompleted={
                   todaySession?.summary.isGoalCompleted ??
                   (cardsDueToday === 0 && isActiveToday)
@@ -246,6 +253,13 @@ export const DashboardPage: React.FC = () => {
           )}
           onClose={() => setIsOnboardingDismissed(true)}
           onSuccess={() => setIsOnboardingDismissed(true)}
+        />
+
+        {/* Habit Milestone Motivation Modal (US-LIB-16) */}
+        <HabitMilestoneModal
+          isOpen={Boolean(activeMilestone)}
+          milestone={activeMilestone}
+          onClose={closeMilestoneModal}
         />
       </div>
     </PageTransition>

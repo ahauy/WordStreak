@@ -38,6 +38,10 @@ describe('ReviewsService', () => {
       count: jest.Mock;
       findFirst: jest.Mock;
     };
+    userStreak: {
+      findFirst: jest.Mock;
+      findUnique: jest.Mock;
+    };
     reviewLog: { create: jest.Mock; count: jest.Mock };
   };
 
@@ -114,6 +118,10 @@ describe('ReviewsService', () => {
         update: jest.fn(),
         count: jest.fn().mockResolvedValue(0),
         findFirst: jest.fn().mockResolvedValue(null),
+      },
+      userStreak: {
+        findFirst: jest.fn().mockResolvedValue(null),
+        findUnique: jest.fn().mockResolvedValue(null),
       },
       reviewLog: {
         create: jest.fn().mockResolvedValue({
@@ -740,6 +748,100 @@ describe('ReviewsService', () => {
         totalCount: 0,
         dailyGoal: 10,
         isGoalCompleted: true,
+        isWelcomeBack: false,
+        isExpress: false,
+      });
+    });
+
+    describe('Habit Milestones, Express Session & Welcome Back (US-LIB-16)', () => {
+      it('TC-LIB-16-001: getDueCards with mode === express limits cards to max 7 and marks isExpress', async () => {
+        prisma.user.findUnique.mockResolvedValue({ dailyGoal: 10 });
+        prisma.userStreak.findFirst.mockResolvedValue({
+          lastActiveDate: new Date(),
+        });
+
+        // 10 mock overdue cards
+        const mockCards = Array.from({ length: 10 }, (_, i) => ({
+          id: `p-${i}`,
+          cardId: `c-${i}`,
+          status: 'LEARNING',
+          interval: 1,
+          repetitions: 1,
+          easeFactor: 2.5,
+          nextReviewDate: new Date(Date.now() - 24 * 3600 * 1000),
+          card: {
+            deckId: 'deck-1',
+            deck: { id: 'deck-1', title: 'Deck 1', color: '#000' },
+            word: `word-${i}`,
+            meaning: `nghĩa-${i}`,
+            phonetic: null,
+            audioUrl: null,
+            exampleSentence: null,
+            collocations: null,
+            mnemonic: null,
+            imageUrl: null,
+          },
+        }));
+
+        prisma.userCardProgress.findMany.mockResolvedValue(mockCards);
+        prisma.userOfficialCardProgress.findMany.mockResolvedValue([]);
+
+        const result = await service.getDueCards(mockUserId, { mode: 'express' });
+
+        expect(result.data.length).toBe(7);
+        expect(result.meta.isExpress).toBe(true);
+        expect(result.meta.isWelcomeBack).toBe(false);
+      });
+
+      it('TC-LIB-16-002: getDueCards activates isWelcomeBack and caps to 7 when user inactive > 7 days', async () => {
+        prisma.user.findUnique.mockResolvedValue({ dailyGoal: 10 });
+        const eightDaysAgo = new Date(Date.now() - 8 * 24 * 3600 * 1000);
+        prisma.userStreak.findFirst.mockResolvedValue({
+          lastActiveDate: eightDaysAgo,
+        });
+
+        const mockCards = Array.from({ length: 15 }, (_, i) => ({
+          id: `p-${i}`,
+          cardId: `c-${i}`,
+          status: 'LEARNING',
+          interval: 1,
+          repetitions: 1,
+          easeFactor: 2.5,
+          nextReviewDate: new Date(Date.now() - 24 * 3600 * 1000),
+          card: {
+            deckId: 'deck-1',
+            deck: { id: 'deck-1', title: 'Deck 1', color: '#000' },
+            word: `word-${i}`,
+            meaning: `nghĩa-${i}`,
+            phonetic: null,
+            audioUrl: null,
+            exampleSentence: null,
+            collocations: null,
+            mnemonic: null,
+            imageUrl: null,
+          },
+        }));
+
+        prisma.userCardProgress.findMany.mockResolvedValue(mockCards);
+        prisma.userOfficialCardProgress.findMany.mockResolvedValue([]);
+
+        const result = await service.getDueCards(mockUserId);
+
+        expect(result.meta.isWelcomeBack).toBe(true);
+        expect(result.data.length).toBe(7);
+      });
+
+      it('TC-LIB-16-003: getTodaySession forwards express mode', async () => {
+        prisma.user.findUnique.mockResolvedValue({ dailyGoal: 10 });
+        prisma.userStreak.findFirst.mockResolvedValue({
+          lastActiveDate: new Date(),
+        });
+        prisma.userCardProgress.findMany.mockResolvedValue([]);
+        prisma.userOfficialCardProgress.findMany.mockResolvedValue([]);
+
+        const session = await service.getTodaySession(mockUserId, { mode: 'express' });
+
+        expect(session.summary.isExpress).toBe(true);
       });
     });
   });
