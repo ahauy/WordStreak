@@ -12,7 +12,7 @@ import { PronunciationPracticeModal } from "../../practice/components/Pronunciat
 import { useStreak } from "../../dashboard/hooks/useStreak";
 import { OfflineSyncPill } from "../../../components/pwa/OfflineSyncPill";
 import { PwaInstallBanner } from "../../../components/pwa/PwaInstallBanner";
-import { Loader2, AlertCircle, RotateCcw } from "lucide-react";
+import { Loader2, AlertCircle, RotateCcw, Headphones } from "lucide-react";
 import type { StreakActivityResponseDto } from "@wordstreak/shared-types";
 
 export const ReviewSessionPage: React.FC = () => {
@@ -24,6 +24,7 @@ export const ReviewSessionPage: React.FC = () => {
     useState<StreakActivityResponseDto | null>(null);
   const [isCelebrationOpen, setIsCelebrationOpen] = useState(false);
   const [isVoicePracticeOpen, setIsVoicePracticeOpen] = useState(false);
+  const [isAudioFirstMode, setIsAudioFirstMode] = useState(false);
   const hasRecordedStreakRef = useRef(false);
 
   const {
@@ -93,7 +94,21 @@ export const ReviewSessionPage: React.FC = () => {
             />
           </div>
         )}
-        <div className="shrink-0">
+        <div className="shrink-0 flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => setIsAudioFirstMode((prev) => !prev)}
+            className={`px-3 py-1.5 rounded-full text-xs font-medium inline-flex items-center gap-1.5 transition-colors cursor-pointer border ${
+              isAudioFirstMode
+                ? "bg-purple-50 text-purple-900 border-purple-300 font-semibold"
+                : "bg-white text-neutral-600 border-neutral-200 hover:bg-neutral-50"
+            }`}
+            title="Bật/Tắt chế độ nghe trước khi xem mặt chữ (Audio-First)"
+            data-testid="audio-first-toggle"
+          >
+            <Headphones className="w-3.5 h-3.5 text-purple-600" />
+            <span>Audio-First</span>
+          </button>
           <OfflineSyncPill />
         </div>
       </header>
@@ -153,6 +168,7 @@ export const ReviewSessionPage: React.FC = () => {
               onFlip={flip}
               onRate={rateCard}
               onOpenVoicePractice={() => setIsVoicePracticeOpen(true)}
+              isAudioFirstMode={isAudioFirstMode}
             />
           </div>
         ) : null}
