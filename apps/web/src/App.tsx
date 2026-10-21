@@ -22,6 +22,8 @@ import { AnalyticsPage } from "./features/analytics/pages/AnalyticsPage";
 import { CommunityDecksPage } from "./features/community/pages/CommunityDecksPage";
 import { LibraryPage } from "./features/library/pages/LibraryPage";
 import { OfficialDeckDetailPage } from "./features/library/pages/OfficialDeckDetailPage";
+import { DataSourcesPage } from "./features/library/pages/DataSourcesPage";
+import { ToeicPathPage } from "./features/library/pages/ToeicPathPage";
 import { ProtectedRoute } from "./features/auth/components/ProtectedRoute";
 import { GlobalFlameMascot } from "./features/dashboard/components/GlobalFlameMascot";
 import { useAuthStore } from "./store/useAuthStore";
@@ -42,6 +44,9 @@ function AnimatedRoutes() {
 
         {/* Community Decks (Publicly accessible browse/preview) */}
         <Route path="/community" element={<CommunityDecksPage />} />
+
+        {/* Data Sources & Licensing (Publicly accessible) */}
+        <Route path="/sources" element={<DataSourcesPage />} />
 
         {/* Protected Application Routes */}
         <Route
@@ -76,6 +81,15 @@ function AnimatedRoutes() {
           element={
             <ProtectedRoute>
               <OfficialDeckDetailPage />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/paths/toeic"
+          element={
+            <ProtectedRoute>
+              <ToeicPathPage />
             </ProtectedRoute>
           }
         />

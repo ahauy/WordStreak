@@ -10,9 +10,12 @@ import {
   Sparkles,
   AlertCircle,
   RefreshCw,
+  Filter,
 } from "lucide-react";
 import { DashboardNavbar } from "../../dashboard/components/DashboardNavbar";
 import { libraryService } from "../services/libraryService";
+import { SourceAttributionBadge } from "../components/SourceAttributionBadge";
+import { KnownWordTriageModal } from "../components/KnownWordTriageModal";
 import type { OfficialDeckDetailResponse } from "@wordstreak/shared-types";
 
 export const OfficialDeckDetailPage: React.FC = () => {
@@ -22,6 +25,7 @@ export const OfficialDeckDetailPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isEnrolling, setIsEnrolling] = useState(false);
+  const [isTriageOpen, setIsTriageOpen] = useState(false);
 
   useEffect(() => {
     if (!slug) return;
@@ -92,6 +96,14 @@ export const OfficialDeckDetailPage: React.FC = () => {
     navigate("/dashboard");
   };
 
+  const handleTriageComplete = () => {
+    if (!slug) return;
+    // Refresh deck data so updated statuses appear
+    libraryService.getOfficialDeckBySlug(slug).then((res) => {
+      setData(res);
+    });
+  };
+
   return (
     <div className="min-h-screen bg-[#ffffff] text-[#090909]">
       <DashboardNavbar />
@@ -137,9 +149,7 @@ export const OfficialDeckDetailPage: React.FC = () => {
                     {data.deck.level}
                   </span>
                 )}
-                <span className="inline-flex items-center gap-1 text-[11px] font-mono text-[#737373] bg-[#ffffff] px-2.5 py-1 rounded-full border border-[#e5e5e5]">
-                  CC BY-SA 4.0
-                </span>
+                <SourceAttributionBadge showLink={true} href="/sources" showAuthors={true} />
               </div>
 
               <h1 className="font-nunito font-extrabold text-2xl sm:text-3xl text-[#090909]">
@@ -175,6 +185,15 @@ export const OfficialDeckDetailPage: React.FC = () => {
                 </div>
 
                 <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setIsTriageOpen(true)}
+                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-xs sm:text-sm font-semibold bg-[#ffffff] border border-[#e5e5e5] text-[#090909] hover:border-black transition-colors cursor-pointer"
+                  >
+                    <Filter className="w-4 h-4" />
+                    Lọc từ đã biết
+                  </button>
+
                   {!data.isEnrolled ? (
                     <button
                       type="button"
@@ -303,6 +322,17 @@ export const OfficialDeckDetailPage: React.FC = () => {
               </p>
             </div>
           </div>
+        )}
+
+        {data && (
+          <KnownWordTriageModal
+            isOpen={isTriageOpen}
+            onClose={() => setIsTriageOpen(false)}
+            deckId={data.deck.id}
+            deckTitle={data.deck.titleVi || data.deck.title}
+            cards={data.cards}
+            onTriageComplete={handleTriageComplete}
+          />
         )}
       </main>
     </div>

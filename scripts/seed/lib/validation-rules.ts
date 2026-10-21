@@ -1,3 +1,5 @@
+import { validateSentenceDifficulty } from './vocabulary-control';
+
 export type CanonicalPOS =
   | 'noun'
   | 'verb'
@@ -90,6 +92,7 @@ export interface WordValidationTarget {
   phonetic?: string | null;
   meaningVi?: string | null;
   exampleSentence?: string | null;
+  exampleEasyEn?: string | null;
   collocations?: string[] | null;
 }
 
@@ -130,6 +133,30 @@ export function validateEnrichedWord(entry: WordValidationTarget): ValidationRes
   // Rule 4: Collocations count
   if (!Array.isArray(entry.collocations) || entry.collocations.length < 2) {
     errors.push('INSUFFICIENT_COLLOCATIONS');
+  }
+
+  // Rule 5: Standard example sentence coverage (>= 95% in NGSL + TSL)
+  if (entry.exampleSentence) {
+    const stdResult = validateSentenceDifficulty({
+      sentence: entry.exampleSentence,
+      mode: 'standard',
+      targetWord: entry.word,
+    });
+    if (!stdResult.isValid) {
+      errors.push(...stdResult.errors);
+    }
+  }
+
+  // Rule 6: Beginner example sentence checks (5-8 words & 100% in NGSL Top 500)
+  if (entry.exampleEasyEn) {
+    const easyResult = validateSentenceDifficulty({
+      sentence: entry.exampleEasyEn,
+      mode: 'beginner',
+      targetWord: entry.word,
+    });
+    if (!easyResult.isValid) {
+      errors.push(...easyResult.errors);
+    }
   }
 
   const isValid = errors.length === 0;

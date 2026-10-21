@@ -14,10 +14,16 @@ describe('LibraryService', () => {
       findUnique: jest.Mock;
     };
     officialDeckCard: { findMany: jest.Mock };
-    userOfficialCardProgress: { findMany: jest.Mock };
+    userOfficialCardProgress: {
+      findMany: jest.Mock;
+      upsert: jest.Mock;
+      count: jest.Mock;
+    };
     userDeckEnrollment: { upsert: jest.Mock; findMany: jest.Mock };
     deck: { findFirst: jest.Mock; create: jest.Mock };
     card: { create: jest.Mock };
+    user: { findUnique: jest.Mock };
+    $transaction: jest.Mock;
   };
 
   const mockUserId = 'user-123';
@@ -32,10 +38,16 @@ describe('LibraryService', () => {
         findUnique: jest.fn(),
       },
       officialDeckCard: { findMany: jest.fn() },
-      userOfficialCardProgress: { findMany: jest.fn() },
+      userOfficialCardProgress: {
+        findMany: jest.fn(),
+        upsert: jest.fn(),
+        count: jest.fn(),
+      },
       userDeckEnrollment: { upsert: jest.fn(), findMany: jest.fn() },
       deck: { findFirst: jest.fn(), create: jest.fn() },
       card: { create: jest.fn() },
+      user: { findUnique: jest.fn() },
+      $transaction: jest.fn((ops) => Promise.all(ops)),
     };
 
     const module: TestingModule = await Test.createTestingModule({
@@ -282,6 +294,151 @@ describe('LibraryService', () => {
       expect(result.success).toBe(true);
       expect(result.deckId).toBe('deck-1');
       expect(result.enrolledAt).toEqual(mockStartedAt);
+    });
+  });
+
+  describe('triageDeckCards (TC-LIB-05-001)', () => {
+    const mockDeckId = 'deck-123';
+
+    it('throws NotFoundException if deck does not exist', async () => {
+      prisma.officialDeck.findUnique.mockResolvedValue(null);
+
+      await expect(
+        service.triageDeckCards(mockUserId, 'invalid-deck', {
+          items: [{ cardId: 'c1', isKnown: true }],
+        }),
+      ).rejects.toThrow(NotFoundException);
+    });
+
+    it('triages cards, marks known as KNOWN_SKIPPED and unknown as NEW', async () => {
+      prisma.officialDeck.findUnique.mockResolvedValue({
+        id: mockDeckId,
+        cards: [{ cardId: 'c1' }, { cardId: 'c2' }],
+      });
+      prisma.userDeckEnrollment.upsert.mockResolvedValue({
+        id: 'enr-1',
+        userId: mockUserId,
+        deckId: mockDeckId,
+      });
+      prisma.userOfficialCardProgress.upsert.mockResolvedValue({});
+
+      const result = await service.triageDeckCards(mockUserId, mockDeckId, {
+        items: [
+          { cardId: 'c1', isKnown: true },
+          { cardId: 'c2', isKnown: false },
+          { cardId: 'c-invalid', isKnown: true }, // Should be ignored as not in deck
+        ],
+      });
+
+      expect(result.success).toBe(true);
+      expect(result.deckId).toBe(mockDeckId);
+      expect(result.knownCount).toBe(1);
+      expect(result.unknownCount).toBe(1);
+      expect(result.totalTriaged).toBe(2);
+
+      expect(prisma.userDeckEnrollment.upsert).toHaveBeenCalledWith(
+        expect.objectContaining({
+          where: { userId_deckId: { userId: mockUserId, deckId: mockDeckId } },
+        }),
+      );
+
+      // Verify known card upsert with KNOWN_SKIPPED
+      expect(prisma.userOfficialCardProgress.upsert).toHaveBeenCalledWith({
+        where: { userId_cardId: { userId: mockUserId, cardId: 'c1' } },
+        update: { status: 'KNOWN_SKIPPED', nextReviewDate: null },
+        create: {
+          userId: mockUserId,
+          cardId: 'c1',
+          status: 'KNOWN_SKIPPED',
+          nextReviewDate: null,
+          repetitions: 0,
+          interval: 0,
+          easeFactor: 2.5,
+        },
+      });
+
+      // Verify unknown card upsert with NEW
+      expect(prisma.userOfficialCardProgress.upsert).toHaveBeenCalledWith({
+        where: { userId_cardId: { userId: mockUserId, cardId: 'c2' } },
+        update: { status: 'NEW', nextReviewDate: null },
+        create: {
+          userId: mockUserId,
+          cardId: 'c2',
+          status: 'NEW',
+          nextReviewDate: null,
+          repetitions: 0,
+          interval: 0,
+          easeFactor: 2.5,
+        },
+      });
+    });
+  });
+
+  describe('getToeicPathProgress (TC-LIB-06-001)', () => {
+    it('calculates coverage percentage (NGSL max 94% + TSL max 4.5%), completed decks, and days remaining', async () => {
+      prisma.user.findUnique.mockResolvedValue({ dailyGoal: 10 });
+      prisma.officialDeck.findMany.mockResolvedValue([
+        {
+          id: 'deck-1',
+          slug: 'tsl-1a-office',
+          title: 'Office Ops',
+          titleVi: 'Nghiệp vụ VP',
+          level: 'T1',
+          order: 1,
+          cards: [{ cardId: 'c1' }, { cardId: 'c2' }],
+        },
+        {
+          id: 'deck-2',
+          slug: 'tsl-2a-trade',
+          title: 'Trade Ops',
+          titleVi: 'Thương mại',
+          level: 'T2',
+          order: 2,
+          cards: [{ cardId: 'c3' }, { cardId: 'c4' }],
+        },
+      ]);
+
+      prisma.userOfficialCardProgress.findMany.mockResolvedValue([
+        { cardId: 'c1', status: 'MASTERED' },
+        { cardId: 'c2', status: 'KNOWN_SKIPPED' },
+        { cardId: 'c3', status: 'LEARNING' },
+      ]);
+
+      // Mock user has mastered 1400 NGSL words
+      prisma.userOfficialCardProgress.count.mockResolvedValue(1400);
+
+      const result = await service.getToeicPathProgress(mockUserId);
+
+      expect(result.maxEstimatedCoverage).toBe(98.5);
+      expect(result.totalDecks).toBe(2);
+      expect(result.completedDecks).toBe(1); // deck-1 is completed (c1 MASTERED + c2 KNOWN_SKIPPED)
+      expect(result.totalWords).toBe(4);
+      expect(result.masteredWords).toBe(1);
+      expect(result.knownSkippedWords).toBe(1);
+      expect(result.dailyGoal).toBe(10);
+
+      // NGSL: 1400 / 2809 * 94.0 = ~46.8%
+      expect(result.ngslCoveragePercent).toBeGreaterThan(45);
+      // TSL: 2 / 4 * 4.5 = 2.3%
+      expect(result.tslCoveragePercent).toBeCloseTo(2.3, 1);
+      // Total coverage should sum NGSL + TSL
+      expect(result.coveragePercent).toBe(
+        Number(
+          (result.ngslCoveragePercent + result.tslCoveragePercent).toFixed(1),
+        ),
+      );
+
+      // Verify level breakdowns
+      expect(result.levels.length).toBe(3);
+      const t1 = result.levels.find((l) => l.level === 'T1');
+      expect(t1?.completedDecks).toBe(1);
+      expect(t1?.totalCards).toBe(2);
+      expect(t1?.learnedCards).toBe(2);
+      expect(t1?.progressPercent).toBe(100);
+
+      const t2 = result.levels.find((l) => l.level === 'T2');
+      expect(t2?.completedDecks).toBe(0);
+      expect(t2?.learnedCards).toBe(0);
     });
   });
 });

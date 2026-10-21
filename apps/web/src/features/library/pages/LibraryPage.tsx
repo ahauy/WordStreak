@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { Search, Sparkles, BookOpen, AlertCircle, RefreshCw } from "lucide-react";
 import { DashboardNavbar } from "../../dashboard/components/DashboardNavbar";
 import { OfficialDeckCard } from "../components/OfficialDeckCard";
+import { SourceAttributionBadge } from "../components/SourceAttributionBadge";
 import { FoundationPathView } from "../../foundation/components/FoundationPathView";
 import { libraryService } from "../services/libraryService";
 import type { OfficialDeckDto } from "@wordstreak/shared-types";
@@ -208,18 +209,12 @@ export const LibraryPage: React.FC = () => {
 
         {/* Licensing & Attribution Footer */}
         <div className="mt-16 pt-6 border-t border-[#e5e5e5] flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-[#737373]">
-          <p>
-            Danh mục từ vựng học thuật dựa trên NGSL & TSL của Browne, Culligan & Phillips theo giấy phép{" "}
-            <a
-              href="https://creativecommons.org/licenses/by-sa/4.0/"
-              target="_blank"
-              rel="noreferrer"
-              className="underline hover:text-black font-medium"
-            >
-              CC BY-SA 4.0
-            </a>
-            .
-          </p>
+          <div className="flex items-center gap-2">
+            <SourceAttributionBadge showLink={true} href="/sources" />
+            <p>
+              Danh mục từ vựng học thuật dựa trên NGSL & TSL của Browne, Culligan & Phillips (CC BY-SA 4.0).
+            </p>
+          </div>
           <Link
             to="/sources"
             className="hover:text-black underline font-medium"

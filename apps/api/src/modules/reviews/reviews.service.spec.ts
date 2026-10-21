@@ -724,5 +724,23 @@ describe('ReviewsService', () => {
       expect(stats.learningCount).toBe(12);
       expect(stats.masteredCount).toBe(8);
     });
+
+    it('TC-UX-01-001: getTodaySession returns prioritized cards and summary', async () => {
+      prisma.user.findUnique.mockResolvedValue({ dailyGoal: 10 });
+      prisma.userCardProgress.findMany.mockResolvedValue([]);
+      prisma.userOfficialCardProgress.findMany.mockResolvedValue([]);
+
+      const session = await service.getTodaySession(mockUserId);
+
+      expect(session).toBeDefined();
+      expect(session.cards).toEqual([]);
+      expect(session.summary).toEqual({
+        dueCount: 0,
+        newCount: 0,
+        totalCount: 0,
+        dailyGoal: 10,
+        isGoalCompleted: true,
+      });
+    });
   });
 });

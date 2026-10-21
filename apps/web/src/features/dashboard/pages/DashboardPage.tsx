@@ -1,11 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useAuthStore } from "../../../store/useAuthStore";
+import { reviewsService } from "../../reviews/services/reviewsService";
+import type { TodaySessionResponse } from "@wordstreak/shared-types";
 import { SettingsModal } from "../../user-profile/components/SettingsModal";
 import { PageTransition } from "../../../common/components/layout/PageTransition";
 import { DashboardNavbar } from "../components/DashboardNavbar";
 import { StreakHeroBanner } from "../components/StreakHeroBanner";
+import { StudyTodayButton } from "../components/StudyTodayButton";
 import { DashboardStatsGrid } from "../components/DashboardStatsGrid";
 import { StreakHeatmapTracker } from "../components/StreakHeatmapTracker";
 import { DecksPreviewSection } from "../components/DecksPreviewSection";
@@ -45,6 +48,20 @@ export const DashboardPage: React.FC = () => {
   const [settingsTab, setSettingsTab] = useState<
     "profile" | "avatar" | "security" | "gamification"
   >("profile");
+  const [todaySession, setTodaySession] = useState<TodaySessionResponse | null>(null);
+
+  useEffect(() => {
+    let ignore = false;
+    reviewsService
+      .getTodaySession()
+      .then((res) => {
+        if (!ignore) setTodaySession(res);
+      })
+      .catch(() => null);
+    return () => {
+      ignore = true;
+    };
+  }, []);
 
   const longestStreak = bestStreak;
   const dailyGoal = user?.dailyGoal || 10;
@@ -107,6 +124,30 @@ export const DashboardPage: React.FC = () => {
               onCreateDeck={handleCreateDeck}
               onOpenFlameNurture={openFlameNurture}
             />
+
+            {/* Unified Study Today Combined Session CTA (US-UX-01) */}
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-5 rounded-3xl bg-[#fafafa] border border-[#e5e5e5] shadow-xs">
+              <div className="text-center sm:text-left">
+                <h2 className="text-sm sm:text-base font-nunito font-bold text-[#090909]">
+                  {t("studyTodayBannerTitle", "Phiên học gộp thông minh hôm nay")}
+                </h2>
+                <p className="text-xs text-[#525252] mt-0.5 max-w-xl">
+                  {t(
+                    "studyTodayBannerDesc",
+                    "Hệ thống tự động ưu tiên các từ đến hạn ôn tập và bù thêm từ mới theo mục tiêu ngày của bạn.",
+                  )}
+                </p>
+              </div>
+              <StudyTodayButton
+                totalCount={todaySession?.summary.totalCount ?? cardsDueToday}
+                dueCount={todaySession?.summary.dueCount ?? cardsDueToday}
+                newCount={todaySession?.summary.newCount ?? 0}
+                isCompleted={
+                  todaySession?.summary.isGoalCompleted ??
+                  (cardsDueToday === 0 && isActiveToday)
+                }
+              />
+            </div>
 
             {/* 4 Core Clean Metric Cards */}
             <DashboardStatsGrid

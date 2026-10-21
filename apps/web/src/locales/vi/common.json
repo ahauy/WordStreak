@@ -97,5 +97,18 @@
     "perPage": "Số lượng:",
     "showingPage": "Hiển thị trang",
     "pageOf": "Trang {{current}} / {{total}}"
+  },
+  "sources": {
+    "title": "Nguồn dữ liệu & Bản quyền",
+    "subtitle": "Tính khoa học, minh bạch và cam kết bản quyền mở tại WordStreak",
+    "badgePolicy": "Chính sách bản quyền & Pháp lý",
+    "backToLibrary": "Quay lại Thư viện",
+    "ccLicense": "CC BY-SA 4.0",
+    "ngslTitle": "New General Service List",
+    "tslTitle": "TOEIC Service List",
+    "disclaimerTitle": "Tuyên bố miễn trừ trách nhiệm pháp lý (Trademarks)",
+    "etsDisclaimer": "TOEIC® là nhãn hiệu đã đăng ký của Educational Testing Service (ETS). WordStreak là nền tảng học tập độc lập, không liên kết hay được chứng thực bởi ETS.",
+    "ieltsDisclaimer": "IELTS® là nhãn hiệu đã đăng ký của University of Cambridge ESOL, Hội đồng Anh (British Council) và IDP Education Australia. WordStreak không liên kết hay được chứng thực bởi các tổ chức này.",
+    "footerNote": "Danh mục từ vựng học thuật dựa trên NGSL & TSL của Browne, Culligan & Phillips (CC BY-SA 4.0)."
   }
 }

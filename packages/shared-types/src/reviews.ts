@@ -60,6 +60,19 @@ export interface ReviewStatsResponse {
   masteredCount: number;
 }
 
+export interface TodaySessionSummary {
+  dueCount: number;
+  newCount: number;
+  totalCount: number;
+  dailyGoal: number;
+  isGoalCompleted: boolean;
+}
+
+export interface TodaySessionResponse {
+  cards: DueCardItem[];
+  summary: TodaySessionSummary;
+}
+
 export interface ReviewSummaryDto {
   dueCount: number;
   newAvailable: number;

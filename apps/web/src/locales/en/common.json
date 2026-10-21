@@ -97,5 +97,18 @@
     "perPage": "Per page:",
     "showingPage": "Showing page",
     "pageOf": "Page {{current}} of {{total}}"
+  },
+  "sources": {
+    "title": "Data Sources & Licensing",
+    "subtitle": "Scientific rigor, transparency, and open licensing commitment at WordStreak",
+    "badgePolicy": "Legal & Licensing Policy",
+    "backToLibrary": "Back to Library",
+    "ccLicense": "CC BY-SA 4.0",
+    "ngslTitle": "New General Service List",
+    "tslTitle": "TOEIC Service List",
+    "disclaimerTitle": "Legal Trademark Disclaimers",
+    "etsDisclaimer": "TOEIC® is a registered trademark of Educational Testing Service (ETS). WordStreak is an independent educational platform and is not affiliated with, endorsed by, or approved by ETS.",
+    "ieltsDisclaimer": "IELTS® is a registered trademark of University of Cambridge ESOL, the British Council, and IDP Education Australia. WordStreak is not affiliated with or endorsed by these organizations.",
+    "footerNote": "Academic vocabulary lists based on NGSL & TSL by Browne, Culligan & Phillips (CC BY-SA 4.0)."
   }
 }

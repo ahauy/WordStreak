@@ -24,6 +24,7 @@ import type {
   ApiResponse,
   SyncReviewResponseDto,
   ReviewSummaryDto,
+  TodaySessionResponse,
 } from '@wordstreak/shared-types';
 
 export function computeReviewSummaryEtag(summary: ReviewSummaryDto): string {
@@ -98,6 +99,17 @@ export class ReviewsController {
     return {
       success: true,
       data: summary,
+    };
+  }
+
+  @Get('today-session')
+  async getTodaySession(
+    @CurrentUser() user: JwtPayload,
+  ): Promise<ApiResponse<TodaySessionResponse>> {
+    const data = await this.reviewsService.getTodaySession(user.sub);
+    return {
+      success: true,
+      data,
     };
   }
 

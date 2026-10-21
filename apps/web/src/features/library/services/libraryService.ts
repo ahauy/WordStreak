@@ -4,6 +4,8 @@ import type {
   PaginatedOfficialDecksResponse,
   OfficialDeckDetailResponse,
   EnrollOfficialDeckResponse,
+  TriageDeckCardsResponse,
+  ToeicPathProgressResponse,
 } from "@wordstreak/shared-types";
 
 export const libraryService = {
@@ -47,6 +49,24 @@ export const libraryService = {
   ): Promise<EnrollOfficialDeckResponse> {
     const response = await apiClient.post<EnrollOfficialDeckResponse>(
       `/library/decks/${deckId}/enroll`,
+    );
+    return response.data;
+  },
+
+  async triageDeck(
+    deckId: string,
+    items: Array<{ cardId: string; isKnown: boolean }>,
+  ): Promise<TriageDeckCardsResponse> {
+    const response = await apiClient.post<TriageDeckCardsResponse>(
+      `/library/decks/${deckId}/triage`,
+      { items },
+    );
+    return response.data;
+  },
+
+  async getToeicPathProgress(): Promise<ToeicPathProgressResponse> {
+    const response = await apiClient.get<ToeicPathProgressResponse>(
+      "/library/paths/toeic/progress",
     );
     return response.data;
   },

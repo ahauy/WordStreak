@@ -26,6 +26,7 @@ describe('ReviewsController', () => {
   beforeEach(async () => {
     const mockReviewsService = {
       getDueCards: jest.fn(),
+      getTodaySession: jest.fn(),
       submitReview: jest.fn(),
       getReviewStats: jest.fn(),
       getReviewSummary: jest.fn(),
@@ -176,6 +177,26 @@ describe('ReviewsController', () => {
         batchDto,
         'Asia/Ho_Chi_Minh',
       );
+    });
+
+    it('should return today session with prioritized cards and summary (US-UX-01)', async () => {
+      const mockTodaySession = {
+        cards: [],
+        summary: {
+          dueCount: 2,
+          newCount: 8,
+          totalCount: 10,
+          dailyGoal: 10,
+          isGoalCompleted: false,
+        },
+      };
+      service.getTodaySession.mockResolvedValue(mockTodaySession);
+
+      const response = await controller.getTodaySession(mockUser);
+
+      expect(response.success).toBe(true);
+      expect(response.data).toEqual(mockTodaySession);
+      expect(service.getTodaySession).toHaveBeenCalledWith(mockUser.sub);
     });
   });
 

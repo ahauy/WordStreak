@@ -19,6 +19,7 @@ export const ENDPOINTS = {
   REVIEWS: {
     DUE: "/reviews/due",
     SUBMIT: "/reviews/submit",
+    TODAY_SESSION: "/reviews/today-session",
   },
   EXERCISES: {
     GENERATE: "/exercises/generate-quiz",
