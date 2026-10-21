@@ -45,6 +45,8 @@ export interface DueCardItem {
   nextReviewDate: string;
   isOfficial?: boolean;
   officialCardId?: string;
+  stressSyllable?: number | null;
+  endingSoundTipVi?: string | null;
 }
 
 export interface SubmitReviewDto {

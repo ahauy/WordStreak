@@ -218,10 +218,9 @@ export class ToeicQuizGeneratorService {
           )
         : [];
 
-    const prioritizedConfusables = this.shuffleArray(distractorCandidates).slice(
-      0,
-      3,
-    );
+    const prioritizedConfusables = this.shuffleArray(
+      distractorCandidates,
+    ).slice(0, 3);
 
     // Priority 2 distractors: peer cards to fill remaining slots up to 3
     const peerDistractors = allCards
@@ -240,10 +239,7 @@ export class ToeicQuizGeneratorService {
       neededPeers,
     );
 
-    const chosenDistractors = [
-      ...prioritizedConfusables,
-      ...additionalPeers,
-    ];
+    const chosenDistractors = [...prioritizedConfusables, ...additionalPeers];
 
     // If still < 3 distractors, pad with dummy variations
     while (chosenDistractors.length < 3) {

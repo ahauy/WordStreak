@@ -283,6 +283,8 @@ export class ReviewsService {
         nextReviewDate: (item.nextReviewDate ?? now).toISOString(),
         isOfficial: true,
         officialCardId: item.cardId,
+        stressSyllable: content.stress_syllable ?? null,
+        endingSoundTipVi: content.ending_sound_tip_vi ?? null,
       };
 
       if (item.status === 'NEW') {

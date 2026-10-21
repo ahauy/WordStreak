@@ -1,7 +1,8 @@
 import React, { useEffect, useCallback } from "react";
-import { BookOpen, Lightbulb, RotateCw, Mic } from "lucide-react";
+import { BookOpen, Lightbulb, RotateCw, Mic, Headphones, Volume2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { TtsAudioPlayer } from "../../../components/pwa/TtsAudioPlayer";
+import { PhoneticWordBreakdown } from "../../../components/voice/PhoneticWordBreakdown";
 import type { DueCardItem, SrsRating } from "@wordstreak/shared-types";
 
 interface FlashcardReviewCardProps {
@@ -11,6 +12,7 @@ interface FlashcardReviewCardProps {
   onFlip: () => void;
   onRate: (rating: SrsRating) => void;
   onOpenVoicePractice?: () => void;
+  isAudioFirstMode?: boolean;
 }
 
 export const FlashcardReviewCard: React.FC<FlashcardReviewCardProps> = ({
@@ -20,6 +22,7 @@ export const FlashcardReviewCard: React.FC<FlashcardReviewCardProps> = ({
   onFlip,
   onRate,
   onOpenVoicePractice,
+  isAudioFirstMode = false,
 }) => {
   const { t, i18n } = useTranslation([
     "study",
@@ -43,14 +46,23 @@ export const FlashcardReviewCard: React.FC<FlashcardReviewCardProps> = ({
   const playAudio = useCallback(() => {
     if (card.audioUrl) {
       const audio = new Audio(card.audioUrl);
-      audio.play().catch(() => {
-        // Fallback to Web Speech API
-        speakWord(card.word);
-      });
+      const playPromise = audio.play();
+      if (playPromise !== undefined && typeof playPromise?.catch === "function") {
+        playPromise.catch(() => {
+          speakWord(card.word);
+        });
+      }
     } else {
       speakWord(card.word);
     }
   }, [card.audioUrl, card.word, speakWord]);
+
+  // Auto-play audio when Audio-First mode is active and card appears
+  useEffect(() => {
+    if (isAudioFirstMode && !isFlipped) {
+      playAudio();
+    }
+  }, [isAudioFirstMode, card.id, isFlipped, playAudio]);
 
   // Keyboard shortcut listener
   useEffect(() => {
@@ -133,44 +145,84 @@ export const FlashcardReviewCard: React.FC<FlashcardReviewCardProps> = ({
               </span>
             </div>
 
-            {/* Word & IPA (100% UGC) */}
+            {/* Word & IPA (or Audio-First prompt) */}
             <div className="my-auto text-center py-6">
-              <h2 className="text-4xl sm:text-5xl font-semibold text-[#000000] tracking-tight font-display mb-3">
-                {card.word}
-              </h2>
-              <div className="flex flex-wrap items-center justify-center gap-2 mt-2">
-                {card.phonetic && (
-                  <span className="text-lg text-[#737373] font-mono max-w-full break-all px-2">
-                    {card.phonetic}
-                  </span>
-                )}
-                <TtsAudioPlayer
-                  audioUrl={card.audioUrl}
-                  text={card.word}
-                  size="sm"
-                />
-                {onOpenVoicePractice && (
+              {isAudioFirstMode ? (
+                <div
+                  className="flex flex-col items-center justify-center gap-4 py-4"
+                  data-testid="audio-first-front"
+                >
+                  <div className="w-16 h-16 rounded-full bg-purple-50 border border-purple-200 flex items-center justify-center shadow-xs">
+                    <Headphones className="w-8 h-8 text-purple-600 animate-pulse" />
+                  </div>
+                  <div>
+                    <h2 className="text-xl sm:text-2xl font-semibold text-[#111111] font-display">
+                      {t(
+                        "study:session.audioFirstPrompt",
+                        "Nghe phát âm và nhận diện từ",
+                      )}
+                    </h2>
+                    <p className="text-xs text-neutral-500 mt-1">
+                      {t(
+                        "study:session.audioFirstSub",
+                        "Mặt chữ bị ẩn để rèn phản xạ nghe trước",
+                      )}
+                    </p>
+                  </div>
                   <button
                     type="button"
                     onClick={(e) => {
                       e.stopPropagation();
-                      onOpenVoicePractice();
+                      playAudio();
                     }}
-                    className="p-1.5 rounded-full hover:bg-[#f3e8ff] text-[#7e22ce] hover:text-[#6b21a8] transition-colors cursor-pointer"
-                    title={t(
-                      "practice:modes.pronunciation",
-                      "Pronunciation Practice",
-                    )}
-                    aria-label={t(
-                      "practice:modes.pronunciation",
-                      "Pronunciation Practice",
-                    )}
-                    data-testid="voice-practice-trigger-front"
+                    className="px-4 py-2 rounded-full bg-neutral-100 hover:bg-neutral-200 text-[#111111] text-xs font-medium inline-flex items-center gap-1.5 transition-colors cursor-pointer"
                   >
-                    <Mic className="w-4 h-4" />
+                    <Volume2 className="w-4 h-4 text-purple-600" />
+                    <span>
+                      {t("study:session.replayAudio", "Nghe lại (Phím R)")}
+                    </span>
                   </button>
-                )}
-              </div>
+                </div>
+              ) : (
+                <>
+                  <h2 className="text-4xl sm:text-5xl font-semibold text-[#000000] tracking-tight font-display mb-3">
+                    {card.word}
+                  </h2>
+                  <div className="flex flex-wrap items-center justify-center gap-2 mt-2">
+                    {card.phonetic && (
+                      <span className="text-lg text-[#737373] font-mono max-w-full break-all px-2">
+                        {card.phonetic}
+                      </span>
+                    )}
+                    <TtsAudioPlayer
+                      audioUrl={card.audioUrl}
+                      text={card.word}
+                      size="sm"
+                    />
+                    {onOpenVoicePractice && (
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onOpenVoicePractice();
+                        }}
+                        className="p-1.5 rounded-full hover:bg-[#f3e8ff] text-[#7e22ce] hover:text-[#6b21a8] transition-colors cursor-pointer"
+                        title={t(
+                          "practice:modes.pronunciation",
+                          "Pronunciation Practice",
+                        )}
+                        aria-label={t(
+                          "practice:modes.pronunciation",
+                          "Pronunciation Practice",
+                        )}
+                        data-testid="voice-practice-trigger-front"
+                      >
+                        <Mic className="w-4 h-4" />
+                      </button>
+                    )}
+                  </div>
+                </>
+              )}
             </div>
 
             {/* Flip prompt */}
@@ -227,6 +279,27 @@ export const FlashcardReviewCard: React.FC<FlashcardReviewCardProps> = ({
                   </span>
                 )}
               </div>
+
+              {/* Syllables breakdown with stress syllable & Ending sound tip (US-LIB-14) */}
+              {(card.phonetic || card.endingSoundTipVi) && (
+                <div className="mb-4 flex flex-col items-start gap-2">
+                  {card.phonetic && (
+                    <PhoneticWordBreakdown
+                      phonetic={card.phonetic}
+                      className="!items-start"
+                    />
+                  )}
+                  {card.endingSoundTipVi && (
+                    <div
+                      className="inline-flex items-center gap-1.5 px-3 py-1 bg-amber-50 border border-amber-200 text-amber-900 rounded-full text-xs font-['Inter'] font-medium"
+                      data-testid="ending-sound-tip-badge"
+                    >
+                      <Volume2 className="w-3.5 h-3.5 text-amber-600 shrink-0" />
+                      <span>Mẹo âm cuối: {card.endingSoundTipVi}</span>
+                    </div>
+                  )}
+                </div>
+              )}
 
               {/* Meaning (UGC) */}
               <div className="mb-4">
