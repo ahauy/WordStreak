@@ -206,22 +206,44 @@ export class ToeicQuizGeneratorService {
       ? sentence.replace(regex, '______')
       : `${sentence} (Target: ______)`;
 
-    // Priority 1 distractors: confusables
+    // Priority 1 distractors: confusables (prioritized first)
     const distractorCandidates =
       card.confusables && card.confusables.length > 0
-        ? [...card.confusables]
+        ? Array.from(
+            new Set(
+              card.confusables.filter(
+                (c) => c.toLowerCase() !== card.headword.toLowerCase(),
+              ),
+            ),
+          )
         : [];
 
-    // Priority 2 distractors: peer cards
+    const prioritizedConfusables = this.shuffleArray(distractorCandidates).slice(
+      0,
+      3,
+    );
+
+    // Priority 2 distractors: peer cards to fill remaining slots up to 3
     const peerDistractors = allCards
-      .filter((c) => c.headword.toLowerCase() !== card.headword.toLowerCase())
+      .filter(
+        (c) =>
+          c.headword.toLowerCase() !== card.headword.toLowerCase() &&
+          !prioritizedConfusables.some(
+            (p) => p.toLowerCase() === c.headword.toLowerCase(),
+          ),
+      )
       .map((c) => c.headword);
 
-    const mergedDistractors = Array.from(
-      new Set([...distractorCandidates, ...peerDistractors]),
-    ).filter((w) => w.toLowerCase() !== card.headword.toLowerCase());
+    const neededPeers = 3 - prioritizedConfusables.length;
+    const additionalPeers = this.shuffleArray(peerDistractors).slice(
+      0,
+      neededPeers,
+    );
 
-    const chosenDistractors = this.shuffleArray(mergedDistractors).slice(0, 3);
+    const chosenDistractors = [
+      ...prioritizedConfusables,
+      ...additionalPeers,
+    ];
 
     // If still < 3 distractors, pad with dummy variations
     while (chosenDistractors.length < 3) {
@@ -271,17 +293,31 @@ export class ToeicQuizGeneratorService {
 
     const familyDerivations =
       card.wordFamily && card.wordFamily.length > 0
-        ? card.wordFamily.filter(
-            (w) => w.toLowerCase() !== card.headword.toLowerCase(),
+        ? Array.from(
+            new Set(
+              card.wordFamily.filter(
+                (w) => w.toLowerCase() !== card.headword.toLowerCase(),
+              ),
+            ),
           )
         : [];
 
+    const prioritizedFamily = this.shuffleArray(familyDerivations).slice(0, 3);
+
     const peerWords = allCards
-      .filter((c) => c.headword.toLowerCase() !== card.headword.toLowerCase())
+      .filter(
+        (c) =>
+          c.headword.toLowerCase() !== card.headword.toLowerCase() &&
+          !prioritizedFamily.some(
+            (f) => f.toLowerCase() === c.headword.toLowerCase(),
+          ),
+      )
       .map((c) => c.headword);
 
-    const pool = Array.from(new Set([...familyDerivations, ...peerWords]));
-    const distractors = this.shuffleArray(pool).slice(0, 3);
+    const neededPeers = 3 - prioritizedFamily.length;
+    const additionalPeers = this.shuffleArray(peerWords).slice(0, neededPeers);
+
+    const distractors = [...prioritizedFamily, ...additionalPeers];
 
     while (distractors.length < 3) {
       distractors.push(`${card.headword}ly`);
