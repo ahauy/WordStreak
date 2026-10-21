@@ -15,6 +15,7 @@ import type {
   CardLearningStatus,
   ReviewSummaryDto,
   OfficialCardContent,
+  TodaySessionResponse,
 } from '@wordstreak/shared-types';
 
 export const STREAK_RISK_MIN_DAYS = 3;
@@ -315,6 +316,36 @@ export class ReviewsService {
         overdueCount: overdue.length,
         dueTodayCount: dueToday.length,
         newCount: newCards.length,
+      },
+    };
+  }
+
+  /**
+   * Retrieves today's combined study session (US-UX-01):
+   * Prioritizes overdue/due cards, supplemented by new cards up to dailyGoal.
+   */
+  async getTodaySession(userId: string): Promise<TodaySessionResponse> {
+    const dueResult = await this.getDueCards(userId, { limit: 50 });
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+      select: { dailyGoal: true },
+    });
+    const dailyGoal = user?.dailyGoal ?? DEFAULT_DAILY_GOAL;
+
+    const cards = dueResult.data;
+    const dueCount = dueResult.meta.overdueCount + dueResult.meta.dueTodayCount;
+    const newCount = dueResult.meta.newCount;
+    const totalCount = cards.length;
+    const isGoalCompleted = totalCount === 0;
+
+    return {
+      cards,
+      summary: {
+        dueCount,
+        newCount,
+        totalCount,
+        dailyGoal,
+        isGoalCompleted,
       },
     };
   }

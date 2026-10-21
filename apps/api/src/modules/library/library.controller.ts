@@ -14,12 +14,15 @@ import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import { LibraryService } from './library.service';
 import { ForkOfficialCardDto } from './dto/fork-official-card.dto';
 import { GetOfficialDecksDto } from './dto/get-official-decks.dto';
+import { TriageDeckCardsDto } from './dto/triage-deck-cards.dto';
 import type {
   ForkOfficialCardResponse,
   JwtPayload,
   PaginatedOfficialDecksResponse,
   OfficialDeckDetailResponse,
   EnrollOfficialDeckResponse,
+  TriageDeckCardsResponse,
+  ToeicPathProgressResponse,
 } from '@wordstreak/shared-types';
 
 @Controller('library')
@@ -33,6 +36,13 @@ export class LibraryController {
     @Query() query: GetOfficialDecksDto,
   ): Promise<PaginatedOfficialDecksResponse> {
     return this.libraryService.getDecks(user?.sub, query);
+  }
+
+  @Get('paths/toeic/progress')
+  async getToeicPathProgress(
+    @CurrentUser() user: JwtPayload,
+  ): Promise<ToeicPathProgressResponse> {
+    return this.libraryService.getToeicPathProgress(user.sub);
   }
 
   @Get('decks/:slug')
@@ -50,6 +60,16 @@ export class LibraryController {
     @Param('id') deckId: string,
   ): Promise<EnrollOfficialDeckResponse> {
     return this.libraryService.enrollDeck(user.sub, deckId);
+  }
+
+  @Post('decks/:id/triage')
+  @HttpCode(HttpStatus.OK)
+  async triageDeckCards(
+    @CurrentUser() user: JwtPayload,
+    @Param('id') deckId: string,
+    @Body() dto: TriageDeckCardsDto,
+  ): Promise<TriageDeckCardsResponse> {
+    return this.libraryService.triageDeckCards(user.sub, deckId, dto);
   }
 
   @Post('cards/:id/fork')

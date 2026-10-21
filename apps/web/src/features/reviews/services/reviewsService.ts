@@ -5,6 +5,7 @@ import type {
   ReviewStatsResponse,
   ApiResponse,
   XpReviewRewardDto,
+  TodaySessionResponse,
 } from "@wordstreak/shared-types";
 
 export interface SubmitReviewResponse {
@@ -55,6 +56,23 @@ export const reviewsService = {
         newCount: 0,
         learningCount: 0,
         masteredCount: 0,
+      }
+    );
+  },
+
+  async getTodaySession(): Promise<TodaySessionResponse> {
+    const response =
+      await apiClient.get<ApiResponse<TodaySessionResponse>>("/reviews/today-session");
+    return (
+      response.data.data || {
+        cards: [],
+        summary: {
+          dueCount: 0,
+          newCount: 0,
+          totalCount: 0,
+          dailyGoal: 10,
+          isGoalCompleted: true,
+        },
       }
     );
   },

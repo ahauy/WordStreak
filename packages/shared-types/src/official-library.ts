@@ -100,3 +100,60 @@ export interface EnrollOfficialDeckResponse {
   enrolledAt: string | Date;
 }
 
+export interface TriageCardItemDto {
+  cardId: string;
+  isKnown: boolean;
+}
+
+export interface TriageDeckCardsDto {
+  items: TriageCardItemDto[];
+}
+
+export interface TriageDeckCardsResponse {
+  success: boolean;
+  deckId: string;
+  knownCount: number;
+  unknownCount: number;
+  totalTriaged: number;
+}
+
+export interface ToeicDeckProgressDto {
+  deckId: string;
+  slug: string;
+  title: string;
+  titleVi: string;
+  level: string;
+  order: number;
+  totalCards: number;
+  masteredCount: number;
+  knownSkippedCount: number;
+  learningCount: number;
+  isCompleted: boolean;
+}
+
+export interface ToeicLevelProgressDto {
+  level: string;
+  title: string;
+  totalDecks: number;
+  completedDecks: number;
+  totalCards: number;
+  learnedCards: number;
+  progressPercent: number;
+  decks: ToeicDeckProgressDto[];
+}
+
+export interface ToeicPathProgressResponse {
+  coveragePercent: number;
+  ngslCoveragePercent: number;
+  tslCoveragePercent: number;
+  maxEstimatedCoverage: number;
+  totalDecks: number;
+  completedDecks: number;
+  totalWords: number;
+  masteredWords: number;
+  knownSkippedWords: number;
+  estimatedDaysRemaining: number;
+  dailyGoal: number;
+  levels: ToeicLevelProgressDto[];
+}
+

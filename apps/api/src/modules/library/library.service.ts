@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { ForkOfficialCardDto } from './dto/fork-official-card.dto';
 import { GetOfficialDecksDto } from './dto/get-official-decks.dto';
+import { TriageDeckCardsDto } from './dto/triage-deck-cards.dto';
 import { Prisma } from '@prisma/client';
 import type {
   ForkOfficialCardResponse,
@@ -11,6 +12,10 @@ import type {
   PaginatedOfficialDecksResponse,
   OfficialDeckDetailResponse,
   EnrollOfficialDeckResponse,
+  TriageDeckCardsResponse,
+  ToeicPathProgressResponse,
+  ToeicLevelProgressDto,
+  ToeicDeckProgressDto,
 } from '@wordstreak/shared-types';
 
 @Injectable()
@@ -313,6 +318,288 @@ export class LibraryService {
       word: newCard.word,
       meaning: newCard.meaning,
       status: 'NEW',
+    };
+  }
+
+  /**
+   * Triages official cards for a deck (marking known cards as KNOWN_SKIPPED so they are excluded
+   * from SM-2 repetition queue but count towards vocabulary coverage).
+   */
+  async triageDeckCards(
+    userId: string,
+    deckId: string,
+    dto: TriageDeckCardsDto,
+  ): Promise<TriageDeckCardsResponse> {
+    const deck = await this.prisma.officialDeck.findUnique({
+      where: { id: deckId },
+      include: {
+        cards: { select: { cardId: true } },
+      },
+    });
+
+    if (!deck) {
+      throw new NotFoundException(`Official deck with ID ${deckId} not found`);
+    }
+
+    const validCardIds = new Set(deck.cards.map((c) => c.cardId));
+    const items = dto.items.filter((item) => validCardIds.has(item.cardId));
+
+    // Ensure enrollment exists
+    await this.prisma.userDeckEnrollment.upsert({
+      where: {
+        userId_deckId: { userId, deckId },
+      },
+      update: {
+        lastStudiedAt: new Date(),
+      },
+      create: {
+        userId,
+        deckId,
+      },
+    });
+
+    const knownItems = items.filter((item) => item.isKnown);
+    const unknownItems = items.filter((item) => !item.isKnown);
+
+    const operations: Prisma.PrismaPromise<unknown>[] = [];
+
+    for (const item of knownItems) {
+      operations.push(
+        this.prisma.userOfficialCardProgress.upsert({
+          where: {
+            userId_cardId: { userId, cardId: item.cardId },
+          },
+          update: {
+            status: 'KNOWN_SKIPPED',
+            nextReviewDate: null,
+          },
+          create: {
+            userId,
+            cardId: item.cardId,
+            status: 'KNOWN_SKIPPED',
+            nextReviewDate: null,
+            repetitions: 0,
+            interval: 0,
+            easeFactor: 2.5,
+          },
+        }),
+      );
+    }
+
+    for (const item of unknownItems) {
+      operations.push(
+        this.prisma.userOfficialCardProgress.upsert({
+          where: {
+            userId_cardId: { userId, cardId: item.cardId },
+          },
+          update: {
+            status: 'NEW',
+            nextReviewDate: null,
+          },
+          create: {
+            userId,
+            cardId: item.cardId,
+            status: 'NEW',
+            nextReviewDate: null,
+            repetitions: 0,
+            interval: 0,
+            easeFactor: 2.5,
+          },
+        }),
+      );
+    }
+
+    if (operations.length > 0) {
+      await this.prisma.$transaction(operations);
+    }
+
+    return {
+      success: true,
+      deckId,
+      knownCount: knownItems.length,
+      unknownCount: unknownItems.length,
+      totalTriaged: items.length,
+    };
+  }
+
+  /**
+   * Retrieves TOEIC path overall progress, coverage percentage (NGSL max 94% + TSL max 4.5%),
+   * completed decks count, and estimated days remaining based on daily goal.
+   */
+  async getToeicPathProgress(
+    userId: string,
+  ): Promise<ToeicPathProgressResponse> {
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+      select: { dailyGoal: true },
+    });
+    const dailyGoal = user?.dailyGoal || 10;
+
+    // Fetch all TOEIC / TSL decks
+    const decks = await this.prisma.officialDeck.findMany({
+      where: {
+        OR: [{ pathCode: 'TOEIC' }, { listCode: 'TSL' }],
+      },
+      orderBy: [{ level: 'asc' }, { order: 'asc' }],
+      include: {
+        cards: {
+          select: { cardId: true },
+        },
+      },
+    });
+
+    const allCardIds = decks.flatMap((d) => d.cards.map((c) => c.cardId));
+
+    // Get user progress on all cards in TOEIC decks
+    const progresses = await this.prisma.userOfficialCardProgress.findMany({
+      where: {
+        userId,
+        cardId: { in: allCardIds },
+      },
+      select: {
+        cardId: true,
+        status: true,
+      },
+    });
+
+    const statusMap = new Map<string, string>();
+    progresses.forEach((p) => statusMap.set(p.cardId, p.status));
+
+    // Also get count of NGSL words mastered/known by user
+    const ngslProgressCount = await this.prisma.userOfficialCardProgress.count({
+      where: {
+        userId,
+        status: { in: ['MASTERED', 'KNOWN_SKIPPED'] },
+        card: {
+          deckCards: {
+            some: {
+              deck: { listCode: 'NGSL' },
+            },
+          },
+        },
+      },
+    });
+
+    const TOTAL_NGSL_WORDS = 2809;
+    const TOTAL_TSL_WORDS = 1200;
+
+    let totalMasteredInPath = 0;
+    let totalKnownSkippedInPath = 0;
+    let completedDecksCount = 0;
+
+    const deckProgressDtos: ToeicDeckProgressDto[] = decks.map((deck) => {
+      let masteredCount = 0;
+      let knownSkippedCount = 0;
+      let learningCount = 0;
+
+      for (const c of deck.cards) {
+        const s = statusMap.get(c.cardId);
+        if (s === 'MASTERED') masteredCount++;
+        else if (s === 'KNOWN_SKIPPED') knownSkippedCount++;
+        else if (s === 'LEARNING') learningCount++;
+      }
+
+      totalMasteredInPath += masteredCount;
+      totalKnownSkippedInPath += knownSkippedCount;
+
+      const isCompleted =
+        deck.cards.length > 0 &&
+        masteredCount + knownSkippedCount >= deck.cards.length;
+      if (isCompleted) {
+        completedDecksCount++;
+      }
+
+      return {
+        deckId: deck.id,
+        slug: deck.slug,
+        title: deck.title,
+        titleVi: deck.titleVi,
+        level: deck.level || 'T1',
+        order: deck.order,
+        totalCards: deck.cards.length,
+        masteredCount,
+        knownSkippedCount,
+        learningCount,
+        isCompleted,
+      };
+    });
+
+    // Group into levels
+    const levelConfigs = [
+      {
+        level: 'T1',
+        title: 'Cơ bản - Nền tảng văn phòng (400 từ đầu)',
+      },
+      {
+        level: 'T2',
+        title: 'Trung cấp - Hoạt động thương mại (401-800)',
+      },
+      {
+        level: 'T3',
+        title: 'Nâng cao - Quản trị & Chiến lược (801-1200)',
+      },
+    ];
+
+    const levels: ToeicLevelProgressDto[] = levelConfigs.map((cfg) => {
+      const levelDecks = deckProgressDtos.filter((d) => d.level === cfg.level);
+      const totalDecks = levelDecks.length;
+      const completedDecks = levelDecks.filter((d) => d.isCompleted).length;
+      const totalCards = levelDecks.reduce((sum, d) => sum + d.totalCards, 0);
+      const learnedCards = levelDecks.reduce(
+        (sum, d) => sum + d.masteredCount + d.knownSkippedCount,
+        0,
+      );
+      const progressPercent =
+        totalCards > 0
+          ? Number(((learnedCards / totalCards) * 100).toFixed(1))
+          : 0;
+
+      return {
+        level: cfg.level,
+        title: cfg.title,
+        totalDecks,
+        completedDecks,
+        totalCards,
+        learnedCards,
+        progressPercent,
+        decks: levelDecks,
+      };
+    });
+
+    // Coverage calculation: NGSL max 94.0%, TSL max 4.5%
+    const ngslRatio = Math.min(1, ngslProgressCount / TOTAL_NGSL_WORDS);
+    const ngslCoveragePercent = Number((ngslRatio * 94.0).toFixed(1));
+
+    const tslLearnedCount = totalMasteredInPath + totalKnownSkippedInPath;
+    const tslRatio = Math.min(
+      1,
+      tslLearnedCount / (allCardIds.length || TOTAL_TSL_WORDS),
+    );
+    const tslCoveragePercent = Number((tslRatio * 4.5).toFixed(1));
+
+    const coveragePercent = Number(
+      Math.min(98.5, ngslCoveragePercent + tslCoveragePercent).toFixed(1),
+    );
+
+    const totalWords = allCardIds.length || TOTAL_TSL_WORDS;
+    const remainingWords = Math.max(0, totalWords - tslLearnedCount);
+    const estimatedDaysRemaining = Math.ceil(
+      remainingWords / Math.max(1, dailyGoal),
+    );
+
+    return {
+      coveragePercent,
+      ngslCoveragePercent,
+      tslCoveragePercent,
+      maxEstimatedCoverage: 98.5,
+      totalDecks: decks.length,
+      completedDecks: completedDecksCount,
+      totalWords,
+      masteredWords: totalMasteredInPath,
+      knownSkippedWords: totalKnownSkippedInPath,
+      estimatedDaysRemaining,
+      dailyGoal,
+      levels,
     };
   }
 }

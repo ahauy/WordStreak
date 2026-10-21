@@ -2,6 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { BookOpen, CheckCircle, Clock, ArrowRight, Plus } from "lucide-react";
 import type { OfficialDeckDto } from "@wordstreak/shared-types";
+import { SourceAttributionBadge } from "./SourceAttributionBadge";
 
 interface OfficialDeckCardProps {
   deck: OfficialDeckDto;
@@ -39,9 +40,7 @@ export const OfficialDeckCard: React.FC<OfficialDeckCardProps> = ({
               </span>
             )}
           </div>
-          <span className="inline-flex items-center gap-1 text-[10px] font-mono text-[#737373] bg-[#fafafa] px-2 py-0.5 rounded-full border border-[#e5e5e5]">
-            CC BY-SA 4.0
-          </span>
+          <SourceAttributionBadge showLink={true} href="/sources" />
         </div>
 
         {/* Title & Meaning */}
