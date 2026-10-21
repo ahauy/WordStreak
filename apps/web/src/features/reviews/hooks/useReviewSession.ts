@@ -271,12 +271,47 @@ export function useReviewSession(deckId?: string) {
           },
         ]);
 
-        // If card was rated 'Again' (1), re-queue it at the end of the active session
-        if (rating === 1) {
-          setQueue((prevQueue) => {
-            const nextQueue = [...prevQueue.slice(1), currentCard];
-            return nextQueue;
-          });
+        // Intra-session learning steps handling for Beginner Mode
+        const isBeginner = user?.startingLevel === "ZERO";
+        const isCardNewOrLearningStep =
+          currentCard.status === "NEW" ||
+          currentCard.status === "LEARNING_STEP" ||
+          !currentCard.repetitions;
+
+        let shouldRequeue = false;
+        let nextCardState: DueCardItem = { ...currentCard };
+
+        if (isBeginner && isCardNewOrLearningStep) {
+          const currentStep =
+            currentCard.learningStep ??
+            (currentCard.status === "LEARNING_STEP" ? 1 : 0);
+          if (rating < 3) {
+            // Again (1) or Hard (2) resets to Step 1
+            nextCardState = {
+              ...currentCard,
+              status: "LEARNING_STEP",
+              learningStep: 0,
+            };
+            shouldRequeue = true;
+          } else if (rating === 3 && currentStep === 0) {
+            // Good (3) on Step 1 moves to Step 2 (re-queued)
+            nextCardState = {
+              ...currentCard,
+              status: "LEARNING_STEP",
+              learningStep: 1,
+            };
+            shouldRequeue = true;
+          } else {
+            // Easy (4) or Good (3) on Step 2 graduates out of session queue
+            shouldRequeue = false;
+          }
+        } else {
+          // Standard SM-2: re-queue only if card was rated 'Again' (1)
+          shouldRequeue = rating === 1;
+        }
+
+        if (shouldRequeue) {
+          setQueue((prevQueue) => [...prevQueue.slice(1), nextCardState]);
         } else {
           setQueue((prevQueue) => {
             const nextQueue = prevQueue.slice(1);

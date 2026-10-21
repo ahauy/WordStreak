@@ -389,6 +389,13 @@ describe('UsersService', () => {
         where: { pathCode: 'FOUNDATION' },
         orderBy: { order: 'asc' },
       });
+      expect(mockPrismaService.user.update).toHaveBeenCalledWith({
+        where: { id: 'user-uuid-1' },
+        data: expect.objectContaining({
+          startingLevel: 'ZERO',
+          dailyGoal: 5,
+        }),
+      });
     });
 
     it('should throw NotFoundException if user does not exist', async () => {

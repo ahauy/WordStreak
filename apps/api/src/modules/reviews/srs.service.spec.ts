@@ -88,5 +88,72 @@ describe('SrsService (SuperMemo-2 Algorithm Engine)', () => {
       expect(result.interval).toBe(25); // round(10 * 2.5)
       expect(result.status).toBe('MASTERED');
     });
+
+    it('TC-LIB-15-001: beginner mode rating Good (3) on Step 1 moves to Step 2 (5 mins)', () => {
+      const result = service.calculateSm2({
+        rating: 3,
+        repetitions: 0,
+        easeFactor: 2.5,
+        interval: 0,
+        isBeginner: true,
+        currentLearningStep: 0,
+      });
+
+      expect(result.status).toBe('LEARNING_STEP');
+      expect(result.learningStep).toBe(1);
+      expect(result.intervalMinutes).toBe(5);
+      expect(result.interval).toBe(0);
+      expect(result.graduated).toBe(false);
+    });
+
+    it('TC-LIB-15-002: beginner mode rating Good (3) on Step 2 graduates to SM-2 day 1', () => {
+      const result = service.calculateSm2({
+        rating: 3,
+        repetitions: 0,
+        easeFactor: 2.5,
+        interval: 0,
+        isBeginner: true,
+        currentLearningStep: 1,
+      });
+
+      expect(result.status).toBe('LEARNING');
+      expect(result.learningStep).toBeNull();
+      expect(result.repetitions).toBe(1);
+      expect(result.interval).toBe(1);
+      expect(result.graduated).toBe(true);
+    });
+
+    it('TC-LIB-15-003: beginner mode rating Again (1) resets to Step 1 (1 min)', () => {
+      const result = service.calculateSm2({
+        rating: 1,
+        repetitions: 0,
+        easeFactor: 2.5,
+        interval: 0,
+        isBeginner: true,
+        currentLearningStep: 1,
+      });
+
+      expect(result.status).toBe('LEARNING_STEP');
+      expect(result.learningStep).toBe(0);
+      expect(result.intervalMinutes).toBe(1);
+      expect(result.graduated).toBe(false);
+    });
+
+    it('TC-LIB-15-004: beginner mode rating Easy (4) graduates card immediately', () => {
+      const result = service.calculateSm2({
+        rating: 4,
+        repetitions: 0,
+        easeFactor: 2.5,
+        interval: 0,
+        isBeginner: true,
+        currentLearningStep: 0,
+      });
+
+      expect(result.status).toBe('LEARNING');
+      expect(result.learningStep).toBeNull();
+      expect(result.repetitions).toBe(1);
+      expect(result.interval).toBe(1);
+      expect(result.graduated).toBe(true);
+    });
   });
 });

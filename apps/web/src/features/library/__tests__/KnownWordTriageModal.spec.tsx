@@ -1,4 +1,4 @@
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { render, screen, fireEvent, waitFor, act } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { KnownWordTriageModal } from "../components/KnownWordTriageModal";
 import { libraryService } from "../services/libraryService";
@@ -178,5 +178,28 @@ describe("KnownWordTriageModal (TC-LIB-05)", () => {
       },
       { timeout: 1500 },
     );
+  });
+
+  it("TC-LIB-15-006: shows 3-second countdown timer in beginner quiz and auto-marks unknown on timeout", async () => {
+    vi.useFakeTimers();
+    render(<KnownWordTriageModal {...defaultProps} isBeginnerMode={true} />);
+
+    const knownBtn = screen.getByRole("button", { name: /Đã biết/i });
+    fireEvent.click(knownBtn);
+
+    expect(screen.getByTestId("quiz-timer")).toHaveTextContent("3s");
+
+    // Advance 3 seconds to trigger timeout
+    act(() => {
+      vi.advanceTimersByTime(3000);
+    });
+    act(() => {
+      vi.advanceTimersByTime(800);
+    });
+
+    expect(screen.getByText("collaborate")).toBeInTheDocument();
+    expect(screen.getByText("Cần học: 1")).toBeInTheDocument();
+
+    vi.useRealTimers();
   });
 });
