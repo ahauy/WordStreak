@@ -632,12 +632,12 @@ _Mục tiêu: Xóa bỏ hoàn toàn rào cản "ứng dụng trống" bằng cá
     - [x] Script: Viết hàm `checkSentenceVocabularyCoverage(sentence, allowedWordSet)` và `validateSentenceDifficulty()` trong `validation-rules.ts`.
     - [x] Script: Tích hợp vào quy trình kiểm duyệt `validateEnrichedWord()` để gắn cờ vi phạm độ phủ cho báo cáo Stage 4.
 
-- [ ] **US-LIB-14: Chế độ Nghe trước (Audio-First) & Mẹo phát âm người Việt**
+- [x] **US-LIB-14: Chế độ Nghe trước (Audio-First) & Mẹo phát âm người Việt**
   - **AC:** Ở Beginner Mode, kích hoạt chế độ Audio-first: phát âm thanh mẫu trước, yêu cầu nhận diện nghĩa hoặc gõ từ, sau đó mới hiển thị mặt chữ. Thẻ từ vựng hiển thị rõ vị trí trọng âm nhấn mạnh (`stress_syllable`). Trường `ending_sound_tip_vi` cung cấp mẹo khắc phục lỗi nuốt âm cuối đặc trưng của người Việt (âm /s/, /z/, /t/, /d/, /k/, -ed, -s/-es).
   - **Tasks:**
-    - [ ] Frontend: Chế độ học Audio-first trong `ReviewSessionPage` (mặt trước chỉ hiện nút nghe và chọn nghĩa, mặt sau hiện chữ và ví dụ).
-    - [ ] Frontend: Hiển thị chip âm tiết tương tác với gạch chân trọng âm chính từ trường `stress_syllable`.
-    - [ ] Content: Hoàn thiện dữ liệu `ending_sound_tip_vi` cho toàn bộ 300 từ Foundation và Top 200 từ TSL.
+    - [x] Frontend: Chế độ học Audio-first trong `ReviewSessionPage` (mặt trước chỉ hiện nút nghe và chọn nghĩa, mặt sau hiện chữ và ví dụ).
+    - [x] Frontend: Hiển thị chip âm tiết tương tác với gạch chân trọng âm chính từ trường `stress_syllable`.
+    - [x] Content/UI: Hiển thị badge mẹo phát âm âm cuối tiếng Việt `ending_sound_tip_vi` trên mặt sau của thẻ.
 
 - [ ] **US-LIB-15: Bước học trong phiên & Xác nhận từ đã biết (Learning Steps & Verification)**
   - **AC:** Đối với người dùng ở Beginner Mode, thẻ mới phải trải qua các bước học trong phiên (Intra-session learning steps: lặp lại sau 1 phút và 5 phút) trước khi chính thức chuyển sang chu kỳ ngày tiếp theo của SM-2. Ở bước lọc từ đã biết, khi người mới bấm "Biết", hiển thị câu kiểm tra trắc nghiệm nhanh 3 giây để xác thực; nếu trả lời sai, tự động đưa từ vào hàng đợi học. Tốc độ học mặc định cho người mới là 5 từ/ngày.
@@ -734,7 +734,7 @@ _Mục tiêu: Xóa bỏ hoàn toàn rào cản "ứng dụng trống" bằng cá
   ├── EPIC-13: US-LIB-05 (Known-word Triage Flow with Verification Quiz)  ✅
   ├── EPIC-13: US-LIB-06 (Full TSL Path 1.200 words & Real-time Coverage Bar) ✅
   ├── EPIC-13: US-LIB-07 (TOEIC Quizzes: Mini Part 5 & Word Family)        ✅
-  ├── EPIC-13: US-LIB-14 (Audio-First Mode & Vietnamese Ending Sound Tips)
+  ├── EPIC-13: US-LIB-14 (Audio-First Mode & Vietnamese Ending Sound Tips) ✅
   ├── EPIC-13: US-LIB-15 (Intra-session Learning Steps & 5 words/day default)
   ├── EPIC-13: US-LIB-16 (Habit Milestones & 5-minute Express Session)
   ├── EPIC-13: US-LIB-09 (Card Feedback Modal & Content Versioning)
