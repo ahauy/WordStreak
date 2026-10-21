@@ -71,6 +71,9 @@ export function getCorsOptions(allowedOrigins: string[] = getAllowedOrigins()) {
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
+  // Trust reverse proxies (Render, Railway, Cloudflare) for secure cookies
+  app.getHttpAdapter().getInstance().set('trust proxy', 1);
+
   app.use(cookieParser());
 
   const allowedOrigins = getAllowedOrigins();

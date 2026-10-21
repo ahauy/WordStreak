@@ -215,7 +215,11 @@ export class UsersService {
         learningGoal: dto.learningGoal,
         startingLevel: dto.startingLevel,
         onboardingCompleted: true,
-        ...(dto.dailyGoal ? { dailyGoal: dto.dailyGoal } : {}),
+        ...(dto.dailyGoal
+          ? { dailyGoal: dto.dailyGoal }
+          : dto.startingLevel === 'ZERO'
+            ? { dailyGoal: 5 }
+            : {}),
       },
     });
 

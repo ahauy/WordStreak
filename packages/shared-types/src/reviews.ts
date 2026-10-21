@@ -7,13 +7,20 @@ export const SrsRating = {
 
 export type SrsRating = (typeof SrsRating)[keyof typeof SrsRating];
 
-export type CardLearningStatus = "NEW" | "LEARNING" | "MASTERED" | "KNOWN_SKIPPED";
+export type CardLearningStatus =
+  | "NEW"
+  | "LEARNING"
+  | "MASTERED"
+  | "KNOWN_SKIPPED"
+  | "LEARNING_STEP";
 
 export interface SrsCalculationInput {
   rating: SrsRating;
   repetitions: number;
   easeFactor: number;
   interval: number;
+  isBeginner?: boolean;
+  currentLearningStep?: number | null;
 }
 
 export interface SrsCalculationResult {
@@ -22,6 +29,9 @@ export interface SrsCalculationResult {
   repetitions: number;
   nextReviewDate: Date;
   status: CardLearningStatus;
+  intervalMinutes?: number;
+  learningStep?: number | null;
+  graduated?: boolean;
 }
 
 export interface DueCardItem {
@@ -47,6 +57,7 @@ export interface DueCardItem {
   officialCardId?: string;
   stressSyllable?: number | null;
   endingSoundTipVi?: string | null;
+  learningStep?: number | null;
 }
 
 export interface SubmitReviewDto {

@@ -45,6 +45,7 @@ export const KnownWordTriageModal: React.FC<KnownWordTriageModalProps> = ({
   // Quick verification popover quiz for beginner mode
   const [showQuiz, setShowQuiz] = useState(false);
   const [quizOptions, setQuizOptions] = useState<string[]>([]);
+  const [quizTimeLeft, setQuizTimeLeft] = useState(3);
   const [quizFeedback, setQuizFeedback] = useState<{
     selected: string;
     isCorrect: boolean;
@@ -142,8 +143,31 @@ export const KnownWordTriageModal: React.FC<KnownWordTriageModalProps> = ({
     setDecisions((prev) => prev.slice(0, -1));
     setCurrentIndex((prev) => prev - 1);
     setShowQuiz(false);
+    setQuizTimeLeft(3);
     setQuizFeedback(null);
   }, [currentIndex, decisions.length]);
+
+  // 3-second countdown timer for beginner verification quiz
+  useEffect(() => {
+    if (!showQuiz || quizFeedback) return;
+    setQuizTimeLeft(3);
+
+    const timer = setInterval(() => {
+      setQuizTimeLeft((prev) => {
+        if (prev <= 1) {
+          clearInterval(timer);
+          setQuizFeedback({ selected: "", isCorrect: false });
+          setTimeout(() => {
+            advanceWithDecision(false);
+          }, 700);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [showQuiz, quizFeedback, advanceWithDecision]);
 
   const handleQuizAnswer = (selectedOption: string) => {
     if (!currentCard || quizFeedback) return;
@@ -335,9 +359,17 @@ export const KnownWordTriageModal: React.FC<KnownWordTriageModalProps> = ({
               {/* Popover Quiz for Beginner Mode */}
               {showQuiz && (
                 <div className="w-full p-4 mt-2 bg-amber-50/70 border border-amber-200 rounded-xl text-left space-y-2.5 animate-in fade-in zoom-in-95 duration-150">
-                  <div className="flex items-center gap-1.5 text-xs text-amber-900 font-medium">
-                    <HelpCircle className="w-4 h-4 text-amber-600 shrink-0" />
-                    <span>Xác nhận nhanh: Từ này có nghĩa là gì?</span>
+                  <div className="flex items-center justify-between text-xs text-amber-900 font-medium">
+                    <div className="flex items-center gap-1.5">
+                      <HelpCircle className="w-4 h-4 text-amber-600 shrink-0" />
+                      <span>Xác nhận nhanh: Từ này có nghĩa là gì?</span>
+                    </div>
+                    <span
+                      data-testid="quiz-timer"
+                      className="px-2 py-0.5 rounded-full bg-amber-200/80 text-amber-950 font-mono text-[11px] font-semibold"
+                    >
+                      {quizTimeLeft}s
+                    </span>
                   </div>
                   <div className="grid grid-cols-1 gap-2 pt-1">
                     {quizOptions.map((option, idx) => {

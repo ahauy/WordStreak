@@ -87,4 +87,85 @@ describe("useReviewSession - TC-EDB-013 Web App Review Sync Bridge", () => {
       "*",
     );
   });
+
+  it("TC-LIB-15-007: re-queues beginner cards on Step 1 when rated Good (3) until graduated", async () => {
+    // Import useAuthStore and set beginner user
+    const { useAuthStore } = await import("../../../store/useAuthStore");
+    useAuthStore.setState({
+      user: {
+        id: "beginner-user",
+        email: "beginner@test.com",
+        username: "beginner",
+        startingLevel: "ZERO",
+        dailyGoal: 5,
+        streak: 0,
+        streakFreezes: 0,
+        freezeUsedToday: false,
+        totalXp: 0,
+        level: 1,
+        tier: "BRONZE",
+        currentLevelXp: 0,
+        nextLevelRequiredXp: 100,
+        levelProgressPercent: 0,
+        role: "USER",
+        preferredLanguage: "vi",
+        createdAt: new Date().toISOString(),
+      },
+      token: "mock-token",
+      refreshToken: "mock-refresh",
+      isAuthenticated: true,
+    });
+
+    const newCard: DueCardItem = {
+      id: "card-new-1",
+      cardId: "card-new-1",
+      deckId: "deck-1",
+      deckTitle: "Foundation Deck",
+      word: "hello",
+      meaning: "xin chào",
+      status: "NEW",
+      interval: 0,
+      repetitions: 0,
+      easeFactor: 2.5,
+      nextReviewDate: new Date().toISOString(),
+    };
+
+    vi.spyOn(reviewsService, "getDueCards").mockResolvedValue({
+      data: [newCard],
+    });
+    vi.spyOn(reviewsService, "submitReview").mockResolvedValue({
+      cardId: "card-new-1",
+      status: "LEARNING_STEP",
+      interval: 0,
+      repetitions: 0,
+      easeFactor: 2.5,
+      lastReviewedAt: new Date().toISOString(),
+      nextReviewDate: new Date().toISOString(),
+    });
+
+    const { result } = renderHook(() => useReviewSession());
+
+    await waitFor(() => {
+      expect(result.current.isLoading).toBe(false);
+    });
+
+    // Initial card is in queue
+    expect(result.current.currentCard?.cardId).toBe("card-new-1");
+
+    // Rate Good (3) on Step 1 -> Should NOT complete, but re-queue as step 1
+    await act(async () => {
+      await result.current.rateCard(3);
+    });
+
+    expect(result.current.isCompleted).toBe(false);
+    expect(result.current.currentCard?.status).toBe("LEARNING_STEP");
+    expect(result.current.currentCard?.learningStep).toBe(1);
+
+    // Rate Good (3) on Step 2 -> Now it graduates and session completes
+    await act(async () => {
+      await result.current.rateCard(3);
+    });
+
+    expect(result.current.isCompleted).toBe(true);
+  });
 });
