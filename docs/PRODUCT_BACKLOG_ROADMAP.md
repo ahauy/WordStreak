@@ -490,11 +490,11 @@ _Mục tiêu: Xóa bỏ "app trống" khi người dùng mới đăng ký — t�
 
 _Mục tiêu: Giảm ma sát, tăng tỉ lệ quay lại ngày 1/ngày 7, và đưa app đến tay nhiều người dùng hơn._
 
-- [ ] **US-UX-01: Nút "Học hôm nay" — Phiên học gộp**
+- [x] **US-UX-01: Nút "Học hôm nay" — Phiên học gộp**
   - **AC:** Một nút duy nhất trên Dashboard gộp ôn đến hạn + từ mới + quiz thành một phiên liền mạch. Người mới không phải chọn giữa 4 chế độ.
   - **Tasks:**
-    - [ ] Frontend: `StudyTodayButton` nổi bật trên Dashboard, điều hướng vào `ReviewSessionPage` với chế độ auto-mix.
-    - [ ] Backend: `GET /api/v1/reviews/today-session` trả về danh sách ưu tiên (due → new theo dailyGoal).
+    - [x] Frontend: `StudyTodayButton` nổi bật trên Dashboard, điều hướng vào `ReviewSessionPage` với chế độ auto-mix.
+    - [x] Backend: `GET /api/v1/reviews/today-session` trả về danh sách ưu tiên (due → new theo dailyGoal).
 
 - [ ] **US-UX-02: Quiz tự chấm vào SRS (Auto-grade Quiz Results)**
   - **AC:** Kết quả đúng/sai + thời gian trả lời của 4 quiz modes tự động quy ra SM-2 rating để cập nhật lịch ôn — không cần người dùng bấm Again/Hard/Good/Easy thủ công.
@@ -568,19 +568,19 @@ _Mục tiêu: Xóa bỏ hoàn toàn rào cản "ứng dụng trống" bằng cá
     - [x] Backend: Endpoint `PATCH /api/v1/users/onboarding` lưu `learningGoal`, `startingLevel`, `dailyGoal`, và tự động enroll deck khởi đầu.
     - [~] Guest Preview: `GuestFlashcardPreview` và chuyển 5 từ học thử của khách vãng lai (tách backlog phụ).
 
-- [ ] **US-LIB-05: Lọc từ đã biết trước khi học (Known-Word Triage Flow)**
+- [x] **US-LIB-05: Lọc từ đã biết trước khi học (Known-Word Triage Flow)**
   - **AC:** Trước khi bắt đầu một deck 25 từ, cung cấp màn hình Triage vuốt/bấm phím tắt (`Biết` [K/Mũi tên phải] vs `Chưa biết` [U/Mũi tên trái]) trong ~60 giây. Từ đánh dấu "Đã biết" gán trạng thái `KNOWN_SKIPPED`, tính vào điểm độ phủ từ vựng nhưng không đưa vào hàng đợi lặp lại SM-2. Có thể hoàn tác trong phiên.
   - **Tasks:**
-    - [ ] Frontend: Giao diện `KnownWordTriageModal` tối giản, hỗ trợ swipe gestures trên mobile và phím tắt desktop.
-    - [ ] Frontend: Modal xác nhận nhanh (Quick popover quiz) khi người học ở Beginner Mode bấm "Biết" để chống ngộ nhận "quen mắt".
-    - [ ] Backend: Endpoint `POST /api/v1/library/decks/:id/triage` ghi nhận trạng thái hàng loạt cho `UserOfficialCardProgress`.
+    - [x] Frontend: Giao diện `KnownWordTriageModal` tối giản, hỗ trợ swipe gestures trên mobile và phím tắt desktop.
+    - [x] Frontend: Modal xác nhận nhanh (Quick popover quiz) khi người học ở Beginner Mode bấm "Biết" để chống ngộ nhận "quen mắt".
+    - [x] Backend: Endpoint `POST /api/v1/library/decks/:id/triage` ghi nhận trạng thái hàng loạt cho `UserOfficialCardProgress`.
 
-- [ ] **US-LIB-06: Lộ trình TOEIC & Thanh độ phủ ước tính (TSL Path & Coverage Bar)**
+- [x] **US-LIB-06: Lộ trình TOEIC & Thanh độ phủ ước tính (TSL Path & Coverage Bar)**
   - **AC:** Màn hình Lộ trình TOEIC chuyên biệt (`/paths/toeic`) hiển thị 3 cấp độ TSL (48 decks), tiến độ hoàn thành từng deck, ngày hoàn thành dự kiến theo `dailyGoal`, và thanh tiến độ thời gian thực: "Độ phủ từ vựng TOEIC ước tính: X% (tối đa 98.5%)". Công thức phân tách trọng số: NGSL chiếm tối đa 94%, TSL bổ sung tối đa 4.5%. Kèm dòng giải thích minh bạch về nghiên cứu corpus của NGSL Project.
   - **Tasks:**
-    - [ ] Backend: Service tính toán độ phủ TOEIC dựa trên tổng `freqValue` các từ đã Mastered hoặc Known trong NGSL và TSL.
-    - [ ] Backend: Endpoint `GET /api/v1/library/paths/toeic/progress` trả về % độ phủ, số deck hoàn thành, số ngày dự kiến về đích.
-    - [ ] Frontend: Giao diện `ToeicPathPage` với bản đồ tiến trình phân nhánh, thanh `ToeicCoverageProgressBar` và biểu đồ trực quan.
+    - [x] Backend: Service tính toán độ phủ TOEIC dựa trên tổng `freqValue` các từ đã Mastered hoặc Known trong NGSL và TSL.
+    - [x] Backend: Endpoint `GET /api/v1/library/paths/toeic/progress` trả về % độ phủ, số deck hoàn thành, số ngày dự kiến về đích.
+    - [x] Frontend: Giao diện `ToeicPathPage` với bản đồ tiến trình phân nhánh, thanh `ToeicCoverageProgressBar` và biểu đồ trực quan.
 
 - [ ] **US-LIB-07: Quiz kiểu đề thi TOEIC (Mini Part 5 & Word Family Quiz)**
   - **AC:** Tạo 4 dạng bài tập chuyên sâu từ thẻ TSL: (1) Mini Part 5 điền từ vào câu (4 lựa chọn, đáp án nhiễu trích xuất từ `confusables`), (2) Chọn dạng từ đúng (dựa trên `word_family`), (3) Paraphrase (tìm từ đồng nghĩa trong ngữ cảnh công sở), (4) Nghe và gõ từ. Kết quả đúng/sai và thời gian trả lời tự động quy đổi sang điểm rating SM-2 (1: Again, 2: Hard, 3: Good, 4: Easy).
@@ -590,12 +590,12 @@ _Mục tiêu: Xóa bỏ hoàn toàn rào cản "ứng dụng trống" bằng cá
     - [ ] Frontend: Component `MiniPart5QuizCard`, `WordFamilyQuizCard` tích hợp vào luồng luyện tập.
     - [ ] Backend: Logic tự động cập nhật SM-2 trong `PracticeService` khi nộp kết quả quiz kiểu TOEIC.
 
-- [ ] **US-LIB-08: Ghi nhận nguồn dữ liệu & Bản quyền (Attribution & Licensing)**
+- [x] **US-LIB-08: Ghi nhận nguồn dữ liệu & Bản quyền (Attribution & Licensing)**
   - **AC:** Trang tĩnh `/sources` công bố đầy đủ thông tin: Danh mục từ vựng dựa trên NGSL 1.2 và TSL 1.2 của Browne, Culligan, và Phillips theo giấy phép Creative Commons Attribution-ShareAlike 4.0 International (CC BY-SA 4.0). Tuyên bố miễn trừ trách nhiệm pháp lý rõ ràng: WordStreak không liên kết hay được chứng thực bởi Viện Khảo thí Giáo dục Hoa Kỳ (ETS); TOEIC là nhãn hiệu đã đăng ký của ETS. Mọi deck thuộc thư viện đều có nhãn bản quyền nguồn.
   - **Tasks:**
-    - [ ] Frontend: Xây dựng trang tĩnh `DataSourcesPage` (`/sources`) song ngữ EN/VI.
-    - [ ] Frontend: Gắn nhãn bản quyền `SourceAttributionBadge` trên từng thẻ deck và chân trang thư viện.
-    - [ ] Legal: Rà soát câu chữ khước từ trách nhiệm và tuân thủ giấy phép CC BY-SA 4.0.
+    - [x] Frontend: Xây dựng trang tĩnh `DataSourcesPage` (`/sources`) song ngữ EN/VI.
+    - [x] Frontend: Gắn nhãn bản quyền `SourceAttributionBadge` trên từng thẻ deck và chân trang thư viện.
+    - [x] Legal: Rà soát câu chữ khước từ trách nhiệm và tuân thủ giấy phép CC BY-SA 4.0.
 
 - [ ] **US-LIB-09: Báo lỗi nội dung thẻ & Quản lý phiên bản (Card Feedback & Versioning)**
   - **AC:** Nút "Báo lỗi thẻ" một chạm trên mọi màn hình hiển thị thẻ Official (Nghĩa chưa chuẩn, Lỗi chính tả, Âm thanh lỗi, Ví dụ thiếu tự nhiên). Admin có giao diện xem hàng đợi báo lỗi. Khi sửa nội dung thẻ, tăng `contentVersion` của `OfficialCard` để toàn bộ người dùng nhận bản cập nhật mới nhất ngay lập tức mà không làm mất ghi chú cá nhân (`personalNote`).
@@ -625,12 +625,12 @@ _Mục tiêu: Xóa bỏ hoàn toàn rào cản "ứng dụng trống" bằng cá
     - [x] Script: Đóng gói 15 deck Foundation từ NGSL Top 300, tích hợp liên kết bài học ngắn trước khi học từ vựng (`foundationDecks.ts`).
     - [x] Frontend: Giao diện `FoundationPathView` với lộ trình hình bậc thang thân thiện cho người mới bắt đầu (`FoundationPathView.tsx`, `MiniLessonModal.tsx`).
 
-- [ ] **US-LIB-13: Động cơ kiểm soát độ phủ từ vựng trong ví dụ (Vocabulary Control Engine)**
+- [x] **US-LIB-13: Động cơ kiểm soát độ phủ từ vựng trong ví dụ (Vocabulary Control Engine)**
   - **AC:** Luật tự động kiểm tra nghiêm ngặt độ phủ từ vựng câu ví dụ: Trường `example_easy_en` (dành riêng cho Beginner Mode) chỉ dài 5–8 từ, 100% từ bổ trợ phải nằm trong NGSL Top 500. Trường `example_en` (chuẩn TOEIC) phải có $\ge 95\%$ số từ thuộc NGSL + TSL. Báo cáo validate liệt kê chi tiết các thẻ có ví dụ quá khó để AI sinh lại tự động.
   - **Tasks:**
-    - [ ] Script/Core: Xây dựng bảng từ vựng Lemma chuẩn cho NGSL Top 500 và NGSL + TSL.
-    - [ ] Script: Viết hàm `checkSentenceVocabularyCoverage(sentence, allowedWordSet)` trong `04-validate.ts`.
-    - [ ] Script: Cơ chế tự động gọi lại AI với constraint chặt hơn nếu câu ví dụ không đạt chuẩn độ phủ.
+    - [x] Script/Core: Xây dựng bảng từ vựng Lemma chuẩn cho NGSL Top 500 và NGSL + TSL (`vocabulary-control.ts`).
+    - [x] Script: Viết hàm `checkSentenceVocabularyCoverage(sentence, allowedWordSet)` và `validateSentenceDifficulty()` trong `validation-rules.ts`.
+    - [x] Script: Tích hợp vào quy trình kiểm duyệt `validateEnrichedWord()` để gắn cờ vi phạm độ phủ cho báo cáo Stage 4.
 
 - [ ] **US-LIB-14: Chế độ Nghe trước (Audio-First) & Mẹo phát âm người Việt**
   - **AC:** Ở Beginner Mode, kích hoạt chế độ Audio-first: phát âm thanh mẫu trước, yêu cầu nhận diện nghĩa hoặc gõ từ, sau đó mới hiển thị mặt chữ. Thẻ từ vựng hiển thị rõ vị trí trọng âm nhấn mạnh (`stress_syllable`). Trường `ending_sound_tip_vi` cung cấp mẹo khắc phục lỗi nuốt âm cuối đặc trưng của người Việt (âm /s/, /z/, /t/, /d/, /k/, -ed, -s/-es).
@@ -715,20 +715,20 @@ _Mục tiêu: Xóa bỏ hoàn toàn rào cản "ứng dụng trống" bằng cá
   ├── EPIC-09: Chrome Extension (Manifest V3)           ✅
   └── EPIC-09: PWA & Offline Caching (Service Workers)   ✅
 
-[ Sprint 9 - Activation & Starter Library Soft Launch ] ──► [ PLANNED 📋 ]
+[ Sprint 9 - Activation & Starter Library Soft Launch ] ──► [ COMPLETED ✅ ]
   ├── EPIC-13: US-LIB-01 (Content Enrichment Pipeline: TSL Top 200 & NGSL Top 300)   ✅
   ├── EPIC-13: US-LIB-02 (Shared Official Cards & Lazy Progress Model)              ✅
   ├── EPIC-13: US-LIB-03 (Library Discovery Page & Deck Details)                     ✅
   ├── EPIC-13: US-LIB-04 (60s Goal Onboarding & Starter Deck Auto-enroll)           ✅
   ├── EPIC-13: US-LIB-11 (Adaptive Beginner Entry & Mini-test)                       ✅
   ├── EPIC-13: US-LIB-12 (Foundation Stage: 15 Decks NGSL Top 300 + 4 Mini-lessons)  ✅
-  ├── EPIC-13: US-LIB-13 (Vocabulary Control Engine for Examples)
-  ├── EPIC-13: US-LIB-08 (Data Attribution & CC BY-SA 4.0 Compliance Page)
+  ├── EPIC-13: US-LIB-13 (Vocabulary Control Engine for Examples)                     ✅
+  ├── EPIC-13: US-LIB-08 (Data Attribution & CC BY-SA 4.0 Compliance Page)           ✅
   ├── EPIC-09: US-REM-01 (Review Summary API)            ✅
   ├── EPIC-09: US-ECO-05 (Extension Badge)                 ✅
   ├── EPIC-09: US-ECO-06 (Reminder Notifications)          ✅
   ├── EPIC-09: US-ECO-07 (Notification Settings)           ✅
-  └── EPIC-12: US-UX-01 ("Học hôm nay" Button)
+  └── EPIC-12: US-UX-01 ("Học hôm nay" Button)                                       ✅
 
 [ Sprint 10 - TSL Expansion, Retention & Learning Quality ] ──► [ PLANNED 📋 ]
   ├── EPIC-13: US-LIB-05 (Known-word Triage Flow with Verification Quiz)
