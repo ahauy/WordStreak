@@ -79,11 +79,20 @@ export interface TodaySessionSummary {
   totalCount: number;
   dailyGoal: number;
   isGoalCompleted: boolean;
+  isWelcomeBack?: boolean;
+  isExpress?: boolean;
 }
 
 export interface TodaySessionResponse {
   cards: DueCardItem[];
   summary: TodaySessionSummary;
+}
+
+export interface HabitMilestone {
+  id: 'words-50' | 'words-100' | 'words-300' | 'words-500';
+  targetWords: number;
+  titleKey: string;
+  descKey: string;
 }
 
 export interface ReviewSummaryDto {

@@ -32,9 +32,13 @@ export interface SessionStats {
   durationSeconds: number;
 }
 
-export function useReviewSession(deckId?: string) {
+export function useReviewSession(
+  deckId?: string,
+  mode?: "express" | "standard",
+) {
   const { user } = useAuthStore();
   const [queue, setQueue] = useState<DueCardItem[]>([]);
+  const [meta, setMeta] = useState<Record<string, unknown> | undefined>(undefined);
   const [initialTotal, setInitialTotal] = useState<number>(0);
   const [isFlipped, setIsFlipped] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -76,14 +80,15 @@ export function useReviewSession(deckId?: string) {
   const loadQueue = useCallback(async (): Promise<{
     offline: boolean;
     queue: DueCardItem[];
+    meta?: Record<string, unknown>;
   }> => {
     if (!navigator.onLine) {
       const offlineData = await loadOfflineCards();
       return { offline: true, queue: offlineData };
     }
     try {
-      const { data } = await reviewsService.getDueCards(deckId);
-      return { offline: false, queue: data };
+      const { data, meta } = await reviewsService.getDueCards(deckId, 50, mode);
+      return { offline: false, queue: data, meta };
     } catch {
       // Fallback to offline cards on network error
       try {
@@ -95,12 +100,17 @@ export function useReviewSession(deckId?: string) {
         throw new Error(message, { cause: err });
       }
     }
-  }, [deckId, loadOfflineCards]);
+  }, [deckId, mode, loadOfflineCards]);
 
   const applyQueueData = useCallback(
-    (offline: boolean, queueData: DueCardItem[]) => {
+    (
+      offline: boolean,
+      queueData: DueCardItem[],
+      queueMeta?: Record<string, unknown>,
+    ) => {
       setIsOfflineMode(offline);
       setQueue(queueData);
+      setMeta(queueMeta);
       setInitialTotal(queueData.length);
       setIsCompleted(queueData.length === 0);
       setIsFlipped(false);
@@ -115,7 +125,7 @@ export function useReviewSession(deckId?: string) {
     setError(null);
     try {
       const res = await loadQueue();
-      applyQueueData(res.offline, res.queue);
+      applyQueueData(res.offline, res.queue, res.meta);
     } catch (err: unknown) {
       const message =
         err instanceof Error ? err.message : "Failed to load review queue";
@@ -130,7 +140,7 @@ export function useReviewSession(deckId?: string) {
     loadQueue()
       .then((res) => {
         if (!ignore) {
-          applyQueueData(res.offline, res.queue);
+          applyQueueData(res.offline, res.queue, res.meta);
           setError(null);
           setIsLoading(false);
         }
@@ -380,6 +390,7 @@ export function useReviewSession(deckId?: string) {
     isCompleted,
     error,
     sessionStats,
+    meta,
     lastXpReward,
     levelUpData,
     isOfflineMode,

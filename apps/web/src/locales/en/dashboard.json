@@ -139,5 +139,37 @@
     "copyright": "© {{year}} WordStreak. 100% Free & Open-Source.",
     "settings": "Settings",
     "security": "Security"
+  },
+  "expressSession": {
+    "button": "5-Min Session",
+    "tooltip": "Review the top 5–7 most urgent cards for busy days",
+    "badge": "5 min",
+    "subtitle": "Express review mode (5–7 most important cards)"
+  },
+  "welcomeBack": {
+    "title": "Welcome back! 👋",
+    "message": "We have prepared a gentle 5–7 card session so you can easily regain momentum without feeling overwhelmed.",
+    "action": "Start Gentle Session"
+  },
+  "milestones": {
+    "badge": "Habit Milestone",
+    "congrats": "Congratulations on reaching a new milestone! 🎉",
+    "cta": "Continue Learning",
+    "m50": {
+      "title": "50 Words Mastered!",
+      "desc": "You've surpassed your first 50 words! Your memory foundation is taking strong shape."
+    },
+    "m100": {
+      "title": "100 Core Words!",
+      "desc": "You have mastered the top 100 high-frequency words found across TOEIC and daily English!"
+    },
+    "m300": {
+      "title": "300 Long-term Words!",
+      "desc": "300 core words are now stored in your long-term memory! You can understand over 65% of everyday texts."
+    },
+    "m500": {
+      "title": "500 Words — Extraordinary Milestone!",
+      "desc": "Extraordinary milestone: 500 words! You have mastered the entire NGSL Top 500 foundation."
+    }
   }
 }

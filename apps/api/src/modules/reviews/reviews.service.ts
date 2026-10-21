@@ -144,8 +144,27 @@ export class ReviewsService {
    * Retrieves prioritized due cards and new cards ready for review.
    */
   async getDueCards(userId: string, query: QueryDueReviewsDto = {}) {
-    const { deckId, limit = 50 } = query;
+    const { deckId, mode } = query;
+    let limit = query.limit ?? 50;
+    if (mode === 'express') {
+      limit = Math.min(limit, 7);
+    }
     const now = new Date();
+
+    // 0. Check user inactivity > 7 days for gentle Welcome Back re-engagement
+    const userStreak = await this.prisma.userStreak.findFirst({
+      where: { userId },
+      select: { lastActiveDate: true },
+    });
+    const SEVEN_DAYS_MS = 7 * 24 * 60 * 60 * 1000;
+    const isWelcomeBack = Boolean(
+      userStreak?.lastActiveDate &&
+        now.getTime() - new Date(userStreak.lastActiveDate).getTime() >
+          SEVEN_DAYS_MS,
+    );
+    if (isWelcomeBack && !query.limit && mode !== 'express') {
+      limit = 7;
+    }
 
     // 1. Fetch user dailyGoal
     const user = await this.prisma.user.findUnique({
@@ -318,16 +337,25 @@ export class ReviewsService {
         overdueCount: overdue.length,
         dueTodayCount: dueToday.length,
         newCount: newCards.length,
+        isWelcomeBack,
+        isExpress: mode === 'express',
       },
     };
   }
 
   /**
-   * Retrieves today's combined study session (US-UX-01):
+   * Retrieves today's combined study session (US-UX-01 / US-LIB-16):
    * Prioritizes overdue/due cards, supplemented by new cards up to dailyGoal.
+   * Supports express mode (5-minute session, max 7 cards) and welcome back handling.
    */
-  async getTodaySession(userId: string): Promise<TodaySessionResponse> {
-    const dueResult = await this.getDueCards(userId, { limit: 50 });
+  async getTodaySession(
+    userId: string,
+    query: QueryDueReviewsDto = {},
+  ): Promise<TodaySessionResponse> {
+    const dueResult = await this.getDueCards(userId, {
+      ...query,
+      limit: query.mode === 'express' ? 7 : (query.limit ?? 50),
+    });
     const user = await this.prisma.user.findUnique({
       where: { id: userId },
       select: { dailyGoal: true },
@@ -348,6 +376,8 @@ export class ReviewsService {
         totalCount,
         dailyGoal,
         isGoalCompleted,
+        isWelcomeBack: dueResult.meta.isWelcomeBack,
+        isExpress: query.mode === 'express',
       },
     };
   }

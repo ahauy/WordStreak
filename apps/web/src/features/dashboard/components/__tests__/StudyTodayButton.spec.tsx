@@ -53,4 +53,31 @@ describe("StudyTodayButton (US-UX-01 / TC-UX-01-003, TC-UX-01-004)", () => {
     expect(screen.queryByTestId("study-today-button")).toBeNull();
     expect(screen.getByText(/Mục tiêu hôm nay đã hoàn thành/i)).toBeDefined();
   });
+
+  it("TC-LIB-16-005: renders express session button and navigates with express mode", () => {
+    render(
+      <BrowserRouter>
+        <StudyTodayButton totalCount={10} dueCount={4} showExpressOption={true} />
+      </BrowserRouter>,
+    );
+
+    const expressButton = screen.getByTestId("express-session-button");
+    expect(expressButton).toBeDefined();
+    expect(screen.getByText(/Phiên 5 phút/i)).toBeDefined();
+
+    fireEvent.click(expressButton);
+    expect(mockNavigate).toHaveBeenCalledWith("/review", {
+      state: { autoMix: true, todaySession: true, mode: "express" },
+    });
+  });
+
+  it("renders welcome back action label when isWelcomeBack is true", () => {
+    render(
+      <BrowserRouter>
+        <StudyTodayButton totalCount={10} dueCount={4} isWelcomeBack={true} />
+      </BrowserRouter>,
+    );
+
+    expect(screen.getByText(/Bắt đầu phiên nhẹ nhàng/i)).toBeDefined();
+  });
 });

@@ -105,8 +105,9 @@ export class ReviewsController {
   @Get('today-session')
   async getTodaySession(
     @CurrentUser() user: JwtPayload,
+    @Query() query: QueryDueReviewsDto,
   ): Promise<ApiResponse<TodaySessionResponse>> {
-    const data = await this.reviewsService.getTodaySession(user.sub);
+    const data = await this.reviewsService.getTodaySession(user.sub, query);
     return {
       success: true,
       data,
