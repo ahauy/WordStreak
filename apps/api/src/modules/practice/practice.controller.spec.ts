@@ -5,6 +5,7 @@ import { QuizGeneratorService } from './quiz-generator.service';
 import { FillBlankGeneratorService } from './fill-blank-generator.service';
 import { ListeningGeneratorService } from './listening-generator.service';
 import { MatchingGeneratorService } from './matching-generator.service';
+import { ToeicQuizGeneratorService } from './toeic-quiz-generator.service';
 import type { JwtPayload } from '@wordstreak/shared-types';
 
 describe('PracticeController', () => {
@@ -13,11 +14,13 @@ describe('PracticeController', () => {
     submitQuiz: jest.Mock;
     submitMatchingQuiz: jest.Mock;
     submitVoicePronunciation: jest.Mock;
+    submitToeicQuiz: jest.Mock;
   };
   let quizGeneratorService: { generateQuestions: jest.Mock };
   let fillBlankGeneratorService: { generateQuestions: jest.Mock };
   let listeningGeneratorService: { generateQuestions: jest.Mock };
   let matchingGeneratorService: { generateQuiz: jest.Mock };
+  let toeicQuizGeneratorService: { generateQuestions: jest.Mock };
 
   const mockUser: JwtPayload = {
     sub: 'user-1',
@@ -30,6 +33,7 @@ describe('PracticeController', () => {
       submitQuiz: jest.fn(),
       submitMatchingQuiz: jest.fn(),
       submitVoicePronunciation: jest.fn(),
+      submitToeicQuiz: jest.fn(),
     };
 
     quizGeneratorService = {
@@ -48,6 +52,10 @@ describe('PracticeController', () => {
       generateQuiz: jest.fn(),
     };
 
+    toeicQuizGeneratorService = {
+      generateQuestions: jest.fn(),
+    };
+
     const module: TestingModule = await Test.createTestingModule({
       controllers: [PracticeController],
       providers: [
@@ -64,6 +72,10 @@ describe('PracticeController', () => {
         {
           provide: MatchingGeneratorService,
           useValue: matchingGeneratorService,
+        },
+        {
+          provide: ToeicQuizGeneratorService,
+          useValue: toeicQuizGeneratorService,
         },
       ],
     }).compile();
@@ -298,6 +310,68 @@ describe('PracticeController', () => {
       expect(practiceService.submitVoicePronunciation).toHaveBeenCalledWith(
         'user-1',
         payload,
+      );
+    });
+  });
+
+  describe('getToeicQuiz & submitToeicQuiz (US-LIB-07)', () => {
+    it('should generate TOEIC practice questions', async () => {
+      const mockQuestions = [
+        {
+          id: 'q1',
+          cardId: 'c1',
+          type: 'MINI_PART_5',
+          prompt: 'Complete the sentence:',
+          targetWord: 'accommodate',
+        },
+      ];
+      toeicQuizGeneratorService.generateQuestions.mockResolvedValue(
+        mockQuestions,
+      );
+
+      const query = { deckId: 'deck_tsl_1' };
+      const result = await controller.getToeicQuiz(query);
+
+      expect(result.success).toBe(true);
+      expect(result.data).toEqual(mockQuestions);
+      expect(toeicQuizGeneratorService.generateQuestions).toHaveBeenCalledWith(
+        query,
+      );
+    });
+
+    it('should submit TOEIC quiz and return auto-graded SRS result', async () => {
+      const mockResult = {
+        totalQuestions: 1,
+        correctCount: 1,
+        accuracyPercentage: 100,
+        totalXpEarned: 15,
+        autoGradedReviews: [],
+      };
+      practiceService.submitToeicQuiz.mockResolvedValue(mockResult);
+
+      const dto = {
+        answers: [
+          {
+            cardId: 'c1',
+            type: 'MINI_PART_5' as const,
+            isCorrect: true,
+            timeSpentMs: 2000,
+          },
+        ],
+      };
+
+      const result = await controller.submitToeicQuiz(
+        mockUser,
+        dto,
+        'Asia/Ho_Chi_Minh',
+      );
+
+      expect(result.success).toBe(true);
+      expect(result.data).toEqual(mockResult);
+      expect(practiceService.submitToeicQuiz).toHaveBeenCalledWith(
+        'user-1',
+        dto,
+        'Asia/Ho_Chi_Minh',
       );
     });
   });

@@ -5,9 +5,11 @@ import {
   ForbiddenException,
   HttpException,
   HttpStatus,
+  Optional,
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { StreakService } from '../streaks/streak.service';
+import { ReviewsService } from '../reviews/reviews.service';
 import {
   computePronunciationScore,
   computeDiffSpans,
@@ -21,7 +23,21 @@ import type {
   MatchingMissedCardDto,
   SubmitVoiceDto,
   VoicePronunciationResultDto,
+  SubmitToeicQuizDto,
+  ToeicQuizResultDto,
+  ToeicAutoGradedReview,
+  SrsRating,
 } from '@wordstreak/shared-types';
+
+export function mapQuizAnswerToSm2Rating(
+  isCorrect: boolean,
+  timeSpentMs: number,
+): SrsRating {
+  if (!isCorrect) return 1;
+  if (timeSpentMs <= 4000) return 4;
+  if (timeSpentMs <= 10000) return 3;
+  return 2;
+}
 
 @Injectable()
 export class PracticeService {
@@ -31,6 +47,7 @@ export class PracticeService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly streakService: StreakService,
+    @Optional() private readonly reviewsService?: ReviewsService,
   ) {}
 
   /**
@@ -601,5 +618,78 @@ export class PracticeService {
       audioUrl: c.audioUrl,
       errorAttempts: cardErrorMap[c.id] ?? 1,
     }));
+  }
+
+  /**
+   * Evaluates TOEIC specialized quiz submissions and maps answers + timeSpentMs to SM-2 ratings.
+   */
+  async submitToeicQuiz(
+    userId: string,
+    dto: SubmitToeicQuizDto,
+    clientTimezone?: string,
+  ): Promise<ToeicQuizResultDto> {
+    const { answers } = dto;
+    let correctCount = 0;
+    let totalXpEarned = 0;
+    const autoGradedReviews: ToeicAutoGradedReview[] = [];
+
+    for (const ans of answers) {
+      if (ans.isCorrect) {
+        correctCount++;
+        totalXpEarned += 10;
+        if (ans.timeSpentMs <= 4000) {
+          totalXpEarned += 5; // speed bonus
+        }
+      }
+
+      const rating = mapQuizAnswerToSm2Rating(
+        ans.isCorrect,
+        ans.timeSpentMs || 5000,
+      );
+
+      if (this.reviewsService) {
+        try {
+          const reviewResult = await this.reviewsService.submitReview(
+            userId,
+            { cardId: ans.cardId, rating },
+            clientTimezone,
+          );
+
+          autoGradedReviews.push({
+            cardId: ans.cardId,
+            rating,
+            interval: reviewResult.interval,
+            repetitions: reviewResult.repetitions,
+            status: reviewResult.status,
+            nextReviewDate: reviewResult.nextReviewDate,
+          });
+        } catch (err) {
+          this.logger.warn(`Failed to auto-grade card ${ans.cardId}: ${err}`);
+        }
+      } else {
+        autoGradedReviews.push({
+          cardId: ans.cardId,
+          rating,
+          interval: rating === 1 ? 1 : 3,
+          repetitions: rating === 1 ? 0 : 1,
+          status: rating === 1 ? 'LEARNING' : 'REVIEW',
+          nextReviewDate: new Date(),
+        });
+      }
+    }
+
+    const totalQuestions = answers.length;
+    const accuracyPercentage =
+      totalQuestions > 0
+        ? Math.round((correctCount / totalQuestions) * 100)
+        : 0;
+
+    return {
+      totalQuestions,
+      correctCount,
+      accuracyPercentage,
+      totalXpEarned,
+      autoGradedReviews,
+    };
   }
 }

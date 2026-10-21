@@ -310,3 +310,67 @@ export interface VoicePracticeAttempt {
   accentUsed?: string;
   createdAt?: Date | string;
 }
+
+// ==========================================
+// TOEIC PRACTICE QUIZ TYPES (US-LIB-07)
+// ==========================================
+
+export type ToeicQuizType =
+  | 'MINI_PART_5'
+  | 'WORD_FAMILY'
+  | 'PARAPHRASE'
+  | 'LISTENING_TYPING';
+
+export interface ToeicQuizQuestionDto {
+  id: string;
+  cardId: string;
+  type: ToeicQuizType;
+  prompt: string;
+  sentence?: string;
+  blankWord?: string;
+  targetWord: string;
+  audioUrl?: string | null;
+  phonetic?: string | null;
+  vietnameseMeaning?: string;
+  options?: QuizOptionDto[];
+  explanation?: string;
+}
+
+export interface GetToeicQuizQueryDto {
+  deckId?: string;
+  pathCode?: string;
+  limit?: number;
+  type?: ToeicQuizType;
+}
+
+export interface SubmitToeicQuizAnswerDto {
+  cardId: string;
+  questionId?: string;
+  type: ToeicQuizType;
+  isCorrect: boolean;
+  timeSpentMs: number;
+  submittedAnswer?: string;
+}
+
+export interface SubmitToeicQuizDto {
+  deckId?: string;
+  answers: SubmitToeicQuizAnswerDto[];
+}
+
+export interface ToeicAutoGradedReview {
+  cardId: string;
+  rating: number; // 1, 2, 3, 4
+  interval: number;
+  repetitions: number;
+  status: string;
+  nextReviewDate?: Date | string | null;
+}
+
+export interface ToeicQuizResultDto {
+  totalQuestions: number;
+  correctCount: number;
+  accuracyPercentage: number;
+  totalXpEarned: number;
+  autoGradedReviews: ToeicAutoGradedReview[];
+}
+

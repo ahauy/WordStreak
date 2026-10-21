@@ -614,4 +614,128 @@ describe('PracticeService', () => {
       expect(result.xpAwarded).toBe(0);
     });
   });
+
+  describe('submitToeicQuiz & mapQuizAnswerToSm2Rating (US-LIB-07 TC-003, TC-004, TC-005)', () => {
+    it('TC-003: should map incorrect answer to SM-2 rating 1 (Again)', async () => {
+      const mockReviewsService = {
+        submitReview: jest.fn().mockResolvedValue({
+          interval: 1,
+          repetitions: 0,
+          status: 'LEARNING',
+          nextReviewDate: new Date(),
+        }),
+      };
+
+      const testService = new PracticeService(
+        prisma as any,
+        streakService as any,
+        mockReviewsService as any,
+      );
+
+      const result = await testService.submitToeicQuiz('user-1', {
+        answers: [
+          {
+            cardId: 'card-1',
+            type: 'MINI_PART_5',
+            isCorrect: false,
+            timeSpentMs: 3000,
+          },
+        ],
+      });
+
+      expect(mockReviewsService.submitReview).toHaveBeenCalledWith(
+        'user-1',
+        { cardId: 'card-1', rating: 1 },
+        undefined,
+      );
+      expect(result.correctCount).toBe(0);
+      expect(result.autoGradedReviews[0].rating).toBe(1);
+    });
+
+    it('TC-004: should map fast correct answer (<= 4000ms) to SM-2 rating 4 (Easy)', async () => {
+      const mockReviewsService = {
+        submitReview: jest.fn().mockResolvedValue({
+          interval: 4,
+          repetitions: 1,
+          status: 'REVIEW',
+          nextReviewDate: new Date(),
+        }),
+      };
+
+      const testService = new PracticeService(
+        prisma as any,
+        streakService as any,
+        mockReviewsService as any,
+      );
+
+      const result = await testService.submitToeicQuiz('user-1', {
+        answers: [
+          {
+            cardId: 'card-2',
+            type: 'WORD_FAMILY',
+            isCorrect: true,
+            timeSpentMs: 2500,
+          },
+        ],
+      });
+
+      expect(mockReviewsService.submitReview).toHaveBeenCalledWith(
+        'user-1',
+        { cardId: 'card-2', rating: 4 },
+        undefined,
+      );
+      expect(result.correctCount).toBe(1);
+      expect(result.totalXpEarned).toBe(15); // 10 base + 5 speed bonus
+      expect(result.autoGradedReviews[0].rating).toBe(4);
+    });
+
+    it('TC-005: should map standard correct answer (<= 10000ms) to SM-2 rating 3 (Good) and slow to rating 2 (Hard)', async () => {
+      const mockReviewsService = {
+        submitReview: jest.fn().mockResolvedValue({
+          interval: 2,
+          repetitions: 1,
+          status: 'REVIEW',
+          nextReviewDate: new Date(),
+        }),
+      };
+
+      const testService = new PracticeService(
+        prisma as any,
+        streakService as any,
+        mockReviewsService as any,
+      );
+
+      const result = await testService.submitToeicQuiz('user-1', {
+        answers: [
+          {
+            cardId: 'card-3',
+            type: 'PARAPHRASE',
+            isCorrect: true,
+            timeSpentMs: 7000,
+          },
+          {
+            cardId: 'card-4',
+            type: 'MINI_PART_5',
+            isCorrect: true,
+            timeSpentMs: 15000,
+          },
+        ],
+      });
+
+      expect(mockReviewsService.submitReview).toHaveBeenNthCalledWith(
+        1,
+        'user-1',
+        { cardId: 'card-3', rating: 3 },
+        undefined,
+      );
+      expect(mockReviewsService.submitReview).toHaveBeenNthCalledWith(
+        2,
+        'user-1',
+        { cardId: 'card-4', rating: 2 },
+        undefined,
+      );
+      expect(result.correctCount).toBe(2);
+      expect(result.accuracyPercentage).toBe(100);
+    });
+  });
 });
