@@ -4,6 +4,7 @@ import {
   Post,
   Body,
   Query,
+  Headers,
   UseGuards,
   HttpCode,
   HttpStatus,
@@ -15,17 +16,22 @@ import { QuizGeneratorService } from './quiz-generator.service';
 import { FillBlankGeneratorService } from './fill-blank-generator.service';
 import { ListeningGeneratorService } from './listening-generator.service';
 import { MatchingGeneratorService } from './matching-generator.service';
+import { ToeicQuizGeneratorService } from './toeic-quiz-generator.service';
 import { GetQuizQuestionsDto } from './dto/get-quiz-questions.dto';
 import { GetFillBlankQuestionsDto } from './dto/get-fill-blank-questions.dto';
 import { GetListeningQuizDto } from './dto/get-listening-quiz.dto';
 import { GetMatchingQuizDto } from './dto/get-matching-quiz.dto';
+import { GetToeicQuizDto } from './dto/get-toeic-quiz.dto';
 import { SubmitQuizDto } from './dto/submit-quiz.dto';
 import { SubmitMatchingQuizDto } from './dto/submit-matching-quiz.dto';
 import { SubmitVoiceDto } from './dto/submit-voice.dto';
+import { SubmitToeicQuizDto } from './dto/submit-toeic-quiz.dto';
 import type {
   JwtPayload,
   ApiResponse,
   VoicePronunciationResultDto,
+  ToeicQuizQuestionDto,
+  ToeicQuizResultDto,
 } from '@wordstreak/shared-types';
 
 function isMatchingSubmission(
@@ -47,6 +53,7 @@ export class PracticeController {
     private readonly fillBlankGeneratorService: FillBlankGeneratorService,
     private readonly listeningGeneratorService: ListeningGeneratorService,
     private readonly matchingGeneratorService: MatchingGeneratorService,
+    private readonly toeicQuizGeneratorService: ToeicQuizGeneratorService,
   ) {}
 
   @Get('multiple-choice')
@@ -189,6 +196,38 @@ export class PracticeController {
       success: true,
       data: result,
       message: 'Voice pronunciation evaluated successfully',
+    };
+  }
+
+  @Get('toeic')
+  async getToeicQuiz(
+    @Query() query: GetToeicQuizDto,
+  ): Promise<ApiResponse<ToeicQuizQuestionDto[]>> {
+    const questions =
+      await this.toeicQuizGeneratorService.generateQuestions(query);
+    return {
+      success: true,
+      data: questions,
+      message: 'TOEIC practice quiz generated successfully',
+    };
+  }
+
+  @Post('toeic/submit')
+  @HttpCode(HttpStatus.OK)
+  async submitToeicQuiz(
+    @CurrentUser() user: JwtPayload,
+    @Body() dto: SubmitToeicQuizDto,
+    @Headers('x-timezone') clientTimezone?: string,
+  ): Promise<ApiResponse<ToeicQuizResultDto>> {
+    const result = await this.practiceService.submitToeicQuiz(
+      user.sub,
+      dto,
+      clientTimezone,
+    );
+    return {
+      success: true,
+      data: result,
+      message: 'TOEIC practice quiz submitted and auto-graded successfully',
     };
   }
 }

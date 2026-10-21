@@ -10,6 +10,9 @@ import type {
   MatchingQuizResultDto,
   ApiResponse,
   VoicePronunciationResultDto,
+  ToeicQuizQuestionDto,
+  SubmitToeicQuizDto,
+  ToeicQuizResultDto,
 } from "@wordstreak/shared-types";
 
 export const practiceService = {
@@ -129,5 +132,30 @@ export const practiceService = {
       ApiResponse<VoicePronunciationResultDto>
     >("/practice/voice/submit", dto);
     return response.data;
+  },
+
+  async getToeicQuiz(params: {
+    deckId?: string;
+    pathCode?: string;
+    limit?: number;
+    type?: string;
+  }): Promise<ToeicQuizQuestionDto[]> {
+    const response = await apiClient.get<ApiResponse<ToeicQuizQuestionDto[]>>(
+      "/practice/toeic",
+      {
+        params,
+      },
+    );
+    return response.data.data || [];
+  },
+
+  async submitToeicQuiz(
+    payload: SubmitToeicQuizDto,
+  ): Promise<ToeicQuizResultDto | undefined> {
+    const response = await apiClient.post<ApiResponse<ToeicQuizResultDto>>(
+      "/practice/toeic/submit",
+      payload,
+    );
+    return response.data.data;
   },
 };

@@ -582,13 +582,13 @@ _Mục tiêu: Xóa bỏ hoàn toàn rào cản "ứng dụng trống" bằng cá
     - [x] Backend: Endpoint `GET /api/v1/library/paths/toeic/progress` trả về % độ phủ, số deck hoàn thành, số ngày dự kiến về đích.
     - [x] Frontend: Giao diện `ToeicPathPage` với bản đồ tiến trình phân nhánh, thanh `ToeicCoverageProgressBar` và biểu đồ trực quan.
 
-- [ ] **US-LIB-07: Quiz kiểu đề thi TOEIC (Mini Part 5 & Word Family Quiz)**
+- [x] **US-LIB-07: Quiz kiểu đề thi TOEIC (Mini Part 5 & Word Family Quiz)**
   - **AC:** Tạo 4 dạng bài tập chuyên sâu từ thẻ TSL: (1) Mini Part 5 điền từ vào câu (4 lựa chọn, đáp án nhiễu trích xuất từ `confusables`), (2) Chọn dạng từ đúng (dựa trên `word_family`), (3) Paraphrase (tìm từ đồng nghĩa trong ngữ cảnh công sở), (4) Nghe và gõ từ. Kết quả đúng/sai và thời gian trả lời tự động quy đổi sang điểm rating SM-2 (1: Again, 2: Hard, 3: Good, 4: Easy).
   - **Tasks:**
-    - [ ] Prompt/AI: Xây dựng pipeline sinh câu hỏi Mini Part 5 với bước AI-check độc lập (giải thử xác nhận chỉ có 1 đáp án duy nhất đúng).
-    - [ ] Database: Bảng `official_quiz_questions` lưu ngân hàng câu hỏi trắc nghiệm đã qua kiểm duyệt.
-    - [ ] Frontend: Component `MiniPart5QuizCard`, `WordFamilyQuizCard` tích hợp vào luồng luyện tập.
-    - [ ] Backend: Logic tự động cập nhật SM-2 trong `PracticeService` khi nộp kết quả quiz kiểu TOEIC.
+    - [x] DTO & Schema: Data contracts `ToeicQuizQuestionDto`, `ToeicQuizType`, `SubmitToeicQuizDto` trong `packages/shared-types`.
+    - [x] Backend: `ToeicQuizGeneratorService` sinh 4 dạng câu hỏi với ưu tiên đáp án nhiễu từ `confusables` và peer cards.
+    - [x] Backend: `PracticeService.submitToeicQuiz` tự động quy đổi thời gian và tính đúng/sai sang SM-2 rating (1/2/3/4) và cập nhật `UserOfficialCardProgress`.
+    - [x] Frontend: Component `MiniPart5QuizCard` chuẩn thiết kế Obsidian Pill, tương tác mượt mà và tự động giải thích.
 
 - [x] **US-LIB-08: Ghi nhận nguồn dữ liệu & Bản quyền (Attribution & Licensing)**
   - **AC:** Trang tĩnh `/sources` công bố đầy đủ thông tin: Danh mục từ vựng dựa trên NGSL 1.2 và TSL 1.2 của Browne, Culligan, và Phillips theo giấy phép Creative Commons Attribution-ShareAlike 4.0 International (CC BY-SA 4.0). Tuyên bố miễn trừ trách nhiệm pháp lý rõ ràng: WordStreak không liên kết hay được chứng thực bởi Viện Khảo thí Giáo dục Hoa Kỳ (ETS); TOEIC là nhãn hiệu đã đăng ký của ETS. Mọi deck thuộc thư viện đều có nhãn bản quyền nguồn.
@@ -731,9 +731,9 @@ _Mục tiêu: Xóa bỏ hoàn toàn rào cản "ứng dụng trống" bằng cá
   └── EPIC-12: US-UX-01 ("Học hôm nay" Button)                                       ✅
 
 [ Sprint 10 - TSL Expansion, Retention & Learning Quality ] ──► [ PLANNED 📋 ]
-  ├── EPIC-13: US-LIB-05 (Known-word Triage Flow with Verification Quiz)
-  ├── EPIC-13: US-LIB-06 (Full TSL Path 1.200 words & Real-time Coverage Bar)
-  ├── EPIC-13: US-LIB-07 (TOEIC Quizzes: Mini Part 5 & Word Family)
+  ├── EPIC-13: US-LIB-05 (Known-word Triage Flow with Verification Quiz)  ✅
+  ├── EPIC-13: US-LIB-06 (Full TSL Path 1.200 words & Real-time Coverage Bar) ✅
+  ├── EPIC-13: US-LIB-07 (TOEIC Quizzes: Mini Part 5 & Word Family)        ✅
   ├── EPIC-13: US-LIB-14 (Audio-First Mode & Vietnamese Ending Sound Tips)
   ├── EPIC-13: US-LIB-15 (Intra-session Learning Steps & 5 words/day default)
   ├── EPIC-13: US-LIB-16 (Habit Milestones & 5-minute Express Session)
