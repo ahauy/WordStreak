@@ -639,12 +639,12 @@ _Mục tiêu: Xóa bỏ hoàn toàn rào cản "ứng dụng trống" bằng cá
     - [x] Frontend: Hiển thị chip âm tiết tương tác với gạch chân trọng âm chính từ trường `stress_syllable`.
     - [x] Content/UI: Hiển thị badge mẹo phát âm âm cuối tiếng Việt `ending_sound_tip_vi` trên mặt sau của thẻ.
 
-- [ ] **US-LIB-15: Bước học trong phiên & Xác nhận từ đã biết (Learning Steps & Verification)**
+- [x] **US-LIB-15: Bước học trong phiên & Xác nhận từ đã biết (Learning Steps & Verification)**
   - **AC:** Đối với người dùng ở Beginner Mode, thẻ mới phải trải qua các bước học trong phiên (Intra-session learning steps: lặp lại sau 1 phút và 5 phút) trước khi chính thức chuyển sang chu kỳ ngày tiếp theo của SM-2. Ở bước lọc từ đã biết, khi người mới bấm "Biết", hiển thị câu kiểm tra trắc nghiệm nhanh 3 giây để xác thực; nếu trả lời sai, tự động đưa từ vào hàng đợi học. Tốc độ học mặc định cho người mới là 5 từ/ngày.
   - **Tasks:**
-    - [ ] Backend: Mở rộng `SrsService` hỗ trợ trạng thái `LEARNING_STEP` với khoảng cách tính bằng phút.
-    - [ ] Frontend: Quản lý hàng đợi thẻ lặp lại ngắn hạn trong phiên học `ReviewSessionPage`.
-    - [ ] Frontend: Popover quiz kiểm tra nhanh khi bấm "Biết" ở chế độ sàng lọc.
+    - [x] Backend: Mở rộng `SrsService` hỗ trợ trạng thái `LEARNING_STEP` với khoảng cách tính bằng phút.
+    - [x] Frontend: Quản lý hàng đợi thẻ lặp lại ngắn hạn trong phiên học `ReviewSessionPage`.
+    - [x] Frontend: Popover quiz kiểm tra nhanh khi bấm "Biết" ở chế độ sàng lọc.
 
 - [ ] **US-LIB-16: Cột mốc nhỏ, Phiên 5 phút & Khôi phục sau khi nghỉ (Habit Milestones)**
   - **AC:** Thiết lập các cột mốc động lực thực tế: 50 từ, 100 từ, 300 từ, 500 từ kèm thông điệp giải thích ý nghĩa bằng ngôn ngữ đời thường (ví dụ: "Bạn đã nắm 100 từ xuất hiện nhiều nhất trong mọi bài thi TOEIC"). Hỗ trợ chế độ "Phiên học 5 phút" cho những ngày bận rộn (chỉ ôn 5–7 thẻ quan trọng nhất). Khi người học quay lại sau nhiều ngày nghỉ, hệ thống kích hoạt logic "Welcome Back" chỉ hiển thị 5–10 thẻ ôn tập đầu tiên kèm bảo vệ streak freeze, tránh phơi bày hàng trăm thẻ dồn ứ gây nản lòng.
@@ -735,7 +735,7 @@ _Mục tiêu: Xóa bỏ hoàn toàn rào cản "ứng dụng trống" bằng cá
   ├── EPIC-13: US-LIB-06 (Full TSL Path 1.200 words & Real-time Coverage Bar) ✅
   ├── EPIC-13: US-LIB-07 (TOEIC Quizzes: Mini Part 5 & Word Family)        ✅
   ├── EPIC-13: US-LIB-14 (Audio-First Mode & Vietnamese Ending Sound Tips) ✅
-  ├── EPIC-13: US-LIB-15 (Intra-session Learning Steps & 5 words/day default)
+  ├── EPIC-13: US-LIB-15 (Intra-session Learning Steps & 5 words/day default) ✅
   ├── EPIC-13: US-LIB-16 (Habit Milestones & 5-minute Express Session)
   ├── EPIC-13: US-LIB-09 (Card Feedback Modal & Content Versioning)
   ├── EPIC-13: US-LIB-10 (Library & Path Retention Analytics)
