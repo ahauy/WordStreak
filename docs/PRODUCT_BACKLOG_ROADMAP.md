@@ -752,9 +752,9 @@ _Mục tiêu: Xóa bỏ hoàn toàn rào cản "ứng dụng trống" bằng cá
   ├── EPIC-13: US-LIB-17 (Fixed Collocations & Part 1 Photo Decks) ✅
   └── EPIC-09: US-ECO-09 (Web Push & Notification Settings) ✅
 
-[ Sprint 11 - Academic & IELTS Expansion ] ──► [ FUTURE 🔮 ]
-  ├── EPIC-13: NAWL 1.2 Import & Enrichment (960 Academic Words)
-  └── EPIC-13: IELTS Academic Path (32 Decks × 30 words)
+[ Sprint 11 - Academic & IELTS Expansion ] ──► [ COMPLETED ✅ ]
+  ├── EPIC-13: NAWL 1.2 Import & Enrichment (960 Academic Words) ✅
+  └── EPIC-13: IELTS Academic Path (32 Decks × 30 words)          ✅
 
 [ Sprint 12 - Business & Spoken Expansion ] ──► [ FUTURE 🔮 ]
   ├── EPIC-13: BSL Import & Enrichment (1.700 Business Service Words)
