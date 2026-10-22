@@ -496,17 +496,18 @@ _Mục tiêu: Giảm ma sát, tăng tỉ lệ quay lại ngày 1/ngày 7, và đ
     - [x] Frontend: `StudyTodayButton` nổi bật trên Dashboard, điều hướng vào `ReviewSessionPage` với chế độ auto-mix.
     - [x] Backend: `GET /api/v1/reviews/today-session` trả về danh sách ưu tiên (due → new theo dailyGoal).
 
-- [ ] **US-UX-02: Quiz tự chấm vào SRS (Auto-grade Quiz Results)**
+- [x] **US-UX-02: Quiz tự chấm vào SRS (Auto-grade Quiz Results)**
   - **AC:** Kết quả đúng/sai + thời gian trả lời của 4 quiz modes tự động quy ra SM-2 rating để cập nhật lịch ôn — không cần người dùng bấm Again/Hard/Good/Easy thủ công.
   - **Tasks:**
-    - [!] Kiểm tra: kết quả các quiz hiện tại đã cập nhật `UserCardProgress` chưa?
-    - [ ] Backend: Logic ánh xạ (quiz result + response time) → SM-2 rating trong `PracticeService`.
+    - [x] Kiểm tra: kết quả các quiz hiện tại đã cập nhật `UserCardProgress` chưa? (Đã đối soát và xác nhận thiếu tích hợp ở `submitQuiz` và `submitMatchingQuiz`).
+    - [x] Backend: Logic ánh xạ (quiz result + response time) → SM-2 rating trong `PracticeService`.
+    - [x] Frontend: Hiển thị thông báo tự động cập nhật SM-2 trên `QuizResultsView`.
 
-- [ ] **US-UX-03: Chống ngợp Backlog (Backlog Guard)**
+- [x] **US-UX-03: Chống ngợp Backlog (Backlog Guard)**
   - **AC:** Khi số thẻ tồn đọng vượt ngưỡng (ví dụ > 3× dailyGoal), tạm ngưng thêm thẻ mới; có banner "Quay lại sau vài ngày nghỉ" với chế độ giải backlog dần.
   - **Tasks:**
-    - [ ] Backend: Logic kiểm tra backlog trong `ReviewsService`; trả về `backlogWarning` trong summary.
-    - [ ] Frontend: Banner cảnh báo trên `ReviewSessionPage` và `DashboardPage`.
+    - [x] Backend: Logic kiểm tra backlog trong `ReviewsService`; trả về `backlogWarning` trong summary.
+    - [x] Frontend: Banner cảnh báo trên `ReviewSessionPage` và `DashboardPage`.
 
 - [ ] **US-GROW-01: Trang từ vựng công khai (SEO Word Pages)**
   - **AC:** Trang `/word/:word` sinh từ `GlobalDictionaryCache` với metadata SEO đầy đủ; nút "Thêm vào WordStreak" cho khách chưa đăng nhập.
@@ -597,19 +598,19 @@ _Mục tiêu: Xóa bỏ hoàn toàn rào cản "ứng dụng trống" bằng cá
     - [x] Frontend: Gắn nhãn bản quyền `SourceAttributionBadge` trên từng thẻ deck và chân trang thư viện.
     - [x] Legal: Rà soát câu chữ khước từ trách nhiệm và tuân thủ giấy phép CC BY-SA 4.0.
 
-- [ ] **US-LIB-09: Báo lỗi nội dung thẻ & Quản lý phiên bản (Card Feedback & Versioning)**
+- [x] **US-LIB-09: Báo lỗi nội dung thẻ & Quản lý phiên bản (Card Feedback & Versioning)**
   - **AC:** Nút "Báo lỗi thẻ" một chạm trên mọi màn hình hiển thị thẻ Official (Nghĩa chưa chuẩn, Lỗi chính tả, Âm thanh lỗi, Ví dụ thiếu tự nhiên). Admin có giao diện xem hàng đợi báo lỗi. Khi sửa nội dung thẻ, tăng `contentVersion` của `OfficialCard` để toàn bộ người dùng nhận bản cập nhật mới nhất ngay lập tức mà không làm mất ghi chú cá nhân (`personalNote`).
   - **Tasks:**
-    - [ ] Frontend: Component `ReportCardFeedbackModal` tích hợp vào Flashcard Review và Deck Detail.
-    - [ ] Backend: Endpoint `POST /api/v1/library/cards/:id/feedback`, model `OfficialCardFeedback`.
-    - [ ] Backend: Endpoint Admin cập nhật nội dung thẻ, tự động tăng `contentVersion` và thông báo toast nhẹ cho user khi thẻ được sửa.
+    - [x] Frontend: Component `ReportCardFeedbackModal` tích hợp vào Flashcard Review và Deck Detail.
+    - [x] Backend: Endpoint `POST /api/v1/library/cards/:id/feedback`, model `OfficialCardFeedback`.
+    - [x] Backend: Endpoint Admin cập nhật nội dung thẻ, tự động tăng `contentVersion` và thông báo toast nhẹ cho user khi thẻ được sửa.
 
-- [ ] **US-LIB-10: Hệ thống đo lường Thư viện (Library & Learning Analytics)**
+- [x] **US-LIB-10: Hệ thống đo lường Thư viện (Library & Learning Analytics)**
   - **AC:** Thu thập và tổng hợp các chỉ số quan trọng: Tỷ lệ thêm deck trong phiên đầu (Activation), Tỷ lệ hoàn thành 10 thẻ đầu (First Value), Day-1/Day-7 Retention theo từng Deck/Lộ trình, Tỷ lệ từ đánh dấu "Đã biết" ở bước Triage, và Tỷ lệ báo lỗi nội dung theo từng deck.
   - **Tasks:**
-    - [ ] Analytics: Định nghĩa taxonomy sự kiện (`library_deck_viewed`, `library_deck_enrolled`, `triage_completed`, `first_10_cards_mastered`, `card_feedback_submitted`).
-    - [ ] Backend: Aggregation service tổng hợp số liệu retention và hoàn thành theo từng mã `pathCode` và `slug`.
-    - [ ] Dashboard: Tích hợp widget theo dõi hiệu quả nội dung vào trang quản trị.
+    - [x] Analytics: Định nghĩa taxonomy sự kiện (`library_deck_viewed`, `library_deck_enrolled`, `triage_completed`, `first_10_cards_mastered`, `card_feedback_submitted`).
+    - [x] Backend: Aggregation service tổng hợp số liệu retention và hoàn thành theo từng mã `pathCode` và `slug`.
+    - [x] Dashboard: Tích hợp widget theo dõi hiệu quả nội dung vào trang quản trị.
 
 - [x] **US-LIB-11: Lối vào Người mất gốc & Mini-test thích ứng (Beginner Adaptive Entry)**
   - **AC:** Onboarding phân loại rõ 3 nhóm: "Mất gốc hoàn toàn", "Biết cơ bản", "Đã khá". Lựa chọn "Mất gốc hoàn toàn" đưa thẳng vào Chặng Khởi động (Foundation Stage) mà không bắt buộc làm bài kiểm tra để tránh gây nản lòng. Lựa chọn "Biết cơ bản" kích hoạt mini-test thích ứng bắt đầu từ các từ rất dễ trong NGSL Top 300 và dừng sớm nếu sai liên tiếp 3 câu. Thông điệp kết quả mang tính khích lệ, thực tế.
@@ -737,11 +738,11 @@ _Mục tiêu: Xóa bỏ hoàn toàn rào cản "ứng dụng trống" bằng cá
   ├── EPIC-13: US-LIB-14 (Audio-First Mode & Vietnamese Ending Sound Tips) ✅
   ├── EPIC-13: US-LIB-15 (Intra-session Learning Steps & 5 words/day default) ✅
   ├── EPIC-13: US-LIB-16 (Habit Milestones & 5-minute Express Session)       ✅
-  ├── EPIC-13: US-LIB-09 (Card Feedback Modal & Content Versioning)
-  ├── EPIC-13: US-LIB-10 (Library & Path Retention Analytics)
+  ├── EPIC-13: US-LIB-09 (Card Feedback Modal & Content Versioning) ✅
+  ├── EPIC-13: US-LIB-10 (Library & Path Retention Analytics) ✅
   ├── EPIC-09: US-ECO-08 (Micro-review in Popup)          ✅
-  ├── EPIC-12: US-UX-02 (Quiz auto-grade → SRS)
-  ├── EPIC-12: US-UX-03 (Backlog Guard)
+  ├── EPIC-12: US-UX-02 (Quiz auto-grade → SRS) ✅
+  ├── EPIC-12: US-UX-03 (Backlog Guard) ✅
   ├── EPIC-12: US-GROW-02 (Chrome Web Store Submission)
   ├── EPIC-12: US-GROW-03 (Product Analytics)
   └── [~] EPIC-09: US-ECO-09 (Web Push / Email — mobile)
