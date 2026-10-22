@@ -23,6 +23,10 @@ describe('LibraryController', () => {
       forkCard: jest.fn(),
       triageDeckCards: jest.fn(),
       getToeicPathProgress: jest.fn(),
+      submitCardFeedback: jest.fn(),
+      getFeedbacks: jest.fn(),
+      updateOfficialCard: jest.fn(),
+      getLibraryAnalytics: jest.fn(),
     };
 
     const module: TestingModule = await Test.createTestingModule({
@@ -171,6 +175,90 @@ describe('LibraryController', () => {
 
       expect(service.getToeicPathProgress).toHaveBeenCalledWith(mockUser.sub);
       expect(res).toEqual(mockResult);
+    });
+  });
+
+  describe('submitCardFeedback', () => {
+    it('calls service.submitCardFeedback with user, cardId, and dto', async () => {
+      const mockFeedback = {
+        id: 'fb-1',
+        cardId: 'card-1',
+        userId: mockUser.sub,
+        reason: 'TYPO' as const,
+        comment: 'Spelling error in example',
+        status: 'OPEN' as const,
+        createdAt: new Date(),
+      };
+      service.submitCardFeedback.mockResolvedValue(mockFeedback);
+
+      const dto = { reason: 'TYPO' as const, comment: 'Spelling error in example' };
+      const res = await controller.submitCardFeedback(mockUser, 'card-1', dto);
+
+      expect(service.submitCardFeedback).toHaveBeenCalledWith(
+        mockUser.sub,
+        'card-1',
+        dto,
+      );
+      expect(res).toEqual(mockFeedback);
+    });
+  });
+
+  describe('getFeedbacks', () => {
+    it('calls service.getFeedbacks with query', async () => {
+      const mockResult = {
+        feedbacks: [],
+        total: 0,
+        page: 1,
+        limit: 20,
+        totalPages: 0,
+      };
+      service.getFeedbacks.mockResolvedValue(mockResult);
+
+      const query = { status: 'OPEN' as const, page: 1, limit: 20 };
+      const res = await controller.getFeedbacks(query);
+
+      expect(service.getFeedbacks).toHaveBeenCalledWith(query);
+      expect(res).toEqual(mockResult);
+    });
+  });
+
+  describe('updateOfficialCard', () => {
+    it('calls service.updateOfficialCard with cardId and dto', async () => {
+      const mockUpdated = {
+        id: 'card-1',
+        headword: 'abandon',
+        pos: 'verb',
+        content: { word: 'abandon', pos: 'verb', meaning_vi: 'từ bỏ' },
+        status: 'PUBLISHED',
+        contentVersion: 2,
+        updatedAt: new Date(),
+      };
+      service.updateOfficialCard.mockResolvedValue(mockUpdated);
+
+      const dto = { pos: 'verb' };
+      const res = await controller.updateOfficialCard('card-1', dto);
+
+      expect(service.updateOfficialCard).toHaveBeenCalledWith('card-1', dto);
+      expect(res).toEqual(mockUpdated);
+    });
+  });
+
+  describe('getLibraryAnalytics', () => {
+    it('calls service.getLibraryAnalytics and returns summary', async () => {
+      const mockSummary = {
+        totalEnrolledUsers: 10,
+        activationRate: 80.0,
+        firstValueRate: 50.0,
+        avgTriageKnownRate: 20.0,
+        totalFeedbacks: 2,
+        deckStats: [],
+      };
+      service.getLibraryAnalytics.mockResolvedValue(mockSummary);
+
+      const res = await controller.getLibraryAnalytics();
+
+      expect(service.getLibraryAnalytics).toHaveBeenCalled();
+      expect(res).toEqual(mockSummary);
     });
   });
 });

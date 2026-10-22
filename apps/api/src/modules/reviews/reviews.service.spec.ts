@@ -373,6 +373,13 @@ describe('ReviewsService', () => {
         timezone: 'Asia/Ho_Chi_Minh',
         endOfDayAt: '2026-10-12T16:59:59.999Z',
         nextDueAt: '2026-10-12T15:30:00.000Z',
+        backlogWarning: {
+          isOverwhelmed: false,
+          dueCount: 12,
+          threshold: 30,
+          dailyGoal: 10,
+          suggestedBatchSize: 10,
+        },
       });
       expect(streakService.getStreak).toHaveBeenCalledWith(
         mockUserId,
@@ -750,6 +757,13 @@ describe('ReviewsService', () => {
         isGoalCompleted: true,
         isWelcomeBack: false,
         isExpress: false,
+        backlogWarning: {
+          isOverwhelmed: false,
+          dueCount: 0,
+          threshold: 30,
+          dailyGoal: 10,
+          suggestedBatchSize: 10,
+        },
       });
     });
 
@@ -842,6 +856,123 @@ describe('ReviewsService', () => {
         const session = await service.getTodaySession(mockUserId, { mode: 'express' });
 
         expect(session.summary.isExpress).toBe(true);
+      });
+    });
+
+    describe('Backlog Guard (US-UX-03)', () => {
+      it('TC-BG-001: pauses new cards and marks isOverwhelmed when dueCount > 3x dailyGoal', async () => {
+        prisma.user.findUnique.mockResolvedValue({ dailyGoal: 5 });
+        prisma.userStreak.findFirst.mockResolvedValue({
+          lastActiveDate: new Date(),
+        });
+
+        // 16 overdue cards (> 3 * 5 = 15 threshold)
+        const overdueProgress = Array.from({ length: 16 }, (_, i) => ({
+          id: `p-${i}`,
+          cardId: `c-${i}`,
+          status: 'LEARNING',
+          interval: 1,
+          repetitions: 1,
+          easeFactor: 2.5,
+          nextReviewDate: new Date(Date.now() - 24 * 3600 * 1000),
+          card: {
+            id: `c-${i}`,
+            word: `word-${i}`,
+            meaning: `nghĩa ${i}`,
+            deckId: 'deck-1',
+            deck: { id: 'deck-1', title: 'Deck 1', color: '#000' },
+          },
+        }));
+
+        const newProgress = [
+          {
+            id: 'p-new-1',
+            cardId: 'c-new-1',
+            status: 'NEW',
+            interval: 0,
+            repetitions: 0,
+            easeFactor: 2.5,
+            nextReviewDate: new Date(),
+            card: {
+              id: 'c-new-1',
+              word: 'new-word',
+              meaning: 'nghĩa mới',
+              deckId: 'deck-1',
+              deck: { id: 'deck-1', title: 'Deck 1', color: '#000' },
+            },
+          },
+        ];
+
+        prisma.userCardProgress.findMany.mockResolvedValue([
+          ...overdueProgress,
+          ...newProgress,
+        ]);
+        prisma.userOfficialCardProgress.findMany.mockResolvedValue([]);
+
+        const result = await service.getDueCards(mockUserId);
+
+        expect(result.meta.backlogWarning?.isOverwhelmed).toBe(true);
+        expect(result.meta.backlogWarning?.dueCount).toBe(16);
+        expect(result.meta.backlogWarning?.threshold).toBe(15);
+        expect(result.meta.newCount).toBe(0);
+        // Verify no NEW cards in returned queue
+        expect(result.data.some((c) => c.status === 'NEW')).toBe(false);
+      });
+
+      it('TC-BG-002: includes new cards normally when dueCount <= 3x dailyGoal', async () => {
+        prisma.user.findUnique.mockResolvedValue({ dailyGoal: 10 });
+        prisma.userStreak.findFirst.mockResolvedValue({
+          lastActiveDate: new Date(),
+        });
+
+        // 5 overdue cards (<= 3 * 10 = 30 threshold)
+        const overdueProgress = Array.from({ length: 5 }, (_, i) => ({
+          id: `p-${i}`,
+          cardId: `c-${i}`,
+          status: 'LEARNING',
+          interval: 1,
+          repetitions: 1,
+          easeFactor: 2.5,
+          nextReviewDate: new Date(Date.now() - 24 * 3600 * 1000),
+          card: {
+            id: `c-${i}`,
+            word: `word-${i}`,
+            meaning: `nghĩa ${i}`,
+            deckId: 'deck-1',
+            deck: { id: 'deck-1', title: 'Deck 1', color: '#000' },
+          },
+        }));
+
+        const newProgress = [
+          {
+            id: 'p-new-1',
+            cardId: 'c-new-1',
+            status: 'NEW',
+            interval: 0,
+            repetitions: 0,
+            easeFactor: 2.5,
+            nextReviewDate: new Date(),
+            card: {
+              id: 'c-new-1',
+              word: 'new-word',
+              meaning: 'nghĩa mới',
+              deckId: 'deck-1',
+              deck: { id: 'deck-1', title: 'Deck 1', color: '#000' },
+            },
+          },
+        ];
+
+        prisma.userCardProgress.findMany.mockResolvedValue([
+          ...overdueProgress,
+          ...newProgress,
+        ]);
+        prisma.userOfficialCardProgress.findMany.mockResolvedValue([]);
+
+        const result = await service.getDueCards(mockUserId);
+
+        expect(result.meta.backlogWarning?.isOverwhelmed).toBe(false);
+        expect(result.meta.newCount).toBe(1);
+        expect(result.data.some((c) => c.status === 'NEW')).toBe(true);
       });
     });
   });

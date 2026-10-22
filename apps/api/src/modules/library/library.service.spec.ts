@@ -7,7 +7,12 @@ import { PrismaService } from '../prisma/prisma.service';
 describe('LibraryService', () => {
   let service: LibraryService;
   let prisma: {
-    officialCard: { findUnique: jest.Mock };
+    officialCard: { findUnique: jest.Mock; update: jest.Mock };
+    officialCardFeedback: {
+      create: jest.Mock;
+      count: jest.Mock;
+      findMany: jest.Mock;
+    };
     officialDeck: {
       findMany: jest.Mock;
       count: jest.Mock;
@@ -31,7 +36,12 @@ describe('LibraryService', () => {
 
   beforeEach(async () => {
     prisma = {
-      officialCard: { findUnique: jest.fn() },
+      officialCard: { findUnique: jest.fn(), update: jest.fn() },
+      officialCardFeedback: {
+        create: jest.fn(),
+        count: jest.fn(),
+        findMany: jest.fn(),
+      },
       officialDeck: {
         findMany: jest.fn(),
         count: jest.fn(),
@@ -439,6 +449,171 @@ describe('LibraryService', () => {
       const t2 = result.levels.find((l) => l.level === 'T2');
       expect(t2?.completedDecks).toBe(0);
       expect(t2?.learnedCards).toBe(0);
+    });
+  });
+
+  describe('submitCardFeedback', () => {
+    it('throws NotFoundException if card does not exist', async () => {
+      prisma.officialCard.findUnique.mockResolvedValue(null);
+
+      await expect(
+        service.submitCardFeedback(mockUserId, 'invalid-card', {
+          reason: 'TYPO',
+        }),
+      ).rejects.toThrow(NotFoundException);
+    });
+
+    it('creates and returns feedback record when card exists', async () => {
+      prisma.officialCard.findUnique.mockResolvedValue({ id: mockOfficialCardId });
+      const now = new Date();
+      prisma.officialCardFeedback.create.mockResolvedValue({
+        id: 'fb-123',
+        userId: mockUserId,
+        cardId: mockOfficialCardId,
+        reason: 'WRONG_MEANING',
+        comment: 'Meaning should be different',
+        status: 'OPEN',
+        createdAt: now,
+      });
+
+      const res = await service.submitCardFeedback(mockUserId, mockOfficialCardId, {
+        reason: 'WRONG_MEANING',
+        comment: 'Meaning should be different',
+      });
+
+      expect(prisma.officialCardFeedback.create).toHaveBeenCalledWith({
+        data: {
+          userId: mockUserId,
+          cardId: mockOfficialCardId,
+          reason: 'WRONG_MEANING',
+          comment: 'Meaning should be different',
+          status: 'OPEN',
+        },
+      });
+      expect(res.id).toBe('fb-123');
+      expect(res.reason).toBe('WRONG_MEANING');
+      expect(res.status).toBe('OPEN');
+    });
+  });
+
+  describe('getFeedbacks', () => {
+    it('returns paginated feedbacks for admin queue', async () => {
+      prisma.officialCardFeedback.count.mockResolvedValue(1);
+      const now = new Date();
+      prisma.officialCardFeedback.findMany.mockResolvedValue([
+        {
+          id: 'fb-1',
+          cardId: mockOfficialCardId,
+          userId: mockUserId,
+          reason: 'TYPO',
+          comment: 'Fixed',
+          status: 'OPEN',
+          createdAt: now,
+          card: { headword: 'abandon' },
+          user: { email: 'user@example.com' },
+        },
+      ]);
+
+      const res = await service.getFeedbacks({ status: 'OPEN', page: 1, limit: 10 });
+
+      expect(res.total).toBe(1);
+      expect(res.feedbacks.length).toBe(1);
+      expect(res.feedbacks[0].cardHeadword).toBe('abandon');
+      expect(res.feedbacks[0].userEmail).toBe('user@example.com');
+    });
+  });
+
+  describe('updateOfficialCard', () => {
+    it('throws NotFoundException if card does not exist', async () => {
+      prisma.officialCard.findUnique.mockResolvedValue(null);
+
+      await expect(
+        service.updateOfficialCard('non-existent', { pos: 'verb' }),
+      ).rejects.toThrow(NotFoundException);
+    });
+
+    it('updates card and increments contentVersion by 1', async () => {
+      const now = new Date();
+      prisma.officialCard.findUnique.mockResolvedValue({
+        id: mockOfficialCardId,
+        headword: 'abandon',
+        pos: 'noun',
+        content: { word: 'abandon', pos: 'noun', meaning_vi: 'cũ' },
+        contentVersion: 1,
+      });
+
+      prisma.officialCard.update.mockResolvedValue({
+        id: mockOfficialCardId,
+        headword: 'abandon',
+        pos: 'verb',
+        content: { word: 'abandon', pos: 'verb', meaning_vi: 'từ bỏ mới' },
+        status: 'PUBLISHED',
+        contentVersion: 2,
+        updatedAt: now,
+      });
+
+      const res = await service.updateOfficialCard(mockOfficialCardId, {
+        pos: 'verb',
+        content: { pos: 'verb', meaning_vi: 'từ bỏ mới' },
+      });
+
+      expect(prisma.officialCard.update).toHaveBeenCalledWith({
+        where: { id: mockOfficialCardId },
+        data: {
+          pos: 'verb',
+          content: { word: 'abandon', pos: 'verb', meaning_vi: 'từ bỏ mới' },
+          contentVersion: { increment: 1 },
+        },
+      });
+      expect(res.contentVersion).toBe(2);
+      expect(res.pos).toBe('verb');
+    });
+  });
+
+  describe('getLibraryAnalytics', () => {
+    it('aggregates and computes correct library analytics metrics', async () => {
+      const now = new Date();
+      const past2Days = new Date(now.getTime() - 2 * 24 * 3600 * 1000);
+
+      prisma.officialDeck.findMany.mockResolvedValue([
+        {
+          id: 'deck-1',
+          slug: 'deck-office',
+          title: 'Office Operations',
+          pathCode: 'TSL',
+          level: 'T1',
+          cards: [{ cardId: 'c-1' }, { cardId: 'c-2' }],
+        },
+      ]);
+
+      prisma.userDeckEnrollment.findMany.mockResolvedValue([
+        {
+          userId: 'u-1',
+          deckId: 'deck-1',
+          startedAt: past2Days,
+          lastStudiedAt: now,
+        },
+      ]);
+
+      prisma.userOfficialCardProgress.findMany.mockResolvedValue([
+        { userId: 'u-1', cardId: 'c-1', status: 'MASTERED' },
+        { userId: 'u-1', cardId: 'c-2', status: 'KNOWN_SKIPPED' },
+      ]);
+
+      prisma.officialCardFeedback.findMany.mockResolvedValue([
+        { cardId: 'c-1' },
+      ]);
+
+      const res = await service.getLibraryAnalytics();
+
+      expect(res.totalEnrolledUsers).toBe(1);
+      expect(res.totalFeedbacks).toBe(1);
+      expect(res.deckStats.length).toBe(1);
+      expect(res.deckStats[0].deckId).toBe('deck-1');
+      expect(res.deckStats[0].totalEnrolledUsers).toBe(1);
+      expect(res.deckStats[0].feedbackCount).toBe(1);
+      expect(res.deckStats[0].day1RetentionRate).toBe(100);
+      expect(res.deckStats[0].avgTriageKnownRate).toBe(50);
     });
   });
 });

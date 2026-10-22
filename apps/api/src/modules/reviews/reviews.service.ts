@@ -16,6 +16,7 @@ import type {
   ReviewSummaryDto,
   OfficialCardContent,
   TodaySessionResponse,
+  BacklogWarningDto,
 } from '@wordstreak/shared-types';
 
 export const STREAK_RISK_MIN_DAYS = 3;
@@ -328,7 +329,22 @@ export class ReviewsService {
         new Date(b.nextReviewDate).getTime(),
     );
 
-    const resultQueue = [...overdue, ...dueToday, ...newCards].slice(0, limit);
+    const totalDueCount = overdue.length + dueToday.length;
+    const backlogThreshold = 3 * dailyGoal;
+    const isBacklogOverwhelmed = totalDueCount > backlogThreshold;
+
+    // Backlog Guard (US-UX-03): If backlog > 3x dailyGoal, pause adding new cards
+    const activeNewCards = isBacklogOverwhelmed ? [] : newCards;
+
+    const resultQueue = [...overdue, ...dueToday, ...activeNewCards].slice(0, limit);
+
+    const backlogWarning: BacklogWarningDto = {
+      isOverwhelmed: isBacklogOverwhelmed,
+      dueCount: totalDueCount,
+      threshold: backlogThreshold,
+      dailyGoal,
+      suggestedBatchSize: Math.min(10, dailyGoal),
+    };
 
     return {
       data: resultQueue,
@@ -336,17 +352,18 @@ export class ReviewsService {
         totalDue: resultQueue.length,
         overdueCount: overdue.length,
         dueTodayCount: dueToday.length,
-        newCount: newCards.length,
+        newCount: activeNewCards.length,
         isWelcomeBack,
         isExpress: mode === 'express',
+        backlogWarning,
       },
     };
   }
 
   /**
-   * Retrieves today's combined study session (US-UX-01 / US-LIB-16):
+   * Retrieves today's combined study session (US-UX-01 / US-LIB-16 / US-UX-03):
    * Prioritizes overdue/due cards, supplemented by new cards up to dailyGoal.
-   * Supports express mode (5-minute session, max 7 cards) and welcome back handling.
+   * Supports express mode (5-minute session, max 7 cards) and backlog guard.
    */
   async getTodaySession(
     userId: string,
@@ -378,6 +395,7 @@ export class ReviewsService {
         isGoalCompleted,
         isWelcomeBack: dueResult.meta.isWelcomeBack,
         isExpress: query.mode === 'express',
+        backlogWarning: dueResult.meta.backlogWarning,
       },
     };
   }
@@ -754,6 +772,16 @@ export class ReviewsService {
       msUntilEndOfDay > 0 &&
       msUntilEndOfDay <= STREAK_RISK_WINDOW_MS;
 
+    const backlogThreshold = 3 * dailyGoal;
+    const isBacklogOverwhelmed = dueCount > backlogThreshold;
+    const backlogWarning: BacklogWarningDto = {
+      isOverwhelmed: isBacklogOverwhelmed,
+      dueCount,
+      threshold: backlogThreshold,
+      dailyGoal,
+      suggestedBatchSize: Math.min(10, dailyGoal),
+    };
+
     return {
       dueCount,
       newAvailable,
@@ -767,6 +795,7 @@ export class ReviewsService {
       nextDueAt: nextDueRecord
         ? nextDueRecord.nextReviewDate.toISOString()
         : null,
+      backlogWarning,
     };
   }
 }

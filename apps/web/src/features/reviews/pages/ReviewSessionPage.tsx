@@ -5,6 +5,7 @@ import { FlashcardReviewCard } from "../components/FlashcardReviewCard";
 import { ReviewProgressBar } from "../components/ReviewProgressBar";
 import { ReviewEmptyState } from "../components/ReviewEmptyState";
 import { ReviewSummaryModal } from "../components/ReviewSummaryModal";
+import { BacklogGuardBanner } from "../components/BacklogGuardBanner";
 import { StreakCelebrationModal } from "../../dashboard/components/StreakCelebrationModal";
 import { FloatingXpToast } from "../../gamification/components/FloatingXpToast";
 import { LevelUpCelebrationModal } from "../../gamification/components/LevelUpCelebrationModal";
@@ -13,7 +14,7 @@ import { useStreak } from "../../dashboard/hooks/useStreak";
 import { OfflineSyncPill } from "../../../components/pwa/OfflineSyncPill";
 import { PwaInstallBanner } from "../../../components/pwa/PwaInstallBanner";
 import { Loader2, AlertCircle, RotateCcw, Headphones, Zap } from "lucide-react";
-import type { StreakActivityResponseDto } from "@wordstreak/shared-types";
+import type { StreakActivityResponseDto, BacklogWarningDto } from "@wordstreak/shared-types";
 
 export const ReviewSessionPage: React.FC = () => {
   const { id: deckId } = useParams<{ id?: string }>();
@@ -127,6 +128,24 @@ export const ReviewSessionPage: React.FC = () => {
 
       {/* Main Review Canvas */}
       <main className="flex-1 flex flex-col items-center justify-center my-auto w-full max-w-4xl mx-auto">
+        {Boolean((meta?.backlogWarning as BacklogWarningDto | undefined)?.isOverwhelmed) && (
+          <div className="w-full max-w-xl mx-auto mb-4">
+            <BacklogGuardBanner
+              backlogWarning={meta?.backlogWarning as BacklogWarningDto | undefined}
+              onStartExpressSession={
+                sessionMode !== "express"
+                  ? () => {
+                      navigate("/review", {
+                        state: { mode: "express" },
+                        replace: true,
+                      });
+                      restartSession();
+                    }
+                  : undefined
+              }
+            />
+          </div>
+        )}
         {Boolean(meta?.isWelcomeBack) && (
           <div
             data-testid="welcome-back-banner"

@@ -1,8 +1,9 @@
-import React, { useEffect, useCallback } from "react";
-import { BookOpen, Lightbulb, RotateCw, Mic, Headphones, Volume2 } from "lucide-react";
+import React, { useEffect, useCallback, useState } from "react";
+import { BookOpen, Lightbulb, RotateCw, Mic, Headphones, Volume2, Flag } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { TtsAudioPlayer } from "../../../components/pwa/TtsAudioPlayer";
 import { PhoneticWordBreakdown } from "../../../components/voice/PhoneticWordBreakdown";
+import { ReportCardFeedbackModal } from "../../library/components/ReportCardFeedbackModal";
 import type { DueCardItem, SrsRating } from "@wordstreak/shared-types";
 
 interface FlashcardReviewCardProps {
@@ -31,6 +32,7 @@ export const FlashcardReviewCard: React.FC<FlashcardReviewCardProps> = ({
     "common",
   ]);
   const isVi = (i18n.resolvedLanguage || i18n.language || "").startsWith("vi");
+  const [isReportModalOpen, setIsReportModalOpen] = useState(false);
 
   const speakWord = useCallback((text: string) => {
     if ("speechSynthesis" in window) {
@@ -272,6 +274,19 @@ export const FlashcardReviewCard: React.FC<FlashcardReviewCardProps> = ({
                       <Mic className="w-4 h-4" />
                     </button>
                   )}
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setIsReportModalOpen(true);
+                    }}
+                    className="p-1 rounded-full text-[#a3a3a3] hover:text-[#dc2626] hover:bg-[#fef2f2] transition-colors cursor-pointer"
+                    title="Báo lỗi nội dung thẻ"
+                    aria-label="Báo lỗi nội dung thẻ"
+                    data-testid="report-card-feedback-btn"
+                  >
+                    <Flag className="w-4 h-4" />
+                  </button>
                 </div>
                 {card.phonetic && (
                   <span className="text-sm text-[#737373] font-mono shrink-0 max-w-[40%] break-all text-right">
@@ -447,6 +462,13 @@ export const FlashcardReviewCard: React.FC<FlashcardReviewCardProps> = ({
           </button>
         )}
       </div>
+
+      <ReportCardFeedbackModal
+        isOpen={isReportModalOpen}
+        cardId={card.officialCardId || card.cardId || card.id}
+        cardHeadword={card.word}
+        onClose={() => setIsReportModalOpen(false)}
+      />
     </div>
   );
 };
