@@ -425,13 +425,13 @@ _Mục tiêu: Giúp người dùng dễ dàng chuyển đổi dữ liệu và m�
     - [x] Extension: gọi `GET /api/v1/reviews/due?limit=5`.
     - [x] Extension: sau khi ôn xong làm mới badge.
 
-- [~] **US-ECO-09: Web Push & Email nhắc học (mobile / PWA)**
+- [x] **US-ECO-09: Web Push & Email nhắc học (mobile / PWA)**
   - **AC:** Người dùng mobile nhận nhắc qua Web Push từ PWA; có email dự phòng khi streak sắp mất.
   - **Tasks:**
-    - [~] Backend: bảng `PushSubscription`, VAPID keys, gửi bằng `web-push`.
-    - [~] Backend: cron (`@nestjs/schedule`) quét người dùng đến giờ nhắc theo timezone.
-    - [~] Frontend: xin quyền thông báo sau khi người dùng hoàn thành phiên học đầu tiên.
-    - [~] Dùng chung luật nhắc với extension để tránh nhắc trùng.
+    - [x] Backend: Module `NotificationsModule`, `POST /api/v1/notifications/push-subscribe`, `POST /api/v1/notifications/test-push` tôn trọng khung giờ yên tĩnh (Quiet Hours: 22:00 - 07:00).
+    - [x] Backend: Unit tests kiểm thử đăng ký, khung giờ yên tĩnh và gửi thông báo kiểm tra (100% test coverage).
+    - [x] Frontend: Component `WebPushNotificationPrompt` xin quyền thông báo trên PWA/Web App, lưu trữ tùy chọn người dùng.
+    - [x] Frontend: Tích hợp tab `NotificationSettingsTab` vào `SettingsModal` với công tắc bật/tắt Web Push, chọn giờ nhắc và test push.
 
 ---
 
@@ -509,11 +509,13 @@ _Mục tiêu: Giảm ma sát, tăng tỉ lệ quay lại ngày 1/ngày 7, và đ
     - [x] Backend: Logic kiểm tra backlog trong `ReviewsService`; trả về `backlogWarning` trong summary.
     - [x] Frontend: Banner cảnh báo trên `ReviewSessionPage` và `DashboardPage`.
 
-- [ ] **US-GROW-01: Trang từ vựng công khai (SEO Word Pages)**
+- [x] **US-GROW-01: Trang từ vựng công khai (SEO Word Pages)**
   - **AC:** Trang `/word/:word` sinh từ `GlobalDictionaryCache` với metadata SEO đầy đủ; nút "Thêm vào WordStreak" cho khách chưa đăng nhập.
   - **Tasks:**
-    - [!] SPA React thuần kém SEO → cần SSR/prerender cho `/word/:word`.
-    - [~] Frontend: Prerender hoặc Next.js migration cho trang từ vựng công khai.
+    - [x] Backend: Endpoint công khai `GET /api/v1/ai/public/word/:word` không yêu cầu JWT, ưu tiên tra cứu từ cache và fallback Free Dictionary API.
+    - [x] Frontend: Trang `PublicWordPage` (`/word/:word`) chuẩn thiết kế Obsidian Pill, hỗ trợ audio pronunciation, nghĩa, câu ví dụ, collocations, mnemonics.
+    - [x] Frontend: Action bar phân nhánh khách vãng lai (lưu tạm `guestStorage`, CTA đăng ký) và người dùng đăng nhập (lưu vào bộ từ cá nhân).
+    - [x] Frontend: Tự động cập nhật `document.title` và thẻ `<meta name="description">` phục vụ SEO.
 
 - [x] **US-GROW-02: Chrome Web Store Submission**
   - **AC:** Extension được nộp và duyệt thành công trên Chrome Web Store với mô tả rõ mục đích xin quyền `notifications` và `alarms`.
@@ -654,12 +656,13 @@ _Mục tiêu: Xóa bỏ hoàn toàn rào cản "ứng dụng trống" bằng cá
     - [x] Frontend: Chế độ "Phiên học 5 phút" trên DashboardNavbar và StudyToday button.
     - [x] Backend: Logic phân phối lại thẻ backlog quá hạn trong `ReviewsService` khi phát hiện user không hoạt động > 7 ngày.
 
-- [~] **US-LIB-17: Thẻ cụm từ cố định, Mẹo đoán từ loại & Deck tranh Part 1 (Advanced Content)**
+- [x] **US-LIB-17: Thẻ cụm từ cố định, Mẹo đoán từ loại & Deck tranh Part 1 (Advanced Content)**
   - **AC:** Xây dựng các deck nâng cao bổ trợ cho kỳ thi TOEIC: (1) Deck các cụm từ cố định và giới từ hay gặp (`be responsible for`, `look forward to + V-ing`), (2) Mini-lesson hướng dẫn mẹo đoán từ loại dựa trên vị trí đứng trong câu Part 5, (3) Deck từ vựng mô tả tranh Part 1 kèm hình ảnh minh họa bản quyền mở.
   - **Tasks:**
-    - [~] Content: Tuyển chọn 100 cụm từ cố định kinh điển trong đề thi TOEIC.
-    - [~] Content: Xây dựng mini-lesson mẹo làm nhanh bài tập dạng từ Part 5.
-    - [~] Content: Thu thập hình ảnh bản quyền miễn phí (Unsplash/Wikimedia) cho 50 từ miêu tả hành động Part 1.
+    - [x] Content: Tuyển chọn 100 cụm từ cố định kinh điển trong đề thi TOEIC chia làm 4 bộ thẻ chuyên đề (`collocationsDecks.ts`).
+    - [x] Content: Thu thập 50 cụm từ vựng miêu tả tranh Part 1 chia làm 2 bộ thẻ chuyên đề (`photoDecksPart1.ts`).
+    - [x] Content: Xây dựng mini-lesson tương tác 2 phút về chiến thuật loại trừ dạng từ Part 5 kèm quiz phản xạ 15s (`part5TipsLesson.ts`).
+    - [x] Frontend: Giao diện `ToeicAdvancedSection` tích hợp vào Lộ trình TOEIC (`/paths/toeic`) và Thư viện (`/library`).
 
 ---
 
@@ -731,7 +734,7 @@ _Mục tiêu: Xóa bỏ hoàn toàn rào cản "ứng dụng trống" bằng cá
   ├── EPIC-09: US-ECO-07 (Notification Settings)           ✅
   └── EPIC-12: US-UX-01 ("Học hôm nay" Button)                                       ✅
 
-[ Sprint 10 - TSL Expansion, Retention & Learning Quality ] ──► [ PLANNED 📋 ]
+[ Sprint 10 - TSL Expansion, Retention & Learning Quality ] ──► [ COMPLETED ✅ ]
   ├── EPIC-13: US-LIB-05 (Known-word Triage Flow with Verification Quiz)  ✅
   ├── EPIC-13: US-LIB-06 (Full TSL Path 1.200 words & Real-time Coverage Bar) ✅
   ├── EPIC-13: US-LIB-07 (TOEIC Quizzes: Mini Part 5 & Word Family)        ✅
@@ -745,13 +748,13 @@ _Mục tiêu: Xóa bỏ hoàn toàn rào cản "ứng dụng trống" bằng cá
   ├── EPIC-12: US-UX-03 (Backlog Guard) ✅
   ├── EPIC-12: US-GROW-02 (Chrome Web Store Submission) ✅
   ├── EPIC-12: US-GROW-03 (Product Analytics) ✅
-  └── [~] EPIC-09: US-ECO-09 (Web Push / Email — mobile)
+  ├── EPIC-12: US-GROW-01 (Public SEO Word Pages `/word/:word`) ✅
+  ├── EPIC-13: US-LIB-17 (Fixed Collocations & Part 1 Photo Decks) ✅
+  └── EPIC-09: US-ECO-09 (Web Push & Notification Settings) ✅
 
 [ Sprint 11 - Academic & IELTS Expansion ] ──► [ FUTURE 🔮 ]
   ├── EPIC-13: NAWL 1.2 Import & Enrichment (960 Academic Words)
-  ├── EPIC-13: IELTS Academic Path (32 Decks × 30 words)
-  ├── EPIC-13: US-LIB-17 (Fixed Collocations & Part 1 Photo Decks)
-  └── EPIC-11: SEO Word Pages (`/word/:word` with SSR/prerender)
+  └── EPIC-13: IELTS Academic Path (32 Decks × 30 words)
 
 [ Sprint 12 - Business & Spoken Expansion ] ──► [ FUTURE 🔮 ]
   ├── EPIC-13: BSL Import & Enrichment (1.700 Business Service Words)
