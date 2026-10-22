@@ -1,0 +1,556 @@
+export interface AcademicWordCard {
+  word: string;
+  pos: string;
+  ipa: string;
+  meaningVi: string;
+  defEn: string;
+  exampleEn: string;
+  exampleVi: string;
+  collocations: string[];
+  mnemonic?: string;
+  bandTarget: "5.5-6.5" | "6.5-7.5" | "7.5+";
+}
+
+export interface AcademicDeck {
+  id: string;
+  slug: string;
+  title: string;
+  titleVi: string;
+  topic: string;
+  bandTarget: "5.5-6.5" | "6.5-7.5" | "7.5+";
+  description: string;
+  cardsCount: number;
+  cards: AcademicWordCard[];
+}
+
+export const NAWL_ACADEMIC_DECKS: AcademicDeck[] = [
+  {
+    id: "nawl-deck-01",
+    slug: "nawl-research-evidence",
+    title: "Research, Evidence & Empirical Data",
+    titleVi: "Nghiên cứu, Luận cứ & Dữ liệu Thực nghiệm",
+    topic: "Research",
+    bandTarget: "5.5-6.5",
+    description: "Các thuật ngữ cốt lõi trình bày phương pháp nghiên cứu và luận cứ khoa học trong IELTS Writing Task 2 & Reading.",
+    cardsCount: 10,
+    cards: [
+      {
+        word: "abstract",
+        pos: "noun",
+        ipa: "/ˈæb.strækt/",
+        meaningVi: "Bản tóm tắt bài báo nghiên cứu khoa học",
+        defEn: "a concise summary of a research paper or academic article",
+        exampleEn: "The paper begins with an abstract outlining the key empirical findings.",
+        exampleVi: "Bài báo bắt đầu bằng một bản tóm tắt khái quát các phát hiện thực nghiệm cốt lõi.",
+        collocations: ["research abstract", "concise abstract", "abstract submission"],
+        mnemonic: "Abstract: rút gọn lại thành những nét cốt yếu nhất",
+        bandTarget: "5.5-6.5",
+      },
+      {
+        word: "acknowledge",
+        pos: "verb",
+        ipa: "/əkˈnɑː.lɪdʒ/",
+        meaningVi: "Thừa nhận, ghi nhận công trình học thuật",
+        defEn: "to accept or admit the existence or truth of something",
+        exampleEn: "Researchers acknowledge that sample size was a major constraint.",
+        exampleVi: "Các nhà nghiên cứu thừa nhận rằng kích thước mẫu là một rào cản lớn.",
+        collocations: ["acknowledge limitations", "widely acknowledged", "acknowledge contributions"],
+        mnemonic: "Ac-knowledge: bổ sung kiến thức và chính thức ghi nhận nó",
+        bandTarget: "5.5-6.5",
+      },
+      {
+        word: "aggregate",
+        pos: "adj",
+        ipa: "/ˈæɡ.rɪ.ɡət/",
+        meaningVi: "Tổng hợp, gộp chung từ nhiều đơn vị nhỏ",
+        defEn: "formed by combining several separate elements or units",
+        exampleEn: "The survey presents aggregate responses from over ten thousand students.",
+        exampleVi: "Khảo sát trình bày các câu trả lời tổng hợp từ hơn mười nghìn sinh viên.",
+        collocations: ["aggregate data", "in the aggregate", "aggregate score"],
+        mnemonic: "Aggregate: gom lại (greg = bầy đàn) thành một tập hợp lớn",
+        bandTarget: "5.5-6.5",
+      },
+      {
+        word: "cite",
+        pos: "verb",
+        ipa: "/saɪt/",
+        meaningVi: "Trích dẫn tài liệu tham khảo",
+        defEn: "to quote or refer to a scholarly work as evidence",
+        exampleEn: "Candidates must cite primary academic sources to support their claims.",
+        exampleVi: "Thí sinh phải trích dẫn các nguồn học thuật sơ cấp để bảo vệ luận điểm của mình.",
+        collocations: ["cite evidence", "frequently cited", "cite a source"],
+        mnemonic: "Cite: nhìn thấy (sight) tài liệu hay là phải dẫn nguồn ngay",
+        bandTarget: "5.5-6.5",
+      },
+      {
+        word: "empirical",
+        pos: "adj",
+        ipa: "/ɪmˈpɪr.ɪ.kəl/",
+        meaningVi: "Mang tính thực nghiệm, dựa trên quan sát thực tế",
+        defEn: "based on testing, observation, or experience rather than theory",
+        exampleEn: "There is robust empirical evidence indicating that early reading accelerates vocabulary acquisition.",
+        exampleVi: "Có bằng chứng thực nghiệm vững chắc chỉ ra rằng việc đọc sớm đẩy nhanh khả năng tiếp thu từ vựng.",
+        collocations: ["empirical evidence", "empirical study", "empirical research"],
+        mnemonic: "Em-pir-ical: dựa trên trải nghiệm thực tế (experience) chứ không đoán mò",
+        bandTarget: "6.5-7.5",
+      },
+      {
+        word: "framework",
+        pos: "noun",
+        ipa: "/ˈfreɪm.wɜːrk/",
+        meaningVi: "Khung lý thuyết, cơ cấu phân tích",
+        defEn: "a supporting structure or system of ideas used in an inquiry",
+        exampleEn: "The dissertation establishes a theoretical framework for analyzing bilingual cognition.",
+        exampleVi: "Luận án thiết lập một khung lý thuyết để phân tích nhận thức song ngữ.",
+        collocations: ["conceptual framework", "theoretical framework", "within the framework of"],
+        mnemonic: "Frame-work: khung đỡ nền móng cho toàn bộ bài luận",
+        bandTarget: "5.5-6.5",
+      },
+      {
+        word: "hypothesis",
+        pos: "noun",
+        ipa: "/haɪˈpɑː.θə.sɪs/",
+        meaningVi: "Giả thuyết khoa học cần được kiểm chứng",
+        defEn: "a proposed explanation made on the basis of limited evidence as a starting point",
+        exampleEn: "The lab experiments successfully confirmed the initial research hypothesis.",
+        exampleVi: "Các thí nghiệm trong phòng lab đã xác nhận thành công giả thuyết nghiên cứu ban đầu.",
+        collocations: ["test a hypothesis", "formulate a hypothesis", "working hypothesis"],
+        mnemonic: "Hypo-thesis: luận đề ban đầu đặt ra trước khi kiểm chứng",
+        bandTarget: "5.5-6.5",
+      },
+      {
+        word: "synthesize",
+        pos: "verb",
+        ipa: "/ˈsɪn.θə.saɪz/",
+        meaningVi: "Tổng hợp thông tin từ nhiều nguồn để tạo góc nhìn mới",
+        defEn: "to combine distinct elements into a coherent whole",
+        exampleEn: "The literature review synthesizes findings from forty previous clinical trials.",
+        exampleVi: "Phần tổng quan tài liệu tổng hợp những phát hiện từ bốn mươi cuộc thử nghiệm lâm sàng trước đó.",
+        collocations: ["synthesize information", "synthesize findings", "ability to synthesize"],
+        mnemonic: "Syn (cùng nhau) + thesize (đặt để) = gộp các ý lại với nhau",
+        bandTarget: "6.5-7.5",
+      },
+      {
+        word: "extrapolate",
+        pos: "verb",
+        ipa: "/ɪkˈstræp.ə.leɪt/",
+        meaningVi: "Ngoại suy, suy đoán xu hướng từ dữ liệu đã biết",
+        defEn: "to infer or estimate by extending known data or trends",
+        exampleEn: "It is hazardous to extrapolate global trends solely from one regional sample.",
+        exampleVi: "Rất rủi ro khi ngoại suy xu hướng toàn cầu chỉ từ một mẫu điều tra khu vực.",
+        collocations: ["extrapolate from", "extrapolate data", "extrapolate trends"],
+        mnemonic: "Extra (bên ngoài) + polate: suy đoán vượt ra ngoài phạm vi dữ liệu có sẵn",
+        bandTarget: "7.5+",
+      },
+      {
+        word: "validate",
+        pos: "verb",
+        ipa: "/ˈvæl.ɪ.deɪt/",
+        meaningVi: "Xác thực tính hợp lệ và độ tin cậy",
+        defEn: "to check or prove the accuracy and validity of something",
+        exampleEn: "Subsequent international replications have served to validate the original findings.",
+        exampleVi: "Các cuộc tái lặp nghiên cứu quốc tế sau đó đã giúp xác thực những phát hiện ban đầu.",
+        collocations: ["validate findings", "validate a model", "validate hypothesis"],
+        mnemonic: "Valid-ate: làm cho nó trở nên có giá trị pháp lý và khoa học",
+        bandTarget: "5.5-6.5",
+      },
+    ],
+  },
+  {
+    id: "nawl-deck-02",
+    slug: "nawl-argumentation-critical-thinking",
+    title: "Argumentation & Critical Thinking",
+    titleVi: "Biện luận & Tư duy Phản biện Học thuật",
+    topic: "Logic",
+    bandTarget: "6.5-7.5",
+    description: "Bộ từ vựng then chốt dùng để xây dựng luận cứ sắc bén, phản biện đối lập trong IELTS Task 2.",
+    cardsCount: 8,
+    cards: [
+      {
+        word: "coherent",
+        pos: "adj",
+        ipa: "/koʊˈhɪr.ənt/",
+        meaningVi: "Mạch lạc, có tính liên kết chặt chẽ",
+        defEn: "logical, consistent, and clear in thought or expression",
+        exampleEn: "An effective essay must construct a coherent line of reasoning from introduction to conclusion.",
+        exampleVi: "Một bài luận hiệu quả phải xây dựng được một mạch lập luận mạch lạc từ mở bài đến kết luận.",
+        collocations: ["coherent argument", "coherent structure", "remain coherent"],
+        mnemonic: "Co-here: các ý dính chặt vào nhau, không bị rời rạc",
+        bandTarget: "6.5-7.5",
+      },
+      {
+        word: "contradict",
+        pos: "verb",
+        ipa: "/ˌkɑːn.trəˈdɪkt/",
+        meaningVi: "Mâu thuẫn, trái ngược với nhận định trước đó",
+        defEn: "to deny the truth of a statement by asserting the opposite",
+        exampleEn: "The newly uncovered artifacts directly contradict earlier anthropological theories.",
+        exampleVi: "Các hiện vật mới phát hiện mâu thuẫn trực tiếp với các lý thuyết nhân chủng học trước đây.",
+        collocations: ["contradict evidence", "directly contradict", "seem to contradict"],
+        mnemonic: "Contra (chống lại) + dict (nói) = nói ngược lại, mâu thuẫn",
+        bandTarget: "5.5-6.5",
+      },
+      {
+        word: "deduce",
+        pos: "verb",
+        ipa: "/dɪˈduːs/",
+        meaningVi: "Suy luận logic từ các nguyên lý có sẵn",
+        defEn: "to arrive at a fact or conclusion by logical reasoning",
+        exampleEn: "From the experimental decay rate, physicists can deduce the half-life of the isotope.",
+        exampleVi: "Từ tốc độ phân rã thực nghiệm, các nhà vật lý có thể suy luận chu kỳ bán rã của đồng vị.",
+        collocations: ["deduce from", "logically deduce", "can be deduced"],
+        mnemonic: "De-duce: dẫn dắt từ tiền đề lớn xuống kết luận nhỏ",
+        bandTarget: "6.5-7.5",
+      },
+      {
+        word: "plausible",
+        pos: "adj",
+        ipa: "/ˈplɔː.zə.bəl/",
+        meaningVi: "Hợp lý, đáng tin cậy, có thể xảy ra",
+        defEn: "seeming reasonable or probable",
+        exampleEn: "The economist proposed a plausible explanation for the sudden currency devaluation.",
+        exampleVi: "Nhà kinh tế học đã đề xuất một lời giải thích hợp lý cho sự mất giá đột ngột của đồng tiền.",
+        collocations: ["plausible explanation", "entirely plausible", "plausible scenario"],
+        mnemonic: "Plausible: nghe êm tai và hợp lý, xứng đáng nhận tràng pháo tay (applause)",
+        bandTarget: "6.5-7.5",
+      },
+      {
+        word: "premise",
+        pos: "noun",
+        ipa: "/ˈprem.ɪs/",
+        meaningVi: "Tiền đề, cơ sở căn bản của một lập luận",
+        defEn: "a previous statement or proposition from which another is inferred",
+        exampleEn: "The entire argument rests on the flawed premise that human needs are purely material.",
+        exampleVi: "Toàn bộ lập luận dựa trên tiền đề sai lầm rằng nhu cầu con người hoàn toàn thuần túy là vật chất.",
+        collocations: ["underlying premise", "basic premise", "false premise"],
+        mnemonic: "Premise: điều đặt trước (pre) làm nền tảng",
+        bandTarget: "6.5-7.5",
+      },
+      {
+        word: "refute",
+        pos: "verb",
+        ipa: "/rɪˈfjuːt/",
+        meaningVi: "Bác bỏ luận điểm bằng bằng chứng xác thực",
+        defEn: "to prove a statement or theory to be wrong or false",
+        exampleEn: "Subsequent double-blind trials convincingly refuted the miracle cure claims.",
+        exampleVi: "Các thử nghiệm mù đôi tiếp theo đã bác bỏ một cách thuyết phục các tuyên bố về phương thuốc thần kỳ.",
+        collocations: ["refute claims", "refute an argument", "conclusively refute"],
+        mnemonic: "Re-fute: đánh bật lại lập luận sai trái",
+        bandTarget: "6.5-7.5",
+      },
+      {
+        word: "substantiate",
+        pos: "verb",
+        ipa: "/səbˈstæn.ʃi.eɪt/",
+        meaningVi: "Chứng minh, củng cố bằng chứng cứ vững chắc",
+        defEn: "to provide evidence to support or prove the truth of",
+        exampleEn: "The author failed to substantiate her bold assertions with peer-reviewed data.",
+        exampleVi: "Tác giả đã không thể chứng minh các khẳng định táo bạo của mình bằng dữ liệu được bình duyệt.",
+        collocations: ["substantiate claims", "substantiate allegations", "substantiated by evidence"],
+        mnemonic: "Substance: thêm chất (chứng cứ nặng ký) vào lập luận",
+        bandTarget: "7.5+",
+      },
+      {
+        word: "undermine",
+        pos: "verb",
+        ipa: "/ˌʌn.dərˈmaɪn/",
+        meaningVi: "Làm suy yếu dần nền tảng hoặc độ tin cậy",
+        defEn: "to lessen the effectiveness, power, or credibility gradually",
+        exampleEn: "Methodological inconsistencies severely undermine the credibility of the survey results.",
+        exampleVi: "Những mâu thuẫn về phương pháp luận làm suy yếu nghiêm trọng độ tin cậy của kết quả khảo sát.",
+        collocations: ["undermine credibility", "undermine confidence", "undermine efforts"],
+        mnemonic: "Under-mine: đào hầm ngầm bên dưới làm sụp đổ tòa nhà",
+        bandTarget: "6.5-7.5",
+      },
+    ],
+  },
+  {
+    id: "nawl-deck-03",
+    slug: "nawl-environment-sustainability",
+    title: "Environment, Climate & Ecological Balance",
+    titleVi: "Môi trường, Khí hậu & Cân bằng Sinh thái",
+    topic: "Environment",
+    bandTarget: "5.5-6.5",
+    description: "Bộ từ vựng chủ đề môi trường thường xuyên xuất hiện nhất trong các đề thi IELTS Writing Task 2 gần đây.",
+    cardsCount: 8,
+    cards: [
+      {
+        word: "biodiversity",
+        pos: "noun",
+        ipa: "/ˌbaɪ.oʊ.daɪˈvɜːr.sə.t̬i/",
+        meaningVi: "Đa dạng sinh học",
+        defEn: "the variety of plant and animal life in a particular habitat",
+        exampleEn: "Deforestation in the Amazon basin poses an existential threat to global biodiversity.",
+        exampleVi: "Nạn phá rừng ở lưu vực sông Amazon đe dọa sự sống còn đối với đa dạng sinh học toàn cầu.",
+        collocations: ["preserve biodiversity", "loss of biodiversity", "rich in biodiversity"],
+        mnemonic: "Bio (sinh học) + diversity (đa dạng) = phong phú loài",
+        bandTarget: "5.5-6.5",
+      },
+      {
+        word: "depletion",
+        pos: "noun",
+        ipa: "/dɪˈpliː.ʃən/",
+        meaningVi: "Sự cạn kiệt nguồn tài nguyên thiên nhiên",
+        defEn: "reduction in the number or quantity of something",
+        exampleEn: "The rapid depletion of groundwater reserves threatens agricultural sustainability in the region.",
+        exampleVi: "Sự cạn kiệt nhanh chóng trữ lượng nước ngầm đe dọa tính bền vững nông nghiệp trong vùng.",
+        collocations: ["ozone depletion", "resource depletion", "depletion of reserves"],
+        mnemonic: "De-plete: làm vơi cạn túi tài nguyên",
+        bandTarget: "5.5-6.5",
+      },
+      {
+        word: "finite",
+        pos: "adj",
+        ipa: "/ˈfaɪ.naɪt/",
+        meaningVi: "Hữu hạn, có giới hạn số lượng",
+        defEn: "having limits or bounds; not infinite",
+        exampleEn: "Fossil fuels are a strictly finite resource that civilization must eventually transition away from.",
+        exampleVi: "Nhiên liệu hóa thạch là nguồn tài nguyên hoàn toàn hữu hạn mà văn minh nhân loại cuối cùng phải chuyển đổi từ bỏ.",
+        collocations: ["finite resources", "finite lifespan", "finite capacity"],
+        mnemonic: "Finite: trái ngược với infinite (vô hạn)",
+        bandTarget: "5.5-6.5",
+      },
+      {
+        word: "mitigate",
+        pos: "verb",
+        ipa: "/ˈmɪt̬.ə.ɡeɪt/",
+        meaningVi: "Giảm nhẹ tác hại hoặc tính nghiêm trọng",
+        defEn: "to make something bad less severe, serious, or painful",
+        exampleEn: "Governments must invest aggressively in seawalls to mitigate coastal flood risks.",
+        exampleVi: "Các chính phủ phải đầu tư mạnh mẽ vào đê biển để giảm nhẹ rủi ro ngập lụt vùng ven bờ.",
+        collocations: ["mitigate risks", "mitigate climate change", "mitigate the impact"],
+        mnemonic: "Miti-gate: dựng cổng ngăn bớt hiểm họa",
+        bandTarget: "6.5-7.5",
+      },
+      {
+        word: "emission",
+        pos: "noun",
+        ipa: "/iˈmɪʃ.ən/",
+        meaningVi: "Khí thải, sự phát thải ra khí quyển",
+        defEn: "the production and discharge of gas or radiation",
+        exampleEn: "Strict carbon taxes are designed to curtail greenhouse gas emissions from heavy industries.",
+        exampleVi: "Thuế carbon nghiêm ngặt được thiết kế nhằm cắt giảm phát thải khí nhà kính từ các ngành công nghiệp nặng.",
+        collocations: ["carbon emissions", "zero-emission", "curtail emissions"],
+        mnemonic: "E-mission: thải ra ngoài môi trường",
+        bandTarget: "5.5-6.5",
+      },
+      {
+        word: "contamination",
+        pos: "noun",
+        ipa: "/kənˌtæm.əˈneɪ.ʃən/",
+        meaningVi: "Sự ô nhiễm, nhiễm độc nguồn nước/đất",
+        defEn: "the action or state of making something impure by polluting or poisoning",
+        exampleEn: "Industrial runoff led to heavy metal contamination of the surrounding farmland.",
+        exampleVi: "Nước thải công nghiệp đã dẫn đến sự nhiễm độc kim loại nặng ở các vùng đất nông nghiệp xung quanh.",
+        collocations: ["water contamination", "soil contamination", "risk of contamination"],
+        mnemonic: "Con-taminate: chất độc bám vào làm mất đi sự tinh khiết",
+        bandTarget: "5.5-6.5",
+      },
+      {
+        word: "sustainable",
+        pos: "adj",
+        ipa: "/səˈsteɪ.nə.bəl/",
+        meaningVi: "Bền vững, không làm tổn hại tương lai",
+        defEn: "able to be maintained at a certain rate without depleting natural resources",
+        exampleEn: "Urban planners must prioritize sustainable transportation models such as electric bus networks.",
+        exampleVi: "Các nhà quy hoạch đô thị phải ưu tiên các mô hình giao thông bền vững như mạng lưới xe buýt điện.",
+        collocations: ["sustainable development", "sustainable practices", "environmentally sustainable"],
+        mnemonic: "Sustain-able: có thể duy trì lâu dài",
+        bandTarget: "5.5-6.5",
+      },
+      {
+        word: "ecosystem",
+        pos: "noun",
+        ipa: "/ˈiː.koʊˌsɪs.təm/",
+        meaningVi: "Hệ sinh thái",
+        defEn: "a biological community of interacting organisms and their physical environment",
+        exampleEn: "Coral reefs represent one of the most fragile and biodiverse ecosystems on the planet.",
+        exampleVi: "Các rạn san hô là một trong những hệ sinh thái mỏng manh và đa dạng sinh học nhất trên hành tinh.",
+        collocations: ["marine ecosystem", "fragile ecosystem", "ecosystem balance"],
+        mnemonic: "Eco (môi trường) + system (hệ thống) = hệ sinh thái",
+        bandTarget: "5.5-6.5",
+      },
+    ],
+  },
+  {
+    id: "nawl-deck-04",
+    slug: "nawl-society-institutions",
+    title: "Society, Governance & Institutional Policy",
+    titleVi: "Xã hội, Quản trị & Thể chế Chính sách",
+    topic: "Society",
+    bandTarget: "7.5+",
+    description: "Các thuật ngữ phân tích chính sách xã hội và thể chế ở trình độ học thuật cao cấp.",
+    cardsCount: 8,
+    cards: [
+      {
+        word: "civic",
+        pos: "adj",
+        ipa: "/ˈsɪv.ɪk/",
+        meaningVi: "Thuộc về công dân, trách nhiệm xã hội",
+        defEn: "relating to a city, town, or the people who live in it",
+        exampleEn: "Schools have an imperative duty to foster civic engagement and ethical literacy among youth.",
+        exampleVi: "Nhà trường có nghĩa vụ cấp bách là thúc đẩy sự gắn kết công dân và hiểu biết đạo đức ở giới trẻ.",
+        collocations: ["civic duty", "civic engagement", "civic responsibility"],
+        mnemonic: "Civilian/Civic: những việc liên quan đến người dân trong xã hội",
+        bandTarget: "6.5-7.5",
+      },
+      {
+        word: "demography",
+        pos: "noun",
+        ipa: "/dɪˈmɑː.ɡrə.fi/",
+        meaningVi: "Nhân khẩu học, cơ cấu dân số",
+        defEn: "the study of statistics such as births, deaths, income, or incidence of disease",
+        exampleEn: "Shifting demography in developed economies is creating unprecedented pension liabilities.",
+        exampleVi: "Cơ cấu nhân khẩu học dịch chuyển ở các nền kinh tế phát triển đang tạo ra gánh nặng lương hưu chưa từng có.",
+        collocations: ["changing demography", "study of demography", "demographic shift"],
+        mnemonic: "Demo (dân số) + graphy (ghi chép, nghiên cứu)",
+        bandTarget: "6.5-7.5",
+      },
+      {
+        word: "disenfranchise",
+        pos: "verb",
+        ipa: "/ˌdɪs.ɪnˈfræn.tʃaɪz/",
+        meaningVi: "Tước bỏ quyền công dân hoặc tiếng nói trong xã hội",
+        defEn: "to deprive someone of a right or privilege, especially the right to vote",
+        exampleEn: "Strict ID policies run the distinct risk of disenfranchising marginalized rural voters.",
+        exampleVi: "Các chính sách căn cước nghiêm ngặt có nguy cơ rõ ràng là tước đi quyền bỏ phiếu của các cử tri nông thôn yếu thế.",
+        collocations: ["disenfranchised youth", "disenfranchise voters", "feel disenfranchised"],
+        mnemonic: "Dis (mất) + franchise (quyền tự do/bỏ phiếu)",
+        bandTarget: "7.5+",
+      },
+      {
+        word: "infrastructure",
+        pos: "noun",
+        ipa: "/ˈɪn.frəˌstrʌk.tʃər/",
+        meaningVi: "Cơ sở hạ tầng cơ bản phục vụ xã hội",
+        defEn: "the basic physical and organizational structures needed for the operation of a society",
+        exampleEn: "Public investment in digital infrastructure is vital for regional economic competitiveness.",
+        exampleVi: "Đầu tư công vào cơ sở hạ tầng số là thiết yếu cho năng lực cạnh tranh kinh tế khu vực.",
+        collocations: ["transport infrastructure", "critical infrastructure", "upgrade infrastructure"],
+        mnemonic: "Infra (bên dưới) + structure (cấu trúc) = hạ tầng nền",
+        bandTarget: "5.5-6.5",
+      },
+      {
+        word: "legislation",
+        pos: "noun",
+        ipa: "/ˌledʒ.əˈsleɪ.ʃən/",
+        meaningVi: "Luật pháp, đạo luật được ban hành",
+        defEn: "laws, considered collectively, enacted by a legislative body",
+        exampleEn: "Parliament introduced landmark legislation to regulate artificial intelligence deployment.",
+        exampleVi: "Nghị viện đã ban hành đạo luật mang tính bước ngoặt nhằm kiểm soát việc triển khai trí tuệ nhân tạo.",
+        collocations: ["enact legislation", "pending legislation", "protective legislation"],
+        mnemonic: "Legal + lation: hệ thống luật pháp chính thức",
+        bandTarget: "5.5-6.5",
+      },
+      {
+        word: "municipal",
+        pos: "adj",
+        ipa: "/mjuːˈnɪs.ə.pəl/",
+        meaningVi: "Thuộc về chính quyền thành phố, đô thị",
+        defEn: "relating to a city or town or its governing body",
+        exampleEn: "The municipal government launched a subsidy program for rooftop solar installations.",
+        exampleVi: "Chính quyền thành phố đã triển khai chương trình trợ cấp lắp đặt điện mặt trời áp mái.",
+        collocations: ["municipal authorities", "municipal waste", "municipal budget"],
+        mnemonic: "Municipality: thành phố, thị xã",
+        bandTarget: "6.5-7.5",
+      },
+      {
+        word: "stratification",
+        pos: "noun",
+        ipa: "/ˌstræt̬.ə.fəˈkeɪ.ʃən/",
+        meaningVi: "Sự phân tầng giai cấp xã hội",
+        defEn: "the arrangement or classification of something into different groups or layers",
+        exampleEn: "Sociologists examine how educational inequality exacerbates socio-economic stratification.",
+        exampleVi: "Các nhà xã hội học nghiên cứu cách thức bất bình đẳng giáo dục làm trầm trọng thêm sự phân tầng kinh tế - xã hội.",
+        collocations: ["social stratification", "economic stratification", "class stratification"],
+        mnemonic: "Strata (các tầng, lớp) + fication = phân tầng",
+        bandTarget: "7.5+",
+      },
+      {
+        word: "bureaucracy",
+        pos: "noun",
+        ipa: "/bjʊˈrɑː.krə.si/",
+        meaningVi: "Bộ máy quan liêu, thủ tục hành chính rườm rà",
+        defEn: "a system of government or management with complicated rules and procedures",
+        exampleEn: "Excessive bureaucracy in grant approvals hampers swift scientific innovation.",
+        exampleVi: "Bộ máy quan liêu quá mức trong việc xét duyệt tài trợ cản trở sự đổi mới khoa học nhanh chóng.",
+        collocations: ["excessive bureaucracy", "government bureaucracy", "cut through bureaucracy"],
+        mnemonic: "Bureau (bàn giấy) + cracy (cai trị) = quan liêu bàn giấy",
+        bandTarget: "6.5-7.5",
+      },
+    ],
+  },
+];
+
+export interface IeltsPathDeckSummary {
+  id: string;
+  slug: string;
+  order: number;
+  tier: "BAND_5_6" | "BAND_6_7" | "BAND_7_PLUS";
+  tierLabel: string;
+  title: string;
+  titleVi: string;
+  topic: string;
+  cardsCount: number;
+  estMinutes: number;
+}
+
+export const IELTS_32_DECKS_CATALOG: IeltsPathDeckSummary[] = [
+  // Tier 1: Band 5.5 - 6.5 (10 Decks x 30 words = 300 words)
+  { id: "ielts-01", slug: "nawl-01-research-foundations", order: 1, tier: "BAND_5_6", tierLabel: "Band 5.5 - 6.5", title: "Research Foundations & Evidence", titleVi: "Nền tảng Nghiên cứu & Dẫn chứng", topic: "Research", cardsCount: 30, estMinutes: 10 },
+  { id: "ielts-02", slug: "nawl-02-academic-education", order: 2, tier: "BAND_5_6", tierLabel: "Band 5.5 - 6.5", title: "Higher Education & Academia", titleVi: "Giáo dục Đại học & Học thuật", topic: "Education", cardsCount: 30, estMinutes: 10 },
+  { id: "ielts-03", slug: "nawl-03-natural-environment", order: 3, tier: "BAND_5_6", tierLabel: "Band 5.5 - 6.5", title: "Natural World & Ecosystems", titleVi: "Thế giới Tự nhiên & Hệ sinh thái", topic: "Environment", cardsCount: 30, estMinutes: 10 },
+  { id: "ielts-04", slug: "nawl-04-society-civics", order: 4, tier: "BAND_5_6", tierLabel: "Band 5.5 - 6.5", title: "Society, Civics & Community", titleVi: "Xã hội, Công dân & Cộng đồng", topic: "Society", cardsCount: 30, estMinutes: 10 },
+  { id: "ielts-05", slug: "nawl-05-science-basics", order: 5, tier: "BAND_5_6", tierLabel: "Band 5.5 - 6.5", title: "Physical Sciences & Laboratory", titleVi: "Khoa học Tự nhiên & Phòng thí nghiệm", topic: "Science", cardsCount: 30, estMinutes: 10 },
+  { id: "ielts-06", slug: "nawl-06-health-wellbeing", order: 6, tier: "BAND_5_6", tierLabel: "Band 5.5 - 6.5", title: "Health, Medicine & Mind", titleVi: "Y tế, Sức khỏe & Tâm lý học", topic: "Health", cardsCount: 30, estMinutes: 10 },
+  { id: "ielts-07", slug: "nawl-07-urban-infrastructure", order: 7, tier: "BAND_5_6", tierLabel: "Band 5.5 - 6.5", title: "Urban Living & Infrastructure", titleVi: "Đô thị hóa & Cơ sở Hạ tầng", topic: "Urban", cardsCount: 30, estMinutes: 10 },
+  { id: "ielts-08", slug: "nawl-08-commerce-industry", order: 8, tier: "BAND_5_6", tierLabel: "Band 5.5 - 6.5", title: "Commerce, Industry & Resources", titleVi: "Thương mại, Công nghiệp & Tài nguyên", topic: "Economics", cardsCount: 30, estMinutes: 10 },
+  { id: "ielts-09", slug: "nawl-09-culture-heritage", order: 9, tier: "BAND_5_6", tierLabel: "Band 5.5 - 6.5", title: "Culture, History & Heritage", titleVi: "Văn hóa, Lịch sử & Di sản", topic: "Culture", cardsCount: 30, estMinutes: 10 },
+  { id: "ielts-10", slug: "nawl-10-media-communication", order: 10, tier: "BAND_5_6", tierLabel: "Band 5.5 - 6.5", title: "Information, Media & Expression", titleVi: "Truyền thông & Diễn đạt Ý kiến", topic: "Media", cardsCount: 30, estMinutes: 10 },
+
+  // Tier 2: Band 6.5 - 7.5 (12 Decks x 30 words = 360 words)
+  { id: "ielts-11", slug: "nawl-11-methodology-data", order: 11, tier: "BAND_6_7", tierLabel: "Band 6.5 - 7.5", title: "Scientific Methodology & Statistics", titleVi: "Phương pháp luận & Thống kê Khoa học", topic: "Methodology", cardsCount: 30, estMinutes: 10 },
+  { id: "ielts-12", slug: "nawl-12-logic-critical-thinking", order: 12, tier: "BAND_6_7", tierLabel: "Band 6.5 - 7.5", title: "Argumentation & Critical Analysis", titleVi: "Biện luận & Tư duy Phản biện Sâu", topic: "Logic", cardsCount: 30, estMinutes: 10 },
+  { id: "ielts-13", slug: "nawl-13-climate-resilience", order: 13, tier: "BAND_6_7", tierLabel: "Band 6.5 - 7.5", title: "Climate Mitigation & Energy Transition", titleVi: "Giảm thiểu Biến đổi Khí hậu & Năng lượng", topic: "Environment", cardsCount: 30, estMinutes: 10 },
+  { id: "ielts-14", slug: "nawl-14-governance-policy", order: 14, tier: "BAND_6_7", tierLabel: "Band 6.5 - 7.5", title: "Public Governance & Legislation", titleVi: "Quản trị Công & Lập pháp Xã hội", topic: "Policy", cardsCount: 30, estMinutes: 10 },
+  { id: "ielts-15", slug: "nawl-15-macroeconomics", order: 15, tier: "BAND_6_7", tierLabel: "Band 6.5 - 7.5", title: "Macroeconomics & Globalization", titleVi: "Kinh tế Vĩ mô & Toàn cầu hóa", topic: "Economics", cardsCount: 30, estMinutes: 10 },
+  { id: "ielts-16", slug: "nawl-16-cognitive-ai", order: 16, tier: "BAND_6_7", tierLabel: "Band 6.5 - 7.5", title: "Cognitive Science & Artificial Intelligence", titleVi: "Khoa học Nhận thức & Trí tuệ Nhân tạo", topic: "Technology", cardsCount: 30, estMinutes: 10 },
+  { id: "ielts-17", slug: "nawl-17-demographic-welfare", order: 17, tier: "BAND_6_7", tierLabel: "Band 6.5 - 7.5", title: "Demography & Social Welfare Models", titleVi: "Nhân khẩu học & Phúc lợi Xã hội", topic: "Society", cardsCount: 30, estMinutes: 10 },
+  { id: "ielts-18", slug: "nawl-18-psychology-behavior", order: 18, tier: "BAND_6_7", tierLabel: "Band 6.5 - 7.5", title: "Behavioral Sciences & Motivation", titleVi: "Khoa học Hành vi & Tâm lý Học đường", topic: "Psychology", cardsCount: 30, estMinutes: 10 },
+  { id: "ielts-19", slug: "nawl-19-bioengineering-ethics", order: 19, tier: "BAND_6_7", tierLabel: "Band 6.5 - 7.5", title: "Bioethics & Medical Innovation", titleVi: "Đạo đức Sinh học & Y học Đột phá", topic: "Biology", cardsCount: 30, estMinutes: 10 },
+  { id: "ielts-20", slug: "nawl-20-sustainable-architecture", order: 20, tier: "BAND_6_7", tierLabel: "Band 6.5 - 7.5", title: "Sustainable Design & Urbanism", titleVi: "Quy hoạch Đô thị & Kiến trúc Xanh", topic: "Architecture", cardsCount: 30, estMinutes: 10 },
+  { id: "ielts-21", slug: "nawl-21-artistic-semiotics", order: 21, tier: "BAND_6_7", tierLabel: "Band 6.5 - 7.5", title: "Cultural Theory & Aesthetic Criticism", titleVi: "Lý luận Văn hóa & Phê bình Nghệ thuật", topic: "Art", cardsCount: 30, estMinutes: 10 },
+  { id: "ielts-22", slug: "nawl-22-academic-synthesis", order: 22, tier: "BAND_6_7", tierLabel: "Band 6.5 - 7.5", title: "Literature Synthesis & Scholarly Review", titleVi: "Tổng quan Tài liệu & Tổng hợp Luận điểm", topic: "Synthesis", cardsCount: 30, estMinutes: 10 },
+
+  // Tier 3: Band 7.5+ (10 Decks x 30 words = 300 words)
+  { id: "ielts-23", slug: "nawl-23-epistemology", order: 23, tier: "BAND_7_PLUS", tierLabel: "Band 7.5+", title: "Epistemology & Scientific Philosophy", titleVi: "Nhận thức luận & Triết học Khoa học", topic: "Philosophy", cardsCount: 30, estMinutes: 10 },
+  { id: "ielts-24", slug: "nawl-24-sociological-stratification", order: 24, tier: "BAND_7_PLUS", tierLabel: "Band 7.5+", title: "Social Stratification & Power Dynamics", titleVi: "Phân tầng Xã hội & Động lực Quyền lực", topic: "Sociology", cardsCount: 30, estMinutes: 10 },
+  { id: "ielts-25", slug: "nawl-25-constitutional-jurisprudence", order: 25, tier: "BAND_7_PLUS", tierLabel: "Band 7.5+", title: "Jurisprudence & Institutional Frameworks", titleVi: "Lý luận Pháp luật & Thể chế Hiến pháp", topic: "Law", cardsCount: 30, estMinutes: 10 },
+  { id: "ielts-26", slug: "nawl-26-geopolitical-hegemony", order: 26, tier: "BAND_7_PLUS", tierLabel: "Band 7.5+", title: "Geopolitics, Hegemony & Diplomacy", titleVi: "Địa chính trị, Vị thế Cường quốc & Ngoại giao", topic: "Geopolitics", cardsCount: 30, estMinutes: 10 },
+  { id: "ielts-27", slug: "nawl-27-theoretical-physics", order: 27, tier: "BAND_7_PLUS", tierLabel: "Band 7.5+", title: "Theoretical Physics & Quantum Paradigms", titleVi: "Vật lý Lý thuyết & Hệ hình Lượng tử", topic: "Physics", cardsCount: 30, estMinutes: 10 },
+  { id: "ielts-28", slug: "nawl-28-discourse-analysis", order: 28, tier: "BAND_7_PLUS", tierLabel: "Band 7.5+", title: "Linguistic Semantics & Discourse Analysis", titleVi: "Ngữ nghĩa học & Phân tích Diễn ngôn", topic: "Linguistics", cardsCount: 30, estMinutes: 10 },
+  { id: "ielts-29", slug: "nawl-29-statistical-inference", order: 29, tier: "BAND_7_PLUS", tierLabel: "Band 7.5+", title: "Multivariate Statistics & Causality", titleVi: "Thống kê Đa biến & Quan hệ Nhân quả", topic: "Inference", cardsCount: 30, estMinutes: 10 },
+  { id: "ielts-30", slug: "nawl-30-environmental-ethics", order: 30, tier: "BAND_7_PLUS", tierLabel: "Band 7.5+", title: "Anthropocene Ecology & Planetary Limits", titleVi: "Sinh thái Kỷ Nhân sinh & Giới hạn Hành tinh", topic: "Ecology", cardsCount: 30, estMinutes: 10 },
+  { id: "ielts-31", slug: "nawl-31-technological-singularity", order: 31, tier: "BAND_7_PLUS", tierLabel: "Band 7.5+", title: "Automation Disruption & Singularity", titleVi: "Đột phá Tự động hóa & Kỷ nguyên AI", topic: "Technology", cardsCount: 30, estMinutes: 10 },
+  { id: "ielts-32", slug: "nawl-32-academic-mastery", order: 32, tier: "BAND_7_PLUS", tierLabel: "Band 7.5+", title: "Dissertation Defense & Scholarly Mastery", titleVi: "Bảo vệ Luận án & Đỉnh cao Học thuật", topic: "Mastery", cardsCount: 30, estMinutes: 10 },
+];
+
+export const getAcademicDecksByBand = (band: "5.5-6.5" | "6.5-7.5" | "7.5+" | "ALL"): AcademicDeck[] => {
+  if (band === "ALL") return NAWL_ACADEMIC_DECKS;
+  return NAWL_ACADEMIC_DECKS.filter((d) => d.bandTarget === band);
+};
+
+export const getAcademicDecksByTopic = (topic: string): AcademicDeck[] => {
+  if (!topic || topic === "ALL") return NAWL_ACADEMIC_DECKS;
+  return NAWL_ACADEMIC_DECKS.filter((d) => d.topic.toLowerCase() === topic.toLowerCase());
+};
+
+export const getTotalAcademicWordsCount = (): number => {
+  return NAWL_ACADEMIC_DECKS.reduce((acc, d) => acc + d.cardsCount, 0);
+};
+
+export const getIeltsPathTierDecks = (tier: "ALL" | "BAND_5_6" | "BAND_6_7" | "BAND_7_PLUS"): IeltsPathDeckSummary[] => {
+  if (tier === "ALL") return IELTS_32_DECKS_CATALOG;
+  return IELTS_32_DECKS_CATALOG.filter((d) => d.tier === tier);
+};
+
