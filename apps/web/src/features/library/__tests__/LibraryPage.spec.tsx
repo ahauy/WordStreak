@@ -132,4 +132,22 @@ describe("LibraryPage (TC-LIB-03-005)", () => {
       expect(libraryService.enrollOfficialDeck).toHaveBeenCalledWith("deck-1");
     });
   });
+
+  it("renders AcademicPathSection when selecting ACADEMIC path tab", async () => {
+    vi.mocked(libraryService.getOfficialDecks).mockResolvedValue(
+      mockDecksResponse,
+    );
+
+    render(
+      <BrowserRouter>
+        <LibraryPage />
+      </BrowserRouter>,
+    );
+
+    const academicTab = screen.getByText("IELTS & Học thuật (NAWL)");
+    fireEvent.click(academicTab);
+
+    expect(screen.getByText(/Lộ trình IELTS & Học thuật/i)).toBeInTheDocument();
+    expect(screen.getByText(/960 Academic Words/i)).toBeInTheDocument();
+  });
 });

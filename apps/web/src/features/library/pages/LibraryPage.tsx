@@ -6,6 +6,7 @@ import { OfficialDeckCard } from "../components/OfficialDeckCard";
 import { SourceAttributionBadge } from "../components/SourceAttributionBadge";
 import { FoundationPathView } from "../../foundation/components/FoundationPathView";
 import { ToeicAdvancedSection } from "../../toeic-advanced/components/ToeicAdvancedSection";
+import { AcademicPathSection } from "../../academic/components/AcademicPathSection";
 import { libraryService } from "../services/libraryService";
 import type { OfficialDeckDto } from "@wordstreak/shared-types";
 
@@ -165,6 +166,8 @@ export const LibraryPage: React.FC = () => {
         {/* Content Area */}
         {selectedPath === "FOUNDATION" ? (
           <FoundationPathView />
+        ) : selectedPath === "ACADEMIC" ? (
+          <AcademicPathSection />
         ) : isLoading ? (
           <div className="py-20 flex flex-col items-center justify-center text-[#737373]">
             <RefreshCw className="w-6 h-6 animate-spin mb-3 text-black" />
