@@ -2,7 +2,11 @@ import { IsIn, IsInt, IsOptional, Max, Min } from 'class-validator';
 import { Type } from 'class-transformer';
 import type { OfficialCardFeedbackStatus } from '@wordstreak/shared-types';
 
-const VALID_STATUSES: OfficialCardFeedbackStatus[] = ['OPEN', 'RESOLVED', 'REJECTED'];
+const VALID_STATUSES: OfficialCardFeedbackStatus[] = [
+  'OPEN',
+  'RESOLVED',
+  'REJECTED',
+];
 
 export class GetFeedbacksQueryDto {
   @IsOptional()

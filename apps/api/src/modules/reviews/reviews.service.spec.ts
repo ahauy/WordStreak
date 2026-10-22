@@ -800,7 +800,9 @@ describe('ReviewsService', () => {
         prisma.userCardProgress.findMany.mockResolvedValue(mockCards);
         prisma.userOfficialCardProgress.findMany.mockResolvedValue([]);
 
-        const result = await service.getDueCards(mockUserId, { mode: 'express' });
+        const result = await service.getDueCards(mockUserId, {
+          mode: 'express',
+        });
 
         expect(result.data.length).toBe(7);
         expect(result.meta.isExpress).toBe(true);
@@ -853,7 +855,9 @@ describe('ReviewsService', () => {
         prisma.userCardProgress.findMany.mockResolvedValue([]);
         prisma.userOfficialCardProgress.findMany.mockResolvedValue([]);
 
-        const session = await service.getTodaySession(mockUserId, { mode: 'express' });
+        const session = await service.getTodaySession(mockUserId, {
+          mode: 'express',
+        });
 
         expect(session.summary.isExpress).toBe(true);
       });

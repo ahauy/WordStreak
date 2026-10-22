@@ -1,18 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { ShieldCheck } from "lucide-react";
 import { analyticsService } from "../../services/analytics/analyticsService";
 
 export const CookieConsentBanner: React.FC = () => {
   const { t } = useTranslation("common");
-  const [isVisible, setIsVisible] = useState(false);
-
-  useEffect(() => {
-    const status = analyticsService.getConsentStatus();
-    if (status === "pending") {
-      setIsVisible(true);
-    }
-  }, []);
+  const [isVisible, setIsVisible] = useState(
+    () => analyticsService.getConsentStatus() === "pending"
+  );
 
   if (!isVisible) {
     return null;

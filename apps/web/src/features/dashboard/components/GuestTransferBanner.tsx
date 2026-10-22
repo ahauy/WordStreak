@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Sparkles, Check } from "lucide-react";
 import {
   getGuestPreviewState,
@@ -6,14 +6,10 @@ import {
 } from "../../landing/utils/guestStorage";
 
 export const GuestTransferBanner: React.FC = () => {
-  const [isVisible, setIsVisible] = useState(false);
-
-  useEffect(() => {
+  const [isVisible, setIsVisible] = useState(() => {
     const state = getGuestPreviewState();
-    if (state.isCompleted && state.reviewedCards.length > 0) {
-      setIsVisible(true);
-    }
-  }, []);
+    return Boolean(state.isCompleted && state.reviewedCards.length > 0);
+  });
 
   if (!isVisible) {
     return null;

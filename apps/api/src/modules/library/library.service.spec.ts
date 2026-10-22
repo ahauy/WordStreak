@@ -464,7 +464,9 @@ describe('LibraryService', () => {
     });
 
     it('creates and returns feedback record when card exists', async () => {
-      prisma.officialCard.findUnique.mockResolvedValue({ id: mockOfficialCardId });
+      prisma.officialCard.findUnique.mockResolvedValue({
+        id: mockOfficialCardId,
+      });
       const now = new Date();
       prisma.officialCardFeedback.create.mockResolvedValue({
         id: 'fb-123',
@@ -476,10 +478,14 @@ describe('LibraryService', () => {
         createdAt: now,
       });
 
-      const res = await service.submitCardFeedback(mockUserId, mockOfficialCardId, {
-        reason: 'WRONG_MEANING',
-        comment: 'Meaning should be different',
-      });
+      const res = await service.submitCardFeedback(
+        mockUserId,
+        mockOfficialCardId,
+        {
+          reason: 'WRONG_MEANING',
+          comment: 'Meaning should be different',
+        },
+      );
 
       expect(prisma.officialCardFeedback.create).toHaveBeenCalledWith({
         data: {
@@ -514,7 +520,11 @@ describe('LibraryService', () => {
         },
       ]);
 
-      const res = await service.getFeedbacks({ status: 'OPEN', page: 1, limit: 10 });
+      const res = await service.getFeedbacks({
+        status: 'OPEN',
+        page: 1,
+        limit: 10,
+      });
 
       expect(res.total).toBe(1);
       expect(res.feedbacks.length).toBe(1);

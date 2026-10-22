@@ -63,6 +63,7 @@ export function useHabitMilestones(masteredCount: number) {
       .find((m) => masteredCount >= m.targetWords && !celebrated.includes(m.id));
 
     if (nextToCelebrate) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setActiveMilestone(nextToCelebrate);
     }
   }, [masteredCount]);

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import {
   Volume2,
@@ -15,13 +15,9 @@ import {
 } from "../utils/guestStorage";
 
 export const GuestFlashcardPreview: React.FC = () => {
-  const [state, setState] = useState(getGuestPreviewState());
+  const [state, setState] = useState(getGuestPreviewState);
   const [isFlipped, setIsFlipped] = useState(false);
   const [isPlayingAudio, setIsPlayingAudio] = useState(false);
-
-  useEffect(() => {
-    setState(getGuestPreviewState());
-  }, []);
 
   const cardIndex = Math.min(state.currentIndex, GUEST_SAMPLE_CARDS.length - 1);
   const currentCard = GUEST_SAMPLE_CARDS[cardIndex];
