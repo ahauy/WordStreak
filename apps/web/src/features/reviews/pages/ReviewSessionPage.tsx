@@ -13,6 +13,7 @@ import { PronunciationPracticeModal } from "../../practice/components/Pronunciat
 import { useStreak } from "../../dashboard/hooks/useStreak";
 import { OfflineSyncPill } from "../../../components/pwa/OfflineSyncPill";
 import { PwaInstallBanner } from "../../../components/pwa/PwaInstallBanner";
+import { analyticsService } from "../../../services/analytics/analyticsService";
 import { Loader2, AlertCircle, RotateCcw, Headphones, Zap } from "lucide-react";
 import type { StreakActivityResponseDto, BacklogWarningDto } from "@wordstreak/shared-types";
 
@@ -67,6 +68,13 @@ export const ReviewSessionPage: React.FC = () => {
       !hasRecordedStreakRef.current
     ) {
       hasRecordedStreakRef.current = true;
+      analyticsService.trackStudySessionCompleted({
+        deckId: deckId || "all-due",
+        deckType: "custom",
+        cardCount: sessionStats.totalReviewed,
+        xpEarned: sessionStats.totalReviewed * 10,
+        durationSeconds: sessionStats.durationSeconds,
+      });
       recordActivity()
         .then((result) => {
           if (result.streakIncreased) {

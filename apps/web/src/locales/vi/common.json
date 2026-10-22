@@ -110,5 +110,12 @@
     "etsDisclaimer": "TOEIC® là nhãn hiệu đã đăng ký của Educational Testing Service (ETS). WordStreak là nền tảng học tập độc lập, không liên kết hay được chứng thực bởi ETS.",
     "ieltsDisclaimer": "IELTS® là nhãn hiệu đã đăng ký của University of Cambridge ESOL, Hội đồng Anh (British Council) và IDP Education Australia. WordStreak không liên kết hay được chứng thực bởi các tổ chức này.",
     "footerNote": "Danh mục từ vựng học thuật dựa trên NGSL & TSL của Browne, Culligan & Phillips (CC BY-SA 4.0)."
+  },
+  "analytics": {
+    "bannerAriaLabel": "Biểu ngữ đồng ý cookie",
+    "bannerTitle": "Chúng tôi tôn trọng quyền riêng tư của bạn",
+    "bannerDescription": "WordStreak sử dụng dữ liệu ẩn danh để đo lường hiệu quả học tập và cải thiện thuật toán lặp lại ngắt quãng. Không theo dõi quảng cáo hay chia sẻ dữ liệu cho bên thứ ba.",
+    "decline": "Từ chối",
+    "accept": "Chấp nhận"
   }
 }

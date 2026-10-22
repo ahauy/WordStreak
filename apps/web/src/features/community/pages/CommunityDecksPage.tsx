@@ -11,6 +11,7 @@ import { CommunityDeckCard } from "../components/CommunityDeckCard";
 import { CommunityDeckPreviewModal } from "../components/CommunityDeckPreviewModal";
 import { RateDeckModal } from "../components/RateDeckModal";
 import { communityService } from "../services/communityService";
+import { analyticsService } from "../../../services/analytics/analyticsService";
 import type {
   CommunityDeckItem,
   CommunityDeckSort,
@@ -85,6 +86,10 @@ export const CommunityDecksPage: React.FC = () => {
     setCloningDeckId(deck.id);
     try {
       const res = await communityService.cloneDeck(deck.id);
+      analyticsService.trackDeckCloned({
+        deckId: deck.id,
+        deckTitle: deck.title,
+      });
       showToast("success", res.message);
       void refetch();
     } catch (err: unknown) {
