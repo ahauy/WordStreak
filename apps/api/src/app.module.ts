@@ -15,6 +15,7 @@ import { AnalyticsModule } from './modules/analytics/analytics.module';
 import { GamificationModule } from './modules/gamification/gamification.module';
 import { CommunityModule } from './modules/community/community.module';
 import { LibraryModule } from './modules/library/library.module';
+import { NotificationsModule } from './modules/notifications/notifications.module';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { LibraryModule } from './modules/library/library.module';
     GamificationModule,
     CommunityModule,
     LibraryModule,
+    NotificationsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

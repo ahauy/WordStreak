@@ -124,4 +124,73 @@ export class AiVocabularyService {
       dailyQuotaMax: max,
     };
   }
+
+  async getPublicWord(word: string) {
+    const rawWord = word?.trim();
+    if (!rawWord) {
+      throw new BadRequestException('Vui lòng nhập từ vựng hợp lệ');
+    }
+
+    const normalizedWord = rawWord.toLowerCase();
+    const cached = await this.cacheRepository.findByWord(normalizedWord);
+    if (cached) {
+      this.logger.debug(`Cache HIT for public word: "${normalizedWord}"`);
+      this.cacheRepository.incrementHitCount(cached.id).catch(() => {});
+      const card = this.formatCard(cached);
+      return { ...card, card, source: 'cache', cached: true };
+    }
+
+    this.logger.debug(`Cache MISS for public word: "${normalizedWord}"`);
+    const cardData = await this.fetchFreeDictionary(normalizedWord);
+    if (cardData) {
+      this.cacheRepository
+        .saveToCache({ ...cardData, word: normalizedWord, source: 'FREE_DICTIONARY' })
+        .catch((err) => {
+          this.logger.error(`Failed to cache public word "${normalizedWord}": ${err?.message}`);
+        });
+
+      const card = this.formatCard(cardData);
+      return { ...card, card, source: 'free_dictionary', cached: false };
+    }
+
+    throw new NotFoundException('Không tìm thấy từ vựng trong cơ sở dữ liệu');
+  }
+
+  private async fetchFreeDictionary(word: string): Promise<AiGeneratedCardData | null> {
+    try {
+      return await (this.freeDictionaryProvider.fetchDefinition
+        ? this.freeDictionaryProvider.fetchDefinition(word)
+        : this.freeDictionaryProvider.lookup(word));
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : String(err);
+      this.logger.warn(`Free Dictionary API exception: ${msg}`);
+      return null;
+    }
+  }
+
+  private formatCard(data: {
+    word?: string | null;
+    partOfSpeech?: string | null;
+    phonetic?: string | null;
+    meaningVi?: string | null;
+    meaningEn?: string | null;
+    exampleSentence?: string | null;
+    exampleTranslation?: string | null;
+    collocations?: string[] | null;
+    mnemonic?: string | null;
+    audioUrl?: string | null;
+  }) {
+    return {
+      word: data.word || '',
+      partOfSpeech: data.partOfSpeech || 'word',
+      phonetic: data.phonetic || '',
+      meaningVi: data.meaningVi || '',
+      meaningEn: data.meaningEn || '',
+      exampleSentence: data.exampleSentence || '',
+      exampleTranslation: data.exampleTranslation || '',
+      collocations: data.collocations || [],
+      mnemonic: data.mnemonic || '',
+      audioUrl: data.audioUrl || null,
+    };
+  }
 }

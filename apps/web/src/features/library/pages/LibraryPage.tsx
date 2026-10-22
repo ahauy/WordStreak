@@ -5,6 +5,7 @@ import { DashboardNavbar } from "../../dashboard/components/DashboardNavbar";
 import { OfficialDeckCard } from "../components/OfficialDeckCard";
 import { SourceAttributionBadge } from "../components/SourceAttributionBadge";
 import { FoundationPathView } from "../../foundation/components/FoundationPathView";
+import { ToeicAdvancedSection } from "../../toeic-advanced/components/ToeicAdvancedSection";
 import { libraryService } from "../services/libraryService";
 import type { OfficialDeckDto } from "@wordstreak/shared-types";
 
@@ -204,6 +205,13 @@ export const LibraryPage: React.FC = () => {
                 isEnrolling={enrollingMap[deck.id]}
               />
             ))}
+          </div>
+        )}
+
+        {/* TOEIC Advanced Modules (Displayed when All paths or TOEIC path is active) */}
+        {(selectedPath === "ALL" || selectedPath === "TOEIC") && (
+          <div className="mt-14 pt-8 border-t border-[#e5e5e5]">
+            <ToeicAdvancedSection />
           </div>
         )}
 

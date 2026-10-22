@@ -53,7 +53,7 @@ export const DashboardNavbar: React.FC<DashboardNavbarProps> = ({
   const [isInternalSettingsOpen, setIsInternalSettingsOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [internalSettingsTab, setInternalSettingsTab] = useState<
-    "profile" | "avatar" | "security" | "gamification"
+    "profile" | "avatar" | "security" | "gamification" | "language" | "notifications"
   >("profile");
 
   const user = propUser !== undefined ? propUser : storeUser;

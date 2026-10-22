@@ -13,6 +13,7 @@ import { DashboardNavbar } from "../../dashboard/components/DashboardNavbar";
 import { libraryService } from "../services/libraryService";
 import { ToeicCoverageProgressBar } from "../components/ToeicCoverageProgressBar";
 import { SourceAttributionBadge } from "../components/SourceAttributionBadge";
+import { ToeicAdvancedSection } from "../../toeic-advanced/components/ToeicAdvancedSection";
 import type { ToeicPathProgressResponse } from "@wordstreak/shared-types";
 
 export const ToeicPathPage: React.FC = () => {
@@ -273,6 +274,11 @@ export const ToeicPathPage: React.FC = () => {
                   })}
                 </div>
               )}
+            </div>
+
+            {/* Dedicated Mô-đun Nâng cao (TOEIC Advanced Modules) */}
+            <div className="pt-6">
+              <ToeicAdvancedSection />
             </div>
           </div>
         )}

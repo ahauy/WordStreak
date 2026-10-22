@@ -28,6 +28,10 @@ interface FreeDictionaryEntry {
 export class FreeDictionaryProvider {
   private readonly logger = new Logger(FreeDictionaryProvider.name);
 
+  async fetchDefinition(word: string): Promise<AiGeneratedCardData | null> {
+    return this.lookup(word);
+  }
+
   async lookup(word: string): Promise<AiGeneratedCardData | null> {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 5000);
