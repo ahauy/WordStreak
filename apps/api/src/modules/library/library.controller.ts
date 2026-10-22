@@ -2,6 +2,7 @@ import {
   Controller,
   Get,
   Post,
+  Patch,
   Param,
   Body,
   Query,
@@ -15,6 +16,9 @@ import { LibraryService } from './library.service';
 import { ForkOfficialCardDto } from './dto/fork-official-card.dto';
 import { GetOfficialDecksDto } from './dto/get-official-decks.dto';
 import { TriageDeckCardsDto } from './dto/triage-deck-cards.dto';
+import { CreateCardFeedbackDto } from './dto/create-card-feedback.dto';
+import { GetFeedbacksQueryDto } from './dto/get-feedbacks-query.dto';
+import { UpdateOfficialCardDto } from './dto/update-official-card.dto';
 import type {
   ForkOfficialCardResponse,
   JwtPayload,
@@ -23,6 +27,10 @@ import type {
   EnrollOfficialDeckResponse,
   TriageDeckCardsResponse,
   ToeicPathProgressResponse,
+  CardFeedbackResponse,
+  PaginatedOfficialCardFeedbacksResponse,
+  UpdateOfficialCardResponse,
+  LibraryAnalyticsSummaryResponse,
 } from '@wordstreak/shared-types';
 
 @Controller('library')
@@ -80,5 +88,35 @@ export class LibraryController {
     @Body() dto: ForkOfficialCardDto,
   ): Promise<ForkOfficialCardResponse> {
     return this.libraryService.forkCard(user.sub, cardId, dto);
+  }
+
+  @Post('cards/:id/feedback')
+  @HttpCode(HttpStatus.CREATED)
+  async submitCardFeedback(
+    @CurrentUser() user: JwtPayload,
+    @Param('id') cardId: string,
+    @Body() dto: CreateCardFeedbackDto,
+  ): Promise<CardFeedbackResponse> {
+    return this.libraryService.submitCardFeedback(user.sub, cardId, dto);
+  }
+
+  @Get('admin/feedback')
+  async getFeedbacks(
+    @Query() query: GetFeedbacksQueryDto,
+  ): Promise<PaginatedOfficialCardFeedbacksResponse> {
+    return this.libraryService.getFeedbacks(query);
+  }
+
+  @Patch('admin/cards/:id')
+  async updateOfficialCard(
+    @Param('id') cardId: string,
+    @Body() dto: UpdateOfficialCardDto,
+  ): Promise<UpdateOfficialCardResponse> {
+    return this.libraryService.updateOfficialCard(cardId, dto);
+  }
+
+  @Get('admin/analytics')
+  async getLibraryAnalytics(): Promise<LibraryAnalyticsSummaryResponse> {
+    return this.libraryService.getLibraryAnalytics();
   }
 }

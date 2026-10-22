@@ -157,3 +157,88 @@ export interface ToeicPathProgressResponse {
   levels: ToeicLevelProgressDto[];
 }
 
+export type OfficialCardFeedbackReason =
+  | 'WRONG_MEANING'
+  | 'TYPO'
+  | 'AUDIO_ERROR'
+  | 'EXAMPLE_UNNATURAL'
+  | 'OTHER';
+
+export type OfficialCardFeedbackStatus = 'OPEN' | 'RESOLVED' | 'REJECTED';
+
+export interface CreateCardFeedbackDto {
+  reason: OfficialCardFeedbackReason;
+  comment?: string;
+}
+
+export interface CardFeedbackResponse {
+  id: string;
+  cardId: string;
+  userId: string;
+  reason: OfficialCardFeedbackReason;
+  comment?: string | null;
+  status: OfficialCardFeedbackStatus;
+  createdAt: string | Date;
+}
+
+export interface GetOfficialCardFeedbacksQuery {
+  status?: OfficialCardFeedbackStatus;
+  page?: number;
+  limit?: number;
+}
+
+export interface PaginatedOfficialCardFeedbacksResponse {
+  feedbacks: Array<
+    CardFeedbackResponse & {
+      cardHeadword?: string;
+      userEmail?: string;
+    }
+  >;
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
+}
+
+export interface UpdateOfficialCardDto {
+  headword?: string;
+  pos?: string;
+  content?: Partial<OfficialCardContent>;
+  status?: string;
+}
+
+export interface UpdateOfficialCardResponse {
+  id: string;
+  headword: string;
+  pos: string;
+  content: OfficialCardContent;
+  status: string;
+  contentVersion: number;
+  updatedAt: string | Date;
+}
+
+export interface LibraryDeckAnalyticsDto {
+  deckId: string;
+  slug: string;
+  title: string;
+  pathCode: string;
+  level?: string | null;
+  totalEnrolledUsers: number;
+  firstValueCompletionRate: number; // % users completing >= 10 cards
+  avgTriageKnownRate: number; // % cards marked known
+  feedbackCount: number;
+  day1RetentionRate: number;
+  day7RetentionRate: number;
+}
+
+export interface LibraryAnalyticsSummaryResponse {
+  totalEnrolledUsers: number;
+  activationRate: number;
+  firstValueRate: number;
+  avgTriageKnownRate: number;
+  totalFeedbacks: number;
+  deckStats: LibraryDeckAnalyticsDto[];
+}
+
+
+

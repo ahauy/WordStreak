@@ -110,6 +110,24 @@ export const QuizResultsView: React.FC<QuizResultsViewProps> = ({
           </div>
         </div>
 
+        {/* Auto-graded SRS Notice (US-UX-02) */}
+        {result.autoGradedReviews && result.autoGradedReviews.length > 0 && (
+          <div
+            className="p-3 bg-[#fafafa] border border-[#e5e5e5] rounded-2xl mb-6 text-left flex items-center gap-2.5"
+            data-testid="auto-graded-srs-notice"
+          >
+            <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+            <div className="text-xs">
+              <span className="font-semibold text-[#090909]">
+                Đã tự động chấm vào SRS:
+              </span>{" "}
+              <span className="text-[#525252]">
+                {result.autoGradedReviews.length} từ đã được cập nhật lịch ôn tập ngắt quãng (SM-2).
+              </span>
+            </div>
+          </div>
+        )}
+
         {/* XP Bonus Breakdown (if available) */}
         {xpBreakdown && (
           <div className="p-3.5 bg-[#fafafa] border border-[#e5e5e5] rounded-2xl mb-6 text-left">

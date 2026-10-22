@@ -11,11 +11,13 @@ import {
   AlertCircle,
   RefreshCw,
   Filter,
+  Flag,
 } from "lucide-react";
 import { DashboardNavbar } from "../../dashboard/components/DashboardNavbar";
 import { libraryService } from "../services/libraryService";
 import { SourceAttributionBadge } from "../components/SourceAttributionBadge";
 import { KnownWordTriageModal } from "../components/KnownWordTriageModal";
+import { ReportCardFeedbackModal } from "../components/ReportCardFeedbackModal";
 import type { OfficialDeckDetailResponse } from "@wordstreak/shared-types";
 
 export const OfficialDeckDetailPage: React.FC = () => {
@@ -26,6 +28,10 @@ export const OfficialDeckDetailPage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [isEnrolling, setIsEnrolling] = useState(false);
   const [isTriageOpen, setIsTriageOpen] = useState(false);
+  const [reportingCard, setReportingCard] = useState<{
+    id: string;
+    headword: string;
+  } | null>(null);
 
   useEffect(() => {
     if (!slug) return;
@@ -259,6 +265,19 @@ export const OfficialDeckDetailPage: React.FC = () => {
                               >
                                 <Volume2 className="w-3.5 h-3.5" />
                               </button>
+                              <button
+                                type="button"
+                                onClick={() =>
+                                  setReportingCard({
+                                    id: c.cardId,
+                                    headword: c.headword,
+                                  })
+                                }
+                                title="Báo lỗi nội dung thẻ"
+                                className="p-1 rounded-full text-[#a3a3a3] hover:text-[#dc2626] hover:bg-[#fef2f2] transition-colors cursor-pointer"
+                              >
+                                <Flag className="w-3.5 h-3.5" />
+                              </button>
                             </div>
                             <p className="text-xs sm:text-sm text-[#090909] font-medium mt-1">
                               {content.meaning_vi || c.headword}
@@ -334,6 +353,13 @@ export const OfficialDeckDetailPage: React.FC = () => {
             onTriageComplete={handleTriageComplete}
           />
         )}
+
+        <ReportCardFeedbackModal
+          isOpen={!!reportingCard}
+          cardId={reportingCard?.id || null}
+          cardHeadword={reportingCard?.headword}
+          onClose={() => setReportingCard(null)}
+        />
       </main>
     </div>
   );

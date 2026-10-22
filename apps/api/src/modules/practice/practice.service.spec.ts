@@ -7,6 +7,7 @@ import {
 import { PracticeService } from './practice.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { StreakService } from '../streaks/streak.service';
+import { ReviewsService } from '../reviews/reviews.service';
 
 describe('PracticeService', () => {
   let service: PracticeService;
@@ -736,6 +737,94 @@ describe('PracticeService', () => {
       );
       expect(result.correctCount).toBe(2);
       expect(result.accuracyPercentage).toBe(100);
+    });
+  });
+
+  describe('submitQuiz & submitMatchingQuiz - Auto-grade to SRS (US-UX-02)', () => {
+    let reviewsServiceMock: { submitReview: jest.Mock };
+    let practiceServiceWithReviews: PracticeService;
+
+    beforeEach(async () => {
+      reviewsServiceMock = {
+        submitReview: jest.fn().mockResolvedValue({
+          cardId: 'c1',
+          interval: 1,
+          repetitions: 1,
+          easeFactor: 2.5,
+          nextReviewDate: new Date(),
+          status: 'LEARNING',
+        }),
+      };
+
+      const module = await Test.createTestingModule({
+        providers: [
+          PracticeService,
+          { provide: PrismaService, useValue: prisma },
+          { provide: StreakService, useValue: streakService },
+          { provide: ReviewsService, useValue: reviewsServiceMock },
+        ],
+      }).compile();
+
+      practiceServiceWithReviews = module.get<PracticeService>(PracticeService);
+    });
+
+    it('auto-grades fast correct answers with rating 4 (Easy)', async () => {
+      prisma.card.findMany.mockResolvedValue([]);
+      const result = await practiceServiceWithReviews.submitQuiz('user-1', {
+        deckId: 'deck-1',
+        answers: [{ cardId: 'c1', isCorrect: true, timeSpentMs: 2500 }],
+      });
+
+      expect(reviewsServiceMock.submitReview).toHaveBeenCalledWith(
+        'user-1',
+        { cardId: 'c1', rating: 4 },
+        undefined,
+      );
+      expect(result.autoGradedReviews).toHaveLength(1);
+      expect(result.autoGradedReviews?.[0].rating).toBe(4);
+    });
+
+    it('auto-grades incorrect answers with rating 1 (Again)', async () => {
+      prisma.card.findMany.mockResolvedValue([]);
+      const result = await practiceServiceWithReviews.submitQuiz('user-1', {
+        deckId: 'deck-1',
+        answers: [{ cardId: 'c2', isCorrect: false, timeSpentMs: 3000 }],
+      });
+
+      expect(reviewsServiceMock.submitReview).toHaveBeenCalledWith(
+        'user-1',
+        { cardId: 'c2', rating: 1 },
+        undefined,
+      );
+      expect(result.autoGradedReviews).toHaveLength(1);
+      expect(result.autoGradedReviews?.[0].rating).toBe(1);
+    });
+
+    it('auto-grades word matching cards with rating 4 when fast and no errors', async () => {
+      prisma.card.findMany.mockResolvedValue([]);
+      const result = await practiceServiceWithReviews.submitMatchingQuiz(
+        'user-1',
+        {
+          deckId: 'deck-1',
+          totalPairs: 1,
+          totalTimeMs: 2000,
+          answers: [
+            {
+              cardId: 'c1',
+              isCorrect: true,
+              timeSpentMs: 1500,
+              errorAttempts: 0,
+            },
+          ],
+        },
+      );
+
+      expect(reviewsServiceMock.submitReview).toHaveBeenCalledWith(
+        'user-1',
+        { cardId: 'c1', rating: 4 },
+        undefined,
+      );
+      expect(result.autoGradedReviews).toHaveLength(1);
     });
   });
 });

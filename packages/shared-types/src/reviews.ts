@@ -73,6 +73,14 @@ export interface ReviewStatsResponse {
   masteredCount: number;
 }
 
+export interface BacklogWarningDto {
+  isOverwhelmed: boolean;
+  dueCount: number;
+  threshold: number;
+  dailyGoal: number;
+  suggestedBatchSize: number;
+}
+
 export interface TodaySessionSummary {
   dueCount: number;
   newCount: number;
@@ -81,6 +89,7 @@ export interface TodaySessionSummary {
   isGoalCompleted: boolean;
   isWelcomeBack?: boolean;
   isExpress?: boolean;
+  backlogWarning?: BacklogWarningDto;
 }
 
 export interface TodaySessionResponse {
@@ -106,4 +115,5 @@ export interface ReviewSummaryDto {
   timezone: string;
   endOfDayAt: string;
   nextDueAt: string | null;
+  backlogWarning?: BacklogWarningDto;
 }

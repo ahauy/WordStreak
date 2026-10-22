@@ -53,6 +53,15 @@ export interface MissedCardDto {
   audioUrl?: string | null;
 }
 
+export interface AutoGradedReviewItem {
+  cardId: string;
+  rating: number; // 1 | 2 | 3 | 4
+  interval?: number;
+  repetitions?: number;
+  status?: string;
+  nextReviewDate?: Date | string | null;
+}
+
 export interface QuizResultResponseDto {
   totalQuestions: number;
   correctCount: number;
@@ -60,6 +69,7 @@ export interface QuizResultResponseDto {
   totalXpEarned: number;
   maxCombo: number;
   missedCards: MissedCardDto[];
+  autoGradedReviews?: AutoGradedReviewItem[];
 }
 
 export interface FillBlankQuestionDto {
@@ -232,6 +242,7 @@ export interface MatchingQuizResultDto {
   isBotFlagged?: boolean;
   xpBreakdown: MatchingXpBreakdownDto;
   missedCards: MatchingMissedCardDto[];
+  autoGradedReviews?: AutoGradedReviewItem[];
 }
 
 // ==========================================

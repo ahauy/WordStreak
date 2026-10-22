@@ -16,6 +16,7 @@ import { DashboardAnalyticsWidget } from "../../analytics/components/DashboardAn
 import { CreateDeckModal } from "../../decks/components/CreateDeckModal";
 import { OnboardingWizard } from "../../onboarding/components/OnboardingWizard";
 import { HabitMilestoneModal } from "../components/HabitMilestoneModal";
+import { BacklogGuardBanner } from "../../reviews/components/BacklogGuardBanner";
 import { useHabitMilestones } from "../hooks/useHabitMilestones";
 import { useStreak } from "../hooks/useStreak";
 import { useAnalytics } from "../../analytics/hooks/useAnalytics";
@@ -129,6 +130,14 @@ export const DashboardPage: React.FC = () => {
               onStartReview={() => handleStartReview()}
               onCreateDeck={handleCreateDeck}
               onOpenFlameNurture={openFlameNurture}
+            />
+
+            {/* Backlog Overwhelm Warning Banner (US-UX-03) */}
+            <BacklogGuardBanner
+              backlogWarning={todaySession?.summary.backlogWarning}
+              onStartExpressSession={() =>
+                navigate("/review", { state: { mode: "express" } })
+              }
             />
 
             {/* Unified Study Today Combined Session CTA (US-UX-01) */}

@@ -26,6 +26,7 @@ import type {
   SubmitToeicQuizDto,
   ToeicQuizResultDto,
   ToeicAutoGradedReview,
+  AutoGradedReviewItem,
   SrsRating,
 } from '@wordstreak/shared-types';
 
@@ -177,6 +178,7 @@ export class PracticeService {
   async submitQuiz(
     userId: string,
     dto: SubmitQuizDto,
+    clientTimezone?: string,
   ): Promise<QuizResultResponseDto> {
     const { answers, totalQuestions, mode } = dto;
     const totalCount = totalQuestions || answers.length;
@@ -188,6 +190,7 @@ export class PracticeService {
     let totalXpEarned = 0;
     let totalTimeMs = 0;
     const missedCardIds: string[] = [];
+    const autoGradedReviews: AutoGradedReviewItem[] = [];
 
     for (const ans of answers) {
       totalTimeMs += ans.timeSpentMs || 0;
@@ -211,6 +214,32 @@ export class PracticeService {
           missedCardIds.push(ans.cardId);
         }
       }
+
+      if (ans.cardId && this.reviewsService) {
+        const rating = mapQuizAnswerToSm2Rating(
+          ans.isCorrect,
+          ans.timeSpentMs || 5000,
+        );
+        try {
+          const reviewResult = await this.reviewsService.submitReview(
+            userId,
+            { cardId: ans.cardId, rating },
+            clientTimezone,
+          );
+          autoGradedReviews.push({
+            cardId: ans.cardId,
+            rating,
+            interval: reviewResult.interval,
+            repetitions: reviewResult.repetitions,
+            status: reviewResult.status,
+            nextReviewDate: reviewResult.nextReviewDate,
+          });
+        } catch (err) {
+          this.logger.warn(
+            `Failed to auto-grade quiz card ${ans.cardId}: ${err}`,
+          );
+        }
+      }
     }
 
     if (this.isBotSubmission(answers, totalTimeMs)) {
@@ -229,6 +258,7 @@ export class PracticeService {
       totalXpEarned,
       maxCombo,
       missedCards,
+      autoGradedReviews,
     };
   }
 
@@ -238,6 +268,7 @@ export class PracticeService {
   async submitMatchingQuiz(
     userId: string,
     dto: SubmitMatchingQuizDto,
+    clientTimezone?: string,
   ): Promise<MatchingQuizResultDto> {
     const answers = dto.answers ?? [];
     const totalPairs = dto.totalPairs || answers.length;
@@ -292,6 +323,43 @@ export class PracticeService {
       cardErrorMap,
     );
 
+    const autoGradedReviews: AutoGradedReviewItem[] = [];
+    if (this.reviewsService && answers.length > 0) {
+      const processedCards = new Set<string>();
+      for (const ans of answers) {
+        const cardId = ans.cardId;
+        if (!cardId || processedCards.has(cardId)) continue;
+        processedCards.add(cardId);
+
+        const hasError = (cardErrorMap[cardId] || 0) > 0;
+        const timeSpent =
+          ans.matchedInMs ??
+          ans.responseTimeMs ??
+          (ans as { timeSpentMs?: number }).timeSpentMs ??
+          5000;
+        const rating = mapQuizAnswerToSm2Rating(!hasError, timeSpent);
+        try {
+          const reviewResult = await this.reviewsService.submitReview(
+            userId,
+            { cardId, rating },
+            clientTimezone,
+          );
+          autoGradedReviews.push({
+            cardId,
+            rating,
+            interval: reviewResult.interval,
+            repetitions: reviewResult.repetitions,
+            status: reviewResult.status,
+            nextReviewDate: reviewResult.nextReviewDate,
+          });
+        } catch (err) {
+          this.logger.warn(
+            `Failed to auto-grade matching card ${cardId}: ${err}`,
+          );
+        }
+      }
+    }
+
     return {
       submissionId: `wm_sub_${Date.now()}`,
       score: matchedCount,
@@ -315,6 +383,7 @@ export class PracticeService {
         isBotFlagged,
       },
       missedCards,
+      autoGradedReviews,
     };
   }
 
