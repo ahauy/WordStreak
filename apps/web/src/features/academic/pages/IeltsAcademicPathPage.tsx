@@ -1,12 +1,9 @@
 import React, { useState, useMemo } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { ArrowLeft, GraduationCap, ChevronRight, CheckCircle2, BookOpen, Layers } from "lucide-react";
+import { ArrowLeft, GraduationCap, ChevronRight } from "lucide-react";
 import { DashboardNavbar } from "../../dashboard/components/DashboardNavbar";
 import { SourceAttributionBadge } from "../../library/components/SourceAttributionBadge";
-import {
-  IELTS_32_DECKS_CATALOG,
-  getIeltsPathTierDecks,
-} from "../data/nawlDecks";
+import { getIeltsPathTierDecks } from "../data/nawlDecks";
 import type { IeltsPathDeckSummary } from "../data/nawlDecks";
 
 export const IeltsAcademicPathPage: React.FC = () => {

@@ -25,6 +25,8 @@ import { OfficialDeckDetailPage } from "./features/library/pages/OfficialDeckDet
 import { DataSourcesPage } from "./features/library/pages/DataSourcesPage";
 import { ToeicPathPage } from "./features/library/pages/ToeicPathPage";
 import { IeltsAcademicPathPage } from "./features/academic/pages/IeltsAcademicPathPage";
+import { BusinessPathPage } from "./features/business/pages/BusinessPathPage";
+import { SpokenPathPage } from "./features/spoken/pages/SpokenPathPage";
 import { PublicWordPage } from "./features/dictionary/pages/PublicWordPage";
 import { ProtectedRoute } from "./features/auth/components/ProtectedRoute";
 import { GlobalFlameMascot } from "./features/dashboard/components/GlobalFlameMascot";
@@ -113,6 +115,29 @@ function AnimatedRoutes() {
         <Route
           path="/paths/ielts"
           element={<Navigate to="/paths/academic" replace />}
+        />
+
+        <Route
+          path="/paths/business"
+          element={
+            <ProtectedRoute>
+              <BusinessPathPage />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/paths/spoken"
+          element={
+            <ProtectedRoute>
+              <SpokenPathPage />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/paths/communication"
+          element={<Navigate to="/paths/spoken" replace />}
         />
 
         <Route

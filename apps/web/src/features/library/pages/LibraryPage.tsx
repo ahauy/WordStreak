@@ -16,6 +16,7 @@ const CURRICULUM_PATHS = [
   { code: "FOUNDATION", label: "Chặng Khởi động (NGSL Top 300)" },
   { code: "CORE", label: "Nền tảng cốt lõi (NGSL)" },
   { code: "ACADEMIC", label: "IELTS & Học thuật (NAWL)" },
+  { code: "BUSINESS", label: "Tiếng Anh Thương mại (BSL)" },
   { code: "COMMUNICATION", label: "Giao tiếp hàng ngày (NGSL-S)" },
 ];
 
