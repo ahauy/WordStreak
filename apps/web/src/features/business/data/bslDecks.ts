@@ -184,11 +184,8 @@ export const BSL_50_DECKS_CATALOG: BusinessDeckSummary[] = [
   { id: "bsl-50", slug: "bsl-50-sustainable-logistics", order: 50, sector: "OPERATIONS", sectorLabel: "Vận hành & Chuỗi cung ứng", title: "Green Logistics & Circular Economy", titleVi: "Logistics Xanh & Kinh tế Tuần hoàn", cardsCount: 34, estMinutes: 12 },
 ];
 
-export const getBslDecksBySector = (sector: "ALL" | "MANAGEMENT" | "FINANCE" | "MARKETING" | "HR" | "OPERATIONS"): BusinessDeckSummary[] => {
-  if (sector === "ALL") return BSL_50_DECKS_CATALOG;
-  return BSL_50_DECKS_CATALOG.filter((d) => d.sector === sector);
-};
+export const getBslDecksBySector = (sector: "ALL" | "MANAGEMENT" | "FINANCE" | "MARKETING" | "HR" | "OPERATIONS"): BusinessDeckSummary[] =>
+  sector === "ALL" ? BSL_50_DECKS_CATALOG : BSL_50_DECKS_CATALOG.filter((d) => d.sector === sector);
 
-export const getTotalBslWordsCount = (): number => {
-  return BSL_50_DECKS_CATALOG.reduce((acc, d) => acc + d.cardsCount, 0);
-};
+export const getTotalBslWordsCount = (): number =>
+  BSL_50_DECKS_CATALOG.reduce((acc, d) => acc + d.cardsCount, 0);

@@ -162,6 +162,26 @@ Whenever the hook injects a `🟡 WARNING (≥ 75%)` or `🔴 CRITICAL (≥ 90%)
   - Giữ câu trả lời ngắn gọn, tập trung vào trọng tâm.
   - Sử dụng công cụ `schedule` để lập lịch tiếp tục công việc ngay sau mốc reset 5h nếu hạn mức chạm ngưỡng tới hạn.
 
+## 9. Ponytail Protocol (Senior Simplicity & Over-Engineering Safeguards)
+
+**Core Mantra: The best code is the code never written. Default level: `full`.**
+
+Whenever implementing, refactoring, or reviewing code, the AI MUST climb **The Ladder**:
+
+1. **Does this need to exist at all?** Speculative need = skip it. (YAGNI)
+2. **Already in this codebase?** Look before you write. Reuse existing utilities (`guestStorage`, `srs.service`, `safeGetLocale`).
+3. **Stdlib does it?** Use `Map`, `Set`, `Intl.DateTimeFormat`, `crypto.randomUUID()`, `URLSearchParams` instead of adding external dependencies (`moment`, `dayjs`, `uuid`, `lodash`).
+4. **Native platform covers it?** Use HTML5 `<audio>`, native `<input>`, CSS Flexbox/Grid, and PostgreSQL constraints (`@unique`, `onDelete: Cascade`) over application-level wrappers.
+5. **Already-installed dependency solves it?** Never add a new library for what 5 lines can do.
+6. **Can it be one line?** One line.
+7. **Only then:** The absolute minimum code that works.
+
+**Hard Safeguards:**
+- **File limit:** $< 800$ lines. **Function limit:** $< 50$ lines.
+- **Zero speculative flexibility:** No interfaces with single implementations, no 1-1 delegate service wrappers, no factories for a single product.
+- **Zero test compromise:** Laziness applies to production code, NEVER to test rigor. Every non-trivial branch must leave an automated test behind (`TC-###`).
+- **Debt visibility:** Mark deliberate shortcuts with a comment: `// ponytail: [known ceiling, upgrade path when N exceeds threshold]`.
+
 ---
 
 **These guidelines are working if:** fewer unnecessary changes in diffs, fewer rewrites due to overcomplication, zero generic AI slop in UI, total subagent transparency, automatic subagent delegation for all phases, and clarifying questions come before implementation rather than after mistakes.

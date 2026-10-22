@@ -140,11 +140,8 @@ export const SPOKEN_24_DECKS_CATALOG: SpokenDeckSummary[] = [
   { id: "spk-24", slug: "ngsl-s-24-future-dreams", order: 24, context: "EMOTIONS", contextLabel: "Cảm xúc & Tâm trạng", title: "Sharing Aspirations & Life Choices", titleVi: "Tâm sự Về Ước mơ & Ngã rẽ Cuộc sống", cardsCount: 31, estMinutes: 8 },
 ];
 
-export const getSpokenDecksByContext = (context: "ALL" | "DAILY_LIFE" | "WORKPLACE" | "TRAVEL" | "EMOTIONS" | "SOCIALIZING"): SpokenDeckSummary[] => {
-  if (context === "ALL") return SPOKEN_24_DECKS_CATALOG;
-  return SPOKEN_24_DECKS_CATALOG.filter((d) => d.context === context);
-};
+export const getSpokenDecksByContext = (context: "ALL" | "DAILY_LIFE" | "WORKPLACE" | "TRAVEL" | "EMOTIONS" | "SOCIALIZING"): SpokenDeckSummary[] =>
+  context === "ALL" ? SPOKEN_24_DECKS_CATALOG : SPOKEN_24_DECKS_CATALOG.filter((d) => d.context === context);
 
-export const getTotalSpokenWordsCount = (): number => {
-  return SPOKEN_24_DECKS_CATALOG.reduce((acc, d) => acc + d.cardsCount, 0);
-};
+export const getTotalSpokenWordsCount = (): number =>
+  SPOKEN_24_DECKS_CATALOG.reduce((acc, d) => acc + d.cardsCount, 0);

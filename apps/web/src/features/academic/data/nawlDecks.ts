@@ -535,22 +535,15 @@ export const IELTS_32_DECKS_CATALOG: IeltsPathDeckSummary[] = [
   { id: "ielts-32", slug: "nawl-32-academic-mastery", order: 32, tier: "BAND_7_PLUS", tierLabel: "Band 7.5+", title: "Dissertation Defense & Scholarly Mastery", titleVi: "Bảo vệ Luận án & Đỉnh cao Học thuật", topic: "Mastery", cardsCount: 30, estMinutes: 10 },
 ];
 
-export const getAcademicDecksByBand = (band: "5.5-6.5" | "6.5-7.5" | "7.5+" | "ALL"): AcademicDeck[] => {
-  if (band === "ALL") return NAWL_ACADEMIC_DECKS;
-  return NAWL_ACADEMIC_DECKS.filter((d) => d.bandTarget === band);
-};
+export const getAcademicDecksByBand = (band: "5.5-6.5" | "6.5-7.5" | "7.5+" | "ALL"): AcademicDeck[] =>
+  band === "ALL" ? NAWL_ACADEMIC_DECKS : NAWL_ACADEMIC_DECKS.filter((d) => d.bandTarget === band);
 
-export const getAcademicDecksByTopic = (topic: string): AcademicDeck[] => {
-  if (!topic || topic === "ALL") return NAWL_ACADEMIC_DECKS;
-  return NAWL_ACADEMIC_DECKS.filter((d) => d.topic.toLowerCase() === topic.toLowerCase());
-};
+export const getAcademicDecksByTopic = (topic: string): AcademicDeck[] =>
+  !topic || topic === "ALL" ? NAWL_ACADEMIC_DECKS : NAWL_ACADEMIC_DECKS.filter((d) => d.topic.toLowerCase() === topic.toLowerCase());
 
-export const getTotalAcademicWordsCount = (): number => {
-  return NAWL_ACADEMIC_DECKS.reduce((acc, d) => acc + d.cardsCount, 0);
-};
+export const getTotalAcademicWordsCount = (): number =>
+  NAWL_ACADEMIC_DECKS.reduce((acc, d) => acc + d.cardsCount, 0);
 
-export const getIeltsPathTierDecks = (tier: "ALL" | "BAND_5_6" | "BAND_6_7" | "BAND_7_PLUS"): IeltsPathDeckSummary[] => {
-  if (tier === "ALL") return IELTS_32_DECKS_CATALOG;
-  return IELTS_32_DECKS_CATALOG.filter((d) => d.tier === tier);
-};
+export const getIeltsPathTierDecks = (tier: "ALL" | "BAND_5_6" | "BAND_6_7" | "BAND_7_PLUS"): IeltsPathDeckSummary[] =>
+  tier === "ALL" ? IELTS_32_DECKS_CATALOG : IELTS_32_DECKS_CATALOG.filter((d) => d.tier === tier);
 
