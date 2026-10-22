@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
-import { X, Target, Sparkles, Shield, Award, Globe } from "lucide-react";
+import { X, Target, Sparkles, Shield, Award, Globe, Bell } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTranslation } from "react-i18next";
 import { Button } from "../../../common/components/Button";
@@ -10,10 +10,16 @@ import { ProfileGoalTab } from "./ProfileGoalTab";
 import { AvatarTab } from "./AvatarTab";
 import { SecurityTab } from "./SecurityTab";
 import { LanguageSettingsTab } from "./LanguageSettingsTab";
+import { NotificationSettingsTab } from "./NotificationSettingsTab";
 import { XpHistoryDrawer } from "../../gamification/components/XpHistoryDrawer";
 
 export type SettingsTab =
-  "profile" | "avatar" | "security" | "gamification" | "language";
+  | "profile"
+  | "avatar"
+  | "security"
+  | "gamification"
+  | "language"
+  | "notifications";
 
 export interface SettingsModalProps {
   isOpen: boolean;
@@ -58,6 +64,12 @@ const NAV_TABS: NavTabItem[] = [
     labelKey: "settings:tabs.language",
     defaultLabel: "Language & Region",
     icon: Globe,
+  },
+  {
+    id: "notifications",
+    labelKey: "settings:tabs.notifications",
+    defaultLabel: "Notifications",
+    icon: Bell,
   },
 ];
 
@@ -164,6 +176,7 @@ const SettingsModalContent: React.FC<SettingsModalProps> = ({
             {activeTab === "security" && <SecurityTab />}
             {activeTab === "gamification" && <XpHistoryDrawer />}
             {activeTab === "language" && <LanguageSettingsTab />}
+            {activeTab === "notifications" && <NotificationSettingsTab />}
           </div>
 
           {/* Sticky Modal Action Footer */}
@@ -182,6 +195,8 @@ const SettingsModalContent: React.FC<SettingsModalProps> = ({
                 t("settings:tabs.gamification", "Gamification & XP History")}
               {activeTab === "language" &&
                 t("settings:language.title", "Language & Region")}
+              {activeTab === "notifications" &&
+                t("settings:notifications.title", "Notifications & Reminders")}
             </div>
 
             <div className="flex items-center gap-2.5 w-full sm:w-auto justify-end">

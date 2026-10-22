@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { NotFoundException } from '@nestjs/common';
+import { NotFoundException, BadRequestException } from '@nestjs/common';
 import { AiVocabularyService } from './ai-vocabulary.service';
 import { DictionaryCacheRepository } from './repositories/dictionary-cache.repository';
 import { GeminiProvider } from './providers/gemini.provider';
@@ -22,6 +22,7 @@ describe('AiVocabularyService', () => {
   };
   let freeDictionaryProvider: {
     lookup: jest.Mock;
+    fetchDefinition: jest.Mock;
   };
   let quotaService: {
     getRemainingQuota: jest.Mock;
@@ -73,6 +74,7 @@ describe('AiVocabularyService', () => {
 
     freeDictionaryProvider = {
       lookup: jest.fn(),
+      fetchDefinition: jest.fn(),
     };
 
     quotaService = {
@@ -179,5 +181,67 @@ describe('AiVocabularyService', () => {
     await service.generateCard({ word: '  SERENDIPITY  ' }, 'user-1');
 
     expect(cacheRepository.findByWord).toHaveBeenCalledWith('serendipity');
+  });
+
+  describe('getPublicWord', () => {
+    it('TC-PUB-SVC-001: should return cached data with source: cache, cached: true and increment hit count', async () => {
+      cacheRepository.findByWord.mockResolvedValue(mockCachedRecord);
+
+      const result = await service.getPublicWord('serendipity');
+
+      expect(cacheRepository.findByWord).toHaveBeenCalledWith('serendipity');
+      expect(cacheRepository.incrementHitCount).toHaveBeenCalledWith('cache-123');
+      expect(result.source).toBe('cache');
+      expect(result.cached).toBe(true);
+      expect(result.word).toBe('serendipity');
+    });
+
+    it('TC-PUB-SVC-002: should fallback to Free Dictionary, save to cache, and return with source: free_dictionary', async () => {
+      cacheRepository.findByWord.mockResolvedValue(null);
+      freeDictionaryProvider.fetchDefinition.mockResolvedValue({
+        ...mockGeneratedCard,
+        word: 'ineffable',
+      });
+      cacheRepository.saveToCache.mockResolvedValue({
+        ...mockCachedRecord,
+        word: 'ineffable',
+      });
+
+      const result = await service.getPublicWord('ineffable');
+
+      expect(cacheRepository.findByWord).toHaveBeenCalledWith('ineffable');
+      expect(freeDictionaryProvider.fetchDefinition).toHaveBeenCalledWith('ineffable');
+      expect(cacheRepository.saveToCache).toHaveBeenCalledWith({
+        ...mockGeneratedCard,
+        word: 'ineffable',
+        source: 'FREE_DICTIONARY',
+      });
+      expect(result.source).toBe('free_dictionary');
+      expect(result.cached).toBe(false);
+      expect(result.word).toBe('ineffable');
+    });
+
+    it('TC-PUB-SVC-003: should throw NotFoundException when word not in cache and not in Free Dictionary', async () => {
+      cacheRepository.findByWord.mockResolvedValue(null);
+      freeDictionaryProvider.fetchDefinition.mockResolvedValue(null);
+
+      await expect(service.getPublicWord('nonexistentword')).rejects.toThrow(
+        new NotFoundException('Không tìm thấy từ vựng trong cơ sở dữ liệu'),
+      );
+    });
+
+    it('TC-PUB-SVC-004: should sanitize and trim word', async () => {
+      cacheRepository.findByWord.mockResolvedValue(mockCachedRecord);
+
+      await service.getPublicWord('  SERENDIPITY  ');
+
+      expect(cacheRepository.findByWord).toHaveBeenCalledWith('serendipity');
+    });
+
+    it('TC-PUB-SVC-005: should throw BadRequestException if word is empty', async () => {
+      await expect(service.getPublicWord('   ')).rejects.toThrow(
+        BadRequestException,
+      );
+    });
   });
 });

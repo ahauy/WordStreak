@@ -24,6 +24,7 @@ import { LibraryPage } from "./features/library/pages/LibraryPage";
 import { OfficialDeckDetailPage } from "./features/library/pages/OfficialDeckDetailPage";
 import { DataSourcesPage } from "./features/library/pages/DataSourcesPage";
 import { ToeicPathPage } from "./features/library/pages/ToeicPathPage";
+import { PublicWordPage } from "./features/dictionary/pages/PublicWordPage";
 import { ProtectedRoute } from "./features/auth/components/ProtectedRoute";
 import { GlobalFlameMascot } from "./features/dashboard/components/GlobalFlameMascot";
 import { CookieConsentBanner } from "./components/analytics/CookieConsentBanner";
@@ -49,6 +50,9 @@ function AnimatedRoutes() {
 
         {/* Data Sources & Licensing (Publicly accessible) */}
         <Route path="/sources" element={<DataSourcesPage />} />
+
+        {/* Public SEO Word Page (Publicly accessible) */}
+        <Route path="/word/:word" element={<PublicWordPage />} />
 
         {/* Protected Application Routes */}
         <Route

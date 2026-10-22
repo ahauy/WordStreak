@@ -8,6 +8,7 @@ describe('AiVocabularyController', () => {
   let controller: AiVocabularyController;
   let service: {
     generateCard: jest.Mock;
+    getPublicWord: jest.Mock;
   };
 
   const mockResponse: GenerateCardResponseDto = {
@@ -33,6 +34,12 @@ describe('AiVocabularyController', () => {
   beforeEach(async () => {
     service = {
       generateCard: jest.fn().mockResolvedValue(mockResponse),
+      getPublicWord: jest.fn().mockResolvedValue({
+        ...mockResponse.card,
+        card: mockResponse.card,
+        source: 'cache',
+        cached: true,
+      }),
     };
 
     const module: TestingModule = await Test.createTestingModule({
@@ -61,5 +68,15 @@ describe('AiVocabularyController', () => {
     expect(result).toEqual(mockResponse);
     expect(result.card.word).toBe('eloquent');
     expect(result.dailyQuotaRemaining).toBe(29);
+  });
+
+  // TC-PUB-001
+  it('TC-PUB-001: should call service.getPublicWord without requiring user authentication', async () => {
+    const result = await controller.getPublicWord('eloquent');
+
+    expect(service.getPublicWord).toHaveBeenCalledWith('eloquent');
+    expect(result.word).toBe('eloquent');
+    expect(result.source).toBe('cache');
+    expect(result.cached).toBe(true);
   });
 });
