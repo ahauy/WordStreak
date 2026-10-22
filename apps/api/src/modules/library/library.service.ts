@@ -10,6 +10,8 @@ import { Prisma } from '@prisma/client';
 import type {
   ForkOfficialCardResponse,
   OfficialCardContent,
+  OfficialCardFeedbackReason,
+  OfficialCardFeedbackStatus,
   OfficialDeckDto,
   OfficialDeckCardItemDto,
   PaginatedOfficialDecksResponse,
@@ -625,7 +627,9 @@ export class LibraryService {
     });
 
     if (!card) {
-      throw new NotFoundException(`Official card with ID "${cardId}" not found`);
+      throw new NotFoundException(
+        `Official card with ID "${cardId}" not found`,
+      );
     }
 
     const feedback = await this.prisma.officialCardFeedback.create({
@@ -642,9 +646,9 @@ export class LibraryService {
       id: feedback.id,
       cardId: feedback.cardId,
       userId: feedback.userId,
-      reason: feedback.reason as any,
+      reason: feedback.reason as OfficialCardFeedbackReason,
       comment: feedback.comment,
-      status: feedback.status as any,
+      status: feedback.status as OfficialCardFeedbackStatus,
       createdAt: feedback.createdAt,
     };
   }
@@ -683,9 +687,9 @@ export class LibraryService {
         id: f.id,
         cardId: f.cardId,
         userId: f.userId,
-        reason: f.reason as any,
+        reason: f.reason as OfficialCardFeedbackReason,
         comment: f.comment,
-        status: f.status as any,
+        status: f.status as OfficialCardFeedbackStatus,
         createdAt: f.createdAt,
         cardHeadword: f.card?.headword,
         userEmail: f.user?.email,
@@ -709,10 +713,13 @@ export class LibraryService {
     });
 
     if (!card) {
-      throw new NotFoundException(`Official card with ID "${cardId}" not found`);
+      throw new NotFoundException(
+        `Official card with ID "${cardId}" not found`,
+      );
     }
 
-    const existingContent = (card.content as unknown as OfficialCardContent) || {};
+    const existingContent =
+      (card.content as unknown as OfficialCardContent) || {};
     const updatedContent = dto.content
       ? { ...existingContent, ...dto.content }
       : existingContent;
@@ -756,7 +763,12 @@ export class LibraryService {
         orderBy: [{ pathCode: 'asc' }, { order: 'asc' }],
       }),
       this.prisma.userDeckEnrollment.findMany({
-        select: { userId: true, deckId: true, startedAt: true, lastStudiedAt: true },
+        select: {
+          userId: true,
+          deckId: true,
+          startedAt: true,
+          lastStudiedAt: true,
+        },
       }),
       this.prisma.userOfficialCardProgress.findMany({
         select: { userId: true, cardId: true, status: true },

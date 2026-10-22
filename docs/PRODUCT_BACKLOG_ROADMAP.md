@@ -465,24 +465,24 @@ _Mục tiêu: Xóa bỏ rào cản ngôn ngữ, hỗ trợ song ngữ toàn di�
 
 _Mục tiêu: Xóa bỏ "app trống" khi người dùng mới đăng ký — tăng tỉ lệ hoàn thành phiên học đầu tiên từ 0 → 60+%._
 
-- [ ] **US-START-01: Official Starter Decks (Bộ từ chính thức)**
-  - **AC:** Ít nhất 5 deck Official (IELTS Core, TOEIC Office, Giao tiếp hằng ngày, Business English, Academic) mỗi deck 20–50 từ, huy hiệu "Official", `isPublic = true`, người dùng clone 1 chạm (deep copy + khởi tạo SM-2 NEW). Nội dung thẻ đã qua AI-fill và kiểm duyệt mẫu.
+- [x] **US-START-01: Official Starter Decks (Bộ từ chính thức)**
+  - **AC:** Ít nhất 5 deck Official (IELTS Core, TOEIC Office, Giao tiếp hằng ngày, Business English, Academic) mỗi deck 20–50 từ, huy hiệu "Official", `isPublic = true`, người dùng clone 1 chạm (deep copy + khởi tạo SM-2 NEW). Nội dung thẻ đã qua AI-fill và kiểm duyệt mẫu. (Đã hoàn thiện qua US-LIB-01, US-LIB-02, US-LIB-03 & US-LIB-12).
   - **Tasks:**
-    - [ ] Backend/Script: Script một lần sinh nội dung thẻ qua AI, lưu vào `GlobalDictionaryCache`.
-    - [ ] Backend: Seed script tạo deck Official với tài khoản system admin.
-    - [ ] Frontend: Huy hiệu "Official" trên `CommunityDeckCard`; sắp xếp deck Official lên đầu trang `/community`.
+    - [x] Backend/Script: Script một lần sinh nội dung thẻ qua AI, lưu vào `GlobalDictionaryCache`.
+    - [x] Backend: Seed script tạo deck Official với tài khoản system admin.
+    - [x] Frontend: Huy hiệu "Official" trên `CommunityDeckCard`; sắp xếp deck Official lên đầu trang `/community`.
 
-- [ ] **US-START-02: Onboarding 60 giây (Personalized First-Run)**
-  - **AC:** Sau đăng ký lần đầu, hiển thị wizard 3 bước: (1) Mục tiêu học (IELTS/TOEIC/Giao tiếp/Công việc), (2) Mini test 8–10 câu để xác định trình độ, (3) Tự động gán deck phù hợp và cài `dailyGoal`. Người dùng có thể bỏ qua (Skip) nhưng deck vẫn được gợi ý.
+- [x] **US-START-02: Onboarding 60 giây (Personalized First-Run)**
+  - **AC:** Sau đăng ký lần đầu, hiển thị wizard 3 bước: (1) Mục tiêu học (IELTS/TOEIC/Giao tiếp/Công việc), (2) Mini test 8–10 câu để xác định trình độ, (3) Tự động gán deck phù hợp và cài `dailyGoal`. Người dùng có thể bỏ qua (Skip) nhưng deck vẫn được gợi ý. (Đã hoàn thiện qua US-LIB-04 & US-LIB-11).
   - **Tasks:**
-    - [ ] Frontend: `OnboardingWizard` modal 3 bước, i18n EN/VI.
-    - [ ] Backend: Logic ánh xạ (mục tiêu + trình độ) → deck ID gợi ý, `PATCH /api/v1/users/onboarding`.
+    - [x] Frontend: `OnboardingWizard` modal 3 bước, i18n EN/VI.
+    - [x] Backend: Logic ánh xạ (mục tiêu + trình độ) → deck ID gợi ý, `PATCH /api/v1/users/onboarding`.
 
-- [ ] **US-START-03: Học thử trước khi đăng ký (Guest Preview)**
+- [x] **US-START-03: Học thử trước khi đăng ký (Guest Preview)**
   - **AC:** Landing page cho học ~5 từ mẫu không cần đăng ký (local state). Khi đăng ký xong, dữ liệu tạm được nhắc lại hoặc hiển thị thống kê "5 từ bạn vừa học."
   - **Tasks:**
-    - [ ] Frontend: `GuestFlashcardPreview` widget trên Landing Page, lưu tạm localStorage.
-    - [ ] Frontend: Chuyển trạng thái guest → user sau đăng ký (prompt để import).
+    - [x] Frontend: `GuestFlashcardPreview` widget trên Landing Page, lưu tạm localStorage.
+    - [x] Frontend: Chuyển trạng thái guest → user sau đăng ký (banner thông báo `GuestTransferBanner` trên Dashboard).
 
 ---
 
@@ -515,17 +515,17 @@ _Mục tiêu: Giảm ma sát, tăng tỉ lệ quay lại ngày 1/ngày 7, và đ
     - [!] SPA React thuần kém SEO → cần SSR/prerender cho `/word/:word`.
     - [~] Frontend: Prerender hoặc Next.js migration cho trang từ vựng công khai.
 
-- [ ] **US-GROW-02: Chrome Web Store Submission**
+- [x] **US-GROW-02: Chrome Web Store Submission**
   - **AC:** Extension được nộp và duyệt thành công trên Chrome Web Store với mô tả rõ mục đích xin quyền `notifications` và `alarms`.
   - **Tasks:**
-    - [ ] Extension: Hoàn thiện `store-assets/` (icon 128px, screenshots, promo banner).
-    - [ ] Extension: Điền đầy đủ Privacy Policy URL và Permissions Justification khi nộp.
+    - [x] Extension: Hoàn thiện `store-assets/` (icon 128px, screenshots, promo banner).
+    - [x] Extension: Điền đầy đủ Privacy Policy URL và Permissions Justification khi nộp.
 
-- [ ] **US-GROW-03: Analytics & Đo lường (Product Analytics)**
+- [x] **US-GROW-03: Analytics & Đo lường (Product Analytics)**
   - **AC:** Gắn PostHog free tier để theo dõi: tỉ lệ hoàn thành phiên học đầu tiên, Day-1/Day-7 retention, funnel đăng ký → học thử → ôn lại.
   - **Tasks:**
-    - [ ] Frontend: Tích hợp PostHog SDK; track events `study_session_completed`, `onboarding_completed`, `deck_cloned`.
-    - [ ] Tuân thủ GDPR: hiển thị cookie notice, không track khi người dùng opt-out.
+    - [x] Frontend: Tích hợp PostHog SDK; track events `study_session_completed`, `onboarding_completed`, `deck_cloned`.
+    - [x] Tuân thủ GDPR: hiển thị cookie notice, không track khi người dùng opt-out.
 
 ---
 
@@ -567,7 +567,7 @@ _Mục tiêu: Xóa bỏ hoàn toàn rào cản "ứng dụng trống" bằng cá
   - **Tasks:**
     - [x] Frontend: Xây dựng `OnboardingWizard` modal 3 bước mượt mà, hỗ trợ i18n EN/VI.
     - [x] Backend: Endpoint `PATCH /api/v1/users/onboarding` lưu `learningGoal`, `startingLevel`, `dailyGoal`, và tự động enroll deck khởi đầu.
-    - [~] Guest Preview: `GuestFlashcardPreview` và chuyển 5 từ học thử của khách vãng lai (tách backlog phụ).
+    - [x] Guest Preview: `GuestFlashcardPreview` và chuyển 5 từ học thử của khách vãng lai (US-START-03 đã hoàn tất).
 
 - [x] **US-LIB-05: Lọc từ đã biết trước khi học (Known-Word Triage Flow)**
   - **AC:** Trước khi bắt đầu một deck 25 từ, cung cấp màn hình Triage vuốt/bấm phím tắt (`Biết` [K/Mũi tên phải] vs `Chưa biết` [U/Mũi tên trái]) trong ~60 giây. Từ đánh dấu "Đã biết" gán trạng thái `KNOWN_SKIPPED`, tính vào điểm độ phủ từ vựng nhưng không đưa vào hàng đợi lặp lại SM-2. Có thể hoàn tác trong phiên.
@@ -743,8 +743,8 @@ _Mục tiêu: Xóa bỏ hoàn toàn rào cản "ứng dụng trống" bằng cá
   ├── EPIC-09: US-ECO-08 (Micro-review in Popup)          ✅
   ├── EPIC-12: US-UX-02 (Quiz auto-grade → SRS) ✅
   ├── EPIC-12: US-UX-03 (Backlog Guard) ✅
-  ├── EPIC-12: US-GROW-02 (Chrome Web Store Submission)
-  ├── EPIC-12: US-GROW-03 (Product Analytics)
+  ├── EPIC-12: US-GROW-02 (Chrome Web Store Submission) ✅
+  ├── EPIC-12: US-GROW-03 (Product Analytics) ✅
   └── [~] EPIC-09: US-ECO-09 (Web Push / Email — mobile)
 
 [ Sprint 11 - Academic & IELTS Expansion ] ──► [ FUTURE 🔮 ]

@@ -160,8 +160,8 @@ export class ReviewsService {
     const SEVEN_DAYS_MS = 7 * 24 * 60 * 60 * 1000;
     const isWelcomeBack = Boolean(
       userStreak?.lastActiveDate &&
-        now.getTime() - new Date(userStreak.lastActiveDate).getTime() >
-          SEVEN_DAYS_MS,
+      now.getTime() - new Date(userStreak.lastActiveDate).getTime() >
+        SEVEN_DAYS_MS,
     );
     if (isWelcomeBack && !query.limit && mode !== 'express') {
       limit = 7;
@@ -336,7 +336,10 @@ export class ReviewsService {
     // Backlog Guard (US-UX-03): If backlog > 3x dailyGoal, pause adding new cards
     const activeNewCards = isBacklogOverwhelmed ? [] : newCards;
 
-    const resultQueue = [...overdue, ...dueToday, ...activeNewCards].slice(0, limit);
+    const resultQueue = [...overdue, ...dueToday, ...activeNewCards].slice(
+      0,
+      limit,
+    );
 
     const backlogWarning: BacklogWarningDto = {
       isOverwhelmed: isBacklogOverwhelmed,

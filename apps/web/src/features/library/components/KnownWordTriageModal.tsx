@@ -150,7 +150,6 @@ export const KnownWordTriageModal: React.FC<KnownWordTriageModalProps> = ({
   // 3-second countdown timer for beginner verification quiz
   useEffect(() => {
     if (!showQuiz || quizFeedback) return;
-    setQuizTimeLeft(3);
 
     const timer = setInterval(() => {
       setQuizTimeLeft((prev) => {

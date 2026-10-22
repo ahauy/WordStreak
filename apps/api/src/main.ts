@@ -72,6 +72,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   // Trust reverse proxies (Render, Railway, Cloudflare) for secure cookies
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
   app.getHttpAdapter().getInstance().set('trust proxy', 1);
 
   app.use(cookieParser());

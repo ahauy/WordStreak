@@ -389,8 +389,10 @@ describe('UsersService', () => {
         where: { pathCode: 'FOUNDATION' },
         orderBy: { order: 'asc' },
       });
+
       expect(mockPrismaService.user.update).toHaveBeenCalledWith({
         where: { id: 'user-uuid-1' },
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         data: expect.objectContaining({
           startingLevel: 'ZERO',
           dailyGoal: 5,

@@ -17,6 +17,7 @@ import type {
 } from "@wordstreak/shared-types";
 import { userService } from "../../user-profile/services/userService";
 import { useAuthStore } from "../../../store/useAuthStore";
+import { analyticsService } from "../../../services/analytics/analyticsService";
 import { AdaptiveMiniTest } from "./AdaptiveMiniTest";
 
 interface OnboardingWizardProps {
@@ -153,6 +154,11 @@ export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
       });
 
       updateUser(response.user);
+      analyticsService.trackOnboardingCompleted({
+        learningGoal: selectedGoal,
+        startingLevel: selectedLevel,
+        dailyGoal: selectedDailyGoal,
+      });
       setEnrolledDeckTitle(response.enrolledDeckTitle || "");
       setStep(4);
       onSuccess?.(response);

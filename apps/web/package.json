@@ -24,6 +24,7 @@
     "jszip": "^3.10.1",
     "lucide-react": "^1.31.0",
     "papaparse": "^5.6.0",
+    "posthog-js": "^1.438.13",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
     "react-hook-form": "^7.85.0",

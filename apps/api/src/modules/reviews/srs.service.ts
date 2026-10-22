@@ -59,9 +59,7 @@ export class SrsService {
         return {
           interval: 1,
           easeFactor:
-            rating === 4
-              ? Number((easeFactor + 0.15).toFixed(2))
-              : easeFactor,
+            rating === 4 ? Number((easeFactor + 0.15).toFixed(2)) : easeFactor,
           repetitions: 1,
           nextReviewDate,
           status: 'LEARNING',

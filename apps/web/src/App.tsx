@@ -26,6 +26,8 @@ import { DataSourcesPage } from "./features/library/pages/DataSourcesPage";
 import { ToeicPathPage } from "./features/library/pages/ToeicPathPage";
 import { ProtectedRoute } from "./features/auth/components/ProtectedRoute";
 import { GlobalFlameMascot } from "./features/dashboard/components/GlobalFlameMascot";
+import { CookieConsentBanner } from "./components/analytics/CookieConsentBanner";
+import { analyticsService } from "./services/analytics/analyticsService";
 import { useAuthStore } from "./store/useAuthStore";
 import { useThemeStore } from "./store/useThemeStore";
 
@@ -216,12 +218,14 @@ function App() {
   useEffect(() => {
     initializeAuth();
     initializeTheme();
+    analyticsService.init();
   }, [initializeAuth, initializeTheme]);
 
   return (
     <BrowserRouter>
       <AnimatedRoutes />
       <GlobalFlameMascot />
+      <CookieConsentBanner />
     </BrowserRouter>
   );
 }

@@ -191,7 +191,10 @@ describe('LibraryController', () => {
       };
       service.submitCardFeedback.mockResolvedValue(mockFeedback);
 
-      const dto = { reason: 'TYPO' as const, comment: 'Spelling error in example' };
+      const dto = {
+        reason: 'TYPO' as const,
+        comment: 'Spelling error in example',
+      };
       const res = await controller.submitCardFeedback(mockUser, 'card-1', dto);
 
       expect(service.submitCardFeedback).toHaveBeenCalledWith(

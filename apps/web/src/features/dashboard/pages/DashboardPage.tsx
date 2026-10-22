@@ -17,6 +17,7 @@ import { CreateDeckModal } from "../../decks/components/CreateDeckModal";
 import { OnboardingWizard } from "../../onboarding/components/OnboardingWizard";
 import { HabitMilestoneModal } from "../components/HabitMilestoneModal";
 import { BacklogGuardBanner } from "../../reviews/components/BacklogGuardBanner";
+import { GuestTransferBanner } from "../components/GuestTransferBanner";
 import { useHabitMilestones } from "../hooks/useHabitMilestones";
 import { useStreak } from "../hooks/useStreak";
 import { useAnalytics } from "../../analytics/hooks/useAnalytics";
@@ -120,6 +121,9 @@ export const DashboardPage: React.FC = () => {
 
           {/* Main Dashboard Hub Container */}
           <main className="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-6 sm:space-y-8">
+            {/* Guest Progress Transfer Acknowledgment Banner (US-START-03) */}
+            <GuestTransferBanner />
+
             {/* Hero Greeting & 7-Day Habit Streak Tracker */}
             <StreakHeroBanner
               username={user?.username || "Learner"}
