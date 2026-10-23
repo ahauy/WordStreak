@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "pnpm --filter @wordstreak/shared-types build && tsc && vite build",
+    "package": "pnpm build && node scripts/pack-zip.cjs",
     "typecheck": "tsc --noEmit",
     "test": "vitest run"
   },

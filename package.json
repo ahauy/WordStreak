@@ -4,12 +4,16 @@
   "private": true,
   "packageManager": "pnpm@11.21.0",
   "scripts": {
+    "dev": "docker stop wordstreak-api 2>/dev/null || true; docker compose up -d db 2>/dev/null || true; pnpm --filter @wordstreak/shared-types build && pnpm --parallel --filter api --filter web dev",
     "dev:api": "pnpm --filter api start:dev",
     "dev:web": "pnpm --filter web dev",
+    "docker:db": "docker compose up -d db",
+    "docker:down": "docker compose down",
     "build": "pnpm -r run build",
     "typecheck": "pnpm -r run typecheck",
     "lint": "pnpm -r run lint",
     "test": "pnpm --filter @wordstreak/shared-types build && pnpm --filter api test && pnpm --filter web test",
+    "package:extension": "pnpm --filter @wordstreak/extension package",
     "seed:pipeline": "tsx scripts/seed/run-pipeline.ts"
   },
   "devDependencies": {

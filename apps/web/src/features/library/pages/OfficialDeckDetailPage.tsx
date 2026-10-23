@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import {
   ArrowLeft,
@@ -12,6 +12,8 @@ import {
   RefreshCw,
   Filter,
   Flag,
+  Copy,
+  Search,
 } from "lucide-react";
 import { DashboardNavbar } from "../../dashboard/components/DashboardNavbar";
 import { libraryService } from "../services/libraryService";
@@ -32,6 +34,9 @@ export const OfficialDeckDetailPage: React.FC = () => {
     id: string;
     headword: string;
   } | null>(null);
+  const [cardSearch, setCardSearch] = useState("");
+  const [forkingCardId, setForkingCardId] = useState<string | null>(null);
+  const [forkedSuccessCardId, setForkedSuccessCardId] = useState<string | null>(null);
 
   useEffect(() => {
     if (!slug) return;
@@ -98,8 +103,21 @@ export const OfficialDeckDetailPage: React.FC = () => {
     if (!data.isEnrolled) {
       await handleEnroll();
     }
-    // Navigate to decks or dashboard review
-    navigate("/dashboard");
+    // Navigate directly into review session for this official deck
+    navigate(`/decks/${data.deck.id}/review`);
+  };
+
+  const handleForkCard = async (cardId: string) => {
+    setForkingCardId(cardId);
+    try {
+      await libraryService.forkCard(cardId);
+      setForkedSuccessCardId(cardId);
+      setTimeout(() => setForkedSuccessCardId(null), 3000);
+    } catch (err) {
+      console.error("Fork card failed:", err);
+    } finally {
+      setForkingCardId(null);
+    }
   };
 
   const handleTriageComplete = () => {
@@ -109,6 +127,17 @@ export const OfficialDeckDetailPage: React.FC = () => {
       setData(res);
     });
   };
+
+  const displayCards = useMemo(() => {
+    if (!data?.cards) return [];
+    if (!cardSearch.trim()) return data.cards;
+    const term = cardSearch.toLowerCase().trim();
+    return data.cards.filter(
+      (c) =>
+        c.headword.toLowerCase().includes(term) ||
+        (c.content?.meaning_vi && c.content.meaning_vi.toLowerCase().includes(term))
+    );
+  }, [data?.cards, cardSearch]);
 
   return (
     <div className="min-h-screen bg-[#ffffff] text-[#090909]">
@@ -226,12 +255,26 @@ export const OfficialDeckDetailPage: React.FC = () => {
 
             {/* Vocabulary Previews List */}
             <div className="mb-10">
-              <h2 className="font-nunito font-bold text-lg text-[#090909] mb-4">
-                Danh sách từ vựng ({data.totalCards} từ)
-              </h2>
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+                <h2 className="font-nunito font-bold text-lg text-[#090909]">
+                  Danh sách từ vựng ({displayCards.length}/{data.totalCards} từ)
+                </h2>
+
+                {/* Instant Search Bar */}
+                <div className="relative w-full sm:w-64">
+                  <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-[#737373]" />
+                  <input
+                    type="text"
+                    value={cardSearch}
+                    onChange={(e) => setCardSearch(e.target.value)}
+                    placeholder="Tìm từ vựng hoặc nghĩa..."
+                    className="w-full pl-8 pr-3 py-1.5 rounded-full text-xs bg-[#ffffff] border border-[#e5e5e5] focus:outline-none focus:border-[#000000] text-[#090909] placeholder:text-[#a3a3a3]"
+                  />
+                </div>
+              </div>
 
               <div className="space-y-3">
-                {data.cards.map((c, idx) => {
+                {displayCards.map((c, idx) => {
                   const content = c.content || {};
                   return (
                     <div
@@ -267,6 +310,27 @@ export const OfficialDeckDetailPage: React.FC = () => {
                               </button>
                               <button
                                 type="button"
+                                onClick={() => handleForkCard(c.cardId)}
+                                disabled={forkingCardId === c.cardId}
+                                title={
+                                  forkedSuccessCardId === c.cardId
+                                    ? "Đã sao chép vào bộ thẻ của tôi!"
+                                    : "Sao chép thẻ này vào bộ thẻ cá nhân (Fork)"
+                                }
+                                className={`p-1 rounded-full transition-colors cursor-pointer ${
+                                  forkedSuccessCardId === c.cardId
+                                    ? "text-[#27c93f] bg-[#f0fdf4]"
+                                    : "text-[#737373] hover:text-[#090909] hover:bg-[#f5f5f5]"
+                                }`}
+                              >
+                                {forkedSuccessCardId === c.cardId ? (
+                                  <CheckCircle className="w-3.5 h-3.5" />
+                                ) : (
+                                  <Copy className="w-3.5 h-3.5" />
+                                )}
+                              </button>
+                              <button
+                                type="button"
                                 onClick={() =>
                                   setReportingCard({
                                     id: c.cardId,
@@ -282,6 +346,11 @@ export const OfficialDeckDetailPage: React.FC = () => {
                             <p className="text-xs sm:text-sm text-[#090909] font-medium mt-1">
                               {content.meaning_vi || c.headword}
                             </p>
+                            {content.definition_en && (
+                              <p className="text-xs text-[#525252] mt-0.5 italic">
+                                {content.definition_en}
+                              </p>
+                            )}
                           </div>
                         </div>
 
@@ -300,6 +369,38 @@ export const OfficialDeckDetailPage: React.FC = () => {
                           {content.example_vi && (
                             <p className="text-[#737373] mt-0.5">{content.example_vi}</p>
                           )}
+                        </div>
+                      )}
+
+                      {/* Memory tip / Mẹo ghi nhớ */}
+                      {content.tip_vi && (
+                        <div className="mt-2 text-xs bg-[#fbfbfe] border border-[#ebeefa] rounded-lg p-2 text-[#4338ca]">
+                          <span className="font-semibold">💡 Mẹo ghi nhớ: </span>
+                          {content.tip_vi}
+                        </div>
+                      )}
+
+                      {/* Ending sound tip */}
+                      {content.ending_sound_tip_vi && (
+                        <p className="text-[11px] text-[#737373] mt-1.5 font-mono">
+                          🔊 Phát âm đuôi: {content.ending_sound_tip_vi}
+                        </p>
+                      )}
+
+                      {/* Word family */}
+                      {content.word_family && content.word_family.length > 0 && (
+                        <div className="mt-2 flex items-center gap-1.5 flex-wrap">
+                          <span className="text-[10px] uppercase font-semibold text-[#a3a3a3]">
+                            Word Family:
+                          </span>
+                          {content.word_family.map((wf, wfIdx) => (
+                            <span
+                              key={wfIdx}
+                              className="text-[11px] bg-[#fafafa] px-2 py-0.5 rounded-md border border-[#f0f0f0] text-[#525252] font-mono"
+                            >
+                              {wf}
+                            </span>
+                          ))}
                         </div>
                       )}
 

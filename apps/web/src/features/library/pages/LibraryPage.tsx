@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
-import { Search, Sparkles, BookOpen, AlertCircle, RefreshCw } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { Search, Sparkles, BookOpen, AlertCircle, RefreshCw, ArrowRight } from "lucide-react";
 import { DashboardNavbar } from "../../dashboard/components/DashboardNavbar";
 import { OfficialDeckCard } from "../components/OfficialDeckCard";
 import { SourceAttributionBadge } from "../components/SourceAttributionBadge";
@@ -28,6 +28,7 @@ const LEVEL_OPTIONS = [
 ];
 
 export const LibraryPage: React.FC = () => {
+  const navigate = useNavigate();
   const [selectedPath, setSelectedPath] = useState("ALL");
   const [selectedLevel, setSelectedLevel] = useState("ALL");
   const [searchTopic, setSearchTopic] = useState("");
@@ -107,6 +108,37 @@ export const LibraryPage: React.FC = () => {
           </p>
         </div>
 
+        {/* Quick Roadmaps Navigation Bar */}
+        <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none mb-6">
+          <span className="text-xs font-semibold text-[#737373] whitespace-nowrap mr-1">
+            Bản đồ lộ trình:
+          </span>
+          <Link
+            to="/paths/toeic"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium bg-[#fafafa] border border-[#e5e5e5] text-[#090909] hover:border-black transition-colors whitespace-nowrap"
+          >
+            🎯 TOEIC Mastery (8 chặng · 98.5%)
+          </Link>
+          <Link
+            to="/paths/academic"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium bg-[#fafafa] border border-[#e5e5e5] text-[#090909] hover:border-black transition-colors whitespace-nowrap"
+          >
+            🎓 IELTS Academic (32 chặng NAWL)
+          </Link>
+          <Link
+            to="/paths/business"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium bg-[#fafafa] border border-[#e5e5e5] text-[#090909] hover:border-black transition-colors whitespace-nowrap"
+          >
+            💼 Tiếng Anh Đi làm (50 chặng BSL)
+          </Link>
+          <Link
+            to="/paths/spoken"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium bg-[#fafafa] border border-[#e5e5e5] text-[#090909] hover:border-black transition-colors whitespace-nowrap"
+          >
+            💬 Giao tiếp Hằng ngày (24 chặng NGSL-S)
+          </Link>
+        </div>
+
         {/* Path Tabs */}
         <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none mb-6">
           {CURRICULUM_PATHS.map((path) => {
@@ -166,50 +198,137 @@ export const LibraryPage: React.FC = () => {
 
         {/* Content Area */}
         {selectedPath === "FOUNDATION" ? (
-          <FoundationPathView />
+          <FoundationPathView
+            onSelectDeck={(deck) => {
+              navigate(`/library/decks/${deck.slug}`);
+            }}
+          />
         ) : selectedPath === "ACADEMIC" ? (
-          <AcademicPathSection />
-        ) : isLoading ? (
-          <div className="py-20 flex flex-col items-center justify-center text-[#737373]">
-            <RefreshCw className="w-6 h-6 animate-spin mb-3 text-black" />
-            <p className="text-sm">Đang tải các bộ từ chuẩn hóa...</p>
-          </div>
-        ) : error ? (
-          <div className="rounded-2xl border border-[#e5e5e5] p-8 text-center bg-[#fafafa]">
-            <AlertCircle className="w-8 h-8 text-[#ff5f56] mx-auto mb-2" />
-            <p className="text-sm font-semibold text-[#090909]">{error}</p>
-            <button
-              type="button"
-              onClick={() => {
-                setIsLoading(true);
-                setRefreshIndex((i) => i + 1);
-              }}
-              className="mt-4 px-4 py-2 rounded-full text-xs font-semibold bg-[#000000] text-white cursor-pointer"
-            >
-              Thử lại
-            </button>
-          </div>
-        ) : decks.length === 0 ? (
-          <div className="rounded-2xl border border-[#e5e5e5] p-12 text-center bg-[#fafafa]">
-            <BookOpen className="w-10 h-10 text-[#a3a3a3] mx-auto mb-3" />
-            <h3 className="font-nunito font-bold text-base text-[#090909]">
-              Không tìm thấy bộ từ phù hợp
-            </h3>
-            <p className="text-xs text-[#737373] mt-1 max-w-md mx-auto">
-              Hãy thử chọn lộ trình hoặc bộ lọc cấp độ khác, hoặc xóa từ khóa tìm kiếm.
-            </p>
-          </div>
+          <AcademicPathSection
+            onSelectDeck={(deck) => {
+              navigate(`/library/decks/${deck.slug}`);
+            }}
+          />
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-            {decks.map((deck) => (
-              <OfficialDeckCard
-                key={deck.id}
-                deck={deck}
-                onEnroll={handleEnroll}
-                isEnrolling={enrollingMap[deck.id]}
-              />
-            ))}
-          </div>
+          <>
+            {selectedPath === "BUSINESS" && (
+              <div className="mb-6 p-5 rounded-2xl bg-[#fafafa] border border-[#e5e5e5] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#000000] text-white">
+                      BSL 1.2
+                    </span>
+                    <h3 className="font-nunito font-bold text-base text-[#090909]">
+                      Lộ trình Tiếng Anh Thương mại (1.700 từ)
+                    </h3>
+                  </div>
+                  <p className="text-xs text-[#737373] max-w-xl">
+                    Bản đồ tiến trình 50 chặng bao quát 5 nhóm chuyên ngành: Quản trị, Tài chính, Tiếp thị, Nhân sự & Vận hành.
+                  </p>
+                </div>
+                <Link
+                  to="/paths/business"
+                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-semibold bg-[#000000] text-white hover:bg-[#262626] whitespace-nowrap self-start sm:self-auto cursor-pointer"
+                >
+                  Xem bản đồ 50 chặng
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </Link>
+              </div>
+            )}
+
+            {selectedPath === "COMMUNICATION" && (
+              <div className="mb-6 p-5 rounded-2xl bg-[#fafafa] border border-[#e5e5e5] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#000000] text-white">
+                      NGSL-S
+                    </span>
+                    <h3 className="font-nunito font-bold text-base text-[#090909]">
+                      Lộ trình Giao tiếp Hàng ngày (721 từ)
+                    </h3>
+                  </div>
+                  <p className="text-xs text-[#737373] max-w-xl">
+                    24 chặng đàm thoại phản xạ tự nhiên theo 5 ngữ cảnh thực tế (Đời sống, Công sở, Du lịch, Cảm xúc, Xã giao).
+                  </p>
+                </div>
+                <Link
+                  to="/paths/spoken"
+                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-semibold bg-[#000000] text-white hover:bg-[#262626] whitespace-nowrap self-start sm:self-auto cursor-pointer"
+                >
+                  Xem bản đồ 24 chặng
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </Link>
+              </div>
+            )}
+
+            {selectedPath === "TOEIC" && (
+              <div className="mb-6 p-5 rounded-2xl bg-[#fafafa] border border-[#e5e5e5] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#000000] text-white">
+                      TSL 1.2
+                    </span>
+                    <h3 className="font-nunito font-bold text-base text-[#090909]">
+                      Lộ trình TOEIC Mastery 98.5%
+                    </h3>
+                  </div>
+                  <p className="text-xs text-[#737373] max-w-xl">
+                    Bản đồ tiến trình 8 chặng học hẹp-sâu theo 3 cấp độ T1, T2, T3 kèm thanh theo dõi độ phủ từ vựng khoa học.
+                  </p>
+                </div>
+                <Link
+                  to="/paths/toeic"
+                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-semibold bg-[#000000] text-white hover:bg-[#262626] whitespace-nowrap self-start sm:self-auto cursor-pointer"
+                >
+                  Mở bản đồ TOEIC 98.5%
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </Link>
+              </div>
+            )}
+
+            {isLoading ? (
+              <div className="py-20 flex flex-col items-center justify-center text-[#737373]">
+                <RefreshCw className="w-6 h-6 animate-spin mb-3 text-black" />
+                <p className="text-sm">Đang tải các bộ từ chuẩn hóa...</p>
+              </div>
+            ) : error ? (
+              <div className="rounded-2xl border border-[#e5e5e5] p-8 text-center bg-[#fafafa]">
+                <AlertCircle className="w-8 h-8 text-[#ff5f56] mx-auto mb-2" />
+                <p className="text-sm font-semibold text-[#090909]">{error}</p>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsLoading(true);
+                    setRefreshIndex((i) => i + 1);
+                  }}
+                  className="mt-4 px-4 py-2 rounded-full text-xs font-semibold bg-[#000000] text-white cursor-pointer"
+                >
+                  Thử lại
+                </button>
+              </div>
+            ) : decks.length === 0 ? (
+              <div className="rounded-2xl border border-[#e5e5e5] p-12 text-center bg-[#fafafa]">
+                <BookOpen className="w-10 h-10 text-[#a3a3a3] mx-auto mb-3" />
+                <h3 className="font-nunito font-bold text-base text-[#090909]">
+                  Không tìm thấy bộ từ phù hợp
+                </h3>
+                <p className="text-xs text-[#737373] mt-1 max-w-md mx-auto">
+                  Hãy thử chọn lộ trình hoặc bộ lọc cấp độ khác, hoặc xóa từ khóa tìm kiếm.
+                </p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                {decks.map((deck) => (
+                  <OfficialDeckCard
+                    key={deck.id}
+                    deck={deck}
+                    onEnroll={handleEnroll}
+                    isEnrolling={enrollingMap[deck.id]}
+                  />
+                ))}
+              </div>
+            )}
+          </>
         )}
 
         {/* TOEIC Advanced Modules (Displayed when All paths or TOEIC path is active) */}

@@ -144,9 +144,16 @@ export class AiVocabularyService {
     const cardData = await this.fetchFreeDictionary(normalizedWord);
     if (cardData) {
       this.cacheRepository
-        .saveToCache({ ...cardData, word: normalizedWord, source: 'FREE_DICTIONARY' })
-        .catch((err) => {
-          this.logger.error(`Failed to cache public word "${normalizedWord}": ${err?.message}`);
+        .saveToCache({
+          ...cardData,
+          word: normalizedWord,
+          source: 'FREE_DICTIONARY',
+        })
+        .catch((err: unknown) => {
+          const msg = err instanceof Error ? err.message : String(err);
+          this.logger.error(
+            `Failed to cache public word "${normalizedWord}": ${msg}`,
+          );
         });
 
       const card = this.formatCard(cardData);
@@ -156,7 +163,9 @@ export class AiVocabularyService {
     throw new NotFoundException('Không tìm thấy từ vựng trong cơ sở dữ liệu');
   }
 
-  private async fetchFreeDictionary(word: string): Promise<AiGeneratedCardData | null> {
+  private async fetchFreeDictionary(
+    word: string,
+  ): Promise<AiGeneratedCardData | null> {
     try {
       return await (this.freeDictionaryProvider.fetchDefinition
         ? this.freeDictionaryProvider.fetchDefinition(word)

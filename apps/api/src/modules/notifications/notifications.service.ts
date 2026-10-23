@@ -17,7 +17,7 @@ export class NotificationsService {
   private readonly logger = new Logger(NotificationsService.name);
   private readonly subscriptions = new Map<string, StoredPushSubscription>();
 
-  async registerSubscription(
+  registerSubscription(
     userId: string,
     dto: PushSubscribeDto,
   ): Promise<{ success: boolean; message: string }> {
@@ -36,10 +36,10 @@ export class NotificationsService {
     });
 
     this.logger.log(`Push subscription registered for user: ${userId}`);
-    return {
+    return Promise.resolve({
       success: true,
       message: 'Đăng ký nhận thông báo thành công',
-    };
+    });
   }
 
   isQuietHours(date = new Date(), startHour = 22, endHour = 7): boolean {
@@ -50,22 +50,34 @@ export class NotificationsService {
     return hour >= startHour && hour < endHour;
   }
 
-  async sendTestPush(
+  sendTestPush(
     userId: string,
   ): Promise<{ success: boolean; delivered: boolean; inQuietHours: boolean }> {
     const quiet = this.isQuietHours();
     if (quiet) {
-      this.logger.warn(`Test push triggered during quiet hours for user: ${userId}`);
+      this.logger.warn(
+        `Test push triggered during quiet hours for user: ${userId}`,
+      );
     }
 
     const subscription = this.subscriptions.get(userId);
     if (!subscription) {
-      this.logger.log(`Test push simulated: no subscription for user ${userId}`);
-      return { success: true, delivered: false, inQuietHours: quiet };
+      this.logger.log(
+        `Test push simulated: no subscription for user ${userId}`,
+      );
+      return Promise.resolve({
+        success: true,
+        delivered: false,
+        inQuietHours: quiet,
+      });
     }
 
     this.logger.log(`Test push delivered to ${subscription.endpoint}`);
-    return { success: true, delivered: true, inQuietHours: quiet };
+    return Promise.resolve({
+      success: true,
+      delivered: true,
+      inQuietHours: quiet,
+    });
   }
 
   getSubscription(userId: string): StoredPushSubscription | undefined {

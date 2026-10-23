@@ -27,8 +27,16 @@ export const PublicWordPage: React.FC = () => {
 
   const { isAuthenticated } = useAuthStore();
   const [data, setData] = useState<AiGeneratedCardData | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(() => Boolean(decodedWord));
+  const [error, setError] = useState<string | null>(() => (decodedWord ? null : "Từ vựng không hợp lệ."));
+  const [prevWord, setPrevWord] = useState(decodedWord);
+
+  if (prevWord !== decodedWord) {
+    setPrevWord(decodedWord);
+    setIsLoading(Boolean(decodedWord));
+    setError(decodedWord ? null : "Từ vựng không hợp lệ.");
+    setData(null);
+  }
 
   // Audio playing state
   const [isPlayingAudio, setIsPlayingAudio] = useState(false);
@@ -60,15 +68,11 @@ export const PublicWordPage: React.FC = () => {
 
   // Load word details
   useEffect(() => {
-    let isCancelled = false;
     if (!decodedWord) {
-      setError("Từ vựng không hợp lệ.");
-      setIsLoading(false);
       return;
     }
 
-    setIsLoading(true);
-    setError(null);
+    let isCancelled = false;
 
     publicWordService
       .getWordDetails(decodedWord)
@@ -76,6 +80,7 @@ export const PublicWordPage: React.FC = () => {
         if (!isCancelled) {
           setData(card);
           setIsLoading(false);
+          setError(null);
         }
       })
       .catch((err: unknown) => {

@@ -44,7 +44,8 @@ describe('NotificationsService', () => {
       const initialCreatedAt = initialStored?.createdAt;
 
       const updatedDto: PushSubscribeDto = {
-        endpoint: 'https://updates.push.services.mozilla.com/wpush/v2/new-token',
+        endpoint:
+          'https://updates.push.services.mozilla.com/wpush/v2/new-token',
         keys: {
           p256dh: 'NEW_KEY_P256DH',
           auth: 'NEW_AUTH_SECRET',

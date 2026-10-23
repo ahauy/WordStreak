@@ -1,35 +1,43 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Flame, Clock, Check, ShieldAlert, Send } from "lucide-react";
 import { PUSH_STORAGE_KEY, type PushPermissionState } from "../../notifications/components/WebPushNotificationPrompt";
 
 export const NotificationSettingsTab: React.FC = () => {
-  const [permission, setPermission] = useState<PushPermissionState>("unsupported");
-  const [isPushEnabled, setIsPushEnabled] = useState(false);
-  const [dailyReminderEnabled, setDailyReminderEnabled] = useState(true);
-  const [streakAlertEnabled, setStreakAlertEnabled] = useState(true);
-  const [reminderTime, setReminderTime] = useState("20:00");
-  const [testSent, setTestSent] = useState(false);
-
-  useEffect(() => {
+  const [permission, setPermission] = useState<PushPermissionState>(() => {
+    if (typeof window !== "undefined" && "Notification" in window) {
+      return Notification.permission as PushPermissionState;
+    }
+    return "unsupported";
+  });
+  const [isPushEnabled, setIsPushEnabled] = useState<boolean>(() => {
     if (typeof window !== "undefined" && "Notification" in window) {
       const currentPerm = Notification.permission as PushPermissionState;
-      setPermission(currentPerm);
       const storedPref = localStorage.getItem(PUSH_STORAGE_KEY);
-      setIsPushEnabled(currentPerm === "granted" && storedPref !== "denied");
-    } else {
-      setPermission("unsupported");
-      setIsPushEnabled(false);
+      return currentPerm === "granted" && storedPref !== "denied";
     }
-
-    const savedReminder = localStorage.getItem("wordstreak_reminder_time");
-    if (savedReminder) setReminderTime(savedReminder);
-
-    const savedDaily = localStorage.getItem("wordstreak_daily_reminder");
-    if (savedDaily !== null) setDailyReminderEnabled(savedDaily === "true");
-
-    const savedStreak = localStorage.getItem("wordstreak_streak_alert");
-    if (savedStreak !== null) setStreakAlertEnabled(savedStreak === "true");
-  }, []);
+    return false;
+  });
+  const [dailyReminderEnabled, setDailyReminderEnabled] = useState<boolean>(() => {
+    if (typeof window !== "undefined") {
+      const savedDaily = localStorage.getItem("wordstreak_daily_reminder");
+      return savedDaily !== null ? savedDaily === "true" : true;
+    }
+    return true;
+  });
+  const [streakAlertEnabled, setStreakAlertEnabled] = useState<boolean>(() => {
+    if (typeof window !== "undefined") {
+      const savedStreak = localStorage.getItem("wordstreak_streak_alert");
+      return savedStreak !== null ? savedStreak === "true" : true;
+    }
+    return true;
+  });
+  const [reminderTime, setReminderTime] = useState<string>(() => {
+    if (typeof window !== "undefined") {
+      return localStorage.getItem("wordstreak_reminder_time") || "20:00";
+    }
+    return "20:00";
+  });
+  const [testSent, setTestSent] = useState(false);
 
   const handleTogglePush = async () => {
     if (typeof window === "undefined" || !("Notification" in window)) {
