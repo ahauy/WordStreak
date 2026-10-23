@@ -230,7 +230,7 @@ Sử dụng thuật toán chuỗi con chung dài nhất (**Longest Common Subseq
 
 #### 4. Phân tách Âm tiết IPA Tương tác (IPA Syllable Parser)
 
-Hàm [`parseIpaSyllables`](file:///Users/vutuanhau/Documents/PROJECT/WordStreak/apps/web/src/features/practice/utils/ipaSyllableParser.ts) phân tách các chuỗi phiên âm quốc tế như `"/ˈel.ɪ.kwənt/"` hoặc `"/ˌʌn.dərˈstænd/"`:
+Hàm [`parseIpaSyllables`](file:///Users/vutuanhau/Documents/PROJECT/WordStreak/apps/web/src/utils/ipaSyllableParser.ts) phân tách các chuỗi phiên âm quốc tế như `"/ˈel.ɪ.kwənt/"` hoặc `"/ˌʌn.dərˈstænd/"`:
 
 1. Loại bỏ các ký tự bao quanh `/` hoặc `[` `]`.
 2. Tách chuỗi theo dấu chấm phân cách âm tiết (`.`) hoặc khoảng trắng.
@@ -462,8 +462,8 @@ export interface VoicePracticeAttempt {
 
 ### 8.3. Frontend React 19 (`apps/web`)
 
-- [`apps/web/src/features/practice/utils/pronunciationScorer.ts`](file:///Users/vutuanhau/Documents/PROJECT/WordStreak/apps/web/src/features/practice/utils/pronunciationScorer.ts): Thuật toán client-side chấm điểm Levenshtein và sinh diff spans phục vụ phản hồi tức thì $< 100\text{ms}$.
-- [`apps/web/src/features/practice/utils/ipaSyllableParser.ts`](file:///Users/vutuanhau/Documents/PROJECT/WordStreak/apps/web/src/features/practice/utils/ipaSyllableParser.ts): Bộ phân tích cú pháp chuỗi ký tự ngữ âm IPA thành các thẻ âm tiết độc lập và nhận diện trọng âm.
+- [`apps/web/src/utils/pronunciationScoring.ts`](file:///Users/vutuanhau/Documents/PROJECT/WordStreak/apps/web/src/utils/pronunciationScoring.ts): Thuật toán client-side chấm điểm Levenshtein và sinh diff spans phục vụ phản hồi tức thì $< 100\text{ms}$.
+- [`apps/web/src/utils/ipaSyllableParser.ts`](file:///Users/vutuanhau/Documents/PROJECT/WordStreak/apps/web/src/utils/ipaSyllableParser.ts): Bộ phân tích cú pháp chuỗi ký tự ngữ âm IPA thành các thẻ âm tiết độc lập và nhận diện trọng âm.
 - [`apps/web/src/features/practice/hooks/useSpeechRecognition.ts`](file:///Users/vutuanhau/Documents/PROJECT/WordStreak/apps/web/src/features/practice/hooks/useSpeechRecognition.ts): Custom hook đóng gói Web Speech API (`SpeechRecognition` / `webkitSpeechRecognition`), hỗ trợ interim streaming, tự động hủy và watchdog im lặng 2500ms / tối đa 8000ms.
 - [`apps/web/src/features/practice/hooks/useAudioVisualizer.ts`](file:///Users/vutuanhau/Documents/PROJECT/WordStreak/apps/web/src/features/practice/hooks/useAudioVisualizer.ts): Custom hook quản lý Web Audio `AnalyserNode` FFT 60 FPS, chuyển đổi tín hiệu micro thành mảng cường độ sóng âm.
 - [`apps/web/src/features/practice/hooks/useAudioSynthesizer.ts`](file:///Users/vutuanhau/Documents/PROJECT/WordStreak/apps/web/src/features/practice/hooks/useAudioSynthesizer.ts): Custom hook phát âm thanh bản xứ với cờ `preservesPitch = true`, toggle tốc độ $0.75\times$, và tự động fallback sang `window.speechSynthesis`.
