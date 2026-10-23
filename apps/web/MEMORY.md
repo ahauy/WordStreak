@@ -6,7 +6,7 @@ This document synthesizes core product principles, design system tokens, animati
 
 ## 1. Product Nature & Business Model
 
-- **Product Core**: WordStreak is an English vocabulary retention platform based on Spaced Repetition (SuperMemo-2 / SM-2 algorithm), contextual multi-sensory flashcards, varied active recall quizzes, and habit-forming streak loops (as specified in [`vocabulary-app-feature-ideas.md`](vocabulary-app-feature-ideas.md)).
+- **Product Core**: WordStreak is an English vocabulary retention platform based on Spaced Repetition (SuperMemo-2 / SM-2 algorithm), contextual multi-sensory flashcards, varied active recall quizzes, and habit-forming streak loops (as specified in [`docs/PRODUCT_BACKLOG_ROADMAP.md`](../../docs/PRODUCT_BACKLOG_ROADMAP.md)).
 - **Business Model**: **100% Free & Open-Source Forever**. Never introduce paid subscription tiers, pricing tables, or mocked CLI installation commands like `npx wordstreak learn`.
 - **Data Ownership**: Full exportability to standard Anki (`.apkg`), CSV, and JSON at any time. Built local-first for offline synchronization without vendor lock-in.
 
