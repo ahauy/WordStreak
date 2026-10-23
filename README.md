@@ -51,8 +51,8 @@ WordStreak/
 ├── docs/                        # Tài liệu hệ thống, Thuật toán SM-2 & Database Schema
 │   ├── algorithms/              # Giải thích chi tiết thuật toán SuperMemo-2
 │   ├── architecture/            # System Architecture, Code Structure & Database ERD
-│   ├── roadmap.md               # Lộ trình phát triển sản phẩm
-│   └── vocabulary-app-feature-ideas-vi.md # Ý tưởng tính năng chi tiết
+│   ├── PRODUCT_BACKLOG_ROADMAP.md # Đặc tả nghiệp vụ & Lộ trình phát triển chi tiết
+│   └── STARTER_LIBRARY_ROADMAP.md # Kế hoạch kho từ vựng Starter Library
 ├── package.json                 # Cấu hình Root Monorepo
 └── pnpm-workspace.yaml          # Định nghĩa PNPM Workspaces
 ```
@@ -108,8 +108,8 @@ pnpm --filter @wordstreak/shared-types build
 * 📂 [Cấu trúc Mã nguồn & Quy chuẩn](./docs/architecture/code-structure.md)
 * 🗄️ [Thiết kế Cơ sở dữ liệu (Database ERD)](./docs/architecture/database-schema.md)
 * 🧮 [Giải thích Thuật toán SuperMemo 2 (SM-2)](./docs/algorithms/supermemo-2.md)
-* 💡 [Ý tưởng & Phân tích tính năng chi tiết](./vocabulary-app-feature-ideas-vi.md)
-* 🚀 [Lộ trình phát triển sản phẩm](./docs/roadmap.md)
+* 📋 [Product Backlog & Lộ trình phát triển (Living Roadmap)](./docs/PRODUCT_BACKLOG_ROADMAP.md)
+* 📚 [Chiến lược Bộ từ vựng Starter Library](./docs/STARTER_LIBRARY_ROADMAP.md)
 
 ---
 

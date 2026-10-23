@@ -93,9 +93,9 @@ Best practices for Git version control, branching strategies, and collaborative 
     - **Global Governance, Agent Rules & Skill References** (`.agents/**`, `GEMINI.md`, `.specify/templates/**`, `package.json`, root configs):
       - **Target Domain**: `chore/governance-<slug>` or `chore/agent-skills` (or `main` if merged).
       - **STRICT PROHIBITION**: NEVER commit global governance or agent configs into domain feature branches (e.g. `feat/card-management`, `feat/auth-*`, `feat/deck-*`).
-    - **Feature-Specific Code & Documents** (`apps/web/src/features/<domain>/**`, `apps/api/src/modules/<domain>/**`, `specs/<slug>/**`, `docs/features/<slug>/**`, `docs/user-guides/<slug>.md`):
+    - **Feature-Specific Code & Documents** (`apps/web/src/features/<domain>/**`, `apps/api/src/modules/<domain>/**`, `.specify/features/<slug>/**`, `docs/features/<slug>/**`, `docs/user-guides/<slug>.md`):
       - **Target Domain**: `feat/<domain>-<feature-slug>` (e.g. `feat/card-management`, `feat/deck-crud-management`). All specs and user guides for a feature live together on the feature branch.
-    - **Global Architecture, Roadmaps & Product References** (`docs/architecture/**`, `docs/algorithms/**`, `docs/PRODUCT_BACKLOG_ROADMAP.md`, `README.md`, `vocabulary-app-feature-ideas*.md`):
+    - **Global Architecture, Roadmaps & Product References** (`docs/architecture/**`, `docs/algorithms/**`, `docs/PRODUCT_BACKLOG_ROADMAP.md`, `README.md`):
       - **When modified alongside a feature**: Commit on that feature's branch (`feat/<slug>`).
       - **When updated independently (standalone roadmap/architecture update)**: `docs/<topic-slug>` (e.g. `docs/update-roadmap`, `docs/sm2-algorithm-reference`).
     - **Shared Libraries & Packages** (`packages/shared-types/**`):
