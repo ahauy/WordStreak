@@ -190,7 +190,9 @@ describe('AiVocabularyService', () => {
       const result = await service.getPublicWord('serendipity');
 
       expect(cacheRepository.findByWord).toHaveBeenCalledWith('serendipity');
-      expect(cacheRepository.incrementHitCount).toHaveBeenCalledWith('cache-123');
+      expect(cacheRepository.incrementHitCount).toHaveBeenCalledWith(
+        'cache-123',
+      );
       expect(result.source).toBe('cache');
       expect(result.cached).toBe(true);
       expect(result.word).toBe('serendipity');
@@ -210,7 +212,9 @@ describe('AiVocabularyService', () => {
       const result = await service.getPublicWord('ineffable');
 
       expect(cacheRepository.findByWord).toHaveBeenCalledWith('ineffable');
-      expect(freeDictionaryProvider.fetchDefinition).toHaveBeenCalledWith('ineffable');
+      expect(freeDictionaryProvider.fetchDefinition).toHaveBeenCalledWith(
+        'ineffable',
+      );
       expect(cacheRepository.saveToCache).toHaveBeenCalledWith({
         ...mockGeneratedCard,
         word: 'ineffable',

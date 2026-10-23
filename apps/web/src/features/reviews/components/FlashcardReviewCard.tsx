@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { TtsAudioPlayer } from "../../../components/pwa/TtsAudioPlayer";
 import { PhoneticWordBreakdown } from "../../../components/voice/PhoneticWordBreakdown";
 import { ReportCardFeedbackModal } from "../../library/components/ReportCardFeedbackModal";
+import { soundEffects } from "../../../utils/audio/soundEffects";
 import type { DueCardItem, SrsRating } from "@wordstreak/shared-types";
 
 interface FlashcardReviewCardProps {
@@ -66,6 +67,23 @@ export const FlashcardReviewCard: React.FC<FlashcardReviewCardProps> = ({
     }
   }, [isAudioFirstMode, card.id, isFlipped, playAudio]);
 
+  const handleFlip = useCallback(() => {
+    soundEffects.playFlip();
+    onFlip();
+  }, [onFlip]);
+
+  const handleRate = useCallback(
+    (rating: SrsRating) => {
+      if (rating >= 3) {
+        soundEffects.playSuccess();
+      } else {
+        soundEffects.playNotice();
+      }
+      onRate(rating);
+    },
+    [onRate],
+  );
+
   // Keyboard shortcut listener
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -79,30 +97,30 @@ export const FlashcardReviewCard: React.FC<FlashcardReviewCardProps> = ({
 
       if (e.code === "Space") {
         e.preventDefault();
-        onFlip();
+        handleFlip();
       } else if (e.key === "r" || e.key === "R") {
         e.preventDefault();
         playAudio();
       } else if (isFlipped && !isSubmitting) {
         if (e.key === "1") {
           e.preventDefault();
-          onRate(1);
+          handleRate(1);
         } else if (e.key === "2") {
           e.preventDefault();
-          onRate(2);
+          handleRate(2);
         } else if (e.key === "3") {
           e.preventDefault();
-          onRate(3);
+          handleRate(3);
         } else if (e.key === "4") {
           e.preventDefault();
-          onRate(4);
+          handleRate(4);
         }
       }
     };
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [isFlipped, isSubmitting, onFlip, onRate, playAudio]);
+  }, [isFlipped, isSubmitting, handleFlip, handleRate, playAudio]);
 
   const unitDay = isVi ? " ngày" : "d";
   const goodInterval =
@@ -381,7 +399,7 @@ export const FlashcardReviewCard: React.FC<FlashcardReviewCardProps> = ({
             <button
               type="button"
               disabled={isSubmitting}
-              onClick={() => onRate(1)}
+              onClick={() => handleRate(1)}
               className="flex flex-col items-center justify-center p-3 rounded-xl border border-[#e5e5e5] bg-[#ffffff] hover:bg-[#fafafa] hover:border-[#d4d4d4] active:bg-[#f5f5f5] transition-all disabled:opacity-50 group cursor-pointer"
             >
               <span className="text-xs font-semibold text-[#ff5f56]">
@@ -399,7 +417,7 @@ export const FlashcardReviewCard: React.FC<FlashcardReviewCardProps> = ({
             <button
               type="button"
               disabled={isSubmitting}
-              onClick={() => onRate(2)}
+              onClick={() => handleRate(2)}
               className="flex flex-col items-center justify-center p-3 rounded-xl border border-[#e5e5e5] bg-[#ffffff] hover:bg-[#fafafa] hover:border-[#d4d4d4] active:bg-[#f5f5f5] transition-all disabled:opacity-50 group cursor-pointer"
             >
               <span className="text-xs font-semibold text-[#ffbd2e]">
@@ -417,7 +435,7 @@ export const FlashcardReviewCard: React.FC<FlashcardReviewCardProps> = ({
             <button
               type="button"
               disabled={isSubmitting}
-              onClick={() => onRate(3)}
+              onClick={() => handleRate(3)}
               className="flex flex-col items-center justify-center p-3 rounded-xl border border-[#e5e5e5] bg-[#ffffff] hover:bg-[#fafafa] hover:border-[#d4d4d4] active:bg-[#f5f5f5] transition-all disabled:opacity-50 group cursor-pointer"
             >
               <span className="text-xs font-semibold text-[#27c93f]">
@@ -435,7 +453,7 @@ export const FlashcardReviewCard: React.FC<FlashcardReviewCardProps> = ({
             <button
               type="button"
               disabled={isSubmitting}
-              onClick={() => onRate(4)}
+              onClick={() => handleRate(4)}
               className="flex flex-col items-center justify-center p-3 rounded-xl border border-[#e5e5e5] bg-[#ffffff] hover:bg-[#fafafa] hover:border-[#d4d4d4] active:bg-[#f5f5f5] transition-all disabled:opacity-50 group cursor-pointer"
             >
               <span className="text-xs font-semibold text-[#000000]">
@@ -452,7 +470,7 @@ export const FlashcardReviewCard: React.FC<FlashcardReviewCardProps> = ({
         ) : (
           <button
             type="button"
-            onClick={onFlip}
+            onClick={handleFlip}
             className="w-full py-3 px-6 rounded-full bg-[#000000] text-[#ffffff] font-medium text-sm hover:bg-[#090909] active:scale-[0.99] transition-all flex items-center justify-center gap-2 shadow-sm cursor-pointer"
           >
             <span>{t("study:session.showAnswer", "Show Answer")}</span>

@@ -2,11 +2,17 @@ import {
   Injectable,
   NotFoundException,
   ForbiddenException,
+  Optional,
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { Prisma } from '@prisma/client';
 import { SrsService } from './srs.service';
-import { StreakService, isValidTimezone } from '../streaks/streak.service';
+import { StreakService } from '../streaks/streak.service';
 import { XpService } from '../gamification/services/xp.service';
+import {
+  ReviewsSummaryService,
+  DEFAULT_DAILY_GOAL,
+} from './services/reviews-summary.service';
 import { SubmitReviewDto } from './dto/submit-review.dto';
 import { QueryDueReviewsDto } from './dto/query-due-reviews.dto';
 import type {
@@ -19,134 +25,36 @@ import type {
   BacklogWarningDto,
 } from '@wordstreak/shared-types';
 
-export const STREAK_RISK_MIN_DAYS = 3;
-export const STREAK_RISK_WINDOW_MS = 3 * 60 * 60 * 1000;
-export const DEFAULT_DAILY_GOAL = 10;
-
-export function resolveSummaryTimezone(
-  queryTimezone?: string,
-  headerTimezone?: string,
-): string {
-  if (
-    queryTimezone &&
-    queryTimezone.trim() &&
-    isValidTimezone(queryTimezone.trim())
-  ) {
-    return queryTimezone.trim();
-  }
-  if (
-    headerTimezone &&
-    headerTimezone.trim() &&
-    isValidTimezone(headerTimezone.trim())
-  ) {
-    return headerTimezone.trim();
-  }
-  return 'UTC';
-}
-
-function localWallClockToUtc(
-  year: number,
-  month: number,
-  day: number,
-  hour: number,
-  minute: number,
-  second: number,
-  ms: number,
-  timeZone: string,
-): Date {
-  const formatter = new Intl.DateTimeFormat('en-US', {
-    timeZone,
-    year: 'numeric',
-    month: 'numeric',
-    day: 'numeric',
-    hour: 'numeric',
-    minute: 'numeric',
-    second: 'numeric',
-    hourCycle: 'h23',
-  });
-
-  const getOffsetMs = (utcMs: number): number => {
-    const parts = formatter.formatToParts(new Date(utcMs));
-    const map: Record<string, number> = {};
-    for (const part of parts) {
-      if (part.type !== 'literal') {
-        map[part.type] = Number(part.value);
-      }
-    }
-    const asUtc = Date.UTC(
-      map.year,
-      map.month - 1,
-      map.day,
-      map.hour,
-      map.minute,
-      map.second,
-      ms,
-    );
-    return asUtc - utcMs;
-  };
-
-  const targetAsUtc = Date.UTC(year, month - 1, day, hour, minute, second, ms);
-  const firstPassUtc = targetAsUtc - getOffsetMs(targetAsUtc);
-  const secondPassUtc = targetAsUtc - getOffsetMs(firstPassUtc);
-  return new Date(secondPassUtc);
-}
-
-export function getLocalDayUtcBoundaries(
-  now: Date,
-  timezone: string,
-): { startOfDayUtc: Date; endOfDayUtc: Date } {
-  const dtf = new Intl.DateTimeFormat('en-US', {
-    timeZone: timezone,
-    year: 'numeric',
-    month: 'numeric',
-    day: 'numeric',
-  });
-  const parts = dtf.formatToParts(now);
-  const map: Record<string, number> = {};
-  for (const part of parts) {
-    if (part.type !== 'literal') {
-      map[part.type] = Number(part.value);
-    }
-  }
-  const { year, month, day } = map;
-  const startOfDayUtc = localWallClockToUtc(
-    year,
-    month,
-    day,
-    0,
-    0,
-    0,
-    0,
-    timezone,
-  );
-  const endOfDayUtc = localWallClockToUtc(
-    year,
-    month,
-    day,
-    23,
-    59,
-    59,
-    999,
-    timezone,
-  );
-  return { startOfDayUtc, endOfDayUtc };
-}
+export {
+  STREAK_RISK_MIN_DAYS,
+  STREAK_RISK_WINDOW_MS,
+  DEFAULT_DAILY_GOAL,
+  resolveSummaryTimezone,
+  getLocalDayUtcBoundaries,
+} from './services/reviews-summary.service';
 
 @Injectable()
 export class ReviewsService {
+  private readonly reviewsSummaryService: ReviewsSummaryService;
+
   constructor(
     private readonly prisma: PrismaService,
     private readonly srsService: SrsService,
     private readonly streakService: StreakService,
     private readonly xpService: XpService,
-  ) {}
+    @Optional() reviewsSummaryService?: ReviewsSummaryService,
+  ) {
+    this.reviewsSummaryService =
+      reviewsSummaryService || new ReviewsSummaryService(prisma, streakService);
+  }
 
   /**
    * Retrieves prioritized due cards and new cards ready for review.
    */
-  async getDueCards(userId: string, query: QueryDueReviewsDto = {}) {
-    const { deckId, mode } = query;
-    let limit = query.limit ?? 50;
+  async getDueCards(userId: string, query: QueryDueReviewsDto | string = {}) {
+    const deckId = typeof query === 'string' ? query : query?.deckId;
+    const mode = typeof query === 'object' ? query?.mode : undefined;
+    let limit = (typeof query === 'object' ? query?.limit : undefined) ?? 50;
     if (mode === 'express') {
       limit = Math.min(limit, 7);
     }
@@ -163,7 +71,7 @@ export class ReviewsService {
       now.getTime() - new Date(userStreak.lastActiveDate).getTime() >
         SEVEN_DAYS_MS,
     );
-    if (isWelcomeBack && !query.limit && mode !== 'express') {
+    if (isWelcomeBack && (typeof query === 'object' && !query.limit) && mode !== 'express') {
       limit = 7;
     }
 
@@ -174,62 +82,83 @@ export class ReviewsService {
     });
     const dailyGoal = user?.dailyGoal ?? 10;
 
-    // 2. Build where filter for deck scope
+    // 2. Check if deckId belongs to an official deck
+    const isOfficialDeck =
+      deckId && this.prisma.officialDeck?.findUnique
+        ? await this.prisma.officialDeck.findUnique({
+            where: { id: deckId },
+            select: { id: true, title: true },
+          })
+        : null;
+
+    // 3. Query custom progress records that are due (nextReviewDate <= now) or NEW
     const deckFilter = deckId
       ? { deckId, deck: { userId, isArchived: false } }
       : { deck: { userId, isArchived: false } };
 
-    // 3. Query custom progress records that are due (nextReviewDate <= now) or NEW
-    const progressList = await this.prisma.userCardProgress.findMany({
-      where: {
-        userId,
-        card: deckFilter,
-        OR: [{ nextReviewDate: { lte: now } }, { status: 'NEW' }],
-      },
-      include: {
-        card: {
-          include: {
-            deck: {
-              select: {
-                id: true,
-                title: true,
-                color: true,
+    const progressList =
+      (isOfficialDeck
+        ? []
+        : await this.prisma.userCardProgress.findMany({
+            where: {
+              userId,
+              card: deckFilter,
+              OR: [{ nextReviewDate: { lte: now } }, { status: 'NEW' }],
+            },
+            include: {
+              card: {
+                include: {
+                  deck: {
+                    select: {
+                      id: true,
+                      title: true,
+                      color: true,
+                    },
+                  },
+                },
               },
             },
-          },
-        },
-      },
-      orderBy: [{ nextReviewDate: 'asc' }],
-      take: limit,
-    });
+            orderBy: [{ nextReviewDate: 'asc' }],
+            take: limit,
+          })) || [];
 
-    // 4. Query official cards progress if not scoped to a custom deck
-    const officialProgressList = !deckId
-      ? await this.prisma.userOfficialCardProgress.findMany({
-          where: {
-            userId,
-            OR: [{ nextReviewDate: { lte: now } }, { status: 'NEW' }],
-          },
-          include: {
-            card: {
-              include: {
-                deckCards: {
-                  include: {
-                    deck: {
-                      select: {
-                        id: true,
-                        title: true,
+    // 4. Query official cards progress (all if no deckId, scoped if official deckId)
+    const officialWhere: Prisma.UserOfficialCardProgressWhereInput = {
+      userId,
+      OR: [{ nextReviewDate: { lte: now } }, { status: 'NEW' }],
+    };
+    if (isOfficialDeck) {
+      officialWhere.card = {
+        deckCards: {
+          some: { deckId },
+        },
+      };
+    }
+
+    const officialProgressList =
+      deckId && !isOfficialDeck
+        ? []
+        : await this.prisma.userOfficialCardProgress.findMany({
+            where: officialWhere,
+            include: {
+              card: {
+                include: {
+                  deckCards: {
+                    include: {
+                      deck: {
+                        select: {
+                          id: true,
+                          title: true,
+                        },
                       },
                     },
                   },
                 },
               },
             },
-          },
-          orderBy: [{ nextReviewDate: 'asc' }],
-          take: limit,
-        })
-      : [];
+            orderBy: [{ nextReviewDate: 'asc' }],
+            take: limit,
+          });
 
     // 5. Separate and sort: Overdue -> Due Today -> New cards (capped by dailyGoal)
     const todayStart = new Date(
@@ -641,102 +570,6 @@ export class ReviewsService {
     };
   }
 
-  private async fetchSummaryAggregates(
-    userId: string,
-    now: Date,
-    startOfDayUtc: Date,
-    endOfDayUtc: Date,
-    timezone: string,
-  ) {
-    const activeDeckCardFilter = { deck: { userId, isArchived: false } };
-    const [
-      user,
-      customDue,
-      customNew,
-      studiedToday,
-      customNextDue,
-      streak,
-      officialDue,
-      officialNew,
-      officialNextDue,
-    ] = await Promise.all([
-      this.prisma.user.findUnique({
-        where: { id: userId },
-        select: { dailyGoal: true },
-      }),
-      this.prisma.userCardProgress.count({
-        where: {
-          userId,
-          status: { not: 'NEW' },
-          nextReviewDate: { lte: now },
-          card: activeDeckCardFilter,
-        },
-      }),
-      this.prisma.userCardProgress.count({
-        where: {
-          userId,
-          status: 'NEW',
-          card: activeDeckCardFilter,
-        },
-      }),
-      this.prisma.reviewLog.count({
-        where: {
-          userId,
-          reviewedAt: { gte: startOfDayUtc, lte: endOfDayUtc },
-        },
-      }),
-      this.prisma.userCardProgress.findFirst({
-        where: {
-          userId,
-          status: { not: 'NEW' },
-          nextReviewDate: { gt: now },
-          card: activeDeckCardFilter,
-        },
-        orderBy: { nextReviewDate: 'asc' },
-        select: { nextReviewDate: true },
-      }),
-      this.streakService.getStreak(userId, timezone),
-      this.prisma.userOfficialCardProgress.count({
-        where: {
-          userId,
-          status: { not: 'NEW' },
-          nextReviewDate: { lte: now },
-        },
-      }),
-      this.prisma.userOfficialCardProgress.count({
-        where: {
-          userId,
-          status: 'NEW',
-        },
-      }),
-      this.prisma.userOfficialCardProgress.findFirst({
-        where: {
-          userId,
-          status: { not: 'NEW' },
-          nextReviewDate: { gt: now },
-        },
-        orderBy: { nextReviewDate: 'asc' },
-        select: { nextReviewDate: true },
-      }),
-    ]);
-
-    const nextDueDates = [
-      customNextDue?.nextReviewDate,
-      officialNextDue?.nextReviewDate,
-    ]
-      .filter((d): d is Date => Boolean(d))
-      .sort((a, b) => a.getTime() - b.getTime());
-
-    return [
-      user,
-      customDue + officialDue,
-      customNew + officialNew,
-      studiedToday,
-      nextDueDates[0] ? { nextReviewDate: nextDueDates[0] } : null,
-      streak,
-    ] as const;
-  }
-
   /**
    * Aggregates compact 10-field review summary for Extension and Web clients.
    */
@@ -745,60 +578,10 @@ export class ReviewsService {
     queryTimezone?: string,
     headerTimezone?: string,
   ): Promise<ReviewSummaryDto> {
-    const now = new Date();
-    const timezone = resolveSummaryTimezone(queryTimezone, headerTimezone);
-    const { startOfDayUtc, endOfDayUtc } = getLocalDayUtcBoundaries(
-      now,
-      timezone,
+    return this.reviewsSummaryService.getReviewSummary(
+      userId,
+      queryTimezone,
+      headerTimezone,
     );
-
-    const [user, dueCount, newAvailable, studiedToday, nextDueRecord, streak] =
-      await this.fetchSummaryAggregates(
-        userId,
-        now,
-        startOfDayUtc,
-        endOfDayUtc,
-        timezone,
-      );
-
-    const dailyGoal =
-      user?.dailyGoal && user.dailyGoal > 0
-        ? user.dailyGoal
-        : DEFAULT_DAILY_GOAL;
-    const goalReached = studiedToday >= dailyGoal;
-    const currentStreak = streak.currentStreak;
-    const msUntilEndOfDay = endOfDayUtc.getTime() - now.getTime();
-    const streakAtRisk =
-      currentStreak >= STREAK_RISK_MIN_DAYS &&
-      studiedToday === 0 &&
-      !streak.isActiveToday &&
-      msUntilEndOfDay > 0 &&
-      msUntilEndOfDay <= STREAK_RISK_WINDOW_MS;
-
-    const backlogThreshold = 3 * dailyGoal;
-    const isBacklogOverwhelmed = dueCount > backlogThreshold;
-    const backlogWarning: BacklogWarningDto = {
-      isOverwhelmed: isBacklogOverwhelmed,
-      dueCount,
-      threshold: backlogThreshold,
-      dailyGoal,
-      suggestedBatchSize: Math.min(10, dailyGoal),
-    };
-
-    return {
-      dueCount,
-      newAvailable,
-      studiedToday,
-      dailyGoal,
-      goalReached,
-      currentStreak,
-      streakAtRisk,
-      timezone,
-      endOfDayAt: endOfDayUtc.toISOString(),
-      nextDueAt: nextDueRecord
-        ? nextDueRecord.nextReviewDate.toISOString()
-        : null,
-      backlogWarning,
-    };
   }
 }

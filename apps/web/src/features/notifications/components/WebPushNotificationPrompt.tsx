@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Bell, Flame, X, ShieldAlert, Sparkles } from "lucide-react";
 
 export interface WebPushNotificationPromptProps {
@@ -16,24 +16,19 @@ export const WebPushNotificationPrompt: React.FC<WebPushNotificationPromptProps>
   onSubscribed,
   compact = false,
 }) => {
-  const [permission, setPermission] = useState<PushPermissionState>("unsupported");
-  const [isDismissed, setIsDismissed] = useState(false);
+  const [permission, setPermission] = useState<PushPermissionState>(() => {
+    if (typeof window !== "undefined" && "Notification" in window) {
+      return Notification.permission as PushPermissionState;
+    }
+    return "unsupported";
+  });
+  const [isDismissed, setIsDismissed] = useState<boolean>(() => {
+    if (typeof window !== "undefined") {
+      return localStorage.getItem(PUSH_STORAGE_KEY) === "dismissed";
+    }
+    return false;
+  });
   const [isRequesting, setIsRequesting] = useState(false);
-
-  useEffect(() => {
-    if (typeof window === "undefined" || !("Notification" in window)) {
-      setPermission("unsupported");
-      return;
-    }
-
-    const currentPermission = Notification.permission as PushPermissionState;
-    setPermission(currentPermission);
-
-    const storedPref = localStorage.getItem(PUSH_STORAGE_KEY);
-    if (storedPref === "dismissed") {
-      setIsDismissed(true);
-    }
-  }, []);
 
   const handleRequestPermission = async () => {
     if (typeof window === "undefined" || !("Notification" in window)) {

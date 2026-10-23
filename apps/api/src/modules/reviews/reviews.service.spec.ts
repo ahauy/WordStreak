@@ -30,6 +30,9 @@ describe('ReviewsService', () => {
     officialCard: {
       findUnique: jest.Mock;
     };
+    officialDeck: {
+      findUnique: jest.Mock;
+    };
     userOfficialCardProgress: {
       findMany: jest.Mock;
       findUnique: jest.Mock;
@@ -110,6 +113,9 @@ describe('ReviewsService', () => {
       },
       officialCard: {
         findUnique: jest.fn(),
+      },
+      officialDeck: {
+        findUnique: jest.fn().mockResolvedValue(null),
       },
       userOfficialCardProgress: {
         findMany: jest.fn().mockResolvedValue([]),
@@ -671,6 +677,32 @@ describe('ReviewsService', () => {
       expect(result.data[0].isOfficial).toBe(true);
       expect(result.data[1].word).toBe('custom-word');
       expect(result.data[1].isOfficial).toBeUndefined();
+    });
+
+    it('TC-ODA-005: getDueCards queries official deck cards when deckId belongs to an official deck', async () => {
+      prisma.officialDeck.findUnique.mockResolvedValue({ id: 'off-deck-1', title: 'TSL 1A' });
+      prisma.userOfficialCardProgress.findMany.mockResolvedValue([
+        {
+          id: 'prog-official-1',
+          cardId: 'official-card-1',
+          status: 'LEARNING',
+          interval: 2,
+          repetitions: 1,
+          easeFactor: 2.4,
+          nextReviewDate: new Date('2026-10-09T00:00:00.000Z'),
+          card: {
+            headword: 'reimburse',
+            content: { meaning_vi: 'hoàn tiền' },
+            deckCards: [{ deck: { id: 'off-deck-1', title: 'TSL 1A' } }],
+          },
+        },
+      ]);
+
+      const result = await service.getDueCards(mockUserId, 'off-deck-1');
+      expect(result.data).toHaveLength(1);
+      expect(result.data[0].word).toBe('reimburse');
+      expect(result.data[0].deckId).toBe('off-deck-1');
+      expect(result.data[0].isOfficial).toBe(true);
     });
 
     it('TC-ODA-003: submitReview processes official card, creates lazy progress, and updates SM-2', async () => {

@@ -9,6 +9,7 @@ import type {
   OfficialCardFeedbackReason,
   CardFeedbackResponse,
   LibraryAnalyticsSummaryResponse,
+  ForkOfficialCardResponse,
 } from "@wordstreak/shared-types";
 
 export const libraryService = {
@@ -82,6 +83,17 @@ export const libraryService = {
     const response = await apiClient.post<CardFeedbackResponse>(
       `/library/cards/${cardId}/feedback`,
       { reason, comment },
+    );
+    return response.data;
+  },
+
+  async forkCard(
+    cardId: string,
+    targetDeckId?: string,
+  ): Promise<ForkOfficialCardResponse> {
+    const response = await apiClient.post<ForkOfficialCardResponse>(
+      `/library/cards/${cardId}/fork`,
+      { targetDeckId },
     );
     return response.data;
   },

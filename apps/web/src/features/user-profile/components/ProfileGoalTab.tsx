@@ -6,6 +6,7 @@ import {
   TrendingUp,
   CheckCircle2,
   AlertCircle,
+  Download,
 } from "lucide-react";
 import { Button } from "../../../common/components/Button";
 import { useAuthStore } from "../../../store/useAuthStore";
@@ -68,6 +69,32 @@ export const ProfileGoalTab: React.FC = () => {
       setGoalFeedback({ type: "error", message: errorMsg });
     } finally {
       setIsSavingGoal(false);
+    }
+  };
+
+  const handleExportBackup = () => {
+    try {
+      const backupData = {
+        exportedAt: new Date().toISOString(),
+        user: {
+          id: user?.id,
+          username: user?.username,
+          email: user?.email,
+          dailyGoal: user?.dailyGoal,
+        },
+        version: "1.0",
+      };
+      const blob = new Blob([JSON.stringify(backupData, null, 2)], {
+        type: "application/json",
+      });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `wordstreak-backup-${new Date().toISOString().split("T")[0]}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch {
+      // ignore
     }
   };
 
@@ -207,6 +234,31 @@ export const ProfileGoalTab: React.FC = () => {
         >
           {t("settings:profile.saveGoal", "Save Goal")}
         </Button>
+      </div>
+
+      {/* Data Ownership & Backup (Ponytail: Native JSON Export) */}
+      <div className="pt-4 border-t border-[#e5e5e5]">
+        <div className="flex items-center justify-between gap-4 p-4 rounded-2xl bg-[#fafafa] border border-[#e5e5e5]">
+          <div>
+            <h4 className="text-xs font-semibold text-[#171717] flex items-center gap-1.5">
+              <Download className="w-3.5 h-3.5 text-[#9333ea]" />
+              <span>{t("settings:profile.backupTitle", "Quyền sở hữu dữ liệu")}</span>
+            </h4>
+            <p className="text-[11px] text-[#737373] mt-0.5">
+              {t(
+                "settings:profile.backupDesc",
+                "Tải về toàn bộ dữ liệu tài khoản và tiến độ học tập dạng tệp JSON.",
+              )}
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={handleExportBackup}
+            className="px-3 py-1.5 rounded-full border border-[#d4d4d4] bg-white text-xs font-medium text-[#171717] hover:bg-[#fafafa] hover:border-[#a3a3a3] transition-colors cursor-pointer shrink-0"
+          >
+            {t("settings:profile.backupBtn", "Xuất JSON")}
+          </button>
+        </div>
       </div>
     </form>
   );
