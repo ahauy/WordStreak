@@ -706,14 +706,14 @@ _Mục tiêu: Xóa bỏ hoàn toàn rào cản "ứng dụng trống" bằng cá
   ├── EPIC-10: Full UI Localization (EN/VI)                ✅
   └── EPIC-10: User Language Preference Sync (DB)          ✅
 
-[ Sprint 8 - Production Hardening & Go-Live ]  ──► [ P0 NEXT 🚀 ]
+[ Sprint 8 - Production Hardening & Go-Live ]  ──► [ COMPLETED ✅ ]
   ├── US-DEPLOY-01: Hoàn thiện US-I18N-03 (language sync to DB) ✅
   ├── US-DEPLOY-02: Security hardening (secrets, CORS, JWT)     ✅
-  ├── US-DEPLOY-03: Neon DB setup & prisma migrate deploy
-  ├── US-DEPLOY-04: Koyeb API deployment (Dockerfile.api)
-  ├── US-DEPLOY-05: Vercel frontend deployment
+  ├── US-DEPLOY-03: Neon DB setup & prisma migrate deploy       ✅
+  ├── US-DEPLOY-04: Render API deployment (Web Service)        ✅
+  ├── US-DEPLOY-05: Vercel frontend deployment                  ✅
   ├── US-DEPLOY-06: Nginx SPA routing fix                      ✅
-  └── US-DEPLOY-07: E2E smoke test on production URL
+  └── US-DEPLOY-07: E2E smoke test on production URL           ✅
 
 [ Sprint 7 - Ecosystem & Platform Expansion ]  ──► [ COMPLETED ✅ ]
   ├── EPIC-09: Chrome Extension (Manifest V3)           ✅
@@ -806,7 +806,7 @@ Một User Story / Task chỉ được chuyển trạng thái từ `[/]` sang `[
 Thứ tự thực hiện đề xuất:
   ① Hoàn thiện US-I18N-03 (2–3h)  →  Sprint 6 ĐẦY ĐỦ 100% ✅
   ② Chạy pre-deploy checklist       →  Fix security & env vars (1–2h)
-  ③ Deploy lên Neon → Koyeb → Vercel →  Go-Live 🚀
+  ③ Deploy lên Neon → Render → Vercel →  Go-Live 🚀
 ```
 
 ---
@@ -825,9 +825,9 @@ Thứ tự thực hiện đề xuất:
          │      • Global CDN, ~10ms TTFB globally                            │
          │      • Free tier: Unlimited bandwidth, 100GB/tháng                │
          │      • Deploy: Push to main → auto build → live trong 30 giây     │
-         │      • Env var: VITE_API_URL → URL của Koyeb                      │
+         │      • Env var: VITE_API_URL → URL của Render                      │
          │                                                                    │
-         └──► [KOYEB] — Backend API  ──────────────────────────────────────┐ │
+         └──► [RENDER] — Backend API  ──────────────────────────────────────┐ │
                 • apps/api (NestJS Docker container)                       │ │
                 • Always-on: KHÔNG sleep, 0.1 vCPU / 512MB RAM            │ │
                 • Free tier: 1 web service, run từ Dockerfile.api          │ │
@@ -842,20 +842,21 @@ Thứ tự thực hiện đề xuất:
                 • Prisma migrate deploy chạy 1 lần khi setup               │
                                                                            │
          Chrome Extension (tương lai) ─────────────────────────────────┘
-                • Gọi trực tiếp vào Koyeb API (cùng endpoint /api/v1/...)
+                • Gọi trực tiếp vào Render API (cùng endpoint /api/v1/...)
                 • CORS: Thêm chrome-extension://<id> vào whitelist
                 • Auth: Dùng lại JWT flow hiện tại (không cần thêm gì)
 ```
 
-**Tại sao KHÔNG chọn các lựa chọn khác:**
+**Bảng so sánh nền tảng:**
 
-| Platform          | Vấn đề                                                                    |
-| ----------------- | ------------------------------------------------------------------------- |
-| **Render (free)** | Sleep sau 15 phút không có traffic → cold start 10–30 giây. Không phù hợp |
-| **Railway**       | Chỉ $5 credit/tháng rồi tính tiền. Không thực sự miễn phí                 |
-| **Fly.io**        | Tốt nhưng cấu hình phức tạp hơn, Koyeb đơn giản hơn cho monorepo          |
-| **Supabase**      | Tự động pause DB sau 1 tuần không hoạt động (free tier)                   |
-| **Heroku**        | Đã bỏ free tier hoàn toàn                                                 |
+| Platform          | Đánh giá & Trạng thái sử dụng                                                         |
+| ----------------- | ------------------------------------------------------------------------------------- |
+| **Render (free)** | **ĐÃ CHỌN**: Web Service chạy NestJS. Dùng UptimeRobot ping định kỳ để chống sleep.  |
+| **Koyeb (free)**  | Phương án dự phòng (1 web service không sleep).                                       |
+| **Railway**       | Chỉ $5 credit/tháng rồi tính tiền. Không thực sự miễn phí                             |
+| **Fly.io**        | Tốt nhưng cấu hình phức tạp hơn.                                                      |
+| **Supabase**      | Tự động pause DB sau 1 tuần không hoạt động (free tier)                               |
+| **Heroku**        | Đã bỏ free tier hoàn toàn                                                             |
 
 ---
 
@@ -863,17 +864,17 @@ Thứ tự thực hiện đề xuất:
 
 #### Chrome Extension (Manifest V3)
 
-- **API**: Extension gọi thẳng `https://<koyeb-domain>/api/v1/...` — **không cần thay đổi gì ở backend**.
-- **CORS**: Cần thêm `chrome-extension://<extension-id>` vào `CORS_ORIGINS` env var trên Koyeb.
+- **API**: Extension gọi thẳng `https://<render-domain>.onrender.com/api/v1/...` — **không cần thay đổi gì ở backend**.
+- **CORS**: Cần thêm `chrome-extension://<extension-id>` vào `CORS_ORIGINS` env var trên Render.
 - **Auth**: Dùng lại JWT + Refresh Token flow hiện tại. Extension lưu token trong `chrome.storage.local` (secure, không phải `localStorage`).
-- **Kết luận**: Kiến trúc Koyeb API hoàn toàn tương thích. Khi làm Extension chỉ cần update 1 env var.
+- **Kết luận**: Kiến trúc Render API hoàn toàn tương thích. Khi làm Extension chỉ cần update 1 env var.
 
 #### PWA & Offline Mode
 
 - **Frontend trên Vercel**: Vercel hỗ trợ Service Worker hoàn toàn (file `sw.js` trong `/public`).
 - **Offline caching**: Service Worker cache các thẻ từ đã tải → ôn tập offline hoạt động bình thường.
-- **Background sync**: Khi có mạng lại, sync kết quả ôn tập lên Koyeb API.
-- **Kết luận**: Kiến trúc Vercel + Koyeb hoàn toàn tương thích với PWA.
+- **Background sync**: Khi có mạng lại, sync kết quả ôn tập lên Render API.
+- **Kết luận**: Kiến trúc Vercel + Render hoàn toàn tương thích với PWA.
 
 ---
 
@@ -889,18 +890,18 @@ Thứ tự thực hiện đề xuất:
 
 #### 🟡 Important — Cần làm trước ngày launch
 
-- [ ] **DB-01**: Tạo project trên [neon.tech](https://neon.tech) → lấy `DATABASE_URL` production.
-- [ ] **DB-02**: Chạy `pnpm --filter api prisma migrate deploy` (KHÔNG dùng `migrate dev` trên production).
+- [x] **DB-01**: Tạo project trên [neon.tech](https://neon.tech) → lấy `DATABASE_URL` production.
+- [x] **DB-02**: Chạy `pnpm --filter api prisma migrate deploy` (KHÔNG dùng `migrate dev` trên production).
 - [x] **DB-03**: Verify Prisma schema có migration `US-I18N-03` (thêm cột `preferredLanguage` vào `User`).
-- [ ] **API-01**: Deploy `apps/api` lên Koyeb từ `Dockerfile.api` — verify health endpoint trả về 200.
-- [ ] **WEB-01**: Deploy `apps/web` lên Vercel — set `VITE_API_URL=https://<koyeb-domain>`.
+- [x] **API-01**: Deploy `apps/api` lên Render — verify health endpoint trả về 200.
+- [x] **WEB-01**: Deploy `apps/web` lên Vercel — set `VITE_API_URL=https://<render-domain>.onrender.com`.
 - [x] **WEB-02**: Verify `Dockerfile.web` có Nginx config hỗ trợ SPA routing (fallback `index.html` cho client-side routes).
-- [ ] **TEST-01**: Smoke test toàn bộ happy path: Đăng ký → Tạo deck → Thêm từ → Ôn tập → Kiểm tra Streak.
+- [x] **TEST-01**: Smoke test toàn bộ happy path: Đăng ký → Tạo deck → Thêm từ → Ôn tập → Kiểm tra Streak.
 
 #### 🟢 Nice-to-have — Sau khi go-live
 
 - [ ] **OBS-01**: Thêm Sentry (free tier) vào frontend và backend để capture lỗi production.
-- [ ] **OBS-02**: Thêm Uptime Robot (free) monitor URL Koyeb → cảnh báo email khi down.
+- [ ] **OBS-02**: Thêm Uptime Robot (free) monitor URL Render → cảnh báo email khi down và ping chống sleep.
 - [ ] **PERF-01**: Bật Prisma connection pool mode `pgbouncer` trong Neon connection string.
 
 ---
@@ -908,7 +909,7 @@ Thứ tự thực hiện đề xuất:
 ### 7.5. Biến môi trường Production (Template)
 
 ```bash
-# ── Koyeb (apps/api) ──────────────────────────────────────────
+# ── Render (apps/api) ──────────────────────────────────────────
 NODE_ENV=production
 PORT=3000
 DATABASE_URL="postgresql://<user>:<pass>@<neon-host>/<db>?sslmode=require&pgbouncer=true"
@@ -921,10 +922,10 @@ CORS_ORIGINS="https://<vercel-domain>.vercel.app"
 GEMINI_API_KEY="<real-key>"
 
 # ── Vercel (apps/web) ──────────────────────────────────────────
-VITE_API_URL="https://<koyeb-service>.koyeb.app"
+VITE_API_URL="https://<render-service>.onrender.com"
 ```
 
-> ⚠️ **Không bao giờ commit** các file `.env` production lên git. Quản lý secrets qua dashboard của Koyeb và Vercel.
+> ⚠️ **Không bao giờ commit** các file `.env` production lên git. Quản lý secrets qua dashboard của Render và Vercel.
 
 ---
 
@@ -939,30 +940,30 @@ _Mục tiêu: Đưa WordStreak lên production ổn định, sẵn sàng tiếp 
 - [x] **US-DEPLOY-02: Security Hardening (Pre-Deploy)**
   - **AC:** Toàn bộ checklist SEC-01 đến SEC-05 ở mục 7.4 được đánh dấu hoàn thành.
 
-- [ ] **US-DEPLOY-03: Neon Database Setup & Migration**
+- [x] **US-DEPLOY-03: Neon Database Setup & Migration**
   - **AC:** DB production trên Neon khởi tạo thành công, `prisma migrate deploy` chạy sạch không có lỗi, verify schema với `prisma db pull`.
 
-- [ ] **US-DEPLOY-04: Koyeb API Deployment**
-  - **AC:** `apps/api` chạy trên Koyeb từ `Dockerfile.api`, health check endpoint `GET /api/v1/health` trả về `{ status: "ok" }`, tất cả env vars production được set đúng.
+- [x] **US-DEPLOY-04: Render API Deployment**
+  - **AC:** `apps/api` chạy trên Render (Web Service), health check endpoint `GET /api/v1/health` trả về `{ status: "ok" }`, tất cả env vars production được set đúng.
 
-- [ ] **US-DEPLOY-05: Vercel Frontend Deployment**
-  - **AC:** `apps/web` build thành công trên Vercel, SPA routing hoạt động (refresh `/decks/123` không trả về 404), kết nối được với Koyeb API.
+- [x] **US-DEPLOY-05: Vercel Frontend Deployment**
+  - **AC:** `apps/web` build thành công trên Vercel, SPA routing hoạt động (refresh `/decks/123` không trả về 404), kết nối được với Render API.
 
 - [x] **US-DEPLOY-06: Nginx SPA Routing Fix (Dockerfile.web)**
   - **AC:** Thêm `nginx.conf` tùy chỉnh vào `Dockerfile.web` để fallback về `index.html` cho tất cả routes — ngăn lỗi 404 khi refresh trang React Router.
 
-- [ ] **US-DEPLOY-07: End-to-End Smoke Test Production**
+- [x] **US-DEPLOY-07: End-to-End Smoke Test Production**
   - **AC:** Chạy Playwright smoke test trên URL production: Đăng ký tài khoản mới → Tạo deck → AI auto-fill → Review session → Kiểm tra Streak widget. Zero Critical bugs.
 
 ```
-[ Sprint 8 - Production Hardening & Go-Live ]  ──► [ P0 NEXT 🚀 ]
+[ Sprint 8 - Production Hardening & Go-Live ]  ──► [ COMPLETED ✅ ]
   ├── US-DEPLOY-01: Hoàn thiện US-I18N-03 (language sync to DB) ✅
   ├── US-DEPLOY-02: Security hardening (secrets, CORS, JWT)     ✅
-  ├── US-DEPLOY-03: Neon DB setup & prisma migrate deploy
-  ├── US-DEPLOY-04: Koyeb API deployment (Dockerfile.api)
-  ├── US-DEPLOY-05: Vercel frontend deployment
+  ├── US-DEPLOY-03: Neon DB setup & prisma migrate deploy       ✅
+  ├── US-DEPLOY-04: Render API deployment (Web Service)        ✅
+  ├── US-DEPLOY-05: Vercel frontend deployment                  ✅
   ├── US-DEPLOY-06: Nginx SPA routing fix                      ✅
-  └── US-DEPLOY-07: E2E smoke test on production URL
+  └── US-DEPLOY-07: E2E smoke test on production URL           ✅
 ```
 
 > **Sau Sprint 8:** Tiếp tục với Sprint 9 (Activation & Retention) và Sprint 10 (Learning Quality & Growth) theo roadmap mục 5.
