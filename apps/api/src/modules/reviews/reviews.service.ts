@@ -71,7 +71,12 @@ export class ReviewsService {
       now.getTime() - new Date(userStreak.lastActiveDate).getTime() >
         SEVEN_DAYS_MS,
     );
-    if (isWelcomeBack && (typeof query === 'object' && !query.limit) && mode !== 'express') {
+    if (
+      isWelcomeBack &&
+      typeof query === 'object' &&
+      !query.limit &&
+      mode !== 'express'
+    ) {
       limit = 7;
     }
 
