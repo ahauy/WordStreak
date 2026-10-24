@@ -128,16 +128,17 @@ export const OfficialDeckDetailPage: React.FC = () => {
     });
   };
 
+  const cards = data?.cards;
   const displayCards = useMemo(() => {
-    if (!data?.cards) return [];
-    if (!cardSearch.trim()) return data.cards;
+    if (!cards) return [];
+    if (!cardSearch.trim()) return cards;
     const term = cardSearch.toLowerCase().trim();
-    return data.cards.filter(
+    return cards.filter(
       (c) =>
         c.headword.toLowerCase().includes(term) ||
         (c.content?.meaning_vi && c.content.meaning_vi.toLowerCase().includes(term))
     );
-  }, [data?.cards, cardSearch]);
+  }, [cards, cardSearch]);
 
   return (
     <div className="min-h-screen bg-[#ffffff] text-[#090909]">

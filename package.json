@@ -14,7 +14,9 @@
     "lint": "pnpm -r run lint",
     "test": "pnpm --filter @wordstreak/shared-types build && pnpm --filter api test && pnpm --filter web test",
     "package:extension": "pnpm --filter @wordstreak/extension package",
-    "seed:pipeline": "tsx scripts/seed/run-pipeline.ts"
+    "seed:pipeline": "tsx scripts/seed/run-pipeline.ts",
+    "seed:official": "pnpm --filter api seed:official",
+    "seed:toeic": "pnpm --filter api seed:toeic"
   },
   "devDependencies": {
     "playwright": "^1.62.1",

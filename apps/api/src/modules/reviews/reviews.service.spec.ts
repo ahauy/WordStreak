@@ -680,7 +680,10 @@ describe('ReviewsService', () => {
     });
 
     it('TC-ODA-005: getDueCards queries official deck cards when deckId belongs to an official deck', async () => {
-      prisma.officialDeck.findUnique.mockResolvedValue({ id: 'off-deck-1', title: 'TSL 1A' });
+      prisma.officialDeck.findUnique.mockResolvedValue({
+        id: 'off-deck-1',
+        title: 'TSL 1A',
+      });
       prisma.userOfficialCardProgress.findMany.mockResolvedValue([
         {
           id: 'prog-official-1',

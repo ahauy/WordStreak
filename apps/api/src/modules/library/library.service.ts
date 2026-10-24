@@ -259,7 +259,10 @@ export class LibraryService {
       const existingSet = new Set(existing.map((e) => e.cardId));
       const uninitIds = cardIds.filter((cid) => !existingSet.has(cid));
 
-      if (uninitIds.length > 0 && this.prisma.userOfficialCardProgress.createMany) {
+      if (
+        uninitIds.length > 0 &&
+        this.prisma.userOfficialCardProgress.createMany
+      ) {
         await this.prisma.userOfficialCardProgress.createMany({
           data: uninitIds.map((cid) => ({
             userId,
