@@ -1,138 +1,113 @@
-import { useState, useMemo } from "react";
-import { Plus, Minus } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
 import { useTranslation } from "react-i18next";
-
-interface FaqItem {
-  question: string;
-  answer: string;
-}
-
-const defaultFaqs: FaqItem[] = [
-  {
-    question: "Is WordStreak completely free to use?",
-    answer:
-      "Yes! WordStreak is 100% free for all learners. There are no paid subscriptions, no paywalled features, and no credit card required. You get full access to the SM-2 algorithm, unlimited flashcards, AI lookup, and streak tracking.",
-  },
-  {
-    question: "How does the SM-2 Spaced Repetition algorithm work?",
-    answer:
-      "SM-2 calculates optimal review intervals based on how easily you recall each word. Words rated 'Easy' get scheduled further into the future (+7 to +30 days), while words rated 'Hard' are reviewed sooner (+1 to +3 days) to reinforce memory pathways right before you forget them.",
-  },
-  {
-    question: "Can I import my existing vocabulary decks from Anki or Quizlet?",
-    answer:
-      "Yes. WordStreak supports importing CSV, JSON, and standard Anki deck files (.apkg). Our AI parser automatically maps terms, phonetic spellings, definitions, and contextual examples into your new decks.",
-  },
-  {
-    question: "How do streak freezes work?",
-    answer:
-      "Streak freezes automatically protect your daily streak when life gets busy. Every account receives streak freeze protection. If you miss a day, the freeze activates seamlessly without breaking your habit loop.",
-  },
-  {
-    question: "Is WordStreak available offline?",
-    answer:
-      "Yes. WordStreak uses a local-first caching architecture. You can review flashcards, practice quizzes, and learn new words offline. Everything syncs to the cloud the next time you connect to the internet.",
-  },
-];
 
 export function FAQSection() {
   const { t } = useTranslation("landing");
-  const [openIndices, setOpenIndices] = useState<number[]>([0, 1]);
-
-  const faqs = useMemo<FaqItem[]>(() => {
-    const items = t("faq.items", { returnObjects: true });
-    if (
-      Array.isArray(items) &&
-      items.length > 0 &&
-      typeof items[0] === "object"
-    ) {
-      return items as FaqItem[];
-    }
-    return defaultFaqs;
-  }, [t]);
-
-  const toggleFAQ = (idx: number) => {
-    setOpenIndices((prev) =>
-      prev.includes(idx) ? prev.filter((i) => i !== idx) : [...prev, idx],
-    );
-  };
 
   return (
-    <section id="faq" className="landing-section border-t border-[#e5e5e5]">
-      <div className="mx-auto max-w-3xl px-4 sm:px-6">
-        {/* Section Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.4 }}
-          className="text-center max-w-xl mx-auto mb-12"
-        >
-          <span className="command-tag-chip mb-3">
-            {t("faq.tag", "Questions")}
-          </span>
-          <h2 className="display-lg">
-            {t("faq.title", "Frequently asked questions.")}
-          </h2>
-          <p className="body-md mt-2">
+    <section className="faq section" id="hoi-dap">
+      <div className="wrap faq-grid">
+        <div className="section-intro">
+          <p className="eyebrow">{t("faq.eyebrow", "Hỏi đáp")}</p>
+          <h2
+            className="display display-sm"
+            dangerouslySetInnerHTML={{
+              __html: t("faq.title", "Những điều<br><em>cần biết.</em>"),
+            }}
+          />
+          <p className="section-lede">
             {t(
-              "faq.subtitle",
-              "Everything you need to know about spaced repetition, streaks, and WordStreak.",
+              "faq.lede",
+              "Về phương pháp lặp lại ngắt quãng, chuỗi ngày học và dữ liệu của bạn.",
             )}
           </p>
-        </motion.div>
+        </div>
 
-        {/* FAQ List */}
-        <div className="divide-y divide-[#e5e5e5] border-t border-b border-[#e5e5e5]">
-          {faqs.map((faq, idx) => {
-            const isOpen = openIndices.includes(idx);
-            return (
-              <motion.div
-                key={faq.question || idx}
-                initial={{ opacity: 0, y: 8 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.3, delay: idx * 0.05 }}
-                className="py-5"
-              >
-                <button
-                  type="button"
-                  onClick={() => toggleFAQ(idx)}
-                  className="flex w-full items-center justify-between text-left cursor-pointer group"
-                >
-                  <h3 className="heading-sm text-black group-hover:opacity-80 transition-opacity pr-4">
-                    {faq.question}
-                  </h3>
-                  <span className="flex h-6 w-6 items-center justify-center rounded-full border border-[#e5e5e5] bg-[#fafafa] text-black shrink-0 transition-transform">
-                    {isOpen ? (
-                      <Minus className="h-3.5 w-3.5" />
-                    ) : (
-                      <Plus className="h-3.5 w-3.5" />
-                    )}
-                  </span>
-                </button>
+        <div className="faq-list">
+          <details name="faq">
+            <summary>
+              <span className="faq-num">01</span>
+              <span>{t("faq.q1", "WordStreak có thật sự miễn phí không?")}</span>
+              <span className="faq-icon" aria-hidden="true"></span>
+            </summary>
+            <div className="faq-answer">
+              <p>
+                {t(
+                  "faq.a1",
+                  "Có. Toàn bộ thuật toán SM-2, không giới hạn thẻ, tra cứu AI và theo dõi chuỗi ngày đều miễn phí. Không có gói trả phí ẩn và không cần thẻ tín dụng.",
+                )}
+              </p>
+            </div>
+          </details>
 
-                <AnimatePresence>
-                  {isOpen && (
-                    <motion.div
-                      initial={{ opacity: 0, height: 0 }}
-                      animate={{ opacity: 1, height: "auto" }}
-                      exit={{ opacity: 0, height: 0 }}
-                      transition={{ duration: 0.2 }}
-                      className="overflow-hidden"
-                    >
-                      <div className="pt-3 pr-8">
-                        <p className="body-md text-[#737373] leading-relaxed">
-                          {faq.answer}
-                        </p>
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </motion.div>
-            );
-          })}
+          <details name="faq">
+            <summary>
+              <span className="faq-num">02</span>
+              <span>{t("faq.q2", "Thuật toán SM-2 hoạt động như thế nào?")}</span>
+              <span className="faq-icon" aria-hidden="true"></span>
+            </summary>
+            <div className="faq-answer">
+              <p>
+                {t(
+                  "faq.a2",
+                  "SM-2 tính khoảng cách ôn dựa trên mức độ dễ nhớ của từng từ. Từ được đánh giá “Dễ” sẽ được dời xa hơn; từ “Khó” sẽ quay lại sớm hơn, ngay trước khi bạn quên.",
+                )}
+              </p>
+            </div>
+          </details>
+
+          <details name="faq">
+            <summary>
+              <span className="faq-num">03</span>
+              <span>
+                {t("faq.q3", "Tôi có thể nhập bộ từ từ Anki hoặc Quizlet không?")}
+              </span>
+              <span className="faq-icon" aria-hidden="true"></span>
+            </summary>
+            <div className="faq-answer">
+              <p>
+                {t(
+                  "faq.a3",
+                  "Có. WordStreak nhận CSV, JSON và bộ từ Anki (.apkg). Trình phân tích sẽ ánh xạ từ vựng, phiên âm, định nghĩa và câu ví dụ vào bộ thẻ mới.",
+                )}
+              </p>
+            </div>
+          </details>
+
+          <details name="faq">
+            <summary>
+              <span className="faq-num">04</span>
+              <span>
+                {t("faq.q4", "Khiên đóng băng chuỗi dùng để làm gì?")}
+              </span>
+              <span className="faq-icon" aria-hidden="true"></span>
+            </summary>
+            <div className="faq-answer">
+              <p>
+                {t(
+                  "faq.a4",
+                  "Khi có việc bận đột xuất, khiên sẽ bảo vệ chuỗi ngày học của bạn khi bạn lỡ một ngày — chuỗi không bị đứt, thói quen vẫn được giữ.",
+                )}
+              </p>
+            </div>
+          </details>
+
+          <details name="faq">
+            <summary>
+              <span className="faq-num">05</span>
+              <span>
+                {t("faq.q5", "Tôi có thể học khi không có mạng không?")}
+              </span>
+              <span className="faq-icon" aria-hidden="true"></span>
+            </summary>
+            <div className="faq-answer">
+              <p>
+                {t(
+                  "faq.a5",
+                  "Có. WordStreak lưu dữ liệu cục bộ trước, nên bạn vẫn ôn thẻ và làm bài offline. Mọi thay đổi sẽ đồng bộ khi kết nối trở lại.",
+                )}
+              </p>
+            </div>
+          </details>
         </div>
       </div>
     </section>

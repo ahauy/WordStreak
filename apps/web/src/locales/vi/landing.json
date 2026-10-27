@@ -1,15 +1,11 @@
 {
   "hero": {
-    "badge": "Giữ ngọn lửa chuỗi học tiếng Anh mỗi ngày · 100% Miễn phí",
-    "title": "Làm chủ từ vựng tiếng Anh.",
-    "titleHighlight": "Không bao giờ quên.",
-    "subtitle": "Lặp lại ngắt quãng SM-2, thẻ ghi nhớ phát âm IPA chuẩn bản xứ và bảo vệ chuỗi Streak — dành cho người học muốn ghi nhớ vĩnh viễn.",
-    "instantLookup": "Tra cứu từ vựng tức thì",
-    "playPronunciation": "Nghe phát âm chuẩn",
-    "trySandbox": "Trải nghiệm tương tác ↓",
-    "trustFree": "100% Miễn phí trọn đời",
-    "trustNoAds": "Không quảng cáo / Paywall",
-    "trustExport": "Xuất file Anki (.apkg) & CSV"
+    "eyebrow": "Từ vựng tiếng Anh · Lặp lại ngắt quãng · Miễn phí trọn đời",
+    "title": "Khắc từng từ<br><em>vào ký ức.</em>",
+    "titlePlain": "Khắc từng từ vào ký ức.",
+    "lede": "WordStreak dùng lặp lại ngắt quãng SM-2, phát âm IPA và chuỗi ngày học để biến vài phút mỗi ngày thành vốn từ ở lại lâu dài.",
+    "cta": "Bắt đầu miễn phí",
+    "cta2": "Xem cách học"
   },
   "sandbox": {
     "tag": "Trải nghiệm học tập tương tác",
@@ -45,7 +41,7 @@
     "streakFreezeActive": "Đóng băng chuỗi: BẬT",
     "streakFreezeOff": "Đóng băng chuỗi: TẮT",
     "heatmapTitle": "BẢN ĐỒ NHIỆT (16 TUẦN GẦN NHẤT)",
-    "heatmapConsistency": "100% Duy trì thói quen",
+    "heatmapConsistency": "Dữ liệu minh hoạ · 16 tuần",
     "heatmapLess": "Ít hơn",
     "heatmapMore": "Nhiều lượt ôn hơn"
   },
@@ -128,7 +124,10 @@
       "m1": "Danh sách từ học thuật (AWL) Danh mục 1–10",
       "m2": "Collocations & thành ngữ trong văn viết trang trọng",
       "m3": "Luyện nghe âm thanh & bài tập chính tả",
-      "m4": "Điền từ vào câu theo ngữ cảnh học thuật"
+      "m4": "Điền từ vào câu theo ngữ cảnh học thuật",
+      "dailyTime": "10–15 phút/ngày",
+      "deckScope": "Bộ từ học thuật",
+      "retention": "Ôn tập theo lịch 30 ngày"
     },
     "conversation": {
       "name": "Giao tiếp & Hội thoại tự nhiên",
@@ -138,7 +137,10 @@
       "m1": "Top 100 phrasal verbs thiết yếu trong ngữ cảnh",
       "m2": "So sánh phát âm chuẩn bản xứ với IPA",
       "m3": "Câu ví dụ thực tế trích từ phim & podcast",
-      "m4": "Nhận diện giọng nói & bài tập nghe chủ động"
+      "m4": "Nhận diện giọng nói & bài tập nghe chủ động",
+      "dailyTime": "5–10 phút/ngày",
+      "deckScope": "Bộ từ giao tiếp",
+      "retention": "Phản xạ nghe – nói"
     },
     "business": {
       "name": "Tiếng Anh Thương mại & Công nghệ",
@@ -148,7 +150,10 @@
       "m1": "Từ vựng họp hành & đàm phán thương mại",
       "m2": "Mẫu câu viết email chuyên nghiệp & pitch deck",
       "m3": "Thuật ngữ ngành công nghệ & quản lý sản phẩm",
-      "m4": "Luyện tập diễn đạt tinh tế & lịch sự"
+      "m4": "Luyện tập diễn đạt tinh tế & lịch sự",
+      "dailyTime": "8–12 phút/ngày",
+      "deckScope": "Bộ từ thương mại",
+      "retention": "Diễn đạt chuyên nghiệp"
     },
     "polyglot": {
       "name": "Tự do đọc sách & Bộ thẻ tùy chỉnh",
@@ -158,7 +163,10 @@
       "m1": "Tạo định nghĩa & phiên âm IPA bằng AI 1 chạm",
       "m2": "Đính kèm ghi chú mẹo nhớ cá nhân tùy biến",
       "m3": "Nhập/Xuất toàn diện Anki (.apkg), CSV và JSON",
-      "m4": "Đồng bộ ngoại tuyến đa thiết bị tiện lợi"
+      "m4": "Đồng bộ ngoại tuyến đa thiết bị tiện lợi",
+      "dailyTime": "Theo nhịp của bạn",
+      "deckScope": "Bộ thẻ tùy chỉnh",
+      "retention": "Đồng bộ Anki mở"
     }
   },
   "privacy": {
@@ -182,31 +190,19 @@
     }
   },
   "faq": {
-    "tag": "Hỏi đáp",
-    "title": "Câu hỏi thường gặp.",
-    "subtitle": "Mọi điều bạn cần biết về phương pháp lặp lại ngắt quãng, chuỗi streak và WordStreak.",
-    "items": [
-      {
-        "question": "WordStreak có hoàn toàn miễn phí không?",
-        "answer": "Có! WordStreak miễn phí 100% cho mọi người học. Không có gói trả phí ẩn, không tính năng khóa và không yêu cầu thẻ tín dụng. Bạn được sử dụng đầy đủ thuật toán SM-2, không giới hạn thẻ, tra cứu AI và theo dõi chuỗi học tập."
-      },
-      {
-        "question": "Thuật toán lặp lại ngắt quãng SM-2 hoạt động như thế nào?",
-        "answer": "SM-2 tính toán khoảng cách ôn tập tối ưu dựa trên mức độ dễ nhớ của từng từ. Từ đánh giá 'Dễ' sẽ được dời lịch xa hơn (+7 đến +30 ngày), trong khi từ 'Khó' sẽ được ôn lại sớm hơn (+1 đến +3 ngày) để củng cố liên kết thần kinh ngay trước khi bạn quên."
-      },
-      {
-        "question": "Tôi có thể nhập bộ từ vựng có sẵn từ Anki hoặc Quizlet không?",
-        "answer": "Có. WordStreak hỗ trợ nhập file CSV, JSON và file bộ từ Anki (.apkg). Trình phân tích AI của chúng tôi sẽ tự động ánh xạ từ vựng, phiên âm, định nghĩa và câu ví dụ vào bộ thẻ mới của bạn."
-      },
-      {
-        "question": "Tính năng Đóng băng chuỗi (Streak Freeze) hoạt động ra sao?",
-        "answer": "Khiên đóng băng chuỗi tự động bảo vệ chuỗi ngày học của bạn khi bạn có việc bận đột xuất. Mỗi tài khoản đều nhận được khiên bảo vệ. Nếu bạn lỡ một ngày học, khiên sẽ tự động kích hoạt mà không làm đứt chuỗi thói quen."
-      },
-      {
-        "question": "WordStreak có thể dùng khi không có mạng (offline) không?",
-        "answer": "Có. WordStreak ứng dụng kiến trúc bộ nhớ đệm cục bộ (Local-First). Bạn có thể ôn thẻ, làm trắc nghiệm và học từ mới offline. Mọi dữ liệu sẽ được đồng bộ lên đám mây trong lần kết nối tiếp theo."
-      }
-    ]
+    "eyebrow": "Hỏi đáp",
+    "title": "Những điều<br><em>cần biết.</em>",
+    "lede": "Về phương pháp lặp lại ngắt quãng, chuỗi ngày học và dữ liệu của bạn.",
+    "q1": "WordStreak có thật sự miễn phí không?",
+    "a1": "Có. Toàn bộ thuật toán SM-2, không giới hạn thẻ, tra cứu AI và theo dõi chuỗi ngày đều miễn phí. Không có gói trả phí ẩn và không cần thẻ tín dụng.",
+    "q2": "Thuật toán SM-2 hoạt động như thế nào?",
+    "a2": "SM-2 tính khoảng cách ôn dựa trên mức độ dễ nhớ của từng từ. Từ được đánh giá “Dễ” sẽ được dời xa hơn; từ “Khó” sẽ quay lại sớm hơn, ngay trước khi bạn quên.",
+    "q3": "Tôi có thể nhập bộ từ từ Anki hoặc Quizlet không?",
+    "a3": "Có. WordStreak nhận CSV, JSON và bộ từ Anki (.apkg). Trình phân tích sẽ ánh xạ từ vựng, phiên âm, định nghĩa và câu ví dụ vào bộ thẻ mới.",
+    "q4": "Khiên đóng băng chuỗi dùng để làm gì?",
+    "a4": "Khi có việc bận đột xuất, khiên sẽ bảo vệ chuỗi ngày học của bạn khi bạn lỡ một ngày — chuỗi không bị đứt, thói quen vẫn được giữ.",
+    "q5": "Tôi có thể học khi không có mạng không?",
+    "a5": "Có. WordStreak lưu dữ liệu cục bộ trước, nên bạn vẫn ôn thẻ và làm bài offline. Mọi thay đổi sẽ đồng bộ khi kết nối trở lại."
   },
   "cta": {
     "badge": "100% Miễn phí trọn đời",
@@ -216,28 +212,23 @@
     "signIn": "Đăng nhập tài khoản"
   },
   "footer": {
-    "manifesto": "Nền tảng học từ vựng tiếng Anh mã nguồn mở ứng dụng Spaced Repetition. Thiết kế giúp người học ghi nhớ lâu dài không rào cản.",
-    "status": "Hệ thống hoạt động bình thường · 100% Miễn phí",
-    "engineTitle": "Động cơ học tập",
-    "srsEngine": "Lặp lại ngắt quãng SM-2",
-    "contextCards": "Thẻ từ vựng theo ngữ cảnh",
-    "audioIpa": "Phát âm chuẩn âm vị IPA",
-    "activeRecall": "Trắc nghiệm gợi nhớ chủ động",
-    "streakFreeze": "Khiên đóng băng chuỗi Streak",
-    "pathwaysTitle": "Lộ trình học tập",
-    "pathIelts": "Luyện thi IELTS & TOEFL",
-    "pathConvo": "Giao tiếp & Hội thoại tự nhiên",
-    "pathBusiness": "Tiếng Anh Thương mại & Công nghệ",
-    "pathCustom": "Tự do đọc sách & Bộ thẻ tùy chỉnh",
-    "aiLookup": "Tra cứu thẻ tức thì bằng AI",
-    "openTitle": "Mở & Dữ liệu cục bộ",
-    "ankiExport": "Xuất file Anki (.apkg)",
-    "csvExport": "Xuất file CSV & JSON",
-    "offlineStorage": "Lưu trữ cục bộ ngoại tuyến",
-    "signIn": "Đăng nhập tài khoản",
-    "createFree": "Tạo tài khoản miễn phí →",
-    "copyright": "© {{year}} WordStreak. Xây dựng với",
-    "copyrightSuffix": "dành cho người học ngôn ngữ trên toàn thế giới."
+    "manifesto": "Nền tảng học từ vựng tiếng Anh mã nguồn mở, ứng dụng lặp lại ngắt quãng để giúp việc ghi nhớ trở nên bền bỉ.",
+    "status": "Mã nguồn mở · Dữ liệu thuộc về bạn",
+    "col1": "Học tập",
+    "c1": "Cách học",
+    "c2": "Tính năng",
+    "c3": "Học phí",
+    "c4": "Hỏi đáp",
+    "col2": "Sản phẩm",
+    "c5": "Tạo tài khoản",
+    "c6": "Đăng nhập",
+    "c7": "Dữ liệu & xuất thẻ",
+    "col3": "Ghi chú",
+    "meta1": "Lặp lại ngắt quãng SM-2",
+    "meta2": "IPA · Anki · CSV · JSON",
+    "meta3": "Hoạt động ngoại tuyến",
+    "rights": "© 2026 WordStreak. Dành cho người học ngôn ngữ trên toàn thế giới.",
+    "top": "Về đầu trang ↑"
   },
   "stats": {
     "tag": "Kết quả đã được chứng minh",
@@ -251,5 +242,193 @@
     "streakSublabel": "Duy trì thói quen hàng ngày",
     "ratingLabel": "Đánh giá của học viên",
     "ratingSublabel": "Từ hơn 1.200+ đánh giá"
+  },
+  "guestPreview": {
+    "eyebrow": "Học thử trước khi đăng ký",
+    "title": "Trải nghiệm 5 thẻ từ vựng đầu tiên",
+    "subtitle": "Khám phá thuật toán lặp lại ngắt quãng SuperMemo-2 ngay trên trình duyệt mà không cần tạo tài khoản.",
+    "cardCounter": "Học thử miễn phí · Thẻ {{current}} / {{total}}",
+    "guestBadge": "Chế độ Khách",
+    "audioTitle": "Phát âm",
+    "audioLabel": "Phát âm từ {{word}}",
+    "meaningLabel": "Nghĩa tiếng Việt",
+    "exampleLabel": "Ví dụ ngữ cảnh",
+    "flip": "Lật thẻ xem nghĩa",
+    "ratings": {
+      "again": "Quên",
+      "hard": "Khó",
+      "good": "Nhớ tốt",
+      "easy": "Quá dễ"
+    },
+    "completedTitle": "Bạn đã hoàn thành {{count}} từ học thử!",
+    "completedBody": "Tiến độ học {{count}} từ này đã được lưu cục bộ. Hãy tạo tài khoản miễn phí để lưu vào lộ trình học tập chính thức và bắt đầu chuỗi ngày học của bạn.",
+    "registerCta": "Đăng ký miễn phí để lưu tiến độ",
+    "restart": "Học lại từ đầu"
+  },
+  "rail": {
+    "origins": "Khởi đầu",
+    "preview": "Thử thách",
+    "codex": "Bản thảo số",
+    "srs": "Cơ chế SM-2",
+    "gallery": "Phòng tranh",
+    "howItWorks": "Cách học",
+    "pathways": "Lộ trình",
+    "faq": "Hỏi đáp"
+  },
+  "gallery": {
+    "eyebrow": "Chương V · Những vị thần bảo trợ",
+    "title": "Năm người giữ việc học.",
+    "lede": "Mỗi bức tranh cổ ghép một phẩm chất với một phần của WordStreak. Cuộn ngang để chiêm ngưỡng phòng tranh.",
+    "prev": "Bức tranh trước",
+    "next": "Bức tranh kế tiếp",
+    "trackLabel": "Bộ sưu tập tranh phục hưng WordStreak",
+    "hint": "Cuộn ngang hoặc dùng phím mũi tên để đi qua phòng tranh"
+  },
+  "meta": {
+    "title": "WordStreak — Khắc từng từ vào ký ức",
+    "desc": "WordStreak dùng lặp lại ngắt quãng SM-2, phát âm IPA và chuỗi ngày học để biến vài phút mỗi ngày thành vốn từ ở lại lâu dài. Miễn phí trọn đời."
+  },
+  "nav": {
+    "story": "Câu chuyện",
+    "ritual": "Nghi lễ",
+    "trove": "Kho tàng",
+    "pricing": "Học phí",
+    "faq": "Hỏi đáp",
+    "signin": "Đăng nhập",
+    "start": "Vào học"
+  },
+  "cue": {
+    "scroll": "Cuộn để bước vào chuyện"
+  },
+  "trust": {
+    "free": "Miễn phí trọn đời",
+    "ads": "Không quảng cáo",
+    "export": "Xuất Anki & CSV",
+    "offline": "Học offline"
+  },
+  "ch1": {
+    "label": "Chương I · Khởi đầu",
+    "title": "Trí nhớ không phải<br><em>một cái kho.</em>",
+    "body": "Bạn quên phần lớn điều mới học trong vài ngày đầu — không phải vì lười, mà vì não chủ động dọn chỗ. WordStreak chèn một lần ôn ngay trước khi ký ức phai, rồi giãn dần khoảng cách."
+  },
+  "chart": {
+    "title": "Đường cong lãng quên",
+    "caption": "minh hoạ",
+    "none": "Không ôn",
+    "with": "Có ôn"
+  },
+  "ch2": {
+    "label": "Chương II · Nghi lễ mỗi ngày",
+    "title": "Năm phút,<br><em>mỗi ngày.</em>",
+    "body": "Không cần học dồn. Thêm từ khi gặp, để SM-2 hẹn ngày ôn, và giữ ngọn lửa chuỗi ngày. Ba bước nhỏ, lặp lại đủ lâu, thành phản xạ."
+  },
+  "step1": {
+    "title": "Ghi từ",
+    "body": "Lưu từ mới kèm câu bạn gặp nó."
+  },
+  "step2": {
+    "title": "Ôn đúng lúc",
+    "body": "SM-2 hẹn ngày trước khi bạn quên."
+  },
+  "step3": {
+    "title": "Giữ nhịp",
+    "body": "Chuỗi ngày và khiên đóng băng giữ thói quen."
+  },
+  "fc": {
+    "kicker": "Thẻ học thử",
+    "kickerBack": "Nghĩa & ngữ cảnh",
+    "meaning": "có mặt ở khắp nơi",
+    "example": "“Smartphones have become ubiquitous in modern life.”",
+    "prompt": "Lật thẻ xem nghĩa",
+    "back": "Quay lại mặt trước"
+  },
+  "ch3": {
+    "label": "Chương III · Kho tàng",
+    "title": "Một thư viện<br><em>trong túi áo.</em>",
+    "body": "Sáu công cụ nhỏ, cùng một mục đích: kéo từ vựng từ trang giấy vào trí nhớ dài hạn.",
+    "pathways": "Bốn lộ trình:",
+    "convo": "Giao tiếp",
+    "biz": "Thương mại",
+    "free": "Tự do đọc sách"
+  },
+  "feat1": {
+    "title": "SM-2",
+    "body": "Lịch ôn tính theo độ dễ nhớ của từng từ."
+  },
+  "feat2": {
+    "title": "Thẻ ngữ cảnh",
+    "body": "Câu ví dụ, cụm từ và phát âm IPA chuẩn."
+  },
+  "feat3": {
+    "title": "Ôn đa dạng",
+    "body": "Trắc nghiệm, nghe chính tả, điền chỗ trống."
+  },
+  "feat4": {
+    "title": "Tra cứu AI",
+    "body": "Một từ mới thành thẻ đầy đủ trong vài giây."
+  },
+  "feat5": {
+    "title": "Bản đồ nhiệt",
+    "body": "Nhìn thấy sự kiên trì qua từng tuần."
+  },
+  "feat6": {
+    "title": "Học offline",
+    "body": "Ôn trên xe bus, đồng bộ khi có mạng."
+  },
+  "ch4": {
+    "label": "Chương IV · Lời thề",
+    "title": "Dữ liệu<br><em>thuộc về bạn.</em>",
+    "body": "Không khóa dữ liệu, không thu phí trên vốn từ bạn đã tạo. Xuất toàn bộ thẻ sang Anki, CSV hoặc JSON bất cứ lúc nào; học offline khi không có mạng.",
+    "vowTitle": "Xuất được, mang đi được, giữ được.",
+    "vowBody": "Anki (.apkg) · CSV · JSON · Đồng bộ ngoại tuyến"
+  },
+  "pricing": {
+    "eyebrow": "Học phí",
+    "title": "Một mức giá:<br><em>không đồng.</em>",
+    "lede": "WordStreak miễn phí trọn đời. Không bậc thang ẩn, không paywall, không cần thẻ tín dụng.",
+    "plan": "Gói duy nhất",
+    "badge": "Trọn đời",
+    "note": "Miễn phí cho mọi người học, mãi mãi.",
+    "item1": "Không giới hạn thẻ từ",
+    "item2": "Thuật toán SM-2 đầy đủ",
+    "item3": "Tra cứu và tạo thẻ bằng AI",
+    "item4": "Xuất Anki, CSV và JSON",
+    "item5": "Đồng bộ ngoại tuyến đa thiết bị",
+    "item6": "Không quảng cáo, không paywall",
+    "cta": "Tạo tài khoản miễn phí",
+    "fine": "Không cần thẻ tín dụng."
+  },
+  "finale": {
+    "eyebrow": "Bắt đầu hôm nay",
+    "title": "Ngọn lửa nhỏ,<br><em>mỗi ngày.</em>",
+    "body": "Một từ mới. Một lần ôn đúng lúc. Một chuỗi ngày không bỏ. Vốn từ của bạn lớn lên từ những điều nhỏ nhất.",
+    "cta": "Tạo tài khoản miễn phí",
+    "signin": "Đăng nhập",
+    "note": "Miễn phí trọn đời · Không quảng cáo · Dữ liệu thuộc về bạn"
+  },
+  "auth": {
+    "signupTitle": "Bắt đầu ngọn lửa của bạn",
+    "signupSub": "Miễn phí trọn đời. Không cần thẻ tín dụng.",
+    "loginTitle": "Chào bạn trở lại.",
+    "loginSub": "Đăng nhập để giữ chuỗi ngày học tiếp tục.",
+    "name": "Tên của bạn",
+    "namePlaceholder": "Ví dụ: Minh Anh",
+    "email": "Email",
+    "emailPlaceholder": "ban@example.com",
+    "password": "Mật khẩu",
+    "passwordPlaceholder": "Ít nhất 8 ký tự",
+    "passwordLoginPlaceholder": "Mật khẩu của bạn",
+    "submitSignup": "Tạo tài khoản miễn phí",
+    "submitLogin": "Đăng nhập",
+    "haveAccount": "Đã có tài khoản?",
+    "toLogin": "Đăng nhập",
+    "noAccount": "Chưa có tài khoản?",
+    "toSignup": "Tạo tài khoản",
+    "errName": "Vui lòng nhập tên của bạn.",
+    "errEmail": "Email chưa đúng định dạng.",
+    "errPassword": "Mật khẩu cần ít nhất 8 ký tự.",
+    "successTitle": "Đã ghi nhận.",
+    "successBody": "Bản xem trước này chưa tạo tài khoản hay đăng nhập thật. Khi tích hợp, bước này sẽ gửi email xác nhận.",
+    "close": "Đóng"
   }
 }
