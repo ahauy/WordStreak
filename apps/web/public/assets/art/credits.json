@@ -1,0 +1,73 @@
+{
+  "schema": "open-design.asset-credits/v1",
+  "note": "All images are open-access reproductions of public-domain oil paintings. Files are stored locally; no hotlinking.",
+  "hero": {
+    "file": "assets/hero-feast-of-the-gods.jpg",
+    "title": "The Feast of the Gods",
+    "artist": "Giovanni Bellini and Titian",
+    "date": "1514/1529",
+    "medium": "Oil on canvas",
+    "collection": "National Gallery of Art, Washington",
+    "accession": "1942.9.1",
+    "sourceUrl": "https://www.nga.gov/artworks/1138-feast-gods",
+    "imageUrl": "https://api.nga.gov/iiif/3a640014-a2f0-4cd4-b440-979f62316da2/full/2000,/0/default.jpg",
+    "license": "Public domain. National Gallery of Art Open Access image."
+  },
+  "gallery": [
+    {
+      "file": "assets/gallery/clio.jpg",
+      "title": "Clio, Muse of History",
+      "artist": "Charles Meynier",
+      "date": "1800",
+      "medium": "Oil on canvas",
+      "collection": "The Cleveland Museum of Art",
+      "sourceUrl": "https://clevelandart.org/art/2003.6.5",
+      "imageUrl": "https://openaccess-cdn.clevelandart.org/2003.6.5/2003.6.5_print.jpg",
+      "license": "CC0"
+    },
+    {
+      "file": "assets/gallery/minerva.jpg",
+      "title": "Allegorical Figure (Minerva)",
+      "artist": "Bernardo Strozzi",
+      "date": "c. 1636",
+      "medium": "Oil on canvas",
+      "collection": "The Cleveland Museum of Art",
+      "sourceUrl": "https://clevelandart.org/art/1929.133",
+      "imageUrl": "https://openaccess-cdn.clevelandart.org/1929.133/1929.133_print.jpg",
+      "license": "CC0"
+    },
+    {
+      "file": "assets/gallery/hermes.jpg",
+      "title": "Hermes Ordering Calypso to Release Odysseus",
+      "artist": "Gerard de Lairesse",
+      "date": "c. 1670",
+      "medium": "Oil on canvas",
+      "collection": "The Cleveland Museum of Art",
+      "sourceUrl": "https://clevelandart.org/art/1992.2",
+      "imageUrl": "https://openaccess-cdn.clevelandart.org/1992.2/1992.2_print.jpg",
+      "license": "CC0"
+    },
+    {
+      "file": "assets/gallery/apollo.jpg",
+      "title": "Apollo, God of Light, Eloquence, Poetry, and the Fine Arts with Urania, Muse of Astronomy",
+      "artist": "Charles Meynier",
+      "date": "1798",
+      "medium": "Oil on canvas",
+      "collection": "The Cleveland Museum of Art",
+      "sourceUrl": "https://clevelandart.org/art/2003.6.3",
+      "imageUrl": "https://openaccess-cdn.clevelandart.org/2003.6.3/2003.6.3_print.jpg",
+      "license": "CC0"
+    },
+    {
+      "file": "assets/gallery/hebe.jpg",
+      "title": "Hebe",
+      "artist": "Abbott Handerson Thayer",
+      "date": "c. 1890",
+      "medium": "Oil on canvas",
+      "collection": "The Cleveland Museum of Art",
+      "sourceUrl": "https://clevelandart.org/art/1918.172",
+      "imageUrl": "https://openaccess-cdn.clevelandart.org/1918.172/1918.172_print.jpg",
+      "license": "CC0"
+    }
+  ]
+}

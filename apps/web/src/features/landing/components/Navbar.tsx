@@ -1,270 +1,140 @@
-import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
-import { Search, Menu, X, ArrowRight, Sparkles } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
 import { useTranslation } from "react-i18next";
-import { PurpleStreakFlame } from "./PurpleStreakFlame";
-import { LanguageSwitcher } from "../../../components/LanguageSwitcher";
 
-export function Navbar() {
-  const { t } = useTranslation("common");
-  const [scrolled, setScrolled] = useState(false);
-  const [mobileOpen, setMobileOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
+interface NavbarProps {
+  isSolid: boolean;
+  onScrollToProgress: (progress: number) => void;
+  onOpenAuth: (mode: "login" | "signup") => void;
+  onOpenMenu: () => void;
+}
 
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 20);
-    };
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+export function Navbar({
+  isSolid,
+  onScrollToProgress,
+  onOpenAuth,
+  onOpenMenu,
+}: NavbarProps) {
+  const { t, i18n } = useTranslation("landing");
+  const currentLang = i18n.language.startsWith("en") ? "en" : "vi";
 
-  // BR-MOBILE-004: lock body scroll while the mobile drawer is open
-  useEffect(() => {
-    document.body.style.overflow = mobileOpen ? "hidden" : "";
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, [mobileOpen]);
-
-  // EC-01: auto-close the drawer when viewport reaches md (768px+)
-  useEffect(() => {
-    const mediaQuery = window.matchMedia("(min-width: 768px)");
-    const handleChange = (e: MediaQueryListEvent) => {
-      if (e.matches) setMobileOpen(false);
-    };
-    mediaQuery.addEventListener("change", handleChange);
-    return () => mediaQuery.removeEventListener("change", handleChange);
-  }, []);
-
-  // US-MOBILE-001 Scenario 5: dismiss drawer via Escape key
-  useEffect(() => {
-    if (!mobileOpen) return;
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setMobileOpen(false);
-    };
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [mobileOpen]);
-
-  const scrollToSection = (id: string) => {
-    setMobileOpen(false);
-    document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+  const handleSetLang = (lang: "vi" | "en") => {
+    i18n.changeLanguage(lang);
+    try {
+      localStorage.setItem("ws-lang", lang);
+      localStorage.setItem("i18nextLng", lang);
+    } catch {
+      // ignore
+    }
   };
 
   return (
-    <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        scrolled
-          ? "bg-white/95 backdrop-blur-md border-b border-[#e5e5e5] shadow-xs"
-          : "bg-white"
-      }`}
-    >
-      <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-4 sm:px-6">
-        {/* Brand Logo & Flame */}
-        <div className="flex items-center gap-4 lg:gap-6 shrink-0">
-          <Link
-            to="/"
-            className="flex items-center gap-2 text-lg font-bold tracking-tight text-black transition-opacity hover:opacity-85 shrink-0"
-            style={{ fontFamily: "var(--font-display)" }}
-          >
-            <PurpleStreakFlame size="sm" showEmbers={false} />
-            <span className="font-extrabold tracking-tight">WordStreak</span>
-            <span className="hidden sm:inline-flex items-center rounded-full bg-[#f3e8ff] px-2 py-0.5 text-[10px] font-mono font-semibold text-[#7e22ce] border border-[#e9d5ff] whitespace-nowrap shrink-0">
-              {t("brand.badgeFree", "100% Free")}
-            </span>
-          </Link>
-
-          {/* Desktop Nav Links */}
-          <nav className="hidden md:flex items-center gap-3 lg:gap-4 xl:gap-5 text-xs font-medium text-[#737373]">
-            <button
-              onClick={() => scrollToSection("interactive-demo")}
-              className="cursor-pointer transition-colors hover:text-black py-1 whitespace-nowrap"
-            >
-              {t("nav.interactiveDemo", "Interactive Demo")}
-            </button>
-            <button
-              onClick={() => scrollToSection("features")}
-              className="cursor-pointer transition-colors hover:text-black py-1 whitespace-nowrap"
-            >
-              {t("nav.features", "Features")}
-            </button>
-            <button
-              onClick={() => scrollToSection("how-it-works")}
-              className="cursor-pointer transition-colors hover:text-black py-1 whitespace-nowrap"
-            >
-              {t("nav.howItWorks", "How It Works")}
-            </button>
-            <button
-              onClick={() => scrollToSection("study-modes")}
-              className="cursor-pointer transition-colors hover:text-black py-1 whitespace-nowrap"
-            >
-              {t("nav.studyGoals", "Study Goals")}
-            </button>
-            <button
-              onClick={() => scrollToSection("faq")}
-              className="cursor-pointer transition-colors hover:text-black py-1 whitespace-nowrap"
-            >
-              {t("nav.faq", "FAQ")}
-            </button>
-          </nav>
-        </div>
-
-        {/* Center Search Pill with Command Hint */}
-        <div className="hidden xl:flex flex-1 max-w-xs mx-4">
-          <div className="search-pill-input w-full justify-between">
-            <div className="flex items-center gap-2 flex-1">
-              <Search className="h-3.5 w-3.5 text-[#a3a3a3] shrink-0" />
-              <input
-                type="text"
-                placeholder={t("nav.searchPlaceholder", "Search vocabulary...")}
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full bg-transparent text-base text-black placeholder-[#a3a3a3] focus:outline-none"
-              />
-            </div>
-            <kbd className="hidden sm:inline-block rounded-md border border-[#e5e5e5] bg-white px-1.5 py-0.5 text-[10px] font-mono text-[#a3a3a3]">
-              ⌘K
-            </kbd>
-          </div>
-        </div>
-
-        {/* Right Action Cluster */}
-        <div className="hidden md:flex items-center gap-2.5 lg:gap-3 shrink-0">
-          <LanguageSwitcher />
-          <Link
-            to="/login"
-            className="text-xs font-medium text-black px-3 py-1.5 transition-opacity hover:opacity-70 whitespace-nowrap"
-          >
-            {t("actions.signIn", "Sign In")}
-          </Link>
-          <motion.div
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            className="shrink-0"
-          >
-            <Link
-              to="/register"
-              className="btn-primary text-xs whitespace-nowrap shrink-0"
-            >
-              <Sparkles className="mr-1 h-3 w-3 shrink-0" />
-              <span>{t("actions.signUp", "Start Free")}</span>
-              <ArrowRight className="ml-1 h-3 w-3 shrink-0" />
-            </Link>
-          </motion.div>
-        </div>
-
-        {/* Mobile Menu Trigger */}
-        <button
-          onClick={() => setMobileOpen(!mobileOpen)}
-          aria-label="Toggle menu"
-          aria-expanded={mobileOpen}
-          aria-controls="landing-mobile-drawer"
-          className="flex h-9 w-9 items-center justify-center rounded-full border border-[#e5e5e5] bg-[#fafafa] text-black md:hidden cursor-pointer"
+    <header className={`site-header ${isSolid ? "is-solid" : ""}`} id="siteHeader">
+      <div className="header-inner">
+        <a
+          className="brand"
+          href="#top"
+          onClick={(e) => {
+            e.preventDefault();
+            window.scrollTo({ top: 0, behavior: "smooth" });
+          }}
+          aria-label="WordStreak — về đầu trang"
         >
-          {mobileOpen ? (
-            <X className="h-4 w-4" />
-          ) : (
-            <Menu className="h-4 w-4" />
-          )}
-        </button>
-      </div>
-
-      {/* Mobile Drawer */}
-      <AnimatePresence>
-        {mobileOpen && (
-          <>
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setMobileOpen(false)}
-              className="fixed inset-0 bg-black/40 z-40 md:hidden"
+          <svg className="brand-mark" viewBox="0 0 40 40" role="presentation" aria-hidden="true">
+            <path
+              d="M20 5c4 6 8 9 8 16a8 8 0 0 1-16 0c0-5 3-9 8-16z"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.4"
             />
-            <motion.div
-              id="landing-mobile-drawer"
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: "auto" }}
-              exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.2 }}
-              className="relative z-50 border-b border-[#e5e5e5] bg-white px-5 py-4 md:hidden shadow-lg max-h-[calc(100vh-3.5rem)] overflow-y-auto"
+            <path
+              d="M20 16c1.8 3 3.6 4.5 3.6 8a3.6 3.6 0 0 1-7.2 0c0-2.6 1.5-4.6 3.6-8z"
+              fill="currentColor"
+              opacity=".85"
+            />
+          </svg>
+          <span className="brand-name">WordStreak</span>
+        </a>
+
+        <nav className="site-nav" aria-label="Điều hướng chính">
+          <button
+            className="nav-link"
+            type="button"
+            onClick={() => onScrollToProgress(0)}
+          >
+            {t("nav.story", "Câu chuyện")}
+          </button>
+          <button
+            className="nav-link"
+            type="button"
+            onClick={() => onScrollToProgress(0.46)}
+          >
+            {t("nav.ritual", "Nghi lễ")}
+          </button>
+          <button
+            className="nav-link"
+            type="button"
+            onClick={() => onScrollToProgress(0.68)}
+          >
+            {t("nav.trove", "Kho tàng")}
+          </button>
+          <a className="nav-link" href="#hoc-phi">
+            {t("nav.pricing", "Học phí")}
+          </a>
+          <a className="nav-link" href="#hoi-dap">
+            {t("nav.faq", "Hỏi đáp")}
+          </a>
+        </nav>
+
+        <div className="header-actions">
+          <div className="lang-switch" role="group" aria-label="Ngôn ngữ">
+            <button
+              className={`lang-btn ${currentLang === "vi" ? "is-active" : ""}`}
+              type="button"
+              onClick={() => handleSetLang("vi")}
+              aria-pressed={currentLang === "vi"}
             >
-              <div className="mb-4">
-                <div className="search-pill-input w-full">
-                  <Search className="h-3.5 w-3.5 text-[#a3a3a3] mr-2 shrink-0" />
-                  <input
-                    type="text"
-                    placeholder={t(
-                      "nav.searchPlaceholder",
-                      "Search vocabulary...",
-                    )}
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full bg-transparent text-base text-black placeholder-[#a3a3a3] focus:outline-none"
-                  />
-                </div>
-              </div>
+              VI
+            </button>
+            <span className="lang-sep" aria-hidden="true">
+              /
+            </span>
+            <button
+              className={`lang-btn ${currentLang === "en" ? "is-active" : ""}`}
+              type="button"
+              onClick={() => handleSetLang("en")}
+              aria-pressed={currentLang === "en"}
+            >
+              EN
+            </button>
+          </div>
 
-              <div className="flex flex-col gap-3 text-sm font-medium text-black">
-                <button
-                  onClick={() => scrollToSection("interactive-demo")}
-                  className="text-left py-1 text-[#737373] hover:text-black cursor-pointer"
-                >
-                  {t("nav.interactiveDemo", "Interactive Demo")}
-                </button>
-                <button
-                  onClick={() => scrollToSection("features")}
-                  className="text-left py-1 text-[#737373] hover:text-black cursor-pointer"
-                >
-                  {t("nav.features", "Features")}
-                </button>
-                <button
-                  onClick={() => scrollToSection("how-it-works")}
-                  className="text-left py-1 text-[#737373] hover:text-black cursor-pointer"
-                >
-                  {t("nav.howItWorks", "How It Works")}
-                </button>
-                <button
-                  onClick={() => scrollToSection("study-modes")}
-                  className="text-left py-1 text-[#737373] hover:text-black cursor-pointer"
-                >
-                  {t("nav.studyGoals", "Study Goals")}
-                </button>
-                <button
-                  onClick={() => scrollToSection("faq")}
-                  className="text-left py-1 text-[#737373] hover:text-black cursor-pointer"
-                >
-                  {t("nav.faq", "FAQ")}
-                </button>
+          <button
+            className="btn btn-ghost header-signin"
+            type="button"
+            onClick={() => onOpenAuth("login")}
+          >
+            {t("nav.signin", "Đăng nhập")}
+          </button>
 
-                <div className="pt-3 border-t border-[#e5e5e5] flex flex-col gap-3">
-                  <div className="flex items-center justify-between py-1">
-                    <span className="text-xs text-[#737373] font-medium">
-                      {t("switcher.languageLabel", "Language")}:
-                    </span>
-                    <LanguageSwitcher />
-                  </div>
-                  <Link
-                    to="/login"
-                    onClick={() => setMobileOpen(false)}
-                    className="py-2 text-center text-sm font-medium text-black"
-                  >
-                    {t("actions.signIn", "Sign In")}
-                  </Link>
-                  <Link
-                    to="/register"
-                    onClick={() => setMobileOpen(false)}
-                    className="btn-primary w-full text-center"
-                  >
-                    {t("actions.startLearning", "Start Learning Free")}
-                  </Link>
-                </div>
-              </div>
-            </motion.div>
-          </>
-        )}
-      </AnimatePresence>
+          <button
+            className="btn btn-solid header-start"
+            type="button"
+            onClick={() => onOpenAuth("signup")}
+          >
+            {t("nav.start", "Vào học")}
+          </button>
+
+          <button
+            className="menu-toggle"
+            type="button"
+            id="menuToggle"
+            aria-label="Mở menu"
+            onClick={onOpenMenu}
+          >
+            <span></span>
+            <span></span>
+          </button>
+        </div>
+      </div>
     </header>
   );
 }

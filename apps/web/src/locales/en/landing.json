@@ -1,15 +1,11 @@
 {
   "hero": {
-    "badge": "Keep your daily English streak burning · 100% Free",
-    "title": "Master English vocabulary.",
-    "titleHighlight": "Never forget a word.",
-    "subtitle": "SM-2 spaced repetition, native audio IPA flashcards, and daily streak protection — built for learners who want permanent memory.",
-    "instantLookup": "Instant Word Lookup",
-    "playPronunciation": "Play pronunciation",
-    "trySandbox": "Try Interactive Sandbox ↓",
-    "trustFree": "100% Free Forever",
-    "trustNoAds": "No Ads / Paywall",
-    "trustExport": "Anki (.apkg) & CSV Export"
+    "eyebrow": "English vocabulary · Spaced repetition · Free forever",
+    "title": "Carve every word<br><em>into memory.</em>",
+    "titlePlain": "Carve every word into memory.",
+    "lede": "WordStreak pairs SM-2 spaced repetition with IPA pronunciation and a daily streak, turning a few minutes a day into words that stay.",
+    "cta": "Start for free",
+    "cta2": "See how it works"
   },
   "sandbox": {
     "tag": "Interactive Learning Sandbox",
@@ -45,7 +41,7 @@
     "streakFreezeActive": "Streak Freeze: ACTIVE",
     "streakFreezeOff": "Streak Freeze: OFF",
     "heatmapTitle": "CONSISTENCY HEATMAP (PAST 16 WEEKS)",
-    "heatmapConsistency": "100% Habit Consistency",
+    "heatmapConsistency": "Illustrative data · 16 weeks",
     "heatmapLess": "Less",
     "heatmapMore": "More Reviews"
   },
@@ -128,7 +124,10 @@
       "m1": "Academic Word List (AWL) Sublists 1–10",
       "m2": "Formal writing collocations & idioms",
       "m3": "Listening audio recall & spelling drills",
-      "m4": "Contextual sentence fill-in-the-blanks"
+      "m4": "Contextual sentence fill-in-the-blanks",
+      "dailyTime": "10–15 min/day",
+      "deckScope": "Academic word set",
+      "retention": "30-day review schedule"
     },
     "conversation": {
       "name": "Spoken & Daily Fluency",
@@ -138,7 +137,10 @@
       "m1": "Top 100 essential phrasal verbs in context",
       "m2": "Native IPA audio pronunciation comparisons",
       "m3": "Natural movie & podcast sentence examples",
-      "m4": "Active voice recognition & listening quizzes"
+      "m4": "Active voice recognition & listening quizzes",
+      "dailyTime": "5–10 min/day",
+      "deckScope": "Everyday word set",
+      "retention": "Listening–speaking reflex"
     },
     "business": {
       "name": "Business & Tech English",
@@ -148,7 +150,10 @@
       "m1": "Executive meeting & negotiation vocabulary",
       "m2": "Professional email & pitch deck phrasing",
       "m3": "Tech industry & product management terms",
-      "m4": "Nuance & politeness calibration drills"
+      "m4": "Nuance & politeness calibration drills",
+      "dailyTime": "8–12 min/day",
+      "deckScope": "Business word set",
+      "retention": "Professional expression"
     },
     "polyglot": {
       "name": "Custom Decks & Reading",
@@ -158,7 +163,10 @@
       "m1": "Instant 1-click AI definition & IPA generator",
       "m2": "Custom personal mnemonic note attachments",
       "m3": "Full Anki (.apkg), CSV, and JSON import/export",
-      "m4": "Multi-device local-first offline synchronization"
+      "m4": "Multi-device local-first offline synchronization",
+      "dailyTime": "Your own pace",
+      "deckScope": "Custom decks",
+      "retention": "Open Anki sync"
     }
   },
   "privacy": {
@@ -182,31 +190,19 @@
     }
   },
   "faq": {
-    "tag": "Questions",
-    "title": "Frequently asked questions.",
-    "subtitle": "Everything you need to know about spaced repetition, streaks, and WordStreak.",
-    "items": [
-      {
-        "question": "Is WordStreak completely free to use?",
-        "answer": "Yes! WordStreak is 100% free for all learners. There are no paid subscriptions, no paywalled features, and no credit card required. You get full access to the SM-2 algorithm, unlimited flashcards, AI lookup, and streak tracking."
-      },
-      {
-        "question": "How does the SM-2 Spaced Repetition algorithm work?",
-        "answer": "SM-2 calculates optimal review intervals based on how easily you recall each word. Words rated 'Easy' get scheduled further into the future (+7 to +30 days), while words rated 'Hard' are reviewed sooner (+1 to +3 days) to reinforce memory pathways right before you forget them."
-      },
-      {
-        "question": "Can I import my existing vocabulary decks from Anki or Quizlet?",
-        "answer": "Yes. WordStreak supports importing CSV, JSON, and standard Anki deck files (.apkg). Our AI parser automatically maps terms, phonetic spellings, definitions, and contextual examples into your new decks."
-      },
-      {
-        "question": "How do streak freezes work?",
-        "answer": "Streak freezes automatically protect your daily streak when life gets busy. Every account receives streak freeze protection. If you miss a day, the freeze activates seamlessly without breaking your habit loop."
-      },
-      {
-        "question": "Is WordStreak available offline?",
-        "answer": "Yes. WordStreak uses a local-first caching architecture. You can review flashcards, practice quizzes, and learn new words offline. Everything syncs to the cloud the next time you connect to the internet."
-      }
-    ]
+    "eyebrow": "FAQ",
+    "title": "What you<br><em>need to know.</em>",
+    "lede": "About spaced repetition, streaks and the data you own.",
+    "q1": "Is WordStreak really free?",
+    "a1": "Yes. The full SM-2 algorithm, unlimited cards, AI lookup and streak tracking are free. There are no hidden paid tiers and no credit card is required.",
+    "q2": "How does the SM-2 algorithm work?",
+    "a2": "SM-2 spaces reviews according to how easily each word comes back. Words rated “Easy” wait longer; words rated “Hard” return sooner, just before you would forget them.",
+    "q3": "Can I import decks from Anki or Quizlet?",
+    "a3": "Yes. WordStreak accepts CSV, JSON and Anki decks (.apkg). The importer maps vocabulary, pronunciation, definitions and example sentences into your new deck.",
+    "q4": "What is the streak freeze for?",
+    "a4": "When life interrupts, the shield protects your streak through a missed day — the chain stays intact and the habit survives.",
+    "q5": "Can I study without a connection?",
+    "a5": "Yes. WordStreak stores data locally first, so you can review cards and take quizzes offline. Changes sync when you reconnect."
   },
   "cta": {
     "badge": "100% Free Forever",
@@ -216,28 +212,23 @@
     "signIn": "Sign In to Account"
   },
   "footer": {
-    "manifesto": "Open-source, spaced repetition English vocabulary platform. Designed to help language learners achieve permanent memory retention without paywalls.",
-    "status": "All Systems Operational · 100% Free",
-    "engineTitle": "Learning Engine",
-    "srsEngine": "SM-2 Spaced Repetition",
-    "contextCards": "Contextual Flashcards",
-    "audioIpa": "Audio IPA Pronunciation",
-    "activeRecall": "Active Recall Quizzes",
-    "streakFreeze": "Streak Freeze Protection",
-    "pathwaysTitle": "Study Pathways",
-    "pathIelts": "IELTS & TOEFL Prep",
-    "pathConvo": "Conversational Fluency",
-    "pathBusiness": "Business & Tech English",
-    "pathCustom": "Custom Reading Decks",
-    "aiLookup": "Instant AI Card Lookup",
-    "openTitle": "Open & Local-First",
-    "ankiExport": "Anki (.apkg) Export",
-    "csvExport": "CSV & JSON Export",
-    "offlineStorage": "Offline Local Storage",
-    "signIn": "Sign In to Account",
-    "createFree": "Create Free Account →",
-    "copyright": "© {{year}} WordStreak. Built with",
-    "copyrightSuffix": "for language learners worldwide."
+    "manifesto": "An open-source English vocabulary platform built on spaced repetition, so that remembering becomes a lasting habit.",
+    "status": "Open source · Your data belongs to you",
+    "col1": "Learning",
+    "c1": "How it works",
+    "c2": "Features",
+    "c3": "Pricing",
+    "c4": "FAQ",
+    "col2": "Product",
+    "c5": "Create an account",
+    "c6": "Sign in",
+    "c7": "Data & export",
+    "col3": "Notes",
+    "meta1": "SM-2 spaced repetition",
+    "meta2": "IPA · Anki · CSV · JSON",
+    "meta3": "Works offline",
+    "rights": "© 2026 WordStreak. For language learners around the world.",
+    "top": "Back to top ↑"
   },
   "stats": {
     "tag": "Proven Results",
@@ -251,5 +242,193 @@
     "streakSublabel": "Active daily habit",
     "ratingLabel": "Learner Rating",
     "ratingSublabel": "From 1,200+ reviews"
+  },
+  "guestPreview": {
+    "eyebrow": "Try before you sign up",
+    "title": "Sample the first five vocabulary cards",
+    "subtitle": "Explore the SuperMemo-2 spaced repetition algorithm right in your browser, with no account required.",
+    "cardCounter": "Free preview · Card {{current}} / {{total}}",
+    "guestBadge": "Guest mode",
+    "audioTitle": "Play pronunciation",
+    "audioLabel": "Play pronunciation of {{word}}",
+    "meaningLabel": "Vietnamese meaning",
+    "exampleLabel": "Example in context",
+    "flip": "Flip to see the meaning",
+    "ratings": {
+      "again": "Forgot",
+      "hard": "Hard",
+      "good": "Good",
+      "easy": "Easy"
+    },
+    "completedTitle": "You finished all {{count}} sample words!",
+    "completedBody": "Your progress on these {{count}} words is saved locally. Create a free account to keep it in your official learning path and start your streak.",
+    "registerCta": "Sign up free to save progress",
+    "restart": "Start over"
+  },
+  "rail": {
+    "origins": "Origins",
+    "preview": "Challenge",
+    "codex": "Codex",
+    "srs": "SM-2 Engine",
+    "gallery": "Gallery",
+    "howItWorks": "Method",
+    "pathways": "Pathways",
+    "faq": "FAQ"
+  },
+  "gallery": {
+    "eyebrow": "Chapter V · Patron Gods of Learning",
+    "title": "Five Keepers of Learning.",
+    "lede": "Each classical painting pairs a human virtue with an essential part of WordStreak. Scroll horizontally to tour the gallery.",
+    "prev": "Previous painting",
+    "next": "Next painting",
+    "trackLabel": "WordStreak Renaissance Art Collection",
+    "hint": "Scroll horizontally or use arrow keys to navigate the gallery"
+  },
+  "meta": {
+    "title": "WordStreak — Carve every word into memory",
+    "desc": "WordStreak pairs SM-2 spaced repetition with IPA pronunciation and a daily streak, turning a few minutes a day into words that stay. Free forever."
+  },
+  "nav": {
+    "story": "The story",
+    "ritual": "The ritual",
+    "trove": "The trove",
+    "pricing": "Pricing",
+    "faq": "FAQ",
+    "signin": "Sign in",
+    "start": "Start learning"
+  },
+  "cue": {
+    "scroll": "Scroll to enter the story"
+  },
+  "trust": {
+    "free": "Free forever",
+    "ads": "No ads",
+    "export": "Anki & CSV export",
+    "offline": "Works offline"
+  },
+  "ch1": {
+    "label": "Chapter I · The beginning",
+    "title": "Memory is not<br><em>a storeroom.</em>",
+    "body": "You forget most of what you learn within days — not from laziness, but because the mind clears space. WordStreak schedules a review just before a memory fades, then widens the interval."
+  },
+  "chart": {
+    "title": "The forgetting curve",
+    "caption": "illustration",
+    "none": "No review",
+    "with": "With review"
+  },
+  "ch2": {
+    "label": "Chapter II · The daily ritual",
+    "title": "Five minutes,<br><em>every day.</em>",
+    "body": "No cramming. Save the word you meet, let SM-2 set the next review, and keep the streak alight. Three small steps, repeated long enough to become reflex."
+  },
+  "step1": {
+    "title": "Save",
+    "body": "Keep the word and the sentence you found it in."
+  },
+  "step2": {
+    "title": "Review on time",
+    "body": "SM-2 schedules the card before the memory fades."
+  },
+  "step3": {
+    "title": "Keep the rhythm",
+    "body": "Streaks and freeze shields protect the habit."
+  },
+  "fc": {
+    "kicker": "Sample card",
+    "kickerBack": "Meaning & context",
+    "meaning": "present everywhere",
+    "example": "“Smartphones have become ubiquitous in modern life.”",
+    "prompt": "Flip the card",
+    "back": "Back to the word"
+  },
+  "ch3": {
+    "label": "Chapter III · The trove",
+    "title": "A library<br><em>in your pocket.</em>",
+    "body": "Six small tools with one purpose: to move words off the page and into long-term memory.",
+    "pathways": "Four paths:",
+    "convo": "Conversation",
+    "biz": "Business",
+    "free": "Reading freely"
+  },
+  "feat1": {
+    "title": "SM-2",
+    "body": "Review dates tuned to each word's ease."
+  },
+  "feat2": {
+    "title": "Context cards",
+    "body": "Example sentences, collocations and IPA pronunciation."
+  },
+  "feat3": {
+    "title": "Varied review",
+    "body": "Multiple choice, listening, spelling and cloze."
+  },
+  "feat4": {
+    "title": "AI lookup",
+    "body": "Turn a new word into a full card in seconds."
+  },
+  "feat5": {
+    "title": "Heatmap",
+    "body": "See your consistency build week by week."
+  },
+  "feat6": {
+    "title": "Offline study",
+    "body": "Review on the bus, sync when you reconnect."
+  },
+  "ch4": {
+    "label": "Chapter IV · The vow",
+    "title": "Your data<br><em>belongs to you.</em>",
+    "body": "No lock-in and no fees on the words you have already made. Export every card to Anki, CSV or JSON at any time; study offline when there is no network.",
+    "vowTitle": "Exportable, portable, yours to keep.",
+    "vowBody": "Anki (.apkg) · CSV · JSON · Offline sync"
+  },
+  "pricing": {
+    "eyebrow": "Pricing",
+    "title": "One price:<br><em>nothing.</em>",
+    "lede": "WordStreak is free forever. No hidden tiers, no paywall, no credit card required.",
+    "plan": "Single plan",
+    "badge": "Lifetime",
+    "note": "Free for every learner, forever.",
+    "item1": "Unlimited vocabulary cards",
+    "item2": "The full SM-2 algorithm",
+    "item3": "AI lookup and card creation",
+    "item4": "Anki, CSV and JSON export",
+    "item5": "Offline sync across devices",
+    "item6": "No ads, no paywall",
+    "cta": "Create a free account",
+    "fine": "No credit card required."
+  },
+  "finale": {
+    "eyebrow": "Begin today",
+    "title": "A small flame,<br><em>every day.</em>",
+    "body": "One new word. One review at the right moment. One streak you keep. Your vocabulary grows from the smallest things.",
+    "cta": "Create a free account",
+    "signin": "Sign in",
+    "note": "Free forever · No ads · Your data belongs to you"
+  },
+  "auth": {
+    "signupTitle": "Start your flame",
+    "signupSub": "Free forever. No credit card required.",
+    "loginTitle": "Welcome back.",
+    "loginSub": "Sign in to keep the streak alive.",
+    "name": "Your name",
+    "namePlaceholder": "e.g. Minh Anh",
+    "email": "Email",
+    "emailPlaceholder": "you@example.com",
+    "password": "Password",
+    "passwordPlaceholder": "At least 8 characters",
+    "passwordLoginPlaceholder": "Your password",
+    "submitSignup": "Create a free account",
+    "submitLogin": "Sign in",
+    "haveAccount": "Already have an account?",
+    "toLogin": "Sign in",
+    "noAccount": "New to WordStreak?",
+    "toSignup": "Create an account",
+    "errName": "Please enter your name.",
+    "errEmail": "Enter a valid email address.",
+    "errPassword": "Use at least 8 characters.",
+    "successTitle": "Recorded.",
+    "successBody": "This preview does not create an account or sign you in. In the integrated build, this step sends a confirmation email.",
+    "close": "Close"
   }
 }

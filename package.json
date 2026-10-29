@@ -9,7 +9,7 @@
     "dev:web": "pnpm --filter web dev",
     "docker:db": "docker compose up -d db",
     "docker:down": "docker compose down",
-    "build": "pnpm -r run build",
+    "build": "pnpm --filter @wordstreak/shared-types build && pnpm -r --filter=!@wordstreak/shared-types run build",
     "typecheck": "pnpm -r run typecheck",
     "lint": "pnpm -r run lint",
     "test": "pnpm --filter @wordstreak/shared-types build && pnpm --filter api test && pnpm --filter web test",
