@@ -36,8 +36,21 @@ html {
   -webkit-text-size-adjust: 100%;
 }
 
+/* The design sets no font-size on <html>, so 1rem = 16px for every clamp() in
+   this sheet. The app's index.css raises html/#root to 17-19px, which inflates
+   the display type scale, so the landing route pins the root back to 16px. */
 html.landing-html,
-html:has(body.landing-body),
+html:has(body.landing-body) {
+  margin: 0;
+  background: var(--ink);
+  color: var(--parchment);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: visible !important;
+}
+
 body.landing-body {
   margin: 0;
   background: var(--ink);
@@ -45,6 +58,7 @@ body.landing-body {
   font-family: var(--font-body);
   font-size: 19px;
   line-height: 1.65;
+  letter-spacing: normal;
   -webkit-font-smoothing: antialiased;
   overflow-x: visible !important;
 }
@@ -53,6 +67,9 @@ body.landing-body {
   background: var(--ink);
   color: var(--parchment);
   font-family: var(--font-body);
+  font-size: 19px;
+  line-height: 1.65;
+  letter-spacing: normal;
   min-height: 100vh;
 }
 
@@ -535,6 +552,10 @@ ol {
   position: relative;
   z-index: 3;
   margin-top: -100svh;
+  /* The chapters fill the viewport and would otherwise sit above the sticky
+     scene and swallow clicks meant for .chapter-rail. Content re-enables
+     pointer events via .chapter-inner. */
+  pointer-events: none;
 }
 
 .chapter-tail {

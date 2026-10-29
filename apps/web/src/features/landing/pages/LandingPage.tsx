@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { Navbar } from "../components/Navbar";
 import { PrologueSection } from "../components/PrologueSection";
@@ -11,6 +11,8 @@ import { MenuDialog } from "../components/MenuDialog";
 import "../landing.css";
 
 const STAGE_AT = [0, 0.2, 0.44, 0.66, 0.88];
+const EASE = 0.14;
+const EASE_EPSILON = 0.0006;
 
 function clamp(value: number, min: number, max: number) {
   return Math.min(max, Math.max(min, value));
@@ -33,6 +35,10 @@ export function LandingPage() {
   const [authOpen, setAuthOpen] = useState(false);
   const [authMode, setAuthMode] = useState<"login" | "signup">("signup");
   const [menuOpen, setMenuOpen] = useState(false);
+
+  const targetRef = useRef(0);
+  const currentRef = useRef(0);
+  const frameRef = useRef(0);
 
   // Add landing-html & landing-body classes for ink background & Garamond typography
   useEffect(() => {
@@ -78,6 +84,38 @@ export function LandingPage() {
   }, []);
 
   useEffect(() => {
+    const paint = (value: number) => {
+      currentRef.current = value;
+      setProgress(value);
+      setActiveStage(stageFor(value));
+    };
+
+    // The design eases the scene toward the scroll position instead of binding it
+    // 1:1, which is what makes the swing and camera drift rather than snap.
+    const step = () => {
+      const next = currentRef.current + (targetRef.current - currentRef.current) * EASE;
+      if (Math.abs(targetRef.current - next) < EASE_EPSILON) {
+        frameRef.current = 0;
+        paint(targetRef.current);
+        return;
+      }
+      paint(next);
+      frameRef.current = window.requestAnimationFrame(step);
+    };
+
+    const kick = () => {
+      if (!frameRef.current) frameRef.current = window.requestAnimationFrame(step);
+    };
+
+    const followProgress = (value: number) => {
+      targetRef.current = value;
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        paint(value);
+      } else {
+        kick();
+      }
+    };
+
     const handleScroll = () => {
       const scrolled = window.scrollY || window.pageYOffset || 0;
       setIsSolid(scrolled > 40);
@@ -87,24 +125,18 @@ export function LandingPage() {
       const ratio = total > 0 ? clamp(scrolled / total, 0, 1) : 0;
       setScrollRatio(ratio);
 
-      const p = readProgress();
-      setProgress(p);
-      setActiveStage(stageFor(p));
+      followProgress(readProgress());
     };
 
-    const handleResize = () => {
-      handleScroll();
-    };
-
+    paint(readProgress());
     window.addEventListener("scroll", handleScroll, { passive: true });
-    window.addEventListener("resize", handleResize);
-
-    // Initial sync
-    handleScroll();
+    window.addEventListener("resize", handleScroll);
 
     return () => {
+      if (frameRef.current) window.cancelAnimationFrame(frameRef.current);
+      frameRef.current = 0;
       window.removeEventListener("scroll", handleScroll);
-      window.removeEventListener("resize", handleResize);
+      window.removeEventListener("resize", handleScroll);
     };
   }, [readProgress]);
 
