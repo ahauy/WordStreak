@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 
@@ -37,13 +37,23 @@ function AuthDialogModal({
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [isSuccess, setIsSuccess] = useState(false);
+  const dialogRef = useRef<HTMLDialogElement>(null);
 
   useEffect(() => {
+    const el = dialogRef.current;
+    if (!el) return;
     document.body.classList.add("modal-open");
+    // showModal (not the open attribute) is what puts the dialog in the top
+    // layer, centres it, paints ::backdrop and gives Escape-to-close.
+    if (!el.open) el.showModal();
+    const firstField = el.querySelector<HTMLElement>(
+      initialMode === "signup" ? "#authName" : "#authEmail",
+    );
+    window.requestAnimationFrame(() => firstField?.focus());
     return () => {
       document.body.classList.remove("modal-open");
     };
-  }, []);
+  }, [initialMode]);
 
   const isSignup = mode === "signup";
 
@@ -86,7 +96,12 @@ function AuthDialogModal({
   };
 
   return (
-    <dialog className="auth-dialog" open aria-labelledby="authTitle">
+    <dialog
+      ref={dialogRef}
+      className="auth-dialog"
+      aria-labelledby="authTitle"
+      onClose={onClose}
+    >
       <div className="dialog-body">
         <button
           className="dialog-close"

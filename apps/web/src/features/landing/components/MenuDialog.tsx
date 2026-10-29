@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
 
 interface MenuDialogProps {
@@ -15,13 +15,16 @@ export function MenuDialog({
   onOpenAuth,
 }: MenuDialogProps) {
   const { t } = useTranslation("landing");
+  const dialogRef = useRef<HTMLDialogElement>(null);
 
   useEffect(() => {
-    if (isOpen) {
-      document.body.classList.add("modal-open");
-    } else {
-      document.body.classList.remove("modal-open");
-    }
+    if (!isOpen) return;
+    const el = dialogRef.current;
+    if (!el) return;
+    document.body.classList.add("modal-open");
+    // showModal (not the open attribute) is what puts the drawer in the top
+    // layer, paints ::backdrop and gives Escape-to-close.
+    if (!el.open) el.showModal();
     return () => {
       document.body.classList.remove("modal-open");
     };
@@ -30,7 +33,7 @@ export function MenuDialog({
   if (!isOpen) return null;
 
   return (
-    <dialog className="menu-dialog" open aria-label="Menu">
+    <dialog ref={dialogRef} className="menu-dialog" aria-label="Menu" onClose={onClose}>
       <div className="menu-inner">
         <button
           className="dialog-close"
